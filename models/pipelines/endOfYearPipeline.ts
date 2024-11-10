@@ -1,0 +1,15 @@
+import type Row from "~/models/Row";
+import type {Pipeline} from "~/interfaces/Pipeline";
+
+export default class EndOfYearPipeline implements Pipeline {
+
+    process(row: Row): Row {
+        row.incomeTaxable = row.calculateIncomeTaxable()
+        row.incomeTaxAmount = row.calculateIncomeTaxAmount()
+        row.incomeTaxed = row.calculateIncomeTaxed()
+        row.incomeDisposable = row.calculateIncomeDisposable()
+        row.cashEndOfYear = row.calculateCashEndOfYear()
+        row.retirementIncomeProjected = row.calculateRetirementIncomeProjected()
+        return row
+    }
+}
