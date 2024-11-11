@@ -5,9 +5,7 @@ export default defineNuxtConfig({
         '@/assets/css/tailwind.css'
     ],
     devtools: {enabled: true},
-    modules: [
-        '@nuxt/test-utils/module'
-    ],
+    modules: ['@nuxt/test-utils/module', 'nuxt-feather-icons'],
     postcss: {
         plugins: {
             tailwindcss: {},
