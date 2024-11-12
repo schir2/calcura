@@ -1,6 +1,6 @@
 import type Row from "~/models/Row";
 
-function debtPipelineByName(row: Row, debtName: string): Row {
+export function debtPipelineByName(row: Row, debtName: string): Row {
     const debt = row.debts.find((d) => d.debtName === debtName);
     if (!debt) return row;
 

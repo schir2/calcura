@@ -5,7 +5,7 @@ export default class EndOfYearPipeline implements Pipeline {
 
     process(row: Row): Row {
         row.incomeTaxable = row.calculateIncomeTaxable()
-        row.incomeTaxAmount = row.calculateIncomeTaxAmount()
+        row.incomeTaxAmount = row.calculateIncomeTaxAmount(undefined)
         row.incomeTaxed = row.calculateIncomeTaxed()
         row.incomeDisposable = row.calculateIncomeDisposable()
         row.cashEndOfYear = row.calculateCashEndOfYear()

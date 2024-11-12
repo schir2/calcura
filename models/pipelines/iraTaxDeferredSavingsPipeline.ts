@@ -1,9 +1,8 @@
 import type {InvestmentPipeline} from "~/interfaces/InvestmentPipeline";
 import type Row from "~/models/Row";
 
-export default class IraTaxDeferredSavingsPipeline implements InvestmentPipeline {
 
-    process(row: Row) {
+export function iraTaxDeferredSavingsPipeline(row: Row): Row {
         assertDefined(row.savingsEndOfYear, 'savingsEndOfYear')
         assertDefined(row.incomeTaxable, 'incomeTaxable')
         row.savingsStartOfYear = row.savingsEndOfYear
@@ -16,4 +15,3 @@ export default class IraTaxDeferredSavingsPipeline implements InvestmentPipeline
         row.incomeTaxable -= row.iraTaxDeferredContribution
         return row
     }
-}
