@@ -19,10 +19,7 @@ const toggleMenu = () => {
     <button
         class="sm:hidden text-skin-secondary/80 hover:text-skin-secondary font-normal ease-in-out duration-500 transition-all"
         @click="toggleMenu"
-    >
-      <div ">
-        <MenuIcon/>
-      </div>
+    ><MenuIcon/>
     </button>
 
     <!-- Container for responsive flex layout -->
