@@ -9,7 +9,7 @@ import type {
     InvestmentGrowthStrategy,
     IraContributionStrategy,
     RetirementStrategy,
-    TaxableContributionStrategy
+    TaxableContributionStrategy,
 } from "~/types";
 import {
     assertDefined,
@@ -18,32 +18,25 @@ import {
     calculateTaxDeferredElectiveContributionLimit
 } from "~/utils";
 import {TAX_DEFERRED_CATCH_UP_AGE, TAX_DEFERRED_LIMIT_INFLATION_RATE} from "~/constants/financial";
+import Debt from "~/models/Debt";
 
 export default class Row {
     age: number;
     year: number;
     lifeExpectancy: number;
 
-    /* Retirement */
-    retirementStrategy: RetirementStrategy;
-    retirementWithdrawalRate: number;
-    retirementIncomeGoal: number;
-    retirementAge: number;
-    retirementSavingsAmount: number;
-    retirementIncomeProjected?: number;
-
     /* Cash and Disposable Income */
     cashStartOfYear: number;
     cashEndOfYear: number;
-    incomeDisposable?: number;
 
     /* Income */
+    incomeGrowthAmount?: number;
     incomePreTaxed: number;
     incomeTaxable?: number;
     incomeTaxed?: number;
+    incomeDisposable?: number;
     incomeGrowthStrategy: GrowthStrategy;
     incomeGrowthRate: number;
-    incomeGrowthAmount?: number;
 
     /* Tax */
     incomeTaxAmount?: number;
@@ -53,23 +46,21 @@ export default class Row {
     incomeTaxNumberOfDependents: string;
 
     /* Expenses */
-    expenses: number;
+    expenseAmount: number;
     expenseRate: number;
-    expensesGrowthStrategy: ExpensesGrowthStrategy;
+    expenseGrowthAmount?: number
+    expenseGrowthStrategy: ExpensesGrowthStrategy;
 
     /* Debt */
+    debts: Debt[] = [];
     debtStartOfYear: number;
     debtEndOfYear: number;
-    debtInterestRate: number;
-    debtPayment: number;
-    debtPaymentTotal: number;
 
     /* Tax-Deferred Savings */
     taxDeferredSavingsStartOfYear: number;
     taxDeferredContributionFixedAmount: number;
     taxDeferredContributionStrategy: ContributionStrategy;
     taxDeferredContribution: number;
-    taxDeferredContributionTotal?: number;
     taxDeferredGrowthAmount?: number;
     taxDeferredContributionPercentage: number;
     taxDeferredSavingsEndOfYear: number;
@@ -141,8 +132,15 @@ export default class Row {
     taxableSpending: number;
     taxDeferredSpending: number;
 
+    /* Retirement */
+    retirementStrategy: RetirementStrategy;
+    retirementWithdrawalRate: number;
+    retirementIncomeGoal: number;
+    retirementAge: number;
+    retirementSavingsAmount: number;
+    retirementIncomeProjected?: number;
+
     constructor(formData: FormData) {
-        // Initialize properties using form data
         this.age = formData.age;
         this.year = formData.year;
         this.lifeExpectancy = formData.lifeExpectancy;
@@ -163,15 +161,13 @@ export default class Row {
         this.incomeTaxFilingStatus = formData.incomeTaxFilingStatus;
         this.incomeTaxNumberOfDependents = formData.incomeTaxNumberOfDependents;
 
-        this.expenses = formData.expenses;
+        this.expenseAmount = formData.expenses;
         this.expenseRate = formData.expenseRate;
-        this.expensesGrowthStrategy = formData.expensesGrowthStrategy;
+        this.expenseGrowthStrategy = formData.expensesGrowthStrategy;
 
-        this.debtStartOfYear = 0;
-        this.debtEndOfYear = formData.debt;
-        this.debtInterestRate = formData.debtInterestRate;
-        this.debtPayment = formData.debtPayment;
-        this.debtPaymentTotal = 0;
+        this.debts = formData.debts.map((debtData) => new Debt(debtData));
+        this.debtStartOfYear = this.calculateTotalDebtStartOfYear();
+        this.debtEndOfYear = this.debtStartOfYear
 
         this.taxDeferredSavingsStartOfYear = 0;
         this.taxDeferredSavingsEndOfYear = formData.taxDeferredSavings;
@@ -422,7 +418,7 @@ export default class Row {
 
     calculateIncomeDisposable(): number {
         assertDefined(this.incomeTaxed, 'incomeTaxed')
-        return this.incomeTaxed - this.taxableSpending - this.expenses
+        return this.incomeTaxed - this.taxableSpending - this.expenseAmount
     }
 
     calculateCashEndOfYear(): number {
@@ -436,12 +432,12 @@ export default class Row {
     }
 
 
-    calculateIncome(): number {
+    calculateIncomeGrowthAmount(): number {
         switch (this.incomeGrowthStrategy) {
             case "fixed":
-                return this.incomePreTaxed
+                return 0
             case "percentage_increase":
-                return this.incomePreTaxed * (1 + this.incomeGrowthRate / 100)
+                return this.incomePreTaxed * (this.incomeGrowthRate / 100)
         }
     }
 
@@ -465,4 +461,97 @@ export default class Row {
         return this.taxDeferredContributionElectiveCatchUpLimit * (1 + this.taxDeferredContributionLimitInflationRate / 100)
     }
 
+    calculateInflationRate(): number {
+        switch (this.inflationGrowthStrategy) {
+            case "fixed":
+                return this.inflationRate
+            case "percentage_increase":
+                return this.inflationRate
+        }
+    }
+
+    hasAchievedRetirement(): boolean {
+        switch (this.retirementStrategy) {
+            case 'age':
+                return this.age === this.retirementAge
+            case 'percent_rule':
+                return this.savingsEndOfYear * this.retirementWithdrawalRate / 100 > this.retirementIncomeGoal
+            case 'target_savings':
+                return this.retirementSavingsAmount >= this.savingsEndOfYear
+            case 'debt_free':
+                return this.debtEndOfYear <= 0
+
+        }
+    }
+
+    advanceToNextYear(): Row {
+        const row = structuredClone(this)
+        row.age += 1
+        row.year += 1
+
+        row.inflationRate = row.calculateInflationRate()
+
+        row.cashStartOfYear = row.cashEndOfYear
+
+        row.incomeGrowthAmount = row.calculateIncomeGrowthAmount()
+        row.incomePreTaxed += row.incomeGrowthAmount
+        row.incomeTaxable = undefined
+        row.incomeTaxed = undefined
+        row.incomeDisposable = undefined
+        row.incomeTaxAmount = undefined
+
+        row.expenseGrowthAmount = row.calculateExpenseGrowthAmount();
+        row.expenseAmount = row.calculateExpenses()
+
+        row.debtStartOfYear = row.debtEndOfYear
+
+        row.taxDeferredSavingsStartOfYear = row.taxDeferredSavingsEndOfYear
+
+        row.taxDeferredContributionLimit = row.calculateAdjustedTaxDeferredContributionLimit()
+        row.taxDeferredContributionElectiveLimit = row.calculateAdjustedTaxDeferredContributionElectiveLimit()
+        row.taxDeferredContributionElectiveCatchUpLimit = row.calculateAdjustedTaxDeferredContributionElectiveCatchUpLimit()
+        row.taxDeferredContributionElectiveLimitApplied = row.calculateTaxDeferredContributionElectiveLimitApplied();
+        row.taxDeferredContributionLimitApplied = row.calculateTaxDeferredContributionLimitApplied();
+
+        row.employerSavingsStartOfYear = row.employerSavingsEndOfYear
+
+        row.iraTaxableSavingsStartOfYear = row.iraTaxableSavingsEndOfYear
+        row.iraTaxDeferredSavingsStartOfYear = row.iraTaxDeferredSavingsEndOfYear
+        row.taxableSavingsStartOfYear = row.taxableSavingsEndOfYear
+
+        row.savingsStartOfYear = row.savingsEndOfYear
+
+        row.taxableSpending = 0
+        row.taxDeferredSpending = 0
+
+        row.debts = row.debts.map((debt) => debt.advanceToNextYear())
+
+
+        row.retirementIncomeGoal += row.retirementIncomeGoal * row.inflationRate / 100
+
+
+        return row
+    }
+
+    calculateExpenses(): number {
+        assertDefined(this.expenseGrowthAmount, 'expenseGrowthAmount')
+        return this.expenseAmount + this.expenseGrowthAmount;
+    }
+
+    calculateExpenseGrowthAmount(): number {
+        return this.expenseAmount * this.expenseRate / 100
+    }
+
+    calculateTotalDebtStartOfYear(): number {
+        return this.debts.reduce((sum, debt) => sum + debt.principalStartOfYear, 0);
+    }
+
+
+    calculateTotalDebtEndOfYear(): number {
+        return this.debts.reduce((sum, debt) => sum + debt.principalEndOfYear, 0);
+    }
+
 }
+
+
+

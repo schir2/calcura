@@ -20,9 +20,9 @@ const initialFormData: FormData = {
     expenses: 50000,
     expenseRate: 2,
     expensesGrowthStrategy: 'fixed',
-    debt: 5000,
-    debtInterestRate: 5,
-    debtPayment: 500,
+
+    debts: [],
+
     taxDeferredSavings: 0,
     taxDeferredContributionFixedAmount: 5000,
     taxDeferredContributionStrategy: 'max',
