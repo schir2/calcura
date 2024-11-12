@@ -53,7 +53,7 @@ const initialFormData: FormData = {
     taxableGrowthRate: 10.0,
     inflationRate: 2.0,
     inflationGrowthStrategy: 'fixed',
-    allowNegativeBalance: false,
+    allowNegativeDisposableIncome: "none",
 };
 
 export default initialFormData;

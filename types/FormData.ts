@@ -19,7 +19,7 @@ export default interface FormData {
     lifeExpectancy: number;
 
     /* Extra Settings */
-    allowNegativeBalance: boolean;
+    allowNegativeDisposableIncome: 'none' | 'minimum_only' | 'full';
     investmentGrowthStrategy: InvestmentGrowthStrategy
 
     /* Retirement Strategies */
