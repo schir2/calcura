@@ -398,13 +398,14 @@ export default class Row {
 
     }
 
-    calculateIncomeTaxAmount(): number {
-        assertDefined(this.incomeTaxable, 'incomeTaxable')
+    calculateIncomeTaxAmount(incomeTaxable: number | undefined): number {
+        incomeTaxable = incomeTaxable ?? this.incomeTaxable
+        assertDefined(incomeTaxable, 'incomeTaxable')
         switch (this.incomeTaxStrategy) {
             case 'bracket':
-                return this.incomeTaxable * this.incomeTaxRate / 100
+                return incomeTaxable * this.incomeTaxRate / 100
             case 'simple':
-                return this.incomeTaxable * this.incomeTaxRate / 100
+                return incomeTaxable * this.incomeTaxRate / 100
         }
     }
 
@@ -549,6 +550,33 @@ export default class Row {
 
     calculateTotalDebtEndOfYear(): number {
         return this.debts.reduce((sum, debt) => sum + debt.principalEndOfYear, 0);
+    }
+
+    recalculateTaxes(taxDeferredContribution: number): {
+        newTaxableIncome: number;
+        newTaxAmount: number;
+        newDisposableIncome: number;
+        effectiveTaxRate: number;
+    } {
+
+        assertDefined(this.incomeDisposable, 'incomeDisposable')
+        assertDefined(this.incomeTaxable, 'incomeTaxable')
+        assertDefined(this.incomeTaxAmount, 'incomeTaxAmount')
+
+        const currentEffectiveTaxRate = (this.incomeTaxAmount / this.incomeTaxable) * 100;
+        const availableTaxableIncome = this.incomeDisposable / (1 - currentEffectiveTaxRate / 100);
+        const newTaxableIncome = this.incomeTaxable - taxDeferredContribution;
+        const newTaxAmount = this.calculateIncomeTaxAmount(newTaxableIncome)
+        const effectiveTaxRate = (newTaxAmount / newTaxableIncome) * 100;
+        const newDisposableIncome = availableTaxableIncome * effectiveTaxRate / 100;
+
+        // Return the updated variables
+        return {
+            newTaxableIncome,
+            newTaxAmount,
+            newDisposableIncome,
+            effectiveTaxRate
+        };
     }
 
 }

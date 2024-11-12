@@ -1,10 +1,18 @@
-import type {Pipeline} from "~/interfaces/Pipeline";
-import type Debt from "~/models/Debt";
+import type Row from "~/models/Row";
 
-export default class DebtPipeline implements Pipeline {
+function debtPipelineByName(row: Row, debtName: string): Row {
+    const debt = row.debts.find((d) => d.debtName === debtName);
+    if (!debt) return row;
 
-    process(debt: Debt): Debt {
-        ???
-            Also this relies on getting the current dispoable income of th erow
-    }
+    debt.payment = debt.calculatePayment(row.incomeDisposable || 0);
+
+    const {principalEndOfYear, interestAmount, interestAccrued, paymentLifetime} = debt.calculateEndOfYearValues();
+    debt.principalEndOfYear = principalEndOfYear;
+    debt.interestAmount = interestAmount;
+    debt.interestAccrued = interestAccrued;
+    debt.paymentLifetime = paymentLifetime;
+
+    row.incomeDisposable = (row.incomeDisposable || 0) - debt.payment;
+
+    return row;
 }
