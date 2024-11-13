@@ -13,6 +13,7 @@ function withOpacity(variableName: string) {
 
 module.exports = {
     content: [
+        './*.ts',
         './components/**/*.{vue,js,ts}', // Vue components
         './layouts/**/*.vue',            // Nuxt layouts
         './pages/**/*.vue',              // Nuxt pages
