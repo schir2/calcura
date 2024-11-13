@@ -1,9 +1,8 @@
 <script setup lang="ts">
 
-const menu = ref({
-  open: false,
-  isSpinning: false,
-})
+const menu = ref({open: false, isSpinning: false,})
+
+const themeStore = useThemeStore()
 
 const toggleMenu = () => {
   menu.value.open = !menu.value.open;
@@ -19,7 +18,8 @@ const toggleMenu = () => {
     <button
         class="sm:hidden text-skin-secondary/80 hover:text-skin-secondary font-normal ease-in-out duration-500 transition-all"
         @click="toggleMenu"
-    ><MenuIcon/>
+    >
+      <MenuIcon/>
     </button>
 
     <!-- Container for responsive flex layout -->
@@ -37,19 +37,20 @@ const toggleMenu = () => {
 
       <!-- Right section with icons and other nav items -->
       <div class="flex items-center space-x-3">
-        <span>right</span>
+        <CommonButton @click="themeStore.toggleTheme()">
+          <SunIcon class="text-yellow-500" v-if="themeStore.theme === 'dark'"/>
+          <MoonIcon class="text-purple-500" v-if="themeStore.theme === 'light'"/>
+        </CommonButton>
+      </div>
+
+      <!-- Mobile Menu - visible when toggled open -->
+      <div v-show="menu.open"
+           class="absolute top-16 left-0 w-full bg-skin-surface shadow-md sm:hidden flex flex-col items-start space-y-2 p-4"
+           @click.self="menu.open = false">
+        <span>responsive</span>
       </div>
     </div>
-
-    <!-- Mobile Menu - visible when toggled open -->
-    <div x-show="menu.open"
-         class="absolute top-16 left-0 w-full bg-skin-surface shadow-md sm:hidden flex flex-col items-start space-y-2 p-4"
-         @click.self="menu.open = false">
-      <span>responsive</span>
-    </div>
   </nav>
-
-
 </template>
 
 <style scoped>
