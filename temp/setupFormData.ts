@@ -1,0 +1,80 @@
+import initialFormData from "./formData";
+import Alpine from 'alpinejs';
+import {table} from "../index";
+
+export function setupFormData() {
+    return {
+        formData: initialFormData,
+        sectionFilters: Alpine.$persist({
+            personal: true,
+            debt: true,
+            retirement: true,
+            income: true,
+            taxes: true,
+            savings: true,
+            deferred: true,
+            employer: true,
+            ira: true,
+            taxable: true,
+            targets: true,
+            extra: true,
+
+        }),
+        columns: Alpine.$persist(table.columns),
+        results: [],
+
+        init() {
+            this.$watch('formData', () => {
+                this.fillTable()
+            });
+            this.fillTable();
+        },
+        formatValue: (value: string, format: string) => {
+            if (format === 'currency') {
+                return value.toLocaleString('en-US', {style: 'currency', currency: 'USD'})
+            }
+
+            return value
+        },
+        initializeTableRow(formData) {
+            let curRow = JSON.parse(JSON.stringify(formData));
+            /* TODO Need to account for employer contribution more than the employee. Goal is to maximize savings */
+
+            /* Initialization */
+
+
+            curRow = RetirementCalculator.pipeline.endOfYearPipeline.initialize(curRow)
+
+
+            return curRow;
+
+        }, updateRow(previousRow) {
+            let curRow = JSON.parse(JSON.stringify(previousRow));
+
+
+            curRow = RetirementCalculator.pipeline.startOfYearPipeline.process(curRow)
+            curRow = RetirementCalculator.process.electiveLimit.process(curRow)
+            curRow = RetirementCalculator.pipeline.taxDeferredPipeline.process(curRow)
+            curRow = RetirementCalculator.pipeline.taxDeferredEmployerMatchPipeline.process(curRow)
+            curRow = RetirementCalculator.pipeline.taxableSavingsPipeline.process(curRow)
+            curRow = RetirementCalculator.pipeline.iraTaxableSavingsPipeline.process(curRow)
+            curRow = RetirementCalculator.pipeline.iraTaxDeferredSavingsPipeline.process(curRow)
+            curRow = RetirementCalculator.pipeline.endOfYearPipeline.process(curRow)
+            return curRow;
+        }, fillTable() {
+            let firstRow = this.initializeTableRow(this.formData);
+            let table = [firstRow];
+            let rowIndex = 0
+
+            while (table[rowIndex].age <= table[rowIndex].lifeExpectancy && !this.RetirementStrategies[this.formData.retirementStrategy](table[rowIndex])) {
+                let previousRow = table[rowIndex];
+                let curRow = this.updateRow(previousRow);
+                table.push(curRow);
+                rowIndex += 1;
+
+            }
+
+            this.results = table;
+        },
+    }
+}
