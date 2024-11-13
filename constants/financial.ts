@@ -1,6 +1,10 @@
+import type {InvestmentGrowthApplicationStrategy} from "~/types";
+
 export const TAX_DEFERRED_DEFAULT_YEAR = 2024
 export const TAX_DEFERRED_CONTRIBUTION_LIMIT_2024 = 66000
 export const TAX_DEFERRED_ELECTIVE_CONTRIBUTION_LIMIT_2024 = 22500
 export const TAX_DEFERRED_ELECTIVE_CONTRIBUTION_CATCH_UP_LIMIT_2024 = 7500
 export const TAX_DEFERRED_LIMIT_INFLATION_RATE = 2.5
 export const TAX_DEFERRED_CATCH_UP_AGE = 50
+export const DEFAULT_INVESTMENT_GROWTH_RATE = 2.5
+export const DEFAULT_GROWTH_APPLICATION_STRATEGY: InvestmentGrowthApplicationStrategy = 'start'

@@ -5,7 +5,7 @@ import type {
     GrowthStrategy,
     IncomeTaxStrategy,
     InflationGrowthStrategy,
-    InvestmentGrowthStrategy,
+    InvestmentGrowthApplicationStrategy,
     IraContributionStrategy,
     RetirementStrategy,
     TaxableContributionStrategy,
@@ -20,7 +20,7 @@ export default interface FormData {
 
     /* Extra Settings */
     allowNegativeDisposableIncome: 'none' | 'minimum_only' | 'full';
-    investmentGrowthStrategy: InvestmentGrowthStrategy
+    investmentGrowthStrategy: InvestmentGrowthApplicationStrategy
 
     /* Retirement Strategies */
     retirementStrategy: RetirementStrategy;

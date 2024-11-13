@@ -6,7 +6,7 @@ import type {
     GrowthStrategy,
     IncomeTaxStrategy,
     InflationGrowthStrategy,
-    InvestmentGrowthStrategy,
+    InvestmentGrowthApplicationStrategy,
     IraContributionStrategy,
     RetirementStrategy,
     TaxableContributionStrategy,
@@ -124,7 +124,7 @@ export default class Row {
     /* Inflation */
     inflationRate: number;
     inflationGrowthStrategy: InflationGrowthStrategy;
-    investmentGrowthStrategy: InvestmentGrowthStrategy;
+    investmentGrowthApplicationStrategy: InvestmentGrowthApplicationStrategy;
 
     /* Calculated Fields */
     savingsStartOfYear: number;
@@ -228,7 +228,7 @@ export default class Row {
 
         this.taxableSpending = 0;
         this.taxDeferredSpending = 0;
-        this.investmentGrowthStrategy = 'start'
+        this.investmentGrowthApplicationStrategy = 'start'
         this.savingsStartOfYear = 0
         this.savingsEndOfYear = this.taxableSavingsEndOfYear + this.taxDeferredSavingsEndOfYear + this.iraTaxableSavingsEndOfYear + this.iraTaxDeferredSavingsEndOfYear + this.employerSavingsEndOfYear
 
@@ -326,7 +326,7 @@ export default class Row {
 
     calculateIraTaxDeferredGrowthAmount(): number {
         assertDefined(this.iraTaxDeferredContribution, 'iraTaxDeferredContribution')
-        switch (this.investmentGrowthStrategy) {
+        switch (this.investmentGrowthApplicationStrategy) {
             case 'start':
                 return this.iraTaxDeferredSavingsStartOfYear * (this.iraGrowthRate / 100)
             case 'end':
@@ -335,7 +335,7 @@ export default class Row {
     }
 
     calculateTaxableGrowthAmount(): number {
-        switch (this.investmentGrowthStrategy) {
+        switch (this.investmentGrowthApplicationStrategy) {
             case 'start':
                 return this.taxableSavingsStartOfYear * (this.taxableGrowthRate / 100)
             case 'end':
@@ -350,7 +350,7 @@ export default class Row {
     }
 
     calculateIraTaxableGrowthAmount(): number {
-        switch (this.investmentGrowthStrategy) {
+        switch (this.investmentGrowthApplicationStrategy) {
             case 'start':
                 return this.iraTaxableSavingsStartOfYear * (this.iraGrowthRate / 100)
             case 'end':
@@ -365,7 +365,7 @@ export default class Row {
     }
 
     calculateTaxDeferredGrowthAmount(): number {
-        switch (this.investmentGrowthStrategy) {
+        switch (this.investmentGrowthApplicationStrategy) {
             case 'start':
                 return this.taxDeferredSavingsStartOfYear * (this.taxDeferredGrowthRate / 100)
             case 'end':
@@ -385,7 +385,7 @@ export default class Row {
 
 
     calculateEmployerGrowthAmount(): number {
-        switch (this.investmentGrowthStrategy) {
+        switch (this.investmentGrowthApplicationStrategy) {
             case 'start':
                 return this.employerSavingsStartOfYear * (this.taxDeferredGrowthRate / 100)
             case 'end':
