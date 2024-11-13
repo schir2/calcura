@@ -1,7 +1,5 @@
 <template>
-<div class="container bg-skin-accent">
-  <h1>HI</h1>
-</div>
+  <RetirementProfile/>
 </template>
 <script setup lang="ts">
 useHead({

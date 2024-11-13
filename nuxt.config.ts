@@ -4,7 +4,12 @@ export default defineNuxtConfig({
         '@/assets/css/tailwind.css'
     ],
     devtools: {enabled: true},
-    modules: ['@nuxt/test-utils/module', 'nuxt-feather-icons', '@pinia/nuxt',],
+    modules: [
+        '@vee-validate/nuxt',
+        '@nuxt/test-utils/module',
+        'nuxt-feather-icons',
+        '@pinia/nuxt',
+    ],
     postcss: {
         plugins: {
             tailwindcss: {},
