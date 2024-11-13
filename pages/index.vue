@@ -1,7 +1,13 @@
 <template>
-  <div>
-    <h1 class="text-4xl">Hello World</h1>
-  </div>
+<div class="container bg-skin-accent">
+  <h1>HI</h1>
+</div>
 </template>
 <script setup lang="ts">
+useHead({
+  title: 'Calcura Dashboard',
+  meta: [
+    {name: 'description', content: 'Calcura: Dashboard'}
+  ],
+})
 </script>
