@@ -1,5 +1,5 @@
 import type {AllowNegativeDisposableIncome, ContributionStrategy, InvestmentGrowthApplicationStrategy} from "~/types";
-import {assertDefined, calculateInvestmentGrowthAmount} from "~/utils";
+import {adjustContributionForDisposableIncome, assertDefined, calculateInvestmentGrowthAmount} from "~/utils";
 import {DEFAULT_GROWTH_APPLICATION_STRATEGY, DEFAULT_INVESTMENT_GROWTH_RATE} from "~/constants/financial";
 
 export interface TaxDeferredInvestmentData {
@@ -58,17 +58,13 @@ export default class TaxDeferredInvestment {
                 contribution = limit
                 break
         }
-        contribution = Math.min(contribution, limit)
-
-        switch (allowNegativeDisposableIncome) {
-            case 'none':
-                return Math.min(contribution, disposableIncome)
-            case "minimum_only":
-                return Math.min(contribution, disposableIncome)
-            case 'full':
-                return contribution
-        }
-
+        return adjustContributionForDisposableIncome(
+            {
+                amount: contribution,
+                disposableIncome: disposableIncome,
+                allowNegativeDisposableIncome: allowNegativeDisposableIncome
+            }
+        )
     }
 
     calculateGrowthAmount(): number {

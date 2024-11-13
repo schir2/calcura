@@ -26,3 +26,27 @@ export function calculateInvestmentGrowthAmount(
             throw new Error(`Invalid growth application strategy: ${growthApplicationStrategy}`);
     }
 }
+
+
+export function adjustContributionForDisposableIncome({
+                                                          amount,
+                                                          disposableIncome,
+                                                          allowNegativeDisposableIncome = 'none',
+                                                          minimum = 0,
+                                                      }: {
+    amount: number;
+    disposableIncome: number;
+    allowNegativeDisposableIncome: 'none' | 'minimum_only' | 'full';
+    minimum?: number;
+}): number {
+    switch (allowNegativeDisposableIncome) {
+        case 'none':
+            return Math.max(Math.min(amount, disposableIncome), minimum);
+        case 'minimum_only':
+            return Math.max(Math.min(amount, disposableIncome), minimum);
+        case 'full':
+            return Math.max(amount, minimum);
+        default:
+            throw new Error(`Invalid allowNegativeDisposableIncome value: ${allowNegativeDisposableIncome}`);
+    }
+}
