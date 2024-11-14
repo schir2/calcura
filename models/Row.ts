@@ -1,6 +1,6 @@
 import type FormData from '~/types/FormData';
 import type {
-    ContributionStrategy,
+    ElectiveContributionStrategy,
     EmployerContributionStrategy,
     ExpensesGrowthStrategy,
     GrowthStrategy,
@@ -59,7 +59,7 @@ export default class Row {
     /* Tax-Deferred Savings */
     taxDeferredSavingsStartOfYear: number;
     taxDeferredContributionFixedAmount: number;
-    taxDeferredContributionStrategy: ContributionStrategy;
+    taxDeferredContributionStrategy: ElectiveContributionStrategy;
     taxDeferredContribution: number;
     taxDeferredGrowthAmount?: number;
     taxDeferredContributionPercentage: number;
