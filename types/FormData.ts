@@ -1,5 +1,5 @@
 import type {
-    ContributionStrategy,
+    ElectiveContributionStrategy,
     EmployerContributionStrategy,
     ExpensesGrowthStrategy,
     GrowthStrategy,
@@ -53,7 +53,7 @@ export default interface FormData {
     /* Tax Deferred Savings */
     taxDeferredSavings: number;
     taxDeferredContributionFixedAmount: number;
-    taxDeferredContributionStrategy: ContributionStrategy;
+    taxDeferredContributionStrategy: ElectiveContributionStrategy;
     taxDeferredContributionPercentage: number;
     taxDeferredGrowthRate: number;
 
