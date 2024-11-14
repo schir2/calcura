@@ -1,5 +1,6 @@
 <template>
   <RetirementProfile/>
+  <RetirementTaxDeferredInvestment/>
 </template>
 <script setup lang="ts">
 useHead({
