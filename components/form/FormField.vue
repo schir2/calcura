@@ -14,8 +14,8 @@
         v-bind="additionalAttrs"
         class="border rounded shadow px-3 py-1.5 text-skin-base bg-skin-base focus:outline-none focus:ring-2 focus:ring-skin-accent w-full"
     />
-    <FormHelpText v-if="field.helpText" :helpText="field.helpText"></FormHelpText>
-    <ErrorMessage :name="field.name" class="text-skin-error text-sm mt-1"/>
+    <FormHelpText class="block" v-if="field.helpText" :helpText="field.helpText"></FormHelpText>
+    <ErrorMessage :name="field.name" class="block text-skin-error text-sm mt-1"/>
   </div>
 </template>
 
@@ -41,15 +41,46 @@ const modelValue = computed({
   },
 });
 
-// Additional attributes for the input field (if any)
 const additionalAttrs = computed(() => {
   const attrs: Record<string, any> = {};
   if (props.field.type === 'number') {
     attrs.step = 'any';
   }
-  // Add other attributes as needed
+  const rules = props.field.rules
+  if (rules && typeof rules.describe === 'function') {
+    const description = rules.describe();
+    if (description.tests) {
+      description.tests.forEach((test: any) => {
+        switch (test.name) {
+          case 'min':
+            switch (props.field.type) {
+              case 'number':
+                attrs.min = test.params.min;
+                break;
+              case 'text':
+                attrs.minLength = test.params.min;
+                break
+            }
+            break
+
+          case 'max':
+            switch (props.field.type) {
+              case 'number':
+                attrs.max = test.params.max;
+                break;
+              case 'text':
+                attrs.maxLength = test.params.max;
+                break
+            }
+            break
+        }
+      })
+    }
+  }
   return attrs;
 });
+
+
 </script>
 
 <style scoped>
