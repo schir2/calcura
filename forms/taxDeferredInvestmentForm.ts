@@ -1,5 +1,3 @@
-// taxDeferredInvestmentFields.ts
-
 import * as yup from "yup";
 import type {Field} from "~/interfaces/Field";
 import type {TaxDeferredInvestmentData} from "~/models/TaxDeferredInvestment";
