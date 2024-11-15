@@ -11,9 +11,8 @@ import {
     DEFAULT_EMPLOYER_MATCH_PERCENTAGE,
     DEFAULT_EMPLOYER_MATCH_PERCENTAGE_LIMIT,
     DEFAULT_GROWTH_APPLICATION_STRATEGY,
-    DEFAULT_INVESTMENT_GROWTH_RATE,
 } from "~/constants/financial";
-import {DEFAULT_ELECTIVE_CONTRIBUTION_FIXED_AMOUNT, DEFAULT_ELECTIVE_CONTRIBUTION_PERCENTAGE, DEFAULT_ELECTIVE_CONTRIBUTION_STRATEGY, TaxDeferredContributionOptions,} from "~/constants/taxDeferred";
+import {DEFAULT_DAX_DEFERRED_GROWTH_RATE, DEFAULT_ELECTIVE_CONTRIBUTION_FIXED_AMOUNT, DEFAULT_ELECTIVE_CONTRIBUTION_PERCENTAGE, DEFAULT_ELECTIVE_CONTRIBUTION_STRATEGY, TaxDeferredContributionOptions,} from "~/constants/taxDeferred";
 import {EmployerContributionOptions} from "~/constants/employerContribution";
 
 export const taxDeferredInvestmentFields: Field<TaxDeferredInvestmentData>[] = [
@@ -27,7 +26,7 @@ export const taxDeferredInvestmentFields: Field<TaxDeferredInvestmentData>[] = [
         resourceId: "investment-name",
         type: "text",
         defaultValue: "",
-        rules: yup.string().required("Name is required"),
+        rules: yup.string().required("Name is required").min(3, "Name must be at least 3 characters long").max(32, "Name must be at most 32 characters long"),
     },
     {
         key: "growthRate",
@@ -37,7 +36,7 @@ export const taxDeferredInvestmentFields: Field<TaxDeferredInvestmentData>[] = [
         helpText: "The annual percentage growth rate of your investment.",
         resourceId: "growth-rate",
         type: "number",
-        defaultValue: DEFAULT_INVESTMENT_GROWTH_RATE,
+        defaultValue: DEFAULT_DAX_DEFERRED_GROWTH_RATE,
         rules: yup
             .number()
             .min(0, "Growth rate must be at least 0")
@@ -58,7 +57,6 @@ export const taxDeferredInvestmentFields: Field<TaxDeferredInvestmentData>[] = [
             .min(0, "Balance must be at least 0")
             .required("Balance is required"),
     },
-    // New fields
     {
         key: "growthApplicationStrategy",
         name: "Growth Application Strategy",
