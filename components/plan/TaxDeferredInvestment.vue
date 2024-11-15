@@ -15,7 +15,7 @@ watchEffect(() => {
 </script>
 
 <template>
-  <CommonCard>
+  <CommonCard class="grid grid-cols-2 gap-3">
     <Form>
       <div class="space-y-6">
         <h2 class="text-2xl">Tax Deferred Investment</h2>
