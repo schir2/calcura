@@ -1,5 +1,5 @@
 import * as yup from "yup";
-import type {SelectOption} from "~/components/form/Select.vue";
+import type {SelectOption} from "~/components/form/BaseSelect.vue";
 
 export interface Field<T = any> {
     key: keyof T;

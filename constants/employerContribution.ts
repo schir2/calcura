@@ -1,4 +1,4 @@
-import type {SelectOption} from "~/components/form/Select.vue";
+import type {SelectOption} from "~/components/form/BaseSelect.vue";
 
 export const EmployerContributionOptions: Record<string, SelectOption> = {
     none: {label: 'None', value: 'none'},

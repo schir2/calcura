@@ -1,12 +1,9 @@
 <template>
-  <div class="grid grid-cols-3">
-    <LayoutTheSidebar/>
-    <div class="space-y-6">
-      <RetirementProfile/>
-      <RetirementTaxDeferredInvestment/>
-    </div>
-    <RetirementSummary/>
+  <div class="col-span-4 space-y-6">
+    <PlanRetirement/>
+    <PlanTaxDeferredInvestment/>
   </div>
+  <PlanSummary class="col-span-1"/>
 </template>
 <script setup lang="ts">
 useHead({
