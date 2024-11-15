@@ -64,7 +64,7 @@ describe('endOfYearPipeline Tests with Faker', () => {
             taxableGrowthRate: faker.number.float({min: 1, max: 10, fractionDigits: 2}),
             inflationRate: faker.number.float({min: 1, max: 5, fractionDigits: 2}),
             inflationGrowthStrategy: faker.helpers.arrayElement(['fixed', 'percentage_increase']),
-            retirementStrategy: faker.helpers.arrayElement(['age', 'percent_rule', 'target_savings', 'debt_free']),
+            retirementStrategy: faker.helpers.arrayElement(['age', 'percentRule', 'targetSavings', 'debitFree']),
             retirementWithdrawalRate: faker.number.float({min: 3, max: 5, fractionDigits: 2}),
             retirementIncomeGoal: faker.number.float({min: 20000, max: 100000, fractionDigits: 2}),
             retirementAge: faker.number.int({min: 60, max: 70}),

@@ -1,4 +1,4 @@
-export type RetirementStrategy = 'debt_free' | 'age' | 'percent_rule' | 'target_savings';
+export type RetirementStrategy = 'debitFree' | 'age' | 'percentRule' | 'targetSavings';
 export type GrowthStrategy = 'fixed' | 'percentage_increase';
 export type IncomeTaxStrategy = 'simple' | 'bracket';
 export type InflationGrowthStrategy = 'fixed' | 'percentage_increase';

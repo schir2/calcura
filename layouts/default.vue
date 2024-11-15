@@ -1,7 +1,7 @@
 <template>
   <div>
     <!-- Navbar -->
-    <LayoutTheNavbar/>
+    <!--    <LayoutTheNavbar/>-->
 
     <div class="grid grid-cols-6 gap-6">
       <!-- Left Sidebar -->
@@ -13,7 +13,9 @@
       </main>
 
       <!-- Left Sidebar -->
-      <LayoutTheRightSidebar class="col-span-1"/>
+      <LayoutTheRightSidebar class="col-span-1">
+        <slot name="right-sidebar"/>
+      </LayoutTheRightSidebar>
     </div>
   </div>
 </template>

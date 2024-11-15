@@ -1,14 +1,14 @@
-import type { Field } from "~/interfaces/Field";
+import type { FieldData } from "~/interfaces/FieldData";
 
 export default class formUtil<T extends object> {
-    private fields: Field<T>[];
-    private formData: { [K in keyof T]: Field<T[K]> };
+    private fields: FieldData<T>[];
+    private formData: { [K in keyof T]: FieldData<T[K]> };
 
     [key: string]: any;
 
-    constructor(fields: Field<T>[]) {
+    constructor(fields: FieldData<T>[]) {
         this.fields = fields;
-        this.formData = {} as { [K in keyof T]: Field<T[K]> };
+        this.formData = {} as { [K in keyof T]: FieldData<T[K]> };
 
         fields.forEach((field) => {
             const key = field.key;
@@ -18,7 +18,7 @@ export default class formUtil<T extends object> {
                     ? field.defaultValue
                     : this.getDefaultValue(field.type);
 
-            this.formData[key] = field as Field<T[K]>;
+            this.formData[key] = field as FieldData<T[K]>;
             this[key as string] = field;
         });
     }

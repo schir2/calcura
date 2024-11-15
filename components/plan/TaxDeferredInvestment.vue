@@ -1,7 +1,5 @@
 <script setup lang="ts">
 import type {TaxDeferredInvestmentData} from "~/models/TaxDeferredInvestment";
-import {EmployerContributionOptions} from "~/constants/employerContribution";
-import {TaxDeferredContributionOptions} from "~/constants/taxDeferred";
 import {taxDeferredInvestmentFields} from "~/forms/taxDeferredInvestmentForm";
 import FormModel from '~/utils/FormModel'
 
@@ -19,19 +17,19 @@ watchEffect(() => {
     <Form>
       <div class="space-y-6">
         <h2 class="text-2xl">Tax Deferred Investment</h2>
-        <FormField :field ="form.name"/>
+        <FormField :field="form.name"/>
         <FormField :field="form.balance"/>
         <FormField :field="form.growthRate"/>
         <section>
           <h3 class="text-xl">Elective Contributions</h3>
-          <FormSelect :name="form.employerContributionStrategy.name" v-model="form.employerContributionStrategy.value" :options="EmployerContributionOptions"/>
+          <FormSelect :field="form.employerContributionStrategy"/>
           <FormField :field="form.electiveContributionPercentage"/>
           <FormField :field="form.electiveContributionFixedAmount"/>
         </section>
-        <FormInputToggle :name="form.employerContributes.name" v-model="form.employerContributes.value" label="employerContributes" :rules="form.employerContributes"/>
+        <FormInputToggle :name="form.employerContributes.name" v-model="form.employerContributes.value" label="employerContributes" :rules="form.employerContributes.rules"/>
         <section v-if="form.employerContributes.value">
           <h3 class="text-xl">Employer Contributions</h3>
-          <FormSelect :name="form.employerContributionStrategy.name" v-model="form.employerContributionStrategy.value" :options="TaxDeferredContributionOptions" label="employerContributionStrategy" :rules="form.employerContributionStrategy"/>
+          <FormSelect :field="form.employerContributionStrategy"/>
           <FormField :field="form.employerCompensationMatchPercentage"/>
           <FormField :field="form.employerContributionFixedAmount"/>
           <FormField :field="form.employerMatchPercentage"/>
@@ -39,8 +37,11 @@ watchEffect(() => {
         </section>
       </div>
     </Form>
+    <div class="space-y-6">
+
+      {{ form.toObject() }}
+    </div>
   </CommonCard>
-  {{ form.toObject() }}
 </template>
 
 <style scoped>

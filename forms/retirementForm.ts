@@ -1,29 +1,38 @@
 import * as yup from "yup";
-import type { Field } from "~/interfaces/Field";
-import type { RetirementData } from "~/models/Retirement";
+import type {FieldData} from "~/interfaces/FieldData";
+import type {RetirementData} from "~/models/Retirement";
 import {
     DEFAULT_RETIREMENT_AGE,
-    MIN_RETIREMENT_AGE,
-    MAX_RETIREMENT_AGE,
-    DEFAULT_RETIREMENT_YEAR,
-    MIN_RETIREMENT_YEAR,
-    MAX_RETIREMENT_YEAR,
-    DEFAULT_RETIREMENT_LIFE_EXPECTANCY,
-    MIN_RETIREMENT_LIFE_EXPECTANCY,
-    MAX_RETIREMENT_LIFE_EXPECTANCY,
-    DEFAULT_RETIREMENT_WITHDRAWAL_RATE,
-    MIN_RETIREMENT_WITHDRAWAL_RATE,
-    MAX_RETIREMENT_WITHDRAWAL_RATE,
     DEFAULT_RETIREMENT_INCOME_GOAL,
-    MIN_RETIREMENT_INCOME_GOAL,
-    MAX_RETIREMENT_INCOME_GOAL,
+    DEFAULT_RETIREMENT_LIFE_EXPECTANCY,
     DEFAULT_RETIREMENT_SAVINGS_AMOUNT,
-    MAX_RETIREMENT_SAVINGS_AMOUNT,
-    MIN_RETIREMENT_AGE_FOR_WITHDRAWAL,
+    DEFAULT_RETIREMENT_WITHDRAWAL_RATE,
+    DEFAULT_RETIREMENT_YEAR,
+    MAX_RETIREMENT_AGE,
     MAX_RETIREMENT_AGE_FOR_WITHDRAWAL,
+    MAX_RETIREMENT_INCOME_GOAL,
+    MAX_RETIREMENT_LIFE_EXPECTANCY,
+    MAX_RETIREMENT_SAVINGS_AMOUNT,
+    MAX_RETIREMENT_WITHDRAWAL_RATE,
+    MAX_RETIREMENT_YEAR,
+    MIN_RETIREMENT_AGE,
+    MIN_RETIREMENT_AGE_FOR_WITHDRAWAL,
+    MIN_RETIREMENT_INCOME_GOAL,
+    MIN_RETIREMENT_LIFE_EXPECTANCY,
+    MIN_RETIREMENT_WITHDRAWAL_RATE,
+    MIN_RETIREMENT_YEAR,
 } from "~/constants/retirement";
+import type {SelectOption} from "~/components/form/Select.vue";
+import type {RetirementStrategy} from "~/types";
 
-export const retirementFields: Field<RetirementData>[] = [
+export const retirementStrategyOptions: Record<RetirementStrategy, SelectOption> = {
+    age: {label: 'Age', value: 'age'},
+    debitFree: {label: 'Debt Free', value: 'debtFree'},
+    percentRule: {label: 'Percent Rule', value: 'percentRule'},
+    targetSavings: {label: 'Savings Amount', value: 'targetSavings'}
+} as const;
+
+export const retirementFields: FieldData<RetirementData>[] = [
     {
         key: "age",
         name: "age",
@@ -82,11 +91,7 @@ export const retirementFields: Field<RetirementData>[] = [
         type: "select",
         defaultValue: "age",
         rules: yup.mixed().required("Retirement strategy is required"),
-        options: {
-            safeWithdrawalRate: { label: "Safe Withdrawal Rate", value: "safeWithdrawalRate" },
-            constantDollar: { label: "Constant Dollar", value: "constantDollar" },
-            dynamicSpending: { label: "Dynamic Spending", value: "dynamicSpending" },
-        },
+        options: retirementStrategyOptions,
     },
     {
         key: "retirementWithdrawalRate",

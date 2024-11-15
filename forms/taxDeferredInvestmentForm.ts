@@ -1,5 +1,5 @@
 import * as yup from "yup";
-import type {Field} from "~/interfaces/Field";
+import type {FieldData} from "~/interfaces/FieldData";
 import type {TaxDeferredInvestmentData} from "~/models/TaxDeferredInvestment";
 import {
     DEFAULT_EMPLOYER_COMPENSATION_MATCH_PERCENTAGE,
@@ -13,7 +13,7 @@ import {
 import {DEFAULT_DAX_DEFERRED_GROWTH_RATE, DEFAULT_ELECTIVE_CONTRIBUTION_FIXED_AMOUNT, DEFAULT_ELECTIVE_CONTRIBUTION_PERCENTAGE, DEFAULT_ELECTIVE_CONTRIBUTION_STRATEGY, TaxDeferredContributionOptions,} from "~/constants/taxDeferred";
 import {EmployerContributionOptions} from "~/constants/employerContribution";
 
-export const taxDeferredInvestmentFields: Field<TaxDeferredInvestmentData>[] = [
+export const taxDeferredInvestmentFields: FieldData<TaxDeferredInvestmentData>[] = [
     {
         key: "name",
         name: "Name",

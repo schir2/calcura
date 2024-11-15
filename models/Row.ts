@@ -475,11 +475,11 @@ export default class Row {
         switch (this.retirementStrategy) {
             case 'age':
                 return this.age === this.retirementAge
-            case 'percent_rule':
+            case 'percentRule':
                 return this.savingsEndOfYear * this.retirementWithdrawalRate / 100 > this.retirementIncomeGoal
-            case 'target_savings':
+            case 'targetSavings':
                 return this.retirementSavingsAmount >= this.savingsEndOfYear
-            case 'debt_free':
+            case 'debitFree':
                 return this.debtEndOfYear <= 0
 
         }

@@ -1,7 +1,7 @@
 <template>
   <div class="col-span-4 space-y-6">
     <PlanRetirement/>
-    <PlanTaxDeferredInvestment/>
+<!--        <PlanTaxDeferredInvestment/>-->
   </div>
   <PlanSummary class="col-span-1"/>
 </template>
