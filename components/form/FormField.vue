@@ -2,8 +2,6 @@
   <div>
 
     <FormLabel v-if="field.label" :label="field.label"/>
-    {{ field.label }}
-    </label>
     <Field
         :id="field.name"
         :name="field.name"
@@ -14,7 +12,7 @@
         :readonly="field.readonly"
         :rules="field.rules"
         v-bind="additionalAttrs"
-        class="form-input"
+        class="border rounded shadow px-3 py-1.5 text-skin-base bg-skin-base focus:outline-none focus:ring-2 focus:ring-skin-accent w-full"
     />
     <FormHelpText v-if="field.helpText" :helpText="field.helpText"></FormHelpText>
     <ErrorMessage :name="field.name" class="text-skin-error text-sm mt-1"/>
