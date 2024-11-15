@@ -9,7 +9,7 @@ export const TaxDeferredContributionOptions: Record<string, SelectOption> = {
 } as const;
 
 export type TaxDeferredContributionStrategy = keyof typeof TaxDeferredContributionOptions;
-
+export const DEFAULT_DAX_DEFERRED_GROWTH_RATE: number = 6
 export const DEFAULT_ELECTIVE_CONTRIBUTION_STRATEGY: TaxDeferredContributionStrategy = 'none'
 export const DEFAULT_ELECTIVE_CONTRIBUTION_PERCENTAGE: number = 0
 export const DEFAULT_ELECTIVE_CONTRIBUTION_FIXED_AMOUNT: number = 0
