@@ -14,7 +14,7 @@ watchEffect(() => {
 
 </script>
 
-<template>k
+<template>
   <CommonCard>
     <Form>
       <div class="space-y-6">
