@@ -18,7 +18,6 @@
     <ErrorMessage :name="field.name" class="block text-skin-error text-sm mt-1"/>
   </div>
 </template>
-
 <script setup lang="ts">
 import {computed, defineProps} from 'vue';
 import {ErrorMessage, Field as VeeField} from 'vee-validate';
@@ -30,10 +29,8 @@ interface Props<T = any> {
 
 const props = defineProps<Props>();
 
-// Use the VeeField component from vee-validate
 const Field = VeeField;
 
-// Two-way data binding with field.value
 const modelValue = computed({
   get: () => props.field.value ?? props.field.defaultValue ?? '',
   set: (val) => {
@@ -79,9 +76,4 @@ const additionalAttrs = computed(() => {
   }
   return attrs;
 });
-
-
 </script>
-
-<style scoped>
-</style>
