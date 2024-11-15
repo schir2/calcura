@@ -1,20 +1,17 @@
-import type {
-    AllowNegativeDisposableIncome,
-    ElectiveContributionStrategy,
-    InvestmentGrowthApplicationStrategy
-} from "~/types";
+import type {AllowNegativeDisposableIncome, InvestmentGrowthApplicationStrategy} from "~/types";
 import {adjustContributionForDisposableIncome, assertDefined, calculateInvestmentGrowthAmount} from "~/utils";
 import {DEFAULT_EMPLOYER_CONTRIBUTES, DEFAULT_GROWTH_APPLICATION_STRATEGY, DEFAULT_INVESTMENT_GROWTH_RATE} from "~/constants/financial";
 import type {EmployerContributionStrategy} from "~/constants/employerContribution";
+import type {TaxDeferredContributionStrategy} from "~/constants/taxDeferred";
 
 export interface TaxDeferredInvestmentData {
     name: string;
 
-    growthApplicationStrategy?: InvestmentGrowthApplicationStrategy
+    growthApplicationStrategy: InvestmentGrowthApplicationStrategy
     growthRate: number;
     balance: number;
 
-    electiveContributionStrategy: ElectiveContributionStrategy;
+    electiveContributionStrategy: TaxDeferredContributionStrategy;
     electiveContributionPercentage: number;
     electiveContributionFixedAmount: number;
 
@@ -33,7 +30,7 @@ export default class TaxDeferredInvestment {
     growthRate: number;
 
     // Elective Input Fields
-    electiveContributionStrategy: ElectiveContributionStrategy;
+    electiveContributionStrategy: TaxDeferredContributionStrategy;
     electiveContributionFixedAmount: number;
     electiveContributionPercentage: number;
 
@@ -57,7 +54,7 @@ export default class TaxDeferredInvestment {
 
 
     constructor(data: TaxDeferredInvestmentData) {
-        this.name= data.name;
+        this.name = data.name;
         this.balanceStartOfYear = data.balance ?? 0;
         this.growthRate = data.growthRate ?? DEFAULT_INVESTMENT_GROWTH_RATE;
         this.growthApplicationStrategy = data.growthApplicationStrategy ?? DEFAULT_GROWTH_APPLICATION_STRATEGY;

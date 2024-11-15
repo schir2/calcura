@@ -1,7 +1,6 @@
 export type RetirementStrategy = 'debt_free' | 'age' | 'percent_rule' | 'target_savings';
 export type GrowthStrategy = 'fixed' | 'percentage_increase';
 export type IncomeTaxStrategy = 'simple' | 'bracket';
-export type ElectiveContributionStrategy = 'none' | 'fixed' | 'percent_of_income' | 'until_company_match' | 'max';
 export type InflationGrowthStrategy = 'fixed' | 'percentage_increase';
 export type ExpensesGrowthStrategy = 'fixed' | 'percentage_increase';
 export type IraContributionStrategy = 'fixed' | 'percent_of_income' | 'max';

@@ -1,5 +1,5 @@
-import type FormData from '~/types/FormData'
-const initialFormData: FormData = {
+import type IForm from '~/types/IForm'
+const initialFormData: IForm = {
     age: 38,
     year: 2024,
     lifeExpectancy: 75,

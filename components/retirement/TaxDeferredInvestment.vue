@@ -1,43 +1,46 @@
 <script setup lang="ts">
 import type {TaxDeferredInvestmentData} from "~/models/TaxDeferredInvestment";
-import {
-  DEFAULT_ELECTIVE_CONTRIBUTION_FIXED_AMOUNT,
-  DEFAULT_ELECTIVE_CONTRIBUTION_PERCENTAGE,
-  DEFAULT_ELECTIVE_CONTRIBUTION_STRATEGY,
-  DEFAULT_EMPLOYER_COMPENSATION_MATCH_PERCENTAGE,
-  DEFAULT_EMPLOYER_CONTRIBUTES,
-  DEFAULT_EMPLOYER_CONTRIBUTION_FIXED_AMOUNT,
-  DEFAULT_EMPLOYER_CONTRIBUTION_STRATEGY,
-  DEFAULT_EMPLOYER_MATCH_PERCENTAGE,
-  DEFAULT_EMPLOYER_MATCH_PERCENTAGE_LIMIT,
-  DEFAULT_INVESTMENT_GROWTH_RATE
-} from "~/constants/financial";
 import {EmployerContributionOptions} from "~/constants/employerContribution";
-import type {SelectOption} from "~/components/form/Select.vue";
+import {TaxDeferredContributionOptions} from "~/constants/taxDeferred";
+import {taxDeferredInvestmentFields} from "~/forms/taxDeferredInvestmentForm";
+import FormModel from '~/utils/FormModel'
 
-let data: TaxDeferredInvestmentData = {
-  name: '',
-  growthRate: DEFAULT_INVESTMENT_GROWTH_RATE,
-  balance: 0,
-  electiveContributionStrategy: DEFAULT_ELECTIVE_CONTRIBUTION_STRATEGY,
-  electiveContributionPercentage: DEFAULT_ELECTIVE_CONTRIBUTION_PERCENTAGE,
-  electiveContributionFixedAmount: DEFAULT_ELECTIVE_CONTRIBUTION_FIXED_AMOUNT,
-  employerContributes: DEFAULT_EMPLOYER_CONTRIBUTES,
-  employerContributionStrategy: DEFAULT_EMPLOYER_CONTRIBUTION_STRATEGY,
-  employerCompensationMatchPercentage: DEFAULT_EMPLOYER_COMPENSATION_MATCH_PERCENTAGE,
-  employerContributionFixedAmount: DEFAULT_EMPLOYER_CONTRIBUTION_FIXED_AMOUNT,
-  employerMatchPercentage: DEFAULT_EMPLOYER_MATCH_PERCENTAGE,
-  employerMatchPercentageLimit: DEFAULT_EMPLOYER_MATCH_PERCENTAGE_LIMIT,
-}
+
+const form = reactive(new FormModel<TaxDeferredInvestmentData>(taxDeferredInvestmentFields));
+
+watchEffect(() => {
+  const dataObject = form.toObject();
+})
 
 </script>
 
-<template>
+<template>k
   <CommonCard>
-    <h2 class="text-2xl">Tax Deferred Investment</h2>
-    <FormInput name="name" type="text" label="Name" placeholder="Tax Deferred Investment"/>
-    <FormSelect :options="EmployerContributionOptions"/>
+    <Form>
+      <div class="space-y-6">
+        <h2 class="text-2xl">Tax Deferred Investment</h2>
+        <FormField :field ="form.name"/>
+        <FormInput :name="form.balance.name" type="number" label="Current Savings" v-model="form.balance.value" :rules="form.balance"/>
+        <FormInput :name="form.growthRate.name" type="number" label="Growth Rate" v-model="form.growthRate.value" :rules="form.growthRate"/>
+        <section>
+          <h3 class="text-xl">Elective Contributions</h3>
+          <FormSelect :name="form.employerContributionStrategy.name" v-model="form.employerContributionStrategy.value" :options="EmployerContributionOptions"/>
+          <FormInput :name="form.electiveContributionPercentage.name" v-model="form.electiveContributionPercentage.value" label="electiveContributionPercentage" placeholder="electiveContributionPercentage" :rules="form.electiveContributionPercentage"/>
+          <FormInput :name="form.electiveContributionFixedAmount.name" v-model="form.electiveContributionFixedAmount.value" label="electiveContributionFixedAmount" placeholder="electiveContributionFixedAmount" :rules="form.electiveContributionPercentage"/>
+        </section>
+        <FormInputToggle :name="form.employerContributes.name" v-model="form.employerContributes.value" label="employerContributes" :rules="form.employerContributes"/>
+        <section v-if="form.employerContributes.value">
+          <h3 class="text-xl">Employer Contributions</h3>
+          <FormSelect :name="form.employerContributionStrategy.name" v-model="form.employerContributionStrategy.value" :options="TaxDeferredContributionOptions" label="employerContributionStrategy" :rules="form.employerContributionStrategy"/>
+          <FormInput :name="form.employerCompensationMatchPercentage.name" v-model="form.employerCompensationMatchPercentage.value" label="employerCompensationMatchPercentage" placeholder="employerCompensationMatchPercentage" :rules="form.employerCompensationMatchPercentage"/>
+          <FormInput :name="form.employerContributionFixedAmount.name" v-model="form.employerContributionFixedAmount.value" label="employerContributionFixedAmount" placeholder="employerContributionFixedAmount" :rules="form.employerContributionFixedAmount"/>
+          <FormInput :name="form.employerMatchPercentage.name" v-model="form.employerMatchPercentage.value" label="employerMatchPercentage" placeholder="employerMatchPercentage" :rules="form.employerMatchPercentage"/>
+          <FormInput :name="form.employerMatchPercentageLimit.name" v-model="form.employerMatchPercentageLimit.value" label="employerMatchPercentageLimit" placeholder="employerMatchPercentageLimit" :rules="form.employerMatchPercentageLimit"/>
+        </section>
+      </div>
+    </Form>
   </CommonCard>
+  {{ form.toObject() }}
 </template>
 
 <style scoped>

@@ -1,12 +1,12 @@
 import {describe} from 'vitest';
 import {faker} from '@faker-js/faker';
 import Row from '~/models/Row';
-import type FormData from '~/types/FormData';
+import type IForm from '~/types/IForm';
 
 describe('endOfYearPipeline Tests with Faker', () => {
     let row: Row;
 
-    function generateMockFormData(): FormData {
+    function generateMockFormData(): IForm {
         return {
             age: faker.number.int({min: 18, max: 70}),
             year: faker.date.future().getFullYear(),

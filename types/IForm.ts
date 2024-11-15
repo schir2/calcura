@@ -1,6 +1,4 @@
 import type {
-    ElectiveContributionStrategy,
-    EmployerContributionStrategy,
     ExpensesGrowthStrategy,
     GrowthStrategy,
     IncomeTaxStrategy,
@@ -11,8 +9,10 @@ import type {
     TaxableContributionStrategy,
 } from "~/types";
 import type {DebtData} from "~/interfaces/DebtData";
+import type {TaxDeferredContributionStrategy} from "~/constants/taxDeferred";
+import type {EmployerContributionStrategy} from "~/constants/employerContribution";
 
-export default interface FormData {
+export default interface IForm {
     /* Profile */
     age: number;
     year: number;
@@ -53,7 +53,7 @@ export default interface FormData {
     /* Tax Deferred Savings */
     taxDeferredSavings: number;
     taxDeferredContributionFixedAmount: number;
-    taxDeferredContributionStrategy: ElectiveContributionStrategy;
+    taxDeferredContributionStrategy: TaxDeferredContributionStrategy;
     taxDeferredContributionPercentage: number;
     taxDeferredGrowthRate: number;
 

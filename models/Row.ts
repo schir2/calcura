@@ -1,7 +1,5 @@
-import type FormData from '~/types/FormData';
+import type IForm from '~/types/IForm';
 import type {
-    ElectiveContributionStrategy,
-    EmployerContributionStrategy,
     ExpensesGrowthStrategy,
     GrowthStrategy,
     IncomeTaxStrategy,
@@ -19,6 +17,8 @@ import {
 } from "~/utils";
 import {TAX_DEFERRED_CATCH_UP_AGE, TAX_DEFERRED_LIMIT_INFLATION_RATE} from "~/constants/financial";
 import Debt from "~/models/Debt";
+import type {TaxDeferredContributionStrategy} from "~/constants/taxDeferred";
+import type {EmployerContributionStrategy} from "~/constants/employerContribution";
 
 export default class Row {
     age: number;
@@ -59,7 +59,7 @@ export default class Row {
     /* Tax-Deferred Savings */
     taxDeferredSavingsStartOfYear: number;
     taxDeferredContributionFixedAmount: number;
-    taxDeferredContributionStrategy: ElectiveContributionStrategy;
+    taxDeferredContributionStrategy: TaxDeferredContributionStrategy;
     taxDeferredContribution: number;
     taxDeferredGrowthAmount?: number;
     taxDeferredContributionPercentage: number;
@@ -140,7 +140,7 @@ export default class Row {
     retirementSavingsAmount: number;
     retirementIncomeProjected?: number;
 
-    constructor(formData: FormData) {
+    constructor(formData: IForm) {
         this.age = formData.age;
         this.year = formData.year;
         this.lifeExpectancy = formData.lifeExpectancy;
