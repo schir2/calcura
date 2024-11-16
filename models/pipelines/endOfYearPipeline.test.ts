@@ -24,7 +24,7 @@ describe('endOfYearPipeline Tests with Faker', () => {
             expensesGrowthStrategy: faker.helpers.arrayElement(['fixed', 'percentage_increase']),
             debts: [
                 {
-                    debtName: 'Car Loan',
+                    name: 'Car Loan',
                     principal: faker.number.float({min: 5000, max: 30000, fractionDigits: 2}),
                     interestRate: faker.number.float({min: 1, max: 10, fractionDigits: 2}),
                     minimumPayment: faker.number.float({min: 100, max: 1000, fractionDigits: 2}),
