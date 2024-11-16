@@ -6,41 +6,45 @@ import FormModel from '~/utils/FormModel'
 
 const form = reactive(new FormModel<TaxDeferredInvestmentData>(taxDeferredInvestmentFields));
 
-watchEffect(() => {
-  const dataObject = form.toObject();
-})
+interface Props {
+  showAdvancedOptions: boolean;
+}
+
+const {showAdvancedOptions = false} = defineProps<Props>()
+
 
 </script>
 
 <template>
-  <CommonCard class="grid grid-cols-2 gap-3">
-    <Form>
-      <div class="space-y-6">
-        <h2 class="text-2xl">Tax Deferred Investment</h2>
+  <CommonCard>
+    <Form class="space-y-6">
+      <h2 class="text-2xl">{{ form.name.value ? form.name.value : 'Tax Deferred Investment' }}</h2>
+      <div class="grid grid-cols-3 gap-3">
         <FormField :field="form.name"/>
         <FormField :field="form.balance"/>
-        <FormField :field="form.growthRate"/>
-        <section>
-          <h3 class="text-xl">Elective Contributions</h3>
-          <FormSelect :field="form.employerContributionStrategy"/>
+        <FormField v-show="showAdvancedOptions" :field="form.growthRate"/>
+      </div>
+      <section>
+        <h3 class="text-xl">Elective Contributions</h3>
+        <div class="grid grid-cols-3 gap-3">
+          <FormSelect :field="form.electiveContributionStrategy"/>
           <FormField :field="form.electiveContributionPercentage"/>
           <FormField :field="form.electiveContributionFixedAmount"/>
-        </section>
-        <FormInputToggle :name="form.employerContributes.name" v-model="form.employerContributes.value" label="employerContributes" :rules="form.employerContributes.rules"/>
-        <section v-if="form.employerContributes.value">
-          <h3 class="text-xl">Employer Contributions</h3>
+        </div>
+        <FormToggle :field="form.employerContributes"/>
+        {{ form.employerContributes.value }}
+      </section>
+      <section v-if="form.employerContributes.value">
+        <h3 class="text-xl">Employer Contributions</h3>
+        <div class="grid grid-cols-3 gap-3">
           <FormSelect :field="form.employerContributionStrategy"/>
           <FormField :field="form.employerCompensationMatchPercentage"/>
           <FormField :field="form.employerContributionFixedAmount"/>
           <FormField :field="form.employerMatchPercentage"/>
           <FormField :field="form.employerMatchPercentageLimit"/>
-        </section>
-      </div>
+        </div>
+      </section>
     </Form>
-    <div class="space-y-6">
-
-      {{ form.toObject() }}
-    </div>
   </CommonCard>
 </template>
 
