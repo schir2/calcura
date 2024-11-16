@@ -157,15 +157,4 @@ export const retirementFields: FieldData<RetirementData>[] = [
             .min(0, "Retirement savings must be at least $0.")
             .max(MAX_RETIREMENT_SAVINGS_AMOUNT, `Retirement savings must be at most $${MAX_RETIREMENT_SAVINGS_AMOUNT}.`),
     },
-    {
-        key: "retirementIncomeProjected",
-        name: "retirementIncomeProjected",
-        label: "Projected Retirement Income",
-        placeholder: "Calculated based on other fields",
-        helpText: "This value represents the estimated income you will have during retirement.",
-        resourceId: "retirement-income-projected",
-        type: "number",
-        defaultValue: 0,
-        rules: yup.number().notRequired(),
-    },
 ];
