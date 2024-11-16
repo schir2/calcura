@@ -9,6 +9,5 @@ export interface RetirementData {
     retirementIncomeGoal: number;
     retirementAge: number;
     retirementSavingsAmount: number;
-    retirementIncomeProjected?: number;
 
 }
