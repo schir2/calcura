@@ -2,7 +2,7 @@ import type Row from "~/models/Row";
 
 export function debtPipelineByName(row: Row, debtName: string): Row {
     assertDefined(row.incomeDisposable, 'incomeDisposable')
-    const debt = row.debts.find((d) => d.debtName === debtName);
+    const debt = row.debts.find((d) => d.name === debtName);
     if (!debt) return row;
 
     debt.payment = debt.calculatePayment(row.incomeDisposable);

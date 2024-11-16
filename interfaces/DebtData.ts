@@ -1,7 +1,7 @@
 import type { DebtPaymentStrategy } from "~/types";
 
 export interface DebtData {
-    debtName: string;
+    name: string;
     principal: number;
     interestRate: number;
     minimumPayment: number;

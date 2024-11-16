@@ -11,7 +11,7 @@ describe('Debt Pipeline by Name Tests', () => {
             incomeDisposable: 1000,
             debts: [
                 new Debt({
-                    debtName: 'Car Loan',
+                    name: 'Car Loan',
                     principal: 5000,
                     interestRate: 5,
                     minimumPayment: 200,
@@ -20,7 +20,7 @@ describe('Debt Pipeline by Name Tests', () => {
                     paymentPercentage: 0,
                 }),
                 new Debt({
-                    debtName: 'Student Loan',
+                    name: 'Student Loan',
                     principal: 10000,
                     interestRate: 3,
                     minimumPayment: 150,
@@ -35,7 +35,7 @@ describe('Debt Pipeline by Name Tests', () => {
     it('should process the correct debt by name and update row', () => {
         const updatedRow = debtPipelineByName(row, 'Car Loan');
 
-        const carLoan = updatedRow.debts.find((d) => d.debtName === 'Car Loan');
+        const carLoan = updatedRow.debts.find((d) => d.name === 'Car Loan');
         expect(carLoan?.payment).toBe(300);
         expect(carLoan?.principalEndOfYear).toBeCloseTo(4935, 2); // Principal reduced by payment with interest applied
         expect(updatedRow.incomeDisposable).toBe(700); // Disposable income reduced by payment
@@ -44,7 +44,7 @@ describe('Debt Pipeline by Name Tests', () => {
     it('should handle the "max" payment strategy correctly', () => {
         const updatedRow = debtPipelineByName(row, 'Student Loan');
 
-        const studentLoan = updatedRow.debts.find((d) => d.debtName === 'Student Loan');
+        const studentLoan = updatedRow.debts.find((d) => d.name === 'Student Loan');
         expect(studentLoan?.payment).toBe(1000); // Entire disposable income is used
         expect(studentLoan?.principalEndOfYear).toBeCloseTo(9000 + (9000 * 0.03), 2); // Principal reduced by payment, interest added
         expect(updatedRow.incomeDisposable).toBe(0); // All disposable income used
@@ -61,7 +61,7 @@ describe('Debt Pipeline by Name Tests', () => {
         row.incomeDisposable = 0;
         const updatedRow = debtPipelineByName(row, 'Car Loan');
 
-        const carLoan = updatedRow.debts.find((d) => d.debtName === 'Car Loan');
+        const carLoan = updatedRow.debts.find((d) => d.name === 'Car Loan');
         expect(carLoan?.payment).toBe(0); // Minimum payment still applies
         expect(carLoan?.principalEndOfYear).toBeCloseTo(5250, 2); // Principal reduced by minimum payment
         expect(updatedRow.incomeDisposable).toBe(0);
@@ -71,7 +71,7 @@ describe('Debt Pipeline by Name Tests', () => {
         row.debts[0].principalStartOfYear = 100; // Car loan almost paid off
         const updatedRow = debtPipelineByName(row, 'Car Loan');
 
-        const carLoan = updatedRow.debts.find((d) => d.debtName === 'Car Loan');
+        const carLoan = updatedRow.debts.find((d) => d.name === 'Car Loan');
         expect(carLoan?.payment).toBe(100); // Only remaining principal is paid
         expect(carLoan?.principalEndOfYear).toBeCloseTo(0, 2); // Principal fully paid off
         expect(updatedRow.incomeDisposable).toBe(900); // Remaining disposable income
@@ -81,7 +81,7 @@ describe('Debt Pipeline by Name Tests', () => {
         row.debts[0].principalStartOfYear = 0; // Car loan already paid off
         const updatedRow = debtPipelineByName(row, 'Car Loan');
 
-        const carLoan = updatedRow.debts.find((d) => d.debtName === 'Car Loan');
+        const carLoan = updatedRow.debts.find((d) => d.name === 'Car Loan');
         expect(carLoan?.payment).toBe(0); // No payment needed
         expect(carLoan?.principalEndOfYear).toBe(0); // Principal remains zero
         expect(updatedRow.incomeDisposable).toBe(1000); // Disposable income remains unchanged
