@@ -3,7 +3,7 @@
 </script>
 
 <template>
-  <div class="p-6 rounded-lg shadow-md bg-skin-surface hover:bg-skin-secondary">
+  <div class="p-6 rounded-lg shadow-md bg-skin-surface hover:bg-skin-muted transition-all duration-400">
     <div v-if="$slots.header">
       <slot name="header"></slot>
     </div>
