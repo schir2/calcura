@@ -5,5 +5,5 @@ interface Props {
 const {label = undefined} = defineProps<Props>()
 </script>
 <template>
-  <label class="text-xs" v-if="label">{{ label }}</label>
+  <label class="text-xs font-medium" v-if="label">{{ label }}</label>
 </template>
