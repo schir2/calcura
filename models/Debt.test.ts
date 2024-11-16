@@ -7,7 +7,7 @@ describe('Debt Class Tests', () => {
 
     beforeEach(() => {
         debtData = {
-            debtName: 'Car Loan',
+            name: 'Car Loan',
             principal: 10000,
             interestRate: 5,
             minimumPayment: 200,
@@ -21,7 +21,7 @@ describe('Debt Class Tests', () => {
         it('should initialize Debt object with provided data', () => {
             const debt = new Debt(debtData);
 
-            expect(debt.debtName).toBe('Car Loan');
+            expect(debt.name).toBe('Car Loan');
             expect(debt.principalStartOfYear).toBe(10000);
             expect(debt.interestRate).toBe(5);
             expect(debt.paymentMinimum).toBe(200);
