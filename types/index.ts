@@ -1,6 +1,6 @@
 export type RetirementStrategy = 'debitFree' | 'age' | 'percentRule' | 'targetSavings';
 export type GrowthStrategy = 'fixed' | 'percentage_increase';
-export type IncomeTaxStrategy = 'simple' | 'bracket';
+export type IncomeTaxStrategy = 'simple' | 'ordinaryIncome' | 'capitalGains' | 'taxExempt' | 'qualifiedDividends' | 'selfEmploymentTax';
 export type InflationGrowthStrategy = 'fixed' | 'percentage_increase';
 export type ExpensesGrowthStrategy = 'fixed' | 'percentage_increase';
 export type IraContributionStrategy = 'fixed' | 'percent_of_income' | 'max';
