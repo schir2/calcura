@@ -6,7 +6,7 @@
         as="select"
         :id="field.name"
         :name="field.name"
-        :v-model="modelValue"
+        v-model="modelValue"
         :readonly="field.readonly"
         :disabled="field.disabled"
         :rules="field.rules"
