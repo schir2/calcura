@@ -2,7 +2,7 @@ import type {DebtPaymentStrategy} from "~/types";
 import type {DebtData} from "~/interfaces/DebtData";
 
 export default class Debt {
-    debtName: string;
+    name: string;
     principalStartOfYear: number;
     principalEndOfYear: number;
     interestRate: number;
@@ -16,7 +16,7 @@ export default class Debt {
     paymentPercentage: number;
 
     constructor(data: DebtData) {
-        this.debtName = data.debtName;
+        this.name = data.name;
 
         this.interestRate = data.interestRate;
         this.interestAmount = 0
