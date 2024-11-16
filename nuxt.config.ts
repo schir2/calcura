@@ -1,7 +1,9 @@
 export default defineNuxtConfig({
     compatibilityDate: '2024-04-03',
     css: [
-        '@/assets/css/tailwind.css'
+        '@/assets/css/tailwind.css',
+        'animate.css/animate.min.css',
+
     ],
     devtools: {enabled: true},
     modules: [
