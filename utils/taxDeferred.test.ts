@@ -5,13 +5,8 @@ import {
     calculateTaxDeferredElectiveContributionLimit,
 } from './taxDeferred';
 
-import {
-    TAX_DEFERRED_CONTRIBUTION_LIMIT_2024,
-    TAX_DEFERRED_DEFAULT_YEAR,
-    TAX_DEFERRED_ELECTIVE_CONTRIBUTION_CATCH_UP_LIMIT_2024,
-    TAX_DEFERRED_ELECTIVE_CONTRIBUTION_LIMIT_2024,
-    TAX_DEFERRED_LIMIT_INFLATION_RATE,
-} from '~/constants/financial';
+
+import {TAX_DEFERRED_CONTRIBUTION_LIMIT_2024, TAX_DEFERRED_DEFAULT_YEAR, TAX_DEFERRED_ELECTIVE_CONTRIBUTION_CATCH_UP_LIMIT_2024, TAX_DEFERRED_ELECTIVE_CONTRIBUTION_LIMIT_2024, TAX_DEFERRED_LIMIT_INFLATION_RATE} from "~/constants/taxDeferred";
 
 describe('Tax Deferred Contribution Limit Calculations', () => {
     it('calculates the tax deferred contribution limit for the current year', () => {
