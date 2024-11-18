@@ -6,7 +6,7 @@
            :id="field.name"
            :name="field.name"
            :type="field.type || 'text'"
-           v-model="modelValue"
+           v-model="model[field.name]"
            :placeholder="field.placeholder"
            :disabled="field.disabled"
            :readonly="field.readonly"
@@ -26,16 +26,10 @@ import type {FieldData} from '~/interfaces/FieldData';
 
 interface Props<T = any> {
   field: FieldData<T>;
+  model: Record<string, any>;
 }
 
 const props = defineProps<Props>();
-
-const modelValue = computed({
-  get: () => props.field.value ?? props.field.defaultValue ?? '',
-  set: (val) => {
-    props.field.value = val;
-  },
-});
 
 const additionalAttrs = computed(() => {
   const attrs: Record<string, any> = {};
