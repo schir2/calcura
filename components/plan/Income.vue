@@ -1,15 +1,18 @@
 <template>
   <CommonCard>
-    <h2 class="text-2xl">Income</h2>
+    <h2 class="text-2xl">Income: {{ income.name }}</h2>
+    <CommonButton @click="deleteIncome(incomeIndex)">
+      <TrashIcon/>
+    </CommonButton>
     <Form>
       <section>
         <div class="grid grid-cols-6 gap-3">
-            <FormField :field="form.name"></FormField>
-            <FormField :field="form.grossIncome"></FormField>
-            <FormSelect :field="form.growthStrategy"></FormSelect>
-            <FormField :field="form.growthRate"></FormField>
-            <FormField :field="form.taxRate"></FormField>
-            <FormSelect :field="form.taxStrategy"></FormSelect>
+          <FormField :field="fieldMetadata.name" :model="income"></FormField>
+          <FormField :field="fieldMetadata.grossIncome" :model="income"></FormField>
+          <FormSelect :field="fieldMetadata.growthStrategy" :model="income"></FormSelect>
+          <FormField :field="fieldMetadata.growthRate" :model="income"></FormField>
+          <FormField :field="fieldMetadata.taxRate" :model="income"></FormField>
+          <FormSelect :field="fieldMetadata.taxStrategy" :model="income"></FormSelect>
         </div>
       </section>
     </Form>
@@ -17,14 +20,27 @@
 
 </template>
 <script setup lang="ts">
-import type {IncomeData} from "~/models/Income";
+import Income from "~/models/Income";
 import {incomeFields} from "~/forms/incomeForm";
 
 interface Props {
+  income: Income
   showAdvancedOptions: boolean;
+  incomeIndex: number;
 }
 
-const form = reactive(new FormModel<IncomeData>(incomeFields))
+const emit = defineEmits({
+  deleteIncome(payload: { index: number }){
 
-const {showAdvancedOptions = false} = defineProps<Props>()
+  }
+})
+
+function deleteIncome(incomeIndex: number) {
+  emit('deleteIncome',  {index: incomeIndex})
+}
+
+const fieldMetadata = incomeFields
+
+const {showAdvancedOptions = false, income = new Income(Income.defaultValues()), incomeIndex} = defineProps<Props>()
+
 </script>
