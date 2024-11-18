@@ -7,7 +7,7 @@
             :id="field.name"
             :name="field.name"
             type="checkbox"
-            v-model="fieldValue"
+            v-model="model[field.name]"
             :value="true"
             :unchecked-value="false"
             :disabled="field.disabled"
@@ -21,22 +21,19 @@
         <span class="ms-3 text-sm font-medium text-skin-base">{{ field.helpText }}</span>
       </label>
     </div>
-    <FormHelpText v-if="field.helpText" :helpText="field.helpText" />
-    <ErrorMessage :name="field.name" class="text-skin-error text-sm mt-1" />
+    <FormHelpText v-if="field.helpText" :helpText="field.helpText"/>
+    <ErrorMessage :name="field.name" class="text-skin-error text-sm mt-1"/>
   </div>
 </template>
 
 <script setup lang="ts">
-import { Field, ErrorMessage } from 'vee-validate';
-import type { FieldData } from '~/interfaces/FieldData';
-import { toRef } from 'vue';
+import {ErrorMessage, Field} from 'vee-validate';
+import type {FieldData} from '~/interfaces/FieldData';
 
 interface Props<T = any> {
   field: FieldData<T>;
+  model: any;
 }
 
 const props = defineProps<Props>();
-
-// Create a reactive reference to props.field.value
-const fieldValue = toRef(props.field, 'value');
 </script>
