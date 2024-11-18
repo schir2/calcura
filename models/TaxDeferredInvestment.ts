@@ -3,7 +3,7 @@ import {adjustContributionForDisposableIncome, assertDefined, calculateInvestmen
 import {DEFAULT_GROWTH_APPLICATION_STRATEGY, DEFAULT_INVESTMENT_GROWTH_RATE} from "~/constants/financial";
 import type {EmployerContributionStrategy} from "~/constants/employerContribution";
 import type {TaxDeferredContributionStrategy} from "~/constants/taxDeferred";
-import {DEFAULT_EMPLOYER_CONTRIBUTES, DEFAULT_TAX_DEFERRED_INVESTMENT} from "~/constants/taxDeferred";
+import {DEFAULT_EMPLOYER_CONTRIBUTES, TAX_DEFERRED_INVESTMENT_TEMPLATE} from "~/constants/taxDeferred";
 import {RETIREMENT_TEMPLATE} from "~/constants/retirement";
 
 export interface TaxDeferredInvestmentData {
@@ -74,8 +74,8 @@ export default class TaxDeferredInvestment {
 
     }
 
-    static defaultValues(template?: keyof typeof RETIREMENT_TEMPLATE): TaxDeferredInvestmentData {
-        return DEFAULT_TAX_DEFERRED_INVESTMENT[template ?? 'default']
+    static defaultValues(template?: keyof typeof TAX_DEFERRED_INVESTMENT_TEMPLATE): TaxDeferredInvestmentData {
+        return TAX_DEFERRED_INVESTMENT_TEMPLATE[template ?? 'default']
     }
 
     calculateElectiveContribution(
