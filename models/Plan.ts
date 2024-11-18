@@ -8,6 +8,8 @@ import type {IncomeData} from "@/models/Income"
 import type {DebtData} from "~/interfaces/DebtData";
 import type {INCOME_TEMPLATE} from "~/constants/income";
 import {PLAN_TEMPLATE} from "~/constants/plan";
+import {TAX_DEFERRED_INVESTMENT_TEMPLATE} from "~/constants/taxDeferred";
+import {DEBT_TEMPLATE} from "~/constants/debt";
 
 export interface PlanData {
     name: string;
@@ -38,8 +40,28 @@ export default class Plan {
         return income
     }
 
-    deleteIncome(index: number){
+    deleteIncome(index: number) {
         this.incomes.splice(index, 1)
+    }
+
+    addTaxDeferredInvestment(template?: keyof typeof TAX_DEFERRED_INVESTMENT_TEMPLATE): TaxDeferredInvestment {
+        const taxDeferredInvestment = new TaxDeferredInvestment(TaxDeferredInvestment.defaultValues(template ?? 'default'))
+        this.taxDeferredInvestments.push(taxDeferredInvestment)
+        return taxDeferredInvestment
+    }
+
+    deleteTaxDeferredInvestment(index: number) {
+        this.taxDeferredInvestments.splice(index, 1)
+    }
+
+    addDebt(template?: keyof typeof DEBT_TEMPLATE): Debt {
+        const debt = new Debt(Debt.defaultValues(template ?? 'default'))
+        this.debts.push(debt)
+        return debt
+    }
+
+    deleteDebt(index: number) {
+        this.debts.splice(index, 1)
     }
 
     static defaultValues(template?: keyof typeof PLAN_TEMPLATE): PlanData {
