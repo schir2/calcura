@@ -1,5 +1,6 @@
 import type {DebtPaymentStrategy} from "~/types";
 import type {DebtData} from "~/interfaces/DebtData";
+import {DEBT_TEMPLATE} from "~/constants/debt";
 
 export default class Debt {
     name: string;
@@ -12,8 +13,8 @@ export default class Debt {
     paymentStrategy: DebtPaymentStrategy;
     paymentLifetime: number;
     paymentMinimum: number;
-    interestAccrued: number;
     paymentPercentage: number;
+    interestAccrued: number;
 
     constructor(data: DebtData) {
         this.name = data.name;
@@ -24,7 +25,7 @@ export default class Debt {
 
         this.payment = 0;
         this.paymentLifetime = 0;
-        this.paymentMinimum = data.minimumPayment;
+        this.paymentMinimum = data.paymentMinimum;
         this.paymentStrategy = data.paymentStrategy;
         this.paymentFixedAmount = data.paymentFixedAmount;
         this.paymentPercentage = data.paymentPercentage;
@@ -71,5 +72,9 @@ export default class Debt {
         debt.principalStartOfYear = this.principalEndOfYear
         debt.payment = 0
         return debt
+    }
+
+    static defaultValues(template?: keyof typeof DEBT_TEMPLATE){
+        return DEBT_TEMPLATE[template ?? 'default']
     }
 }
