@@ -15,10 +15,10 @@ import {
     calculateTaxDeferredElectiveContributionCatchUpLimit,
     calculateTaxDeferredElectiveContributionLimit
 } from "~/utils";
-import {TAX_DEFERRED_CATCH_UP_AGE, TAX_DEFERRED_LIMIT_INFLATION_RATE} from "~/constants/financial";
 import Debt from "~/models/Debt";
 import type {TaxDeferredContributionStrategy} from "~/constants/taxDeferred";
 import type {EmployerContributionStrategy} from "~/constants/employerContribution";
+import {TAX_DEFERRED_CATCH_UP_AGE, TAX_DEFERRED_LIMIT_INFLATION_RATE} from "~/constants/taxDeferred";
 
 export default class Row {
     age: number;
