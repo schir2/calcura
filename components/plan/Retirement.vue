@@ -1,6 +1,6 @@
 <template>
   <CommonCard>
-    <h2 class="text-2xl">Retirement Plan: {{retirement.name}}</h2>
+    <h2 class="text-3xl">Retirement Plan: {{retirement.name}}</h2>
     <Form class="grid grid-cols-6 gap-3">
       <FormField :model="retirement" :field="fieldMetadata.name"/>
       <FormField :model="retirement" :field="fieldMetadata.age"/>
