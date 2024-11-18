@@ -6,7 +6,7 @@
         as="select"
         :id="field.name"
         :name="field.name"
-        v-model="modelValue"
+        v-model="model[field.name]"
         :readonly="field.readonly"
         :disabled="field.disabled"
         :rules="field.rules"
@@ -29,16 +29,12 @@ export interface SelectOption {
 
 interface Props<T = any> {
   field: FieldData<T>;
+  model: Record<string, any>;
 }
+
 
 const props = defineProps<Props>();
 
-const modelValue = computed({
-  get: () => props.field.value ?? props.field.defaultValue ?? '',
-  set: (val) => {
-    props.field.value = val;
-  },
-});
 
 const processOptions = (options: SelectOption[] | Record<string, SelectOption>): SelectOption[] => {
   if (!Array.isArray(options)) {
