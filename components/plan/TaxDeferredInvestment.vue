@@ -1,7 +1,12 @@
 <template>
   <CommonCard>
     <Form class="space-y-6">
-      <h2 class="text-2xl">{{ taxDeferredInvestment.name }}</h2>
+      <div class="flex justify-between align-middle">
+        <h3 class="text-2xl">{{ taxDeferredInvestment.name }}</h3>
+        <CommonButton @click="deleteInvestment(investmentIndex)">
+          <TrashIcon/>
+        </CommonButton>
+      </div>
       <div class="grid grid-cols-3 gap-3">
         <FormField :model="taxDeferredInvestment" :field="fieldMetadata.name"/>
         <FormField :model="taxDeferredInvestment" :field="fieldMetadata.balance"/>
@@ -34,15 +39,26 @@
 import TaxDeferredInvestment from "~/models/TaxDeferredInvestment";
 import {taxDeferredInvestmentFields} from "~/forms/taxDeferredInvestmentForm";
 
+const taxDeferredInvestment = reactive(new TaxDeferredInvestment(TaxDeferredInvestment.defaultValues()))
 
 const fieldMetadata = taxDeferredInvestmentFields
 
 interface Props {
   showAdvancedOptions: boolean;
+  investment: TaxDeferredInvestment;
+  investmentIndex: number;
 }
 
-const {showAdvancedOptions = false} = defineProps<Props>()
-const taxDeferredInvestment = reactive(new TaxDeferredInvestment(TaxDeferredInvestment.defaultValues()))
+const {showAdvancedOptions = false, investment, investmentIndex} = defineProps<Props>()
+
+const emit = defineEmits({
+  deleteInvestment(payload: { index: number }) {
+  }
+})
+
+function deleteInvestment(investmentIndex: number) {
+  emit('deleteInvestment', {index: investmentIndex})
+}
 
 
 </script>
