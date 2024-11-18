@@ -5,7 +5,7 @@
 <template>
   <CommonCard>
     <form>
-      <h2 class="text-2xl">Profile</h2>
+      <h2 class="text-3xl">Profile</h2>
     </form>
   </CommonCard>
 </template>
