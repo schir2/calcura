@@ -1,9 +1,11 @@
 <template>
-  <CommonCard>
-    <h2 class="text-2xl">Income: {{ income.name }}</h2>
-    <CommonButton @click="deleteIncome(incomeIndex)">
-      <TrashIcon/>
-    </CommonButton>
+  <CommonCard color="secondary">
+    <div class="flex justify-between align-middle">
+      <h3 class="text-2xl">Income {{ incomeIndex + 1 }}: {{ income.name }}</h3>
+      <CommonButton @click="deleteIncome(incomeIndex)">
+        <TrashIcon/>
+      </CommonButton>
+    </div>
     <Form>
       <section>
         <div class="grid grid-cols-6 gap-3">
@@ -29,18 +31,17 @@ interface Props {
   incomeIndex: number;
 }
 
-const emit = defineEmits({
-  deleteIncome(payload: { index: number }){
+const {showAdvancedOptions = false, income, incomeIndex} = defineProps<Props>()
+const fieldMetadata = incomeFields
 
+const emit = defineEmits({
+  deleteIncome(payload: { index: number }) {
   }
 })
 
 function deleteIncome(incomeIndex: number) {
-  emit('deleteIncome',  {index: incomeIndex})
+  emit('deleteIncome', {index: incomeIndex})
 }
 
-const fieldMetadata = incomeFields
-
-const {showAdvancedOptions = false, income = new Income(Income.defaultValues()), incomeIndex} = defineProps<Props>()
 
 </script>
