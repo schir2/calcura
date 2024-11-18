@@ -10,7 +10,7 @@ describe('Debt Class Tests', () => {
             name: 'Car Loan',
             principal: 10000,
             interestRate: 5,
-            minimumPayment: 200,
+            paymentMinimum: 200,
             paymentStrategy: 'fixed',
             paymentFixedAmount: 500,
             paymentPercentage: 0,
