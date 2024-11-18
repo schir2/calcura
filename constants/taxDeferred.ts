@@ -30,7 +30,7 @@ export const TaxDeferredContributionOptions: Record<string, SelectOption> = {
 export type TaxDeferredContributionStrategy = keyof typeof TaxDeferredContributionOptions;
 
 export const DEFAULT_ELECTIVE_CONTRIBUTION_FIXED_AMOUNT: number = 0
-export const DEFAULT_TAX_DEFERRED_INVESTMENT: Record<string, TaxDeferredInvestmentData> = {
+export const TAX_DEFERRED_INVESTMENT_TEMPLATE: Record<string, TaxDeferredInvestmentData> = {
     default: {
         name: '401k',
 
