@@ -1,8 +1,10 @@
 import type {AllowNegativeDisposableIncome, InvestmentGrowthApplicationStrategy} from "~/types";
 import {adjustContributionForDisposableIncome, assertDefined, calculateInvestmentGrowthAmount} from "~/utils";
-import {DEFAULT_EMPLOYER_CONTRIBUTES, DEFAULT_GROWTH_APPLICATION_STRATEGY, DEFAULT_INVESTMENT_GROWTH_RATE} from "~/constants/financial";
+import {DEFAULT_GROWTH_APPLICATION_STRATEGY, DEFAULT_INVESTMENT_GROWTH_RATE} from "~/constants/financial";
 import type {EmployerContributionStrategy} from "~/constants/employerContribution";
 import type {TaxDeferredContributionStrategy} from "~/constants/taxDeferred";
+import {DEFAULT_EMPLOYER_CONTRIBUTES, DEFAULT_TAX_DEFERRED_INVESTMENT} from "~/constants/taxDeferred";
+import {RETIREMENT_TEMPLATE} from "~/constants/retirement";
 
 export interface TaxDeferredInvestmentData {
     name: string;
@@ -70,6 +72,10 @@ export default class TaxDeferredInvestment {
         this.employerMatchPercentage = data.employerMatchPercentage
         this.employerMatchPercentageLimit = data.employerMatchPercentageLimit
 
+    }
+
+    static defaultValues(template?: keyof typeof RETIREMENT_TEMPLATE): TaxDeferredInvestmentData {
+        return DEFAULT_TAX_DEFERRED_INVESTMENT[template ?? 'default']
     }
 
     calculateElectiveContribution(
