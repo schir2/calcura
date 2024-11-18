@@ -1,4 +1,5 @@
 import type {GrowthStrategy, IncomeTaxStrategy} from "~/types";
+import {INCOME_TEMPLATE} from "~/constants/income";
 
 
 export interface IncomeData {
@@ -6,7 +7,6 @@ export interface IncomeData {
     grossIncome: number;
     growthStrategy: GrowthStrategy;
     growthRate: number;
-
     taxRate: number;
     taxStrategy: IncomeTaxStrategy;
 }
@@ -16,9 +16,12 @@ export default class Income {
     grossIncome: number;
     growthStrategy: GrowthStrategy;
     growthRate: number;
-
     taxRate: number;
     taxStrategy: IncomeTaxStrategy;
+
+    static defaultValues(template?: keyof typeof INCOME_TEMPLATE): IncomeData {
+        return INCOME_TEMPLATE[template ?? 'default']
+    }
 
     constructor(data: IncomeData) {
         this.name = data.name
@@ -28,5 +31,16 @@ export default class Income {
         this.taxRate = data.taxRate
         this.taxStrategy = data.taxStrategy
 
+    }
+
+    toJSON(): IncomeData {
+        return {
+            name: this.name,
+            grossIncome: this.grossIncome,
+            growthStrategy: this.growthStrategy,
+            growthRate: this.growthRate,
+            taxRate: this.taxRate,
+            taxStrategy: this.taxStrategy,
+        };
     }
 }
