@@ -27,7 +27,7 @@ describe('endOfYearPipeline Tests with Faker', () => {
                     name: 'Car Loan',
                     principal: faker.number.float({min: 5000, max: 30000, fractionDigits: 2}),
                     interestRate: faker.number.float({min: 1, max: 10, fractionDigits: 2}),
-                    minimumPayment: faker.number.float({min: 100, max: 1000, fractionDigits: 2}),
+                    paymentMinimum: faker.number.float({min: 100, max: 1000, fractionDigits: 2}),
                     paymentStrategy: faker.helpers.arrayElement(['max', 'fixed', "percentage_of_debt"]),
                     paymentFixedAmount: faker.number.float({min: 100, max: 1000, fractionDigits: 2}),
                     paymentPercentage: faker.number.float({min: 1, max: 20, fractionDigits: 2}),
