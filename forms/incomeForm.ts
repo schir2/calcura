@@ -4,7 +4,7 @@ import type {IncomeData} from "~/models/Income";
 import type {FieldData} from "~/interfaces/FieldData";
 import type {SelectOption} from "~/components/form/Select.vue";
 
-import {DEFAULT_GROSS_INCOME, DEFAULT_GROWTH_RATE, DEFAULT_GROWTH_STRATEGY, DEFAULT_INCOME_NAME, DEFAULT_TAX_RATE, DEFAULT_TAX_STRATEGY, MAX_GROWTH_RATE, MAX_INCOME_NAME_LENGTH, MAX_TAX_RATE, MIN_GROSS_INCOME, MIN_GROWTH_RATE, MIN_INCOME_NAME_LENGTH, MIN_TAX_RATE,} from '~/constants/income';
+import {DEFAULT_GROSS_INCOME, DEFAULT_GROWTH_RATE, DEFAULT_GROWTH_STRATEGY, DEFAULT_INCOME_NAME, DEFAULT_TAX_RATE, DEFAULT_TAX_STRATEGY, MAX_GROWTH_RATE, MAX_NAME_LENGTH, MAX_TAX_RATE, MIN_GROSS_INCOME, MIN_GROWTH_RATE, MIN_NAME_LENGTH, MIN_TAX_RATE,} from '~/constants/income';
 
 export const taxStrategyOptions: Record<IncomeTaxStrategy, SelectOption> = {
     ordinaryIncome: {label: 'Ordinary Income Tax Rates', value: 'ordinaryIncome'},
@@ -16,11 +16,9 @@ export const taxStrategyOptions: Record<IncomeTaxStrategy, SelectOption> = {
 };
 
 
-export const incomeFields: FieldData<IncomeData>[] = [
-    {
-        key: 'name',
+export const incomeFields: Record<keyof IncomeData, FieldData> = {
+    name: {
         name: 'name',
-        value: DEFAULT_INCOME_NAME,
         label: 'Income Name',
         placeholder: 'Enter income name',
         helpText: 'Enter a descriptive name for this income source.',
@@ -29,13 +27,11 @@ export const incomeFields: FieldData<IncomeData>[] = [
         rules: yup
             .string()
             .required('Name is required')
-            .min(MIN_INCOME_NAME_LENGTH, `Name must be at least ${MIN_INCOME_NAME_LENGTH} characters long.`)
-            .max(MAX_INCOME_NAME_LENGTH, `Name must be at most ${MAX_INCOME_NAME_LENGTH} characters long.`),
+            .min(MIN_NAME_LENGTH, `Name must be at least ${MIN_NAME_LENGTH} characters long.`)
+            .max(MAX_NAME_LENGTH, `Name must be at most ${MAX_NAME_LENGTH} characters long.`),
     },
-    {
-        key: 'grossIncome',
+    grossIncome: {
         name: 'grossIncome',
-        value: DEFAULT_GROSS_INCOME,
         label: 'Gross Income',
         placeholder: 'Enter gross income amount',
         helpText: 'Total income amount before taxes and deductions.',
@@ -46,10 +42,8 @@ export const incomeFields: FieldData<IncomeData>[] = [
             .required('Gross income is required')
             .min(MIN_GROSS_INCOME, `Gross income must be at least $${MIN_GROSS_INCOME}.`),
     },
-    {
-        key: 'growthStrategy',
+    growthStrategy: {
         name: 'growthStrategy',
-        value: DEFAULT_GROWTH_STRATEGY,
         label: 'Growth Strategy',
         placeholder: 'Select growth strategy',
         helpText: 'Choose how this income will grow over time.',
@@ -61,10 +55,8 @@ export const incomeFields: FieldData<IncomeData>[] = [
             percentage: {label: 'Percentage Growth', value: 'percentage'},
         },
     },
-    {
-        key: 'growthRate',
+    growthRate: {
         name: 'growthRate',
-        value: DEFAULT_GROWTH_RATE,
         label: 'Growth Rate (%)',
         placeholder: 'Enter growth rate',
         helpText: 'Annual growth rate of this income source.',
@@ -76,10 +68,8 @@ export const incomeFields: FieldData<IncomeData>[] = [
             .min(MIN_GROWTH_RATE, `Growth rate must be at least ${MIN_GROWTH_RATE}%.`)
             .max(MAX_GROWTH_RATE, `Growth rate must be at most ${MAX_GROWTH_RATE}%.`),
     },
-    {
-        key: 'taxStrategy',
+    taxStrategy: {
         name: 'taxStrategy',
-        value: DEFAULT_TAX_STRATEGY,
         label: 'Tax Strategy',
         placeholder: 'Select tax strategy',
         helpText: 'Select how this income is taxed.',
@@ -88,10 +78,8 @@ export const incomeFields: FieldData<IncomeData>[] = [
         rules: yup.mixed().required('Tax strategy is required'),
         options: taxStrategyOptions,
     },
-    {
-        key: 'taxRate',
+    taxRate: {
         name: 'taxRate',
-        value: DEFAULT_TAX_RATE,
         label: 'Tax Rate (%)',
         placeholder: 'Enter effective tax rate',
         helpText: 'Enter the estimated effective tax rate for this income.',
@@ -103,4 +91,4 @@ export const incomeFields: FieldData<IncomeData>[] = [
             .min(MIN_TAX_RATE, `Tax rate must be at least ${MIN_TAX_RATE}%.`)
             .max(MAX_TAX_RATE, `Tax rate must be at most ${MAX_TAX_RATE}%.`),
     },
-];
+}
