@@ -4,7 +4,7 @@ export interface DebtData {
     name: string;
     principal: number;
     interestRate: number;
-    minimumPayment: number;
+    paymentMinimum: number;
     paymentStrategy: DebtPaymentStrategy;
     paymentFixedAmount: number;
     paymentPercentage: number;
