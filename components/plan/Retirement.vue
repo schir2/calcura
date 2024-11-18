@@ -1,28 +1,30 @@
-<script setup lang="ts">
-import FormModel from "~/utils/FormModel";
-import {retirementFields} from "~/forms/retirementForm";
-import type {RetirementData} from "~/models/Retirement";
-
-const form = reactive(new FormModel<RetirementData>(retirementFields));
-interface Props{
-  showAdvancedOptions?: boolean;
-}
-const {showAdvancedOptions = false} = defineProps<Props>()
-</script>
 <template>
   <CommonCard>
-    <h2 class="text-2xl">Retirement Plan</h2>
+    <h2 class="text-2xl">Retirement Plan: {{retirement.name}}</h2>
     <Form class="grid grid-cols-6 gap-3">
-      <FormField :field="form.age"/>
-      <FormField v-show="showAdvancedOptions" :field="form.year"/>
-      <FormField v-show="showAdvancedOptions" :field="form.lifeExpectancy"/>
-      <FormSelect :field="form.retirementStrategy"/>
-      <FormField :field="form.retirementWithdrawalRate"/>
-      <FormField v-if="form.retirementStrategy.value === 'age'" :field="form.retirementAge"/>
+      <FormField :model="retirement" :field="fieldMetadata.name"/>
+      <FormField :model="retirement" :field="fieldMetadata.age"/>
+      <FormField :model="retirement" v-show="showAdvancedOptions" :field="fieldMetadata.year"/>
+      <FormField :model="retirement" v-show="showAdvancedOptions" :field="fieldMetadata.lifeExpectancy"/>
+      <FormSelect :model="retirement" :field="fieldMetadata.retirementStrategy"/>
+      <FormField :model="retirement" :field="fieldMetadata.retirementWithdrawalRate"/>
+      <FormField :model="retirement" v-if="retirement.retirementStrategy === 'age'" :field="fieldMetadata.retirementAge"/>
 
-      <FormField v-if="form.retirementStrategy.value === 'targetSavings'" :field="form.retirementSavingsAmount"/>
-      <FormField v-if="form.retirementStrategy.value === 'percentRule'" :field="form.retirementIncomeGoal"/>
-      <FormField v-if="form.retirementStrategy.value === 'percentRule'" :field="form.retirementIncomeProjected"/>
+      <FormField :model="retirement" v-if="retirement.retirementStrategy === 'targetSavings'" :field="fieldMetadata.retirementSavingsAmount"/>
+      <FormField :model="retirement" v-if="retirement.retirementStrategy === 'percentRule'" :field="fieldMetadata.retirementIncomeGoal"/>
     </Form>
   </CommonCard>
 </template>
+<script setup lang="ts">
+import {retirementFields} from "~/forms/retirementForm";
+import Retirement from "~/models/Retirement";
+
+const fieldMetadata = retirementFields;
+
+interface Props {
+  showAdvancedOptions?: boolean;
+}
+
+const retirement = reactive(new Retirement(Retirement.defaultValues()))
+const {showAdvancedOptions = false} = defineProps<Props>()
+</script>
