@@ -5,6 +5,7 @@ import {
     DEFAULT_RETIREMENT_AGE,
     DEFAULT_RETIREMENT_INCOME_GOAL,
     DEFAULT_RETIREMENT_LIFE_EXPECTANCY,
+    DEFAULT_RETIREMENT_PLAN_NAME,
     DEFAULT_RETIREMENT_SAVINGS_AMOUNT,
     DEFAULT_RETIREMENT_WITHDRAWAL_RATE,
     DEFAULT_RETIREMENT_YEAR,
@@ -24,6 +25,7 @@ import {
 } from "~/constants/retirement";
 import type {SelectOption} from "~/components/form/Select.vue";
 import type {RetirementStrategy} from "~/types";
+import {MAX_NAME_LENGTH, MIN_NAME_LENGTH} from "~/constants/income";
 
 export const retirementStrategyOptions: Record<RetirementStrategy, SelectOption> = {
     age: {label: 'Age', value: 'age'},
@@ -32,11 +34,23 @@ export const retirementStrategyOptions: Record<RetirementStrategy, SelectOption>
     targetSavings: {label: 'Savings Amount', value: 'targetSavings'}
 } as const;
 
-export const retirementFields: FieldData<RetirementData>[] = [
-    {
-        key: "age",
+export const retirementFields: Record<keyof RetirementData, FieldData> = {
+    name: {
+        name: 'name',
+        label: 'Income Name',
+        placeholder: 'Enter income name',
+        helpText: 'Enter a descriptive name for this income source.',
+        type: 'text',
+        defaultValue: DEFAULT_RETIREMENT_PLAN_NAME,
+        rules: yup
+            .string()
+            .required('Name is required')
+            .min(MIN_NAME_LENGTH, `Name must be at least ${MIN_NAME_LENGTH} characters long.`)
+            .max(MAX_NAME_LENGTH, `Name must be at most ${MAX_NAME_LENGTH} characters long.`),
+    },
+
+    age: {
         name: "age",
-        value: DEFAULT_RETIREMENT_AGE,
         label: "Age",
         placeholder: "Enter your desired age",
         helpText: "This is the age at which you plan to begin your retirement journey",
@@ -49,10 +63,8 @@ export const retirementFields: FieldData<RetirementData>[] = [
             .min(MIN_RETIREMENT_AGE, `Age must be at least ${MIN_RETIREMENT_AGE}.`)
             .max(MAX_RETIREMENT_AGE, `Age must be at most ${MAX_RETIREMENT_AGE}.`),
     },
-    {
-        key: "year",
+    year: {
         name: "year",
-        value: DEFAULT_RETIREMENT_YEAR,
         label: "Year",
         placeholder: "Enter the current year",
         helpText: "This is the year you plan to begin your retirement journey",
@@ -65,10 +77,8 @@ export const retirementFields: FieldData<RetirementData>[] = [
             .min(MIN_RETIREMENT_YEAR, `Year must be at least ${MIN_RETIREMENT_YEAR}.`)
             .max(MAX_RETIREMENT_YEAR, `Year must be at most ${MAX_RETIREMENT_YEAR}.`),
     },
-    {
-        key: "lifeExpectancy",
+    lifeExpectancy: {
         name: "lifeExpectancy",
-        value: DEFAULT_RETIREMENT_LIFE_EXPECTANCY,
         label: "Life Expectancy",
         placeholder: "Enter your estimated life expectancy",
         helpText: "This is the age to which you expect to live.",
@@ -81,8 +91,7 @@ export const retirementFields: FieldData<RetirementData>[] = [
             .min(MIN_RETIREMENT_LIFE_EXPECTANCY, `Life expectancy must be at least ${MIN_RETIREMENT_LIFE_EXPECTANCY}.`)
             .max(MAX_RETIREMENT_LIFE_EXPECTANCY, `Life expectancy must be at most ${MAX_RETIREMENT_LIFE_EXPECTANCY}.`),
     },
-    {
-        key: "retirementStrategy",
+    retirementStrategy: {
         name: "retirementStrategy",
         label: "Retirement Strategy",
         placeholder: "Select your retirement strategy",
@@ -93,10 +102,8 @@ export const retirementFields: FieldData<RetirementData>[] = [
         rules: yup.mixed().required("Retirement strategy is required"),
         options: retirementStrategyOptions,
     },
-    {
-        key: "retirementWithdrawalRate",
+    retirementWithdrawalRate: {
         name: "retirementWithdrawalRate",
-        value: DEFAULT_RETIREMENT_WITHDRAWAL_RATE,
         label: "Retirement Withdrawal Rate (%)",
         placeholder: "Enter your planned withdrawal rate",
         helpText: "The percentage of your retirement savings you plan to withdraw annually.",
@@ -109,10 +116,8 @@ export const retirementFields: FieldData<RetirementData>[] = [
             .min(MIN_RETIREMENT_WITHDRAWAL_RATE, `Withdrawal rate must be at least ${MIN_RETIREMENT_WITHDRAWAL_RATE}%.`)
             .max(MAX_RETIREMENT_WITHDRAWAL_RATE, `Withdrawal rate must be at most ${MAX_RETIREMENT_WITHDRAWAL_RATE}%.`),
     },
-    {
-        key: "retirementIncomeGoal",
+    retirementIncomeGoal: {
         name: "retirementIncomeGoal",
-        value: DEFAULT_RETIREMENT_INCOME_GOAL,
         label: "Retirement Income Goal",
         placeholder: "Enter your desired annual retirement income",
         helpText: "The amount of money you want to have as annual income during retirement.",
@@ -125,10 +130,8 @@ export const retirementFields: FieldData<RetirementData>[] = [
             .min(MIN_RETIREMENT_INCOME_GOAL, `Income goal must be at least $${MIN_RETIREMENT_INCOME_GOAL}.`)
             .max(MAX_RETIREMENT_INCOME_GOAL, `Income goal must be at most $${MAX_RETIREMENT_INCOME_GOAL}.`),
     },
-    {
-        key: "retirementAge",
+    retirementAge: {
         name: "retirementAge",
-        value: DEFAULT_RETIREMENT_AGE,
         label: "Retirement Age",
         placeholder: "Enter your desired retirement age",
         helpText: "The age at which you plan to retire.",
@@ -141,10 +144,8 @@ export const retirementFields: FieldData<RetirementData>[] = [
             .min(MIN_RETIREMENT_AGE_FOR_WITHDRAWAL, `Retirement age must be at least ${MIN_RETIREMENT_AGE_FOR_WITHDRAWAL}.`)
             .max(MAX_RETIREMENT_AGE_FOR_WITHDRAWAL, `Retirement age must be at most ${MAX_RETIREMENT_AGE_FOR_WITHDRAWAL}.`),
     },
-    {
-        key: "retirementSavingsAmount",
+    retirementSavingsAmount: {
         name: "retirementSavingsAmount",
-        value: DEFAULT_RETIREMENT_SAVINGS_AMOUNT,
         label: "Retirement Savings Amount",
         placeholder: "Enter your current retirement savings amount",
         helpText: "The total amount of savings you currently have set aside for retirement.",
@@ -157,4 +158,5 @@ export const retirementFields: FieldData<RetirementData>[] = [
             .min(0, "Retirement savings must be at least $0.")
             .max(MAX_RETIREMENT_SAVINGS_AMOUNT, `Retirement savings must be at most $${MAX_RETIREMENT_SAVINGS_AMOUNT}.`),
     },
-];
+}
+
