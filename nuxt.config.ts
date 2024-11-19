@@ -12,6 +12,7 @@ export default defineNuxtConfig({
         'nuxt-feather-icons',
         '@pinia/nuxt',
         '@vueuse/nuxt',
+        '@morev/vue-transitions/nuxt'
     ],
     postcss: {
         plugins: {
@@ -25,5 +26,6 @@ export default defineNuxtConfig({
                 class: 'bg-skin-primary text-lg text-skin-base'
             }
         }
-    }
+    },
+    vueTransitions: {}
 })
