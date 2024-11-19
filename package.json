@@ -11,6 +11,7 @@
     "postinstall": "nuxt prepare"
   },
   "dependencies": {
+    "@morev/vue-transitions": "^3.0.5",
     "@pinia/nuxt": "^0.7.0",
     "@vee-validate/nuxt": "^4.14.7",
     "@vee-validate/rules": "^4.14.7",
