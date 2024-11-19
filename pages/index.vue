@@ -2,21 +2,49 @@
   <div class="col-span-4 space-y-6">
     <InputToggle name="showAdvancedOptions" v-model="showAdvancedOptions" label="Show Advanced Options"/>
     <PlanRetirement :showAdvancedOptions="showAdvancedOptions"/>
-    <section>
-      <h2 class="text-3xl">Income(s)</h2>
-      <CommonButton @click="plan.addIncome()">Add Income</CommonButton>
-      <PlanIncome
-          v-for="(income, index) in plan.incomes"
-          :income="income"
-          :key="index"
-          :incomeIndex="index"
+
+    <!-- Incomes -->
+    <CommonCard class="space-y-6 bg-skin-muted">
+      <div class="flex align-middle gap-6">
+        <h2 class="text-3xl">Income(s)</h2>
+        <CommonButton @click="plan.addIncome()">Add Income</CommonButton>
+      </div>
+      <TransitionGroup
+          name="custom-classes"
+          enter-active-class="animate__animated animate__tada"
+          leave-active-class="animate__animated animate__bounceOutRight"
+      >
+        <PlanIncome
+            v-for="(income, index) in plan.incomes"
+            :income="income"
+            :key="index"
+            :incomeIndex="index"
+            :showAdvancedOptions="showAdvancedOptions"
+            @deleteIncome="handleDeleteIncome"
+        ></PlanIncome>
+      </TransitionGroup>
+    </CommonCard>
+
+    <!-- Expenses -->
+    <PlanExpensePlan :simpleExpensePlan="plan.simpleExpensePlan" :itemizedExpensePlan="plan.itemizedExpensePlan"></PlanExpensePlan>
+
+    <!-- Cash Maintenance -->
+    <CommonCard class="bg-skin-muted space-y-6">
+      <nav class="flex align-middle gap-6">
+        <h2 class="text-3xl">Cash to Maintain</h2>
+      </nav>
+      <PlanCash
+          :cash="plan.cash"
           :showAdvancedOptions="showAdvancedOptions"
-          @deleteIncome="handleDeleteIncome"
-      ></PlanIncome>
-    </section>
-    <section>
-      <h2 class="text-3xl">Debt(s)</h2>
-      <CommonButton @click="plan.addDebt()">Add Debt</CommonButton>
+      ></PlanCash>
+    </CommonCard>
+
+    <!-- Debts -->
+    <CommonCard class="bg-skin-muted space-y-6">
+      <nav class="flex align-middle gap-6">
+        <h2 class="text-3xl">Debt(s)</h2>
+        <CommonButton @click="plan.addDebt()">Add Debt</CommonButton>
+      </nav>
       <PlanDebt
           v-for="(debt, index) in plan.debts"
           :debt="debt"
@@ -25,10 +53,12 @@
           :showAdvancedOptions="showAdvancedOptions"
           @deleteDebt="handleDeleteDebt"
       ></PlanDebt>
-    </section>
-    <section>
-      <h2 class="text-3xl">Tax Deferred Investments</h2>
-      <CommonButton @click="plan.addTaxDeferredInvestment()">Add Income</CommonButton>
+    </CommonCard>
+    <CommonCard class="bg-skin-muted space-y-6">
+      <nav class="flex align-middle gap-6">
+        <h2 class="text-3xl">Tax Deferred Investments</h2>
+        <CommonButton @click="plan.addTaxDeferredInvestment()">Add Income</CommonButton>
+      </nav>
       <PlanTaxDeferredInvestment
           v-for="(investment, index) in plan.taxDeferredInvestments"
           :investment="investment"
@@ -37,7 +67,7 @@
           :showAdvancedOptions="showAdvancedOptions"
           @deleteInvestment="handleDeleteTaxDeferredInvestment"
       />
-    </section>
+    </CommonCard>
   </div>
   <PlanSummary class="col-span-1"/>
 </template>
