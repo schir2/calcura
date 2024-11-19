@@ -2,6 +2,7 @@ import * as yup from "yup";
 import type {FieldData} from "~/interfaces/FieldData";
 import type {RetirementData} from "~/models/Retirement";
 import {
+    DEFAULT_RETIRE_AT_AGE,
     DEFAULT_RETIREMENT_AGE,
     DEFAULT_RETIREMENT_INCOME_GOAL,
     DEFAULT_RETIREMENT_LIFE_EXPECTANCY,
@@ -37,7 +38,7 @@ export const retirementStrategyOptions: Record<RetirementStrategy, SelectOption>
 export const retirementFields: Record<keyof RetirementData, FieldData> = {
     name: {
         name: 'name',
-        label: 'Income Name',
+        label: 'Name',
         placeholder: 'Enter income name',
         helpText: 'Enter a descriptive name for this income source.',
         type: 'text',
@@ -137,7 +138,7 @@ export const retirementFields: Record<keyof RetirementData, FieldData> = {
         helpText: "The age at which you plan to retire.",
         resourceId: "retirement-age-goal",
         type: "number",
-        defaultValue: DEFAULT_RETIREMENT_AGE,
+        defaultValue: DEFAULT_RETIRE_AT_AGE,
         rules: yup
             .number()
             .required("Retirement age is required")
