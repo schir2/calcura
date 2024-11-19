@@ -110,7 +110,6 @@ export const taxDeferredInvestmentFields: Record<keyof TaxDeferredInvestmentData
         resourceId: "employer-contributes",
         type: "checkbox",
         defaultValue: DEFAULT_EMPLOYER_CONTRIBUTES,
-        rules: yup.boolean(),
     },
     employerContributionStrategy: {
         name: "employerContributionStrategy",
