@@ -28,7 +28,7 @@ import type ExpensePlan from "~/models/ExpensePlan";
 interface Props {
   simpleExpensePlan: ExpensePlan,
   itemizedExpensePlan: ExpensePlan,
-  showAdvancedOptions: boolean;
+  showAdvancedOptions?: boolean;
 }
 
 const {simpleExpensePlan, itemizedExpensePlan, showAdvancedOptions = false} = defineProps<Props>()
