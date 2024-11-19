@@ -3,6 +3,7 @@ import type {RetirementData} from "~/models/Retirement";
 export const DEFAULT_RETIREMENT_PLAN_NAME: string = 'Retirement Plan'
 
 export const DEFAULT_RETIREMENT_AGE: number = 30;
+export const DEFAULT_RETIRE_AT_AGE: number = 65;
 export const MIN_RETIREMENT_AGE: number = 1;
 export const MAX_RETIREMENT_AGE: number = 120;
 
@@ -34,7 +35,7 @@ export const RETIREMENT_TEMPLATE: Record<string, RetirementData> = {
         retirementStrategy: 'age',
         year: DEFAULT_RETIREMENT_YEAR,
         age: DEFAULT_RETIREMENT_AGE,
-        retirementAge: DEFAULT_RETIREMENT_AGE,
+        retirementAge: DEFAULT_RETIRE_AT_AGE,
         lifeExpectancy: DEFAULT_RETIREMENT_LIFE_EXPECTANCY,
         retirementSavingsAmount: 0,
         retirementWithdrawalRate: 0,
