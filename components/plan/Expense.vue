@@ -1,12 +1,12 @@
 <template>
-  <CommonCard :class="applyAdvancedOptions(showAdvancedOptions)">
+  <CommonListItem :class="applyAdvancedOptions(showAdvancedOptions)">
     <FormField :model="expense" :field="fieldMetadata.name"></FormField>
     <FormField :model="expense" :field="fieldMetadata.amount"></FormField>
     <FormSelect v-show="showAdvancedOptions" :model="expense" :field="fieldMetadata.frequency"></FormSelect>
     <FormSelect v-show="showAdvancedOptions" :model="expense" :field="fieldMetadata.type"></FormSelect>
     <FormField v-show="showAdvancedOptions" :model="expense" :field="fieldMetadata.isEssential"></FormField>
     <FormField v-show="showAdvancedOptions" :model="expense" :field="fieldMetadata.isTaxDeductible"></FormField>
-  </CommonCard>
+  </CommonListItem>
 </template>
 <script setup lang="ts">
 import type Expense from "~/models/Expense";
