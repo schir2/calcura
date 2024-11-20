@@ -9,11 +9,7 @@
         <h2 class="text-3xl">Income(s)</h2>
         <CommonButton @click="plan.addIncome()">Add Income</CommonButton>
       </div>
-      <TransitionGroup
-          name="custom-classes"
-          enter-active-class="animate__animated animate__tada"
-          leave-active-class="animate__animated animate__bounceOutRight"
-      >
+      <CommonList>
         <PlanIncome
             v-for="(income, index) in plan.incomes"
             :income="income"
@@ -22,7 +18,7 @@
             :showAdvancedOptions="showAdvancedOptions"
             @deleteIncome="handleDeleteIncome"
         ></PlanIncome>
-      </TransitionGroup>
+      </CommonList>
     </CommonCard>
 
     <!-- Expenses -->
@@ -38,21 +34,25 @@
           <h3 class="text-2xl">Itemized Expense Plan</h3>
         </CommonCard>
       </div>
-      <PlanExpense
-          v-if="plan.activeExpensePlan===ExpensePlanType.Simple"
-          v-for="(expense, index) in plan.simpleExpensePlan.expenses"
-          :key="index"
-          :expenseIndex="index"
-          :expense="expense"
-      />
-      <PlanExpense
-          v-if="plan.activeExpensePlan===ExpensePlanType.Itemized"
-          v-for="(expense, index) in plan.itemizedExpensePlan.expenses"
-          :key="index"
-          :expenseIndex="index"
-          :expense="expense"
-          :showAdvancedOptions="true"
-      />
+      <CommonList>
+        <PlanExpense
+            v-if="plan.activeExpensePlan===ExpensePlanType.Simple"
+            v-for="(expense, index) in plan.simpleExpensePlan.expenses"
+            :key="index"
+            :expenseIndex="index"
+            :expense="expense"
+        />
+      </CommonList>
+      <CommonList>
+        <PlanExpense
+            v-if="plan.activeExpensePlan===ExpensePlanType.Itemized"
+            v-for="(expense, index) in plan.itemizedExpensePlan.expenses"
+            :key="index"
+            :expenseIndex="index"
+            :expense="expense"
+            :showAdvancedOptions="true"
+        />
+      </CommonList>
     </CommonCard>
 
     <!-- Cash Maintenance -->
@@ -86,14 +86,16 @@
         <h2 class="text-3xl">Tax Deferred Investments</h2>
         <CommonButton @click="plan.addTaxDeferredInvestment()">Add Income</CommonButton>
       </nav>
-      <PlanTaxDeferredInvestment
-          v-for="(investment, index) in plan.taxDeferredInvestments"
-          :investment="investment"
-          :key="index"
-          :investmentIndex="index"
-          :showAdvancedOptions="showAdvancedOptions"
-          @deleteInvestment="handleDeleteTaxDeferredInvestment"
-      />
+      <CommonList>
+        <PlanTaxDeferredInvestment
+            v-for="(investment, index) in plan.taxDeferredInvestments"
+            :investment="investment"
+            :key="index"
+            :investmentIndex="index"
+            :showAdvancedOptions="showAdvancedOptions"
+            @deleteInvestment="handleDeleteTaxDeferredInvestment"
+        />
+      </CommonList>
     </CommonCard>
   </div>
   <PlanSummary class="col-span-1"/>
