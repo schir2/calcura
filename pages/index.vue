@@ -26,7 +26,34 @@
     </CommonCard>
 
     <!-- Expenses -->
-    <PlanExpensePlan :simpleExpensePlan="plan.simpleExpensePlan" :itemizedExpensePlan="plan.itemizedExpensePlan"></PlanExpensePlan>
+    <CommonCard class="space-y-6 bg-skin-muted">
+      <div class="flex align-middle gap-6">
+        <h2 class="text-3xl">Expense Plan</h2>
+      </div>
+      <div class="grid grid-cols-2 gap-3">
+        <CommonCard @click="plan.activeExpensePlan=ExpensePlanType.Simple" :class="{'bg-skin-accent': plan.activeExpensePlan===ExpensePlanType.Simple}">
+          <h3 class="text-2xl">Simple Expense Plan</h3>
+        </CommonCard>
+        <CommonCard @click="plan.activeExpensePlan=ExpensePlanType.Itemized" :class="{'bg-skin-accent': plan.activeExpensePlan===ExpensePlanType.Itemized}">
+          <h3 class="text-2xl">Itemized Expense Plan</h3>
+        </CommonCard>
+      </div>
+      <PlanExpense
+          v-if="plan.activeExpensePlan===ExpensePlanType.Simple"
+          v-for="(expense, index) in plan.simpleExpensePlan.expenses"
+          :key="index"
+          :expenseIndex="index"
+          :expense="expense"
+      />
+      <PlanExpense
+          v-if="plan.activeExpensePlan===ExpensePlanType.Itemized"
+          v-for="(expense, index) in plan.itemizedExpensePlan.expenses"
+          :key="index"
+          :expenseIndex="index"
+          :expense="expense"
+          :showAdvancedOptions="true"
+      />
+    </CommonCard>
 
     <!-- Cash Maintenance -->
     <CommonCard class="bg-skin-muted space-y-6">
@@ -74,6 +101,7 @@
 <script setup lang="ts">
 import InputToggle from "~/components/form/InputToggle.vue";
 import Plan from "~/models/Plan";
+import {ExpensePlanType} from "~/models/ExpensePlan";
 
 useHead({
   title: 'Calcura Dashboard',
@@ -98,3 +126,18 @@ const plan = reactive(new Plan(Plan.defaultValues()))
 
 const showAdvancedOptions = ref<boolean>(false)
 </script>
+<style scoped>
+.slide-fade-enter-active {
+  transition: all 0.3s ease-out;
+}
+
+.slide-fade-leave-active {
+  transition: all 0.8s cubic-bezier(1, 0.5, 0.8, 1);
+}
+
+.slide-fade-enter-from,
+.slide-fade-leave-to {
+  transform: translateX(20px);
+  opacity: 0;
+}
+</style>
