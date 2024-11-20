@@ -12,7 +12,7 @@
            :readonly="field.readonly"
            :rules="field.rules"
            v-bind="additionalAttrs"
-           class="border rounded-xl shadow px-3 py-1.5 text-skin-base bg-skin-base focus:outline-none focus:ring-2 focus:ring-skin-primary w-full
+           class="border border-skin-base rounded-md shadow px-3 py-1.5 text-skin-base bg-skin-base focus:outline-none focus:ring-2 focus:ring-skin-primary w-full
            hover:bg-skin-muted hover:ring-1  hover:ring-skin-primary
 "
     />
