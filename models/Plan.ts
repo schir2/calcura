@@ -13,7 +13,7 @@ import {DEBT_TEMPLATE} from "~/constants/debt";
 import type {CashData} from "~/models/Cash";
 import Cash from "~/models/Cash";
 import type {ExpensePlanData} from "~/models/ExpensePlan";
-import ExpensePlan from "~/models/ExpensePlan";
+import ExpensePlan, {ExpensePlanType} from "~/models/ExpensePlan";
 
 export interface PlanData {
     name: string;
@@ -22,6 +22,7 @@ export interface PlanData {
     incomes: IncomeData[]
     simpleExpensePlan: ExpensePlanData
     itemizedExpensePlan: ExpensePlanData
+    activeExpensePlan: ExpensePlanType
     debts: DebtData[]
     taxDeferredInvestments: TaxDeferredInvestmentData[];
 }
@@ -33,6 +34,7 @@ export default class Plan {
     incomes: Income[]
     simpleExpensePlan: ExpensePlan
     itemizedExpensePlan: ExpensePlanData
+    activeExpensePlan: ExpensePlanType
     debts: Debt[]
     taxDeferredInvestments: TaxDeferredInvestment[];
 
@@ -42,6 +44,7 @@ export default class Plan {
         this.incomes = data.incomes.map((income) => new Income(income))
         this.simpleExpensePlan = new ExpensePlan(data.simpleExpensePlan)
         this.itemizedExpensePlan = new ExpensePlan(data.itemizedExpensePlan)
+        this.activeExpensePlan = data.activeExpensePlan
         this.cash = new Cash(data.cash)
         this.debts = data.debts.map((debt) => new Debt(debt))
         this.taxDeferredInvestments = data.taxDeferredInvestments.map((taxDeferredInvestment) => new TaxDeferredInvestment(taxDeferredInvestment))
