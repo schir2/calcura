@@ -1,5 +1,5 @@
 <template>
-  <CommonCard color="secondary">
+  <CommonListItem color="secondary">
     <div class="flex justify-between align-middle">
       <h3 class="text-2xl">Income {{ incomeIndex + 1 }}: {{ income.name }}</h3>
       <CommonButton @click="deleteIncome(incomeIndex)">
@@ -18,7 +18,7 @@
         </div>
       </section>
     </Form>
-  </CommonCard>
+  </CommonListItem>
 
 </template>
 <script setup lang="ts">
