@@ -6,8 +6,8 @@
     <!-- Incomes -->
     <CommonCard class="space-y-6 bg-skin-muted">
       <div class="flex align-middle gap-6">
-        <h2 class="text-3xl">Income(s)</h2>
-        <CommonButton @click="plan.addIncome()">Add Income</CommonButton>
+        <h2 class="text-3xl">IncomeConfig(s)</h2>
+        <CommonButton @click="plan.addIncome()">Add IncomeConfig</CommonButton>
       </div>
       <CommonList>
         <PlanIncome
@@ -24,41 +24,24 @@
     <!-- Expenses -->
     <CommonCard class="space-y-6 bg-skin-muted">
       <div class="flex align-middle gap-6">
-        <h2 class="text-3xl">Expense Plan</h2>
+        <h2 class="text-3xl">ExpenseConfig PlanConfig</h2>
       </div>
       <div class="grid grid-cols-2 gap-3">
         <CommonCard @click="plan.activeExpensePlan=ExpensePlanType.Simple" :class="{'bg-skin-accent': plan.activeExpensePlan===ExpensePlanType.Simple}">
-          <h3 class="text-2xl">Simple Expense Plan</h3>
+          <h3 class="text-2xl">Simple ExpenseConfig PlanConfig</h3>
         </CommonCard>
         <CommonCard @click="plan.activeExpensePlan=ExpensePlanType.Itemized" :class="{'bg-skin-accent': plan.activeExpensePlan===ExpensePlanType.Itemized}">
-          <h3 class="text-2xl">Itemized Expense Plan</h3>
+          <h3 class="text-2xl">Itemized ExpenseConfig PlanConfig</h3>
         </CommonCard>
       </div>
-      <CommonList>
-        <PlanExpense
-            v-if="plan.activeExpensePlan===ExpensePlanType.Simple"
-            v-for="(expense, index) in plan.simpleExpensePlan.expenses"
-            :key="index"
-            :expenseIndex="index"
-            :expense="expense"
-        />
-      </CommonList>
-      <CommonList>
-        <PlanExpense
-            v-if="plan.activeExpensePlan===ExpensePlanType.Itemized"
-            v-for="(expense, index) in plan.itemizedExpensePlan.expenses"
-            :key="index"
-            :expenseIndex="index"
-            :expense="expense"
-            :showAdvancedOptions="true"
-        />
-      </CommonList>
+      <ExpensePlan :expensePlan="plan.simpleExpensePlan"></ExpensePlan>
+      <ExpensePlan :expensePlan="plan.itemizedExpensePlan"></ExpensePlan>
     </CommonCard>
 
-    <!-- Cash Maintenance -->
+    <!-- CashConfig Maintenance -->
     <CommonCard class="bg-skin-muted space-y-6">
       <nav class="flex align-middle gap-6">
-        <h2 class="text-3xl">Cash to Maintain</h2>
+        <h2 class="text-3xl">CashConfig to Maintain</h2>
       </nav>
       <PlanCash
           :cash="plan.cash"
@@ -69,8 +52,8 @@
     <!-- Debts -->
     <CommonCard class="bg-skin-muted space-y-6">
       <nav class="flex align-middle gap-6">
-        <h2 class="text-3xl">Debt(s)</h2>
-        <CommonButton @click="plan.addDebt()">Add Debt</CommonButton>
+        <h2 class="text-3xl">DebtConfig(s)</h2>
+        <CommonButton @click="plan.addDebt()">Add DebtConfig</CommonButton>
       </nav>
       <PlanDebt
           v-for="(debt, index) in plan.debts"
@@ -84,7 +67,7 @@
     <CommonCard class="bg-skin-muted space-y-6">
       <nav class="flex align-middle gap-6">
         <h2 class="text-3xl">Tax Deferred Investments</h2>
-        <CommonButton @click="plan.addTaxDeferredInvestment()">Add Income</CommonButton>
+        <CommonButton @click="plan.addTaxDeferredInvestment()">Add IncomeConfig</CommonButton>
       </nav>
       <CommonList>
         <PlanTaxDeferredInvestment
@@ -102,8 +85,9 @@
 </template>
 <script setup lang="ts">
 import InputToggle from "~/components/form/InputToggle.vue";
-import Plan from "~/models/Plan";
-import {ExpensePlanType} from "~/models/ExpensePlan";
+import ExpensePlanConfig from "~/components/plan/ExpensePlan.vue";
+import PlanConfig from "~/models/plan/PlanConfig";
+import {ExpensePlanType} from "~/models/expense/ExpensePlanConfig";
 
 useHead({
   title: 'Calcura Dashboard',
@@ -124,22 +108,7 @@ function handleDeleteDebt(payload: { index: number }) {
   plan.deleteDebt(payload.index)
 }
 
-const plan = reactive(new Plan(Plan.defaultValues()))
+const plan = reactive(new PlanConfig(PlanConfig.defaultValues()))
 
 const showAdvancedOptions = ref<boolean>(false)
 </script>
-<style scoped>
-.slide-fade-enter-active {
-  transition: all 0.3s ease-out;
-}
-
-.slide-fade-leave-active {
-  transition: all 0.8s cubic-bezier(1, 0.5, 0.8, 1);
-}
-
-.slide-fade-enter-from,
-.slide-fade-leave-to {
-  transform: translateX(20px);
-  opacity: 0;
-}
-</style>

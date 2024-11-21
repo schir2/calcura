@@ -9,11 +9,11 @@
   </CommonListItem>
 </template>
 <script setup lang="ts">
-import type Expense from "~/models/Expense";
+import type ExpenseConfig from "~/models/expense/ExpenseConfig";
 import {expenseFields} from "~/forms/expenseForm";
 
 interface Props {
-  expense: Expense,
+  expense: ExpenseConfig,
   expenseIndex: number,
   showAdvancedOptions?: boolean,
 }

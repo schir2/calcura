@@ -1,6 +1,6 @@
 import * as yup from "yup";
 import type {FieldData} from "~/interfaces/FieldData";
-import type {TaxDeferredInvestmentData} from "~/models/TaxDeferredInvestment";
+import type {TaxDeferredInvestmentConfigData} from "~/models/taxDeferred/config";
 import {DEFAULT_GROWTH_APPLICATION_STRATEGY,} from "~/constants/financial";
 import {
     DEFAULT_DAX_DEFERRED_GROWTH_RATE,
@@ -12,12 +12,11 @@ import {
     DEFAULT_EMPLOYER_CONTRIBUTION_FIXED_AMOUNT,
     DEFAULT_EMPLOYER_CONTRIBUTION_STRATEGY,
     DEFAULT_EMPLOYER_MATCH_PERCENTAGE,
-    DEFAULT_EMPLOYER_MATCH_PERCENTAGE_LIMIT,
+    DEFAULT_EMPLOYER_MATCH_PERCENTAGE_LIMIT, EmployerContributionOptions,
     TaxDeferredContributionOptions,
-} from "~/constants/taxDeferred";
-import {EmployerContributionOptions} from "~/constants/employerContribution";
+} from "~/models/taxDeferred/constants";
 
-export const taxDeferredInvestmentFields: Record<keyof TaxDeferredInvestmentData, FieldData> = {
+export const taxDeferredInvestmentFields: Record<keyof TaxDeferredInvestmentConfigData, FieldData> = {
     name: {
         name: "name",
         label: "Investment Name",
@@ -42,7 +41,7 @@ export const taxDeferredInvestmentFields: Record<keyof TaxDeferredInvestmentData
             .max(100, "Growth rate must be at most 100")
             .required("Growth rate is required"),
     },
-    balance: {
+    initialBalance: {
         name: "balance",
         label: "Current Savings",
         placeholder: "Enter your current savings balance",

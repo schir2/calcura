@@ -1,6 +1,6 @@
 <template>
   <CommonCard>
-    <h2 class="text-3xl">Retirement Plan: {{ retirement.name }}</h2>
+    <h2 class="text-3xl">RetirementConstants PlanConfig: {{ retirement.name }}</h2>
     <Form class="grid grid-cols-6 gap-3">
       <FormField :model="retirement" :field="fieldMetadata.name"/>
       <FormSelect :model="retirement" :field="fieldMetadata.retirementStrategy"/>
@@ -17,7 +17,7 @@
 </template>
 <script setup lang="ts">
 import {retirementFields} from "~/forms/retirementForm";
-import Retirement from "~/models/Retirement";
+import RetirementConstants from "~/models/retirement/RetirementConstants";
 
 const fieldMetadata = retirementFields;
 
@@ -25,6 +25,6 @@ interface Props {
   showAdvancedOptions?: boolean;
 }
 
-const retirement = reactive(new Retirement(Retirement.defaultValues()))
+const retirement = reactive(new RetirementConstants(RetirementConstants.defaultValues()))
 const {showAdvancedOptions = false} = defineProps<Props>()
 </script>

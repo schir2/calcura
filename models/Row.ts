@@ -15,10 +15,9 @@ import {
     calculateTaxDeferredElectiveContributionCatchUpLimit,
     calculateTaxDeferredElectiveContributionLimit
 } from "~/utils";
-import Debt from "~/models/Debt";
-import type {TaxDeferredContributionStrategy} from "~/constants/taxDeferred";
-import type {EmployerContributionStrategy} from "~/constants/employerContribution";
-import {TAX_DEFERRED_CATCH_UP_AGE, TAX_DEFERRED_LIMIT_INFLATION_RATE} from "~/constants/taxDeferred";
+import DebtConfig from "~/models/debt/DebtConfig";
+import type {EmployerContributionStrategy, TaxDeferredContributionStrategy} from "~/models/taxDeferred/constants";
+import {TAX_DEFERRED_CATCH_UP_AGE, TAX_DEFERRED_LIMIT_INFLATION_RATE} from "~/models/taxDeferred/constants";
 
 export default class Row {
     age: number;
@@ -52,7 +51,7 @@ export default class Row {
     expenseGrowthStrategy: ExpensesGrowthStrategy;
 
     /* Debt */
-    debts: Debt[] = [];
+    debts: DebtConfig[] = [];
     debtStartOfYear: number;
     debtEndOfYear: number;
 
@@ -165,7 +164,7 @@ export default class Row {
         this.expenseRate = formData.expenseRate;
         this.expenseGrowthStrategy = formData.expensesGrowthStrategy;
 
-        this.debts = formData.debts.map((debtData) => new Debt(debtData));
+        this.debts = formData.debts.map((debtData) => new DebtConfig(debtData));
         this.debtStartOfYear = this.calculateTotalDebtStartOfYear();
         this.debtEndOfYear = this.debtStartOfYear
 

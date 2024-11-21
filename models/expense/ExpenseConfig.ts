@@ -49,7 +49,7 @@ export interface ExpenseData {
     isTaxDeductible: boolean,
 }
 
-export default class Expense {
+export default class ExpenseConfig {
     name: string
     amount: number
     type: ExpenseType

@@ -1,5 +1,5 @@
 import type {GrowthStrategy, IncomeTaxStrategy} from "~/types";
-import {INCOME_TEMPLATE} from "~/constants/income";
+import {INCOME_TEMPLATE} from "~/models/income/constants";
 
 
 export interface IncomeData {
@@ -11,7 +11,7 @@ export interface IncomeData {
     taxStrategy: IncomeTaxStrategy;
 }
 
-export default class Income {
+export default class IncomeConfig {
     name: string
     grossIncome: number;
     growthStrategy: GrowthStrategy;

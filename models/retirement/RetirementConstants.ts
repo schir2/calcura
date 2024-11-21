@@ -1,5 +1,5 @@
 import type {RetirementStrategy} from "~/types";
-import {RETIREMENT_TEMPLATE} from "~/constants/retirement";
+import {RETIREMENT_TEMPLATE} from "~/models/constants/retirement";
 
 export interface RetirementData {
     name: string;
@@ -14,7 +14,7 @@ export interface RetirementData {
 
 }
 
-export default class Retirement {
+export default class RetirementConstants {
     name: string;
     age: number;
     year: number;

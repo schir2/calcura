@@ -9,7 +9,7 @@
         </div>
         <div class="grid grid-cols-3 gap-3">
           <FormField :model="taxDeferredInvestment" :field="fieldMetadata.name"/>
-          <FormField :model="taxDeferredInvestment" :field="fieldMetadata.balance"/>
+          <FormField :model="taxDeferredInvestment" :field="fieldMetadata.initialBalance"/>
           <FormField :model="taxDeferredInvestment" v-show="showAdvancedOptions" :field="fieldMetadata.growthRate"/>
         </div>
         <section>
@@ -41,16 +41,16 @@
     </CommonCard>
 </template>
 <script setup lang="ts">
-import TaxDeferredInvestment from "~/models/TaxDeferredInvestment";
+import TaxDeferredInvestmentConfig from "~/models/taxDeferred/config";
 import {taxDeferredInvestmentFields} from "~/forms/taxDeferredInvestmentForm";
 
-const taxDeferredInvestment = reactive(new TaxDeferredInvestment(TaxDeferredInvestment.defaultValues()))
+const taxDeferredInvestment = reactive(new TaxDeferredInvestmentConfig(TaxDeferredInvestmentConfig.defaultValues()))
 
 const fieldMetadata = taxDeferredInvestmentFields
 
 interface Props {
   showAdvancedOptions: boolean;
-  investment: TaxDeferredInvestment;
+  investment: TaxDeferredInvestmentConfig;
   investmentIndex: number;
 }
 

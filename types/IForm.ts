@@ -8,9 +8,8 @@ import type {
     RetirementStrategy,
     TaxableContributionStrategy,
 } from "~/types";
-import type {DebtData} from "~/interfaces/DebtData";
-import type {TaxDeferredContributionStrategy} from "~/constants/taxDeferred";
-import type {EmployerContributionStrategy} from "~/constants/employerContribution";
+import type {EmployerContributionStrategy, TaxDeferredContributionStrategy} from "~/models/taxDeferred/constants";
+import type {DebtData} from "~/models/debt/DebtConfig";
 
 export default interface IForm {
     /* Profile */

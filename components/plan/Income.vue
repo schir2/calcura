@@ -1,7 +1,7 @@
 <template>
   <CommonListItem color="secondary">
     <div class="flex justify-between align-middle">
-      <h3 class="text-2xl">Income {{ incomeIndex + 1 }}: {{ income.name }}</h3>
+      <h3 class="text-2xl">IncomeConfig {{ incomeIndex + 1 }}: {{ income.name }}</h3>
       <CommonButton @click="deleteIncome(incomeIndex)">
         <TrashIcon/>
       </CommonButton>
@@ -22,11 +22,11 @@
 
 </template>
 <script setup lang="ts">
-import Income from "~/models/Income";
+import IncomeConfig from "~/models/income/IncomeConfig";
 import {incomeFields} from "~/forms/incomeForm";
 
 interface Props {
-  income: Income
+  income: IncomeConfig
   showAdvancedOptions: boolean;
   incomeIndex: number;
 }

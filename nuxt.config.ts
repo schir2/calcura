@@ -12,8 +12,6 @@ export default defineNuxtConfig({
         'nuxt-feather-icons',
         '@pinia/nuxt',
         '@vueuse/nuxt',
-        '@morev/vue-transitions/nuxt',
-        '@formkit/auto-animate/nuxt',
     ],
     postcss: {
         plugins: {

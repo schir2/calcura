@@ -1,6 +1,5 @@
 import type {SelectOption} from "~/components/form/BaseSelect.vue";
-import type {TaxDeferredInvestmentData} from "~/models/TaxDeferredInvestment";
-import type {EmployerContributionStrategy} from "~/constants/employerContribution";
+import type {TaxDeferredInvestmentConfigData} from "~/models/taxDeferred/config";
 import {DEFAULT_GROWTH_APPLICATION_STRATEGY} from "~/constants/financial";
 
 export const TAX_DEFERRED_DEFAULT_BALANCE: number = 0
@@ -11,6 +10,13 @@ export const TAX_DEFERRED_ELECTIVE_CONTRIBUTION_CATCH_UP_LIMIT_2024 = 7500
 export const TAX_DEFERRED_LIMIT_INFLATION_RATE: number = 2.5
 export const TAX_DEFERRED_CATCH_UP_AGE = 50
 export const DEFAULT_EMPLOYER_CONTRIBUTES: boolean = true
+export const EmployerContributionOptions: Record<string, SelectOption> = {
+    none: {label: 'None', value: 'none'},
+    percentage_of_contribution: {label: 'Percentage of Contribution', value: 'percentage_of_contribution'},
+    percentage_of_compensation: {label: 'Percentage of Compensation', value: 'percentage_of_compensation'},
+    fixed: {label: 'Fixed', value: 'fixed'},
+} as const;
+export type EmployerContributionStrategy = keyof typeof EmployerContributionOptions;
 export const DEFAULT_EMPLOYER_CONTRIBUTION_STRATEGY: EmployerContributionStrategy = 'percentage_of_contribution'
 export const DEFAULT_EMPLOYER_COMPENSATION_MATCH_PERCENTAGE: number = 0
 export const DEFAULT_EMPLOYER_CONTRIBUTION_FIXED_AMOUNT: number = 0
@@ -30,13 +36,13 @@ export const TaxDeferredContributionOptions: Record<string, SelectOption> = {
 export type TaxDeferredContributionStrategy = keyof typeof TaxDeferredContributionOptions;
 
 export const DEFAULT_ELECTIVE_CONTRIBUTION_FIXED_AMOUNT: number = 0
-export const TAX_DEFERRED_INVESTMENT_TEMPLATE: Record<string, TaxDeferredInvestmentData> = {
+export const TAX_DEFERRED_INVESTMENT_TEMPLATE: Record<string, TaxDeferredInvestmentConfigData> = {
     default: {
         name: '401k',
 
         growthApplicationStrategy: DEFAULT_GROWTH_APPLICATION_STRATEGY,
         growthRate: DEFAULT_DAX_DEFERRED_GROWTH_RATE,
-        balance: TAX_DEFERRED_DEFAULT_BALANCE,
+        initialBalance: TAX_DEFERRED_DEFAULT_BALANCE,
 
         electiveContributionStrategy: DEFAULT_ELECTIVE_CONTRIBUTION_STRATEGY,
         electiveContributionPercentage: DEFAULT_ELECTIVE_CONTRIBUTION_PERCENTAGE,

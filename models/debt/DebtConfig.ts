@@ -1,8 +1,17 @@
 import type {DebtPaymentStrategy} from "~/types";
-import type {DebtData} from "~/interfaces/DebtData";
-import {DEBT_TEMPLATE} from "~/constants/debt";
+import {DEBT_TEMPLATE} from "~/models/debt/constants";
 
-export default class Debt {
+export interface DebtData {
+    name: string;
+    principal: number;
+    interestRate: number;
+    paymentMinimum: number;
+    paymentStrategy: DebtPaymentStrategy;
+    paymentFixedAmount: number;
+    paymentPercentage: number;
+}
+
+export default class DebtConfig {
     name: string;
     principalStartOfYear: number;
     principalEndOfYear: number;
@@ -67,7 +76,7 @@ export default class Debt {
 
     }
 
-    advanceToNextYear(): Debt {
+    advanceToNextYear(): DebtConfig {
         let debt = structuredClone(this)
         debt.principalStartOfYear = this.principalEndOfYear
         debt.payment = 0

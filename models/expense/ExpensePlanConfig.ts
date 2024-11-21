@@ -1,7 +1,7 @@
-import Expense, {EXPENSE_TEMPLATE, type ExpenseData} from "~/models/Expense";
-import type {INCOME_TEMPLATE} from "~/constants/income";
+import ExpenseConfig, {EXPENSE_TEMPLATE, type ExpenseData} from "~/models/expense/ExpenseConfig";
+import type {INCOME_TEMPLATE} from "~/models/income/constants";
 
-export enum ExpenseGrowthOption {
+export enum ExpenseGrowthStrategy {
     Fixed = 'fixed',
     Inflation = 'inflation',
     PercentageOfIncome = 'percentage_of_income',
@@ -13,16 +13,11 @@ export enum ExpensePlanType {
     Itemized = 'itemized'
 }
 
-export interface ExpensePlanData {
-    name: string;
-    planType: ExpensePlanType;
-    expenses: ExpenseData[];
-    growthStrategy: ExpenseGrowthOption
-}
-
+export const EXPENSE_PLAN_NAME_MIN_LENGTH = 3;
+export const EXPENSE_PLAN_NAME_MAX_LENGTH = 100;
 const DEFAULT_SIMPLE_EXPENSE_PLAN_NAME = 'Simple Expense Plan';
 const DEFAULT_SIMPLE_EXPENSE_PLAN_EXPENSE = EXPENSE_TEMPLATE['simple'];
-const DEFAULT_SIMPLE_EXPENSE_PLAN_GROWTH_STRATEGY = ExpenseGrowthOption.Inflation;
+const DEFAULT_SIMPLE_EXPENSE_PLAN_GROWTH_STRATEGY = ExpenseGrowthStrategy.Inflation;
 export const EXPENSE_PLAN_TEMPLATE: Record<string, ExpensePlanData> = {
     default: {
         name: DEFAULT_SIMPLE_EXPENSE_PLAN_NAME,
@@ -39,16 +34,23 @@ export const EXPENSE_PLAN_TEMPLATE: Record<string, ExpensePlanData> = {
     }
 }
 
-export default class ExpensePlan {
+export interface ExpensePlanData {
+    name: string;
+    planType: ExpensePlanType;
+    expenses: ExpenseData[];
+    growthStrategy: ExpenseGrowthStrategy
+}
+
+export default class ExpensePlanConfig {
     name: string;
     planType: ExpensePlanType
-    expenses: Expense[];
-    growthStrategy: ExpenseGrowthOption;
+    expenses: ExpenseConfig[];
+    growthStrategy: ExpenseGrowthStrategy;
 
     constructor(data: ExpensePlanData) {
         this.name = data.name
         this.planType = data.planType
-        this.expenses = data.expenses.map((expense) => new Expense(expense));
+        this.expenses = data.expenses.map((expense) => new ExpenseConfig(expense));
         this.growthStrategy = data.growthStrategy;
     }
 

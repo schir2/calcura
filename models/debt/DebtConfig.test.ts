@@ -1,6 +1,5 @@
 import {describe, expect, it, beforeEach} from 'vitest'
-import Debt from '~/models/Debt';
-import type { DebtData } from '~/interfaces/DebtData';
+import DebtConfig, {DebtData} from '~/models/debt/DebtConfig';
 
 describe('Debt Class Tests', () => {
     let debtData: DebtData;
@@ -19,7 +18,7 @@ describe('Debt Class Tests', () => {
 
     describe('Constructor', () => {
         it('should initialize Debt object with provided data', () => {
-            const debt = new Debt(debtData);
+            const debt = new DebtConfig(debtData);
 
             expect(debt.name).toBe('Car Loan');
             expect(debt.principalStartOfYear).toBe(10000);
@@ -33,7 +32,7 @@ describe('Debt Class Tests', () => {
 
     describe('calculateEndOfYearValues', () => {
         it('should calculate end-of-year values correctly', () => {
-            const debt = new Debt(debtData);
+            const debt = new DebtConfig(debtData);
             debt.payment = 500;
 
             const { principalEndOfYear, interestAmount, interestAccrued, paymentLifetime } = debt.calculateEndOfYearValues();
@@ -47,7 +46,7 @@ describe('Debt Class Tests', () => {
 
     describe('calculatePayment', () => {
         it('should calculate payment correctly for fixed strategy', () => {
-            const debt = new Debt(debtData);
+            const debt = new DebtConfig(debtData);
 
             expect(debt.calculatePayment(400)).toBe(400);
             expect(debt.calculatePayment(600)).toBe(500);
@@ -57,7 +56,7 @@ describe('Debt Class Tests', () => {
         it('should calculate payment correctly for percentage_of_debt strategy', () => {
             debtData.paymentStrategy = 'percentage_of_debt';
             debtData.paymentFixedAmount = 10;
-            const debt = new Debt(debtData);
+            const debt = new DebtConfig(debtData);
 
             expect(debt.calculatePayment(2000)).toBe(1000);
             expect(debt.calculatePayment(900)).toBe(900);
@@ -67,7 +66,7 @@ describe('Debt Class Tests', () => {
 
         it('should calculate payment correctly for max strategy', () => {
             debtData.paymentStrategy = 'max';
-            const debt = new Debt(debtData);
+            const debt = new DebtConfig(debtData);
 
             expect(debt.calculatePayment(2000)).toBe(2000);
             expect(debt.calculatePayment(900)).toBe(900);
@@ -79,7 +78,7 @@ describe('Debt Class Tests', () => {
 
     describe('advanceToNextYear', () => {
         it('should advance to next year and reset payment', () => {
-            const debt = new Debt(debtData);
+            const debt = new DebtConfig(debtData);
             debt.principalEndOfYear = 9500;
             debt.payment = 500;
 
@@ -93,20 +92,20 @@ describe('Debt Class Tests', () => {
 
     describe('Edge Cases', () => {
         it('should handle 0 disposable income gracefully', () => {
-            const debt = new Debt(debtData);
+            const debt = new DebtConfig(debtData);
 
             expect(debt.calculatePayment(0)).toBe(0); // Minimum payment
         });
 
         it('should handle fully paid-off principal correctly', () => {
-            const debt = new Debt(debtData);
+            const debt = new DebtConfig(debtData);
             debt.principalStartOfYear = 0;
             expect(debt.calculatePayment(1000)).toBe(0); // No payment needed
         });
 
         it('should handle 0% interest rate correctly', () => {
             debtData.interestRate = 0;
-            const debt = new Debt(debtData);
+            const debt = new DebtConfig(debtData);
 
             debt.payment = 500;
             const { interestAmount } = debt.calculateEndOfYearValues();
@@ -115,7 +114,7 @@ describe('Debt Class Tests', () => {
 
         it('should handle 100% interest rate correctly', () => {
             debtData.interestRate = 100;
-            const debt = new Debt(debtData);
+            const debt = new DebtConfig(debtData);
 
             debt.payment = 500;
             const { interestAmount } = debt.calculateEndOfYearValues();

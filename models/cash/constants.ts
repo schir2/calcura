@@ -1,4 +1,4 @@
-import type {CashData} from "~/models/Cash";
+import type {CashData} from "~/models/cash/CashConfig";
 
 export const DEFAULT_CASH_MAINTENANCE_NAME = 'Cash Reserve 6 months of Expenses';
 export const DEFAULT_CASH_MAINTENANCE_STRATEGY = 'variableCashReserve';

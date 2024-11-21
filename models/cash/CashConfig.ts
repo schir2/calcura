@@ -1,4 +1,4 @@
-import {CASH_TEMPLATE} from "~/constants/cash";
+import {CASH_TEMPLATE} from "~/models/cash/constants";
 
 export type CashMaintenanceStrategy = 'fixedCashReserve' | 'variableCashReserve'
 
@@ -9,7 +9,7 @@ export interface CashData {
     reserveMonths: number,
 }
 
-export default class Cash {
+export default class CashConfig {
     name: string
     cashMaintenanceStrategy: CashMaintenanceStrategy
     reserveAmount: number

@@ -1,7 +1,7 @@
 import { describe, it, expect, beforeEach } from 'vitest';
 import { debtPipelineByName } from '~/models/pipelines/debtPipelineByName';
 import Row from '~/models/Row';
-import Debt from '~/models/Debt';
+import DebtConfig from '~/models/debt/DebtConfig';
 
 describe('Debt Pipeline by Name Tests', () => {
     let row: Row;
@@ -10,7 +10,7 @@ describe('Debt Pipeline by Name Tests', () => {
         row = {
             incomeDisposable: 1000,
             debts: [
-                new Debt({
+                new DebtConfig({
                     name: 'Car Loan',
                     principal: 5000,
                     interestRate: 5,
@@ -19,7 +19,7 @@ describe('Debt Pipeline by Name Tests', () => {
                     paymentFixedAmount: 300,
                     paymentPercentage: 0,
                 }),
-                new Debt({
+                new DebtConfig({
                     name: 'Student Loan',
                     principal: 10000,
                     interestRate: 3,

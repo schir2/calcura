@@ -1,4 +1,4 @@
-import type {RetirementData} from "~/models/Retirement";
+import type {RetirementData} from "~/models/retirement/RetirementConstants";
 
 export const DEFAULT_RETIREMENT_PLAN_NAME: string = 'Retirement Plan'
 
