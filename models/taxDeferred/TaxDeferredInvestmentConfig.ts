@@ -1,7 +1,7 @@
 import type {InvestmentGrowthApplicationStrategy} from "~/types";
 import {DEFAULT_GROWTH_APPLICATION_STRATEGY, DEFAULT_INVESTMENT_GROWTH_RATE} from "~/constants/financial";
-import type {EmployerContributionStrategy, TaxDeferredContributionStrategy} from "~/models/taxDeferred/constants";
-import {DEFAULT_EMPLOYER_CONTRIBUTES, TAX_DEFERRED_INVESTMENT_TEMPLATE} from "~/models/taxDeferred/constants";
+import type {EmployerContributionStrategy, TaxDeferredContributionStrategy} from "~/models/taxDeferred/TaxDeferredInvestmentConstants";
+import {DEFAULT_EMPLOYER_CONTRIBUTES, TAX_DEFERRED_INVESTMENT_TEMPLATE} from "~/models/taxDeferred/TaxDeferredInvestmentConstants";
 
 
 export interface TaxDeferredInvestmentConfigData {

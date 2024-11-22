@@ -41,7 +41,7 @@
     </CommonCard>
 </template>
 <script setup lang="ts">
-import TaxDeferredInvestmentConfig from "~/models/taxDeferred/config";
+import TaxDeferredInvestmentConfig from "~/models/taxDeferred/TaxDeferredInvestmentConfig";
 import {taxDeferredInvestmentFields} from "~/forms/taxDeferredInvestmentForm";
 
 const taxDeferredInvestment = reactive(new TaxDeferredInvestmentConfig(TaxDeferredInvestmentConfig.defaultValues()))

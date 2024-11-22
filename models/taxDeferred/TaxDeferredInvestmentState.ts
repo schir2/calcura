@@ -14,10 +14,8 @@ export interface TaxDeferredInvestmentStateData {
 export class TaxDeferredInvestmentState {
     year: number;
     balanceStartOfYear: number;
-
     electiveContribution: number;
     employerContribution: number;
-
     growthAmount: number;
     balanceEndOfYear: number;
 

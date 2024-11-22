@@ -1,5 +1,5 @@
 import type {SelectOption} from "~/components/form/BaseSelect.vue";
-import type {TaxDeferredInvestmentConfigData} from "~/models/taxDeferred/config";
+import type {TaxDeferredInvestmentConfigData} from "~/models/taxDeferred/TaxDeferredInvestmentConfig";
 import {DEFAULT_GROWTH_APPLICATION_STRATEGY} from "~/constants/financial";
 
 export const TAX_DEFERRED_DEFAULT_BALANCE: number = 0

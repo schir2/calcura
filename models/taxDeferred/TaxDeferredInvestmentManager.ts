@@ -1,7 +1,7 @@
-import TaxDeferredInvestmentConfig from './config';
+import TaxDeferredInvestmentConfig from './TaxDeferredInvestmentConfig';
 import {adjustContributionForDisposableIncome, assertDefined, calculateInvestmentGrowthAmount} from "~/utils";
 import {AllowNegativeDisposableIncome} from "~/models/plan/PlanConfig";
-import type {TaxDeferredInvestmentState} from "~/models/taxDeferred/state";
+import {TaxDeferredInvestmentState} from "~/models/taxDeferred/TaxDeferredInvestmentState";
 
 export class TaxDeferredInvestmentService {
     config: TaxDeferredInvestmentConfig;
@@ -9,9 +9,7 @@ export class TaxDeferredInvestmentService {
 
     constructor(config: TaxDeferredInvestmentConfig) {
         this.config = config;
-        this.states = [new TaxDeferredInvestmentState({
-
-        })];
+        this.states = [];
     }
 
 
