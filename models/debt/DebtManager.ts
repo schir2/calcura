@@ -94,12 +94,16 @@ export default class DebtManager {
 
     }
 
-    advanceToNextYear(previousState: DebtState): DebtState {
-        const newState = {
+    advanceToNextYear(): DebtState {
+        const previousState = this.getCurrentState();
+        if (!previousState.processed) {
+            throw new Error("The current state has not been processed.");
+        }
+        assertDefined(previousState.principalEndOfYear, 'principalEndOfYear')
+        const newState: DebtState = {
+            ...previousState,
             payment: 0,
-            principalStartOfYear: previousState.principalStartOfYear,
-            interestLifetime: previousState.interestLifetime,
-            paymentLifetime: previousState.paymentLifetime,
+            principalStartOfYear: previousState.principalEndOfYear,
             principalEndOfYear: undefined,
             interestAmount: undefined,
             processed: false
