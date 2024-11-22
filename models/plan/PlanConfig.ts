@@ -1,13 +1,13 @@
-import DebtConfig, {DebtData} from "~/models/debt/DebtConfig";
-import type {TaxDeferredInvestmentConfigData} from "~/models/taxDeferred/config";
-import TaxDeferredInvestmentConfig from "~/models/taxDeferred/config";
+import DebtConfig, {type DebtData} from "~/models/debt/DebtConfig";
+import type {TaxDeferredInvestmentConfigData} from "~/models/taxDeferred/TaxDeferredInvestmentConfig";
+import TaxDeferredInvestmentConfig from "~/models/taxDeferred/TaxDeferredInvestmentConfig";
 import type {IncomeData} from "~/models/income/IncomeConfig"
 import IncomeConfig from "~/models/income/IncomeConfig";
 import type {RetirementData} from "~/models/retirement/RetirementConstants";
 import RetirementConstants from "~/models/retirement/RetirementConstants";
 import type {INCOME_TEMPLATE} from "~/models/income/constants";
 import {PLAN_TEMPLATE} from "~/models/plan/constants";
-import {TAX_DEFERRED_INVESTMENT_TEMPLATE} from "~/models/taxDeferred/constants";
+import {TAX_DEFERRED_INVESTMENT_TEMPLATE} from "~/models/taxDeferred/TaxDeferredInvestmentConstants";
 import {DEBT_TEMPLATE} from "~/models/debt/constants";
 import type {CashData} from "~/models/cash/CashConfig";
 import CashConfig from "~/models/cash/CashConfig";
@@ -16,6 +16,7 @@ import ExpensePlanConfig, {ExpensePlanType} from "~/models/expense/ExpensePlanCo
 
 export interface PlanData {
     name: string;
+    age: number;
     retirement: RetirementData
     cash: CashData
     incomes: IncomeData[]
@@ -28,6 +29,7 @@ export interface PlanData {
 
 export default class PlanConfig {
     name: string;
+    age: number;
     retirement: RetirementConstants
     cash: CashConfig
     incomes: IncomeConfig[]
@@ -39,6 +41,7 @@ export default class PlanConfig {
 
     constructor(data: PlanData) {
         this.name = data.name;
+        this.age = data.age;
         this.retirement = new RetirementConstants(data.retirement)
         this.incomes = data.incomes.map((income) => new IncomeConfig(income))
         this.simpleExpensePlan = new ExpensePlanConfig(data.simpleExpensePlan)
