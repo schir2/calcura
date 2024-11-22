@@ -4,8 +4,6 @@
     <Form class="grid grid-cols-6 gap-3">
       <FormField :model="retirement" :field="fieldMetadata.name"/>
       <FormSelect :model="retirement" :field="fieldMetadata.retirementStrategy"/>
-      <FormField :model="retirement" :field="fieldMetadata.age"/>
-      <FormField :model="retirement" v-show="showAdvancedOptions" :field="fieldMetadata.year"/>
       <FormField :model="retirement" v-show="showAdvancedOptions" :field="fieldMetadata.lifeExpectancy"/>
       <FormField :model="retirement" v-if="retirement.retirementStrategy === 'age'" :field="fieldMetadata.retirementAge"/>
 
