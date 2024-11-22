@@ -16,8 +16,8 @@ import {
     calculateTaxDeferredElectiveContributionLimit
 } from "~/utils";
 import DebtConfig from "~/models/debt/DebtConfig";
-import type {EmployerContributionStrategy, TaxDeferredContributionStrategy} from "~/models/taxDeferred/constants";
-import {TAX_DEFERRED_CATCH_UP_AGE, TAX_DEFERRED_LIMIT_INFLATION_RATE} from "~/models/taxDeferred/constants";
+import type {EmployerContributionStrategy, TaxDeferredContributionStrategy} from "~/models/taxDeferred/TaxDeferredInvestmentConstants";
+import {TAX_DEFERRED_CATCH_UP_AGE, TAX_DEFERRED_LIMIT_INFLATION_RATE} from "~/models/taxDeferred/TaxDeferredInvestmentConstants";
 
 export default class Row {
     age: number;
