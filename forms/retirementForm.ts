@@ -2,27 +2,21 @@ import * as yup from "yup";
 import type {FieldData} from "~/interfaces/FieldData";
 import type {RetirementData} from "~/models/retirement/RetirementConstants";
 import {
-    DEFAULT_RETIRE_AT_AGE,
     DEFAULT_RETIREMENT_AGE,
     DEFAULT_RETIREMENT_INCOME_GOAL,
     DEFAULT_RETIREMENT_LIFE_EXPECTANCY,
     DEFAULT_RETIREMENT_PLAN_NAME,
     DEFAULT_RETIREMENT_SAVINGS_AMOUNT,
     DEFAULT_RETIREMENT_WITHDRAWAL_RATE,
-    DEFAULT_RETIREMENT_YEAR,
-    MAX_RETIREMENT_AGE,
     MAX_RETIREMENT_AGE_FOR_WITHDRAWAL,
     MAX_RETIREMENT_INCOME_GOAL,
     MAX_RETIREMENT_LIFE_EXPECTANCY,
     MAX_RETIREMENT_SAVINGS_AMOUNT,
     MAX_RETIREMENT_WITHDRAWAL_RATE,
-    MAX_RETIREMENT_YEAR,
-    MIN_RETIREMENT_AGE,
     MIN_RETIREMENT_AGE_FOR_WITHDRAWAL,
     MIN_RETIREMENT_INCOME_GOAL,
     MIN_RETIREMENT_LIFE_EXPECTANCY,
     MIN_RETIREMENT_WITHDRAWAL_RATE,
-    MIN_RETIREMENT_YEAR,
 } from "~/models/constants/retirement";
 import type {SelectOption} from "~/components/form/Select.vue";
 import type {RetirementStrategy} from "~/types";
@@ -48,35 +42,6 @@ export const retirementFields: Record<keyof RetirementData, FieldData> = {
             .required('Name is required')
             .min(MIN_NAME_LENGTH, `Name must be at least ${MIN_NAME_LENGTH} characters long.`)
             .max(MAX_NAME_LENGTH, `Name must be at most ${MAX_NAME_LENGTH} characters long.`),
-    },
-
-    age: {
-        name: "age",
-        label: "Age",
-        placeholder: "Enter your desired age",
-        helpText: "This is the age at which you plan to begin your retirement journey",
-        resourceId: "retirement-age",
-        type: "number",
-        defaultValue: DEFAULT_RETIREMENT_AGE,
-        rules: yup
-            .number()
-            .required("Age is required")
-            .min(MIN_RETIREMENT_AGE, `Age must be at least ${MIN_RETIREMENT_AGE}.`)
-            .max(MAX_RETIREMENT_AGE, `Age must be at most ${MAX_RETIREMENT_AGE}.`),
-    },
-    year: {
-        name: "year",
-        label: "Year",
-        placeholder: "Enter the current year",
-        helpText: "This is the year you plan to begin your retirement journey",
-        resourceId: "retirement-year",
-        type: "number",
-        defaultValue: DEFAULT_RETIREMENT_YEAR,
-        rules: yup
-            .number()
-            .required("Year is required")
-            .min(MIN_RETIREMENT_YEAR, `Year must be at least ${MIN_RETIREMENT_YEAR}.`)
-            .max(MAX_RETIREMENT_YEAR, `Year must be at most ${MAX_RETIREMENT_YEAR}.`),
     },
     lifeExpectancy: {
         name: "lifeExpectancy",
@@ -138,7 +103,7 @@ export const retirementFields: Record<keyof RetirementData, FieldData> = {
         helpText: "The age at which you plan to retire.",
         resourceId: "retirement-age-goal",
         type: "number",
-        defaultValue: DEFAULT_RETIRE_AT_AGE,
+        defaultValue: DEFAULT_RETIREMENT_AGE,
         rules: yup
             .number()
             .required("Retirement age is required")
