@@ -3,8 +3,6 @@ import {RETIREMENT_TEMPLATE} from "~/models/constants/retirement";
 
 export interface RetirementData {
     name: string;
-    age: number;
-    year: number;
     lifeExpectancy: number;
     retirementStrategy: RetirementStrategy;
     retirementWithdrawalRate: number;
@@ -16,8 +14,6 @@ export interface RetirementData {
 
 export default class RetirementConstants {
     name: string;
-    age: number;
-    year: number;
     lifeExpectancy: number;
     retirementStrategy: RetirementStrategy;
     retirementWithdrawalRate: number;
@@ -27,8 +23,6 @@ export default class RetirementConstants {
 
     constructor(data: RetirementData) {
         this.name = data.name;
-        this.age = data.age;
-        this.year = data.year;
         this.lifeExpectancy = data.lifeExpectancy;
         this.retirementStrategy = data.retirementStrategy;
         this.retirementWithdrawalRate = data.retirementWithdrawalRate;
