@@ -1,12 +1,10 @@
-import type {DebtPaymentStrategy} from "~/types";
-
-import type {DebtData} from "~/models/debt/DebtConfig";
+import type {DebtData, DebtPaymentStrategy} from "~/models/debt/DebtConfig";
 
 export const DEFAULT_DEBT_NAME: string = "New Debt";
 export const DEFAULT_INTEREST_RATE: number = 5;
 export const DEFAULT_MINIMUM_PAYMENT: number = 0;
 export const DEFAULT_FIXED_PAYMENT: number = 0;
-export const DEFAULT_PAYMENT_STRATEGY: DebtPaymentStrategy = "fixed";
+export const DEFAULT_PAYMENT_STRATEGY: DebtPaymentStrategy = 'fixed';
 export const DEFAULT_PAYMENT_PERCENTAGE: number = DEFAULT_INTEREST_RATE
 export const DEFAULT_PRINCIPAL: number = 0
 
