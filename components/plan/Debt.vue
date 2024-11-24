@@ -14,8 +14,8 @@
           <FormField :field="fieldMetadata.interestRate" :model="debt"></FormField>
           <FormSelect :field="fieldMetadata.paymentStrategy" :model="debt"></FormSelect>
           <FormField :field="fieldMetadata.paymentMinimum" :model="debt"></FormField>
-          <FormField :field="fieldMetadata.paymentPercentage" :model="debt"></FormField>
-          <FormField :field="fieldMetadata.paymentFixedAmount" :model="debt"></FormField>
+          <FormField v-if="debt.paymentStrategy === 'percentage_of_debt'" :field="fieldMetadata.paymentPercentage" :model="debt"></FormField>
+          <FormField v-if="debt.paymentStrategy ==='fixed'" :field="fieldMetadata.paymentFixedAmount" :model="debt"></FormField>
         </div>
       </section>
     </Form>
