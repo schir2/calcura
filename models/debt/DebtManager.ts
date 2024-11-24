@@ -1,19 +1,15 @@
 import DebtConfig from "~/models/debt/DebtConfig";
 import type DebtState from "~/models/debt/DebtState";
 import {AllowNegativeDisposableIncome} from "~/models/plan/PlanConfig";
-import {adjustForAllowNegativeDisposableIncome} from "~/utils";
+import {adjustForAllowNegativeDisposableIncome, assertDefined} from "~/utils";
+import ManagerBase from "~/models/common/ManagerBase";
+import type PlanState from "~/models/plan/PlanState";
+import {ProcessDebtCommand} from "~/models/debt/DebtCommands";
+import type Command from "~/models/common/Command";
 
-export default class DebtManager {
-    private config: DebtConfig
-    states: DebtState[] = []
+export default class DebtManager extends ManagerBase<DebtConfig, DebtState> {
 
-    constructor(config: DebtConfig) {
-        this.config = config;
-        const initialState = this.createInitialState()
-        this.states.push(initialState)
-    }
-
-    private createInitialState(): DebtState {
+    override createInitialState(): DebtState {
         return {
             payment: 0,
             principalStartOfYear: this.config.principal,
@@ -25,49 +21,33 @@ export default class DebtManager {
         }
     }
 
-    getCurrentState(): DebtState {
-        if (this.states.length === 0) {
-            throw new Error("No states available. Ensure an initial state is created.");
-        }
-        return this.states[this.states.length - 1];
-    }
-
-    updateCurrentState(newState: DebtState): void {
-        if (this.states.length === 0) {
-            throw new Error("No states available. Ensure an initial state is created.");
-        }
-        this.states[this.states.length - 1] = newState
-    }
-
-    process(disposableIncome: number, allowNegativeDisposableIncome: AllowNegativeDisposableIncome): DebtState {
-        const initialState = this.getCurrentState();
-        const newState = this.processState(initialState, disposableIncome, allowNegativeDisposableIncome);
-        this.updateCurrentState(newState)
-        return newState;
-    }
-
-
-    private processState(state: DebtState, disposableIncome: number, allowNegativeDisposableIncome: AllowNegativeDisposableIncome) {
-        if (state.processed) {
+    process(planState: PlanState): PlanState {
+        const currentState = this.getCurrentState();
+        if (currentState.processed) {
             throw new Error("The current state has already been processed.");
         }
-
-        const payment = this.calculatePayment(state, disposableIncome, allowNegativeDisposableIncome)
-        const principalEndOfYear = state.principalStartOfYear - payment;
+        const payment = this.calculatePayment(currentState, planState.disposableIncome, planState.allowNegativeDisposableIncome)
+        const principalEndOfYear = currentState.principalStartOfYear - payment;
         const interestAmount = principalEndOfYear * (this.config.interestRate / 100);
-        const interestLifetime = state.interestLifetime + interestAmount;
-        const paymentLifetime = state.paymentLifetime + state.payment;
+        const interestLifetime = currentState.interestLifetime + interestAmount;
+        const paymentLifetime = currentState.paymentLifetime + currentState.payment;
         const updatedPrincipalEndOfYear = principalEndOfYear + interestAmount;
-        return {
-            ...state,
+        this.updateCurrentState({
+            ...currentState,
             payment: payment,
+            processed: true,
+            interestAmount: interestAmount,
             interestLifetime: interestLifetime,
             paymentLifetime: paymentLifetime,
-            principalEndOfYear: updatedPrincipalEndOfYear,
-            interestAmount: interestAmount,
-            processed: true,
+            principalEndOfYear: updatedPrincipalEndOfYear
+        })
+        const updatedDisposableIncome = planState.disposableIncome - payment
+        return {
+            ...planState,
+            disposableIncome: updatedDisposableIncome
         };
     }
+
 
     calculatePayment(state: DebtState, disposableIncome: number, allowNegativeDisposableIncome: AllowNegativeDisposableIncome): number {
         let payment = 0
@@ -76,7 +56,7 @@ export default class DebtManager {
                 payment = this.config.paymentFixedAmount;
                 break
             case 'percentage_of_debt':
-                payment = state.principalStartOfYear * (this.config.paymentFixedAmount / 100);
+                payment = this.config.principal * (this.config.paymentPercentage / 100);
                 break
             case 'max':
                 payment = state.principalStartOfYear;
@@ -94,13 +74,9 @@ export default class DebtManager {
 
     }
 
-    advanceToNextYear(): DebtState {
-        const previousState = this.getCurrentState();
-        if (!previousState.processed) {
-            throw new Error("The current state has not been processed.");
-        }
+    protected override createNextState(previousState: DebtState): DebtState {
         assertDefined(previousState.principalEndOfYear, 'principalEndOfYear')
-        const newState: DebtState = {
+        return {
             ...previousState,
             payment: 0,
             principalStartOfYear: previousState.principalEndOfYear,
@@ -108,7 +84,9 @@ export default class DebtManager {
             interestAmount: undefined,
             processed: false
         };
-        this.states.push(newState);
-        return newState
+    }
+
+    override getCommands(): Command[] {
+        return [new ProcessDebtCommand(this)];
     }
 }
