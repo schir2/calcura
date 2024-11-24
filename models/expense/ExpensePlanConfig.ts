@@ -1,5 +1,5 @@
 import ExpenseConfig, {EXPENSE_TEMPLATE, type ExpenseData} from "~/models/expense/ExpenseConfig";
-import type {INCOME_TEMPLATE} from "~/models/income/constants";
+import type {INCOME_TEMPLATE} from "~/models/income/IncomeConstants";
 
 export enum ExpenseGrowthStrategy {
     Fixed = 'fixed',
