@@ -1,5 +1,5 @@
 import type {GrowthStrategy, IncomeTaxStrategy} from "~/types";
-import {INCOME_TEMPLATE} from "~/models/income/constants";
+import {INCOME_TEMPLATE} from "~/models/income/IncomeConstants";
 
 
 export interface IncomeData {
