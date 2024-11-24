@@ -11,9 +11,9 @@ import type {
 } from "~/types";
 import {
     assertDefined,
-    calculateTaxDeferredContributionLimit,
-    calculateTaxDeferredElectiveContributionCatchUpLimit,
-    calculateTaxDeferredElectiveContributionLimit
+    getTaxDeferredContributionLimit,
+    getTaxDeferredElectiveContributionCatchUpLimit,
+    getTaxDeferredElectiveContributionLimit
 } from "~/utils";
 import DebtConfig from "~/models/debt/DebtConfig";
 import type {EmployerContributionStrategy, TaxDeferredContributionStrategy} from "~/models/taxDeferred/TaxDeferredInvestmentConstants";
@@ -178,9 +178,9 @@ export default class Row {
         this.taxDeferredContributionLifetime = 0;
 
         this.taxDeferredContributionLimitInflationRate = TAX_DEFERRED_LIMIT_INFLATION_RATE;
-        this.taxDeferredContributionElectiveCatchUpLimit = calculateTaxDeferredElectiveContributionCatchUpLimit(this.year);
-        this.taxDeferredContributionElectiveLimit = calculateTaxDeferredElectiveContributionLimit(this.year)
-        this.taxDeferredContributionLimit = calculateTaxDeferredContributionLimit(this.year);
+        this.taxDeferredContributionElectiveCatchUpLimit = getTaxDeferredElectiveContributionCatchUpLimit(this.year);
+        this.taxDeferredContributionElectiveLimit = getTaxDeferredElectiveContributionLimit(this.year)
+        this.taxDeferredContributionLimit = getTaxDeferredContributionLimit(this.year);
         this.taxDeferredContributionElectiveLimitApplied = this.calculateTaxDeferredContributionElectiveLimitApplied();
         this.taxDeferredContributionLimitApplied = this.calculateTaxDeferredContributionLimitApplied();
 
