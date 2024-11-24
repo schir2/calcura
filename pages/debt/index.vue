@@ -64,7 +64,7 @@ watch(debtConfig, (newValue) => {
     iraLimit: 7000,
     inflationRate: 3,
     savingsStartOfYear: 0,
-    endOfYearSavings: 0,
+    savingsEndOfYear: 0,
     allowNegativeDisposableIncome: AllowNegativeDisposableIncome.none,
   };
   planStates.value = [planState];
