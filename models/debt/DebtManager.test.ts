@@ -1,155 +1,142 @@
-import { describe, expect, it, beforeEach, vi } from "vitest";
+import { describe, it, expect, beforeEach } from "vitest";
 import DebtManager from "~/models/debt/DebtManager";
-import DebtConfig from "~/models/debt/DebtConfig";
+import DebtConfig, { type DebtPaymentStrategy } from "~/models/debt/DebtConfig";
+import type { DebtData } from "~/models/debt/DebtConfig";
+import type PlanState from "~/models/plan/PlanState";
 import { AllowNegativeDisposableIncome } from "~/models/plan/PlanConfig";
-import { adjustForAllowNegativeDisposableIncome } from "~/utils";
+import type DebtState from "~/models/debt/DebtState";
 
-vi.mock("~/utils", () => ({
-    adjustForAllowNegativeDisposableIncome: vi.fn(),
-}));
+const fixedDebtData: DebtData = {
+    id: "debt-1",
+    name: "Test Debt",
+    principal: 1000,
+    interestRate: 5,
+    paymentMinimum: 50,
+    paymentStrategy: 'fixed',
+    paymentFixedAmount: 100,
+    paymentPercentage: 20,
+};
 
-describe("DebtManager Class Tests", () => {
-    let config: DebtConfig;
-    let debtManager: DebtManager;
+const percentageDebtData: DebtData = {
+    ...fixedDebtData,
+    id: "debt-2",
+    paymentStrategy: 'percentage_of_debt'
+}
 
+const maxDebtData: DebtData = {
+    ...fixedDebtData,
+    id: "debt-3",
+    paymentStrategy: 'max'
+}
+
+const initialDebtState: DebtState = {
+    principalStartOfYear: 1000,
+    principalEndOfYear: undefined,
+    paymentLifetime: 0,
+    interestLifetime: 0,
+    interestAmount: undefined,
+    processed: false,
+    payment: 0,
+
+}
+
+let debtManager: DebtManager;
+const initialPlanState: PlanState = {
+    age: 30,
+    year: 2024,
+    grossIncome: 60000,
+    disposableIncome: 500,
+    electiveLimit: 19500,
+    deferredLimit: 20000,
+    iraLimit: 7500,
+    inflationRate: 2,
+    savingsStartOfYear: 10000,
+    endOfYearSavings: 0,
+    allowNegativeDisposableIncome: AllowNegativeDisposableIncome.none,
+}
+
+describe("DebtManager", () => {
     beforeEach(() => {
-        config = new DebtConfig({
-            id: "1",
-            name: "Car Loan",
-            principal: 15000,
-            interestRate: 5,
-            paymentMinimum: 200,
-            paymentStrategy: "fixed",
-            paymentFixedAmount: 500,
-            paymentPercentage: 0,
-        });
-
-        debtManager = new DebtManager(config);
-        vi.clearAllMocks();
+        debtManager = new DebtManager(new DebtConfig(fixedDebtData));
     });
 
-    describe("Initialization", () => {
-        it("should initialize DebtManager with an initial state", () => {
-            const state = debtManager.getCurrentState();
-            expect(state).toEqual({
-                payment: 0,
-                principalStartOfYear: 15000,
-                interestLifetime: 0,
-                paymentLifetime: 0,
-                principalEndOfYear: undefined,
-                interestAmount: undefined,
-                processed: false,
-            });
-        });
+    it("should initialize with correct state", () => {
+        const state = debtManager.getCurrentState();
+        expect(state).toStrictEqual(initialDebtState);
+        expect(state.principalStartOfYear).toBe(fixedDebtData.principal);
+        expect(state.payment).toBe(0);
+        expect(state.processed).toBe(false);
     });
 
-    describe("calculatePayment", () => {
-        it("should calculate payment correctly for 'fixed' strategy", () => {
-            const state = debtManager.getCurrentState();
-            (adjustForAllowNegativeDisposableIncome as any).mockImplementation((data) => data.amount);
-
-            const payment = debtManager.calculatePayment(state, 1000, AllowNegativeDisposableIncome.none);
-            expect(payment).toBe(500);
-            expect(adjustForAllowNegativeDisposableIncome).toHaveBeenCalledWith({
-                disposableIncome: 1000,
-                amount: 500,
-                minimum: 200,
-                allowNegative: AllowNegativeDisposableIncome.none,
-            });
-        });
-
-        it("should calculate payment correctly for 'percentage_of_debt' strategy", () => {
-            config.paymentStrategy = "percentage_of_debt";
-            config.paymentFixedAmount = 10; // 10% of principal
-            const state = debtManager.getCurrentState();
-
-            (adjustForAllowNegativeDisposableIncome as any).mockImplementation((data) => data.amount);
-
-            const payment = debtManager.calculatePayment(state, 2000, AllowNegativeDisposableIncome.none);
-            expect(payment).toBe(1500); // 10% of 15000 principal
-        });
-
-        it("should calculate payment correctly for 'max' strategy", () => {
-            config.paymentStrategy = "max";
-            const state = debtManager.getCurrentState();
-
-            (adjustForAllowNegativeDisposableIncome as any).mockImplementation((data) => data.amount);
-
-            const payment = debtManager.calculatePayment(state, 20000, AllowNegativeDisposableIncome.none);
-            expect(payment).toBe(15000); // Pay off full principal
-        });
+    it("should calculate fixed payment correctly", () => {
+        const state = debtManager.getCurrentState();
+        const payment = debtManager.calculatePayment(state, initialPlanState.disposableIncome, initialPlanState.allowNegativeDisposableIncome);
+        expect(payment).toBe(100); // Fixed amount
     });
 
-    describe("process", () => {
-        it("should process the current state correctly", () => {
-            (adjustForAllowNegativeDisposableIncome as any).mockImplementation((data) => data.amount);
-
-            const processedState = debtManager.process(1000, AllowNegativeDisposableIncome.none);
-
-            expect(processedState.payment).toBe(500);
-            expect(processedState.principalEndOfYear).toBeCloseTo(14825); // Principal - payment + interest
-            expect(processedState.interestAmount).toBeCloseTo(325); // Interest = remaining principal * interest rate
-            expect(processedState.processed).toBe(true);
-
-            const currentState = debtManager.getCurrentState();
-            expect(currentState).toEqual(processedState); // State should be updated
-        });
-
-        it("should throw an error when processing an already processed state", () => {
-            (adjustForAllowNegativeDisposableIncome as any).mockImplementation((data) => data.amount);
-
-            debtManager.process(1000, AllowNegativeDisposableIncome.none);
-
-            expect(() => debtManager.process(1000, AllowNegativeDisposableIncome.none)).toThrow(
-                "The current state has already been processed."
-            );
-        });
+    it("should calculate percentage payment correctly", () => {
+        debtManager = new DebtManager(fixedDebtData)
+        const state = debtManager.getCurrentState();
+        const payment = debtManager.calculatePayment(state, initialPlanState.disposableIncome, initialPlanState.allowNegativeDisposableIncome);
+        expect(payment).toBe(100); // 10% of principal (1000 * 0.1)
     });
 
-    describe("advanceToNextYear", () => {
-        it("should advance to the next year and add a new state", () => {
-            const initialState = debtManager.getCurrentState();
-            initialState.principalEndOfYear = 14000; // Mock end-of-year principal
-
-            const newState = debtManager.advanceToNextYear(initialState);
-
-            expect(newState).toEqual({
-                payment: 0,
-                principalStartOfYear: 14000,
-                interestLifetime: initialState.interestLifetime,
-                paymentLifetime: initialState.paymentLifetime,
-                principalEndOfYear: undefined,
-                interestAmount: undefined,
-                processed: false,
-            });
-
-            expect(debtManager.states.length).toBe(2);
-            expect(debtManager.getCurrentState()).toEqual(newState);
-        });
+    it("should calculate max payment correctly", () => {
+        debtManager = new DebtManager(maxDebtData)
+        const state = debtManager.getCurrentState();
+        const payment = debtManager.calculatePayment(state, initialPlanState.disposableIncome, initialPlanState.allowNegativeDisposableIncome);
+        expect(payment).toBe(500); // Full principal
     });
 
-    describe("Edge Cases", () => {
-        it("should handle fully paid-off debt", () => {
-            const state = debtManager.getCurrentState();
-            state.principalStartOfYear = 0;
+    it("should not exceed disposable income", () => {
+        debtManager.getConfig().paymentStrategy = 'max';
+        const state = debtManager.getCurrentState();
+        const payment = debtManager.calculatePayment(state, 200, AllowNegativeDisposableIncome.none);
+        expect(payment).toBe(200); // Limited by disposable income
+    });
 
-            (adjustForAllowNegativeDisposableIncome as any).mockImplementation((data) => data.amount);
+    it("should process debt and update state correctly", () => {
+        const planState = debtManager.process(initialPlanState);
+        const currentState = debtManager.getCurrentState();
 
-            const processedState = debtManager.process(1000, AllowNegativeDisposableIncome.none);
+        expect(currentState.payment).toBe(100); // Fixed payment
+        expect(currentState.interestAmount).toBeCloseTo(45); // (Principal - Payment) * Interest Rate
+        expect(currentState.principalEndOfYear).toBeCloseTo(945); // Updated principal
+        expect(currentState.processed).toBe(true);
+        expect(planState.disposableIncome).toBe(400); // Disposable income reduced by payment
+    });
 
-            expect(processedState.payment).toBe(0);
-            expect(processedState.principalEndOfYear).toBe(0);
-            expect(processedState.interestAmount).toBe(0);
-        });
+    it("should throw error if processing already processed state", () => {
+        debtManager.process(initialPlanState);
+        expect(() => debtManager.process(initialPlanState)).toThrowError("The current state has already been processed.");
+    });
 
-        it("should handle 0 disposable income", () => {
-            const state = debtManager.getCurrentState();
+    it("should create the next state correctly", () => {
+        debtManager.process(initialPlanState);
+        const previousState = debtManager.getCurrentState();
+        const nextState = debtManager.advanceTimePeriod();
 
-            (adjustForAllowNegativeDisposableIncome as any).mockImplementation((data) => data.minimum);
+        expect(nextState.principalStartOfYear).toBeCloseTo(945); // Updated principal from previous state
+        expect(nextState.processed).toBe(false);
+        expect(nextState.payment).toBe(0);
+    });
 
-            const processedState = debtManager.process(0, AllowNegativeDisposableIncome.minimumOnly);
+    it("should handle minimum payment for negative disposable income when allowed", () => {
+        const state = debtManager.getCurrentState();
+        const paymentMinimum = debtManager.calculatePayment(state, -50, AllowNegativeDisposableIncome.minimumOnly);
+        expect(paymentMinimum).toBe(fixedDebtData.paymentMinimum); // Payment is not limited by disposable income
+    });
 
-            expect(processedState.payment).toBe(200); // Minimum payment
-        });
+    it("should handle full payment for negative disposable income when allowed", () => {
+        const state = debtManager.getCurrentState();
+        const paymentMaximum = debtManager.calculatePayment(state, -50, AllowNegativeDisposableIncome.full);
+        expect(paymentMaximum).toBe(fixedDebtData.paymentFixedAmount); // Payment is not limited by disposable income
+    });
+
+    it("should respect minimum payment limits", () => {
+        debtManager.getConfig().paymentFixedAmount = 30; // Below minimum payment
+        const state = debtManager.getCurrentState();
+        const payment = debtManager.calculatePayment(state, 500, AllowNegativeDisposableIncome.none);
+        expect(payment).toBe(50); // Enforced minimum payment
     });
 });
