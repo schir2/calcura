@@ -8,7 +8,7 @@ import RetirementConstants from "~/models/retirement/RetirementConstants";
 import type {INCOME_TEMPLATE} from "~/models/income/constants";
 import {PLAN_TEMPLATE} from "~/models/plan/constants";
 import {TAX_DEFERRED_INVESTMENT_TEMPLATE} from "~/models/taxDeferred/TaxDeferredInvestmentConstants";
-import {DEBT_TEMPLATE} from "~/models/debt/constants";
+import {DEBT_TEMPLATE} from "~/models/debt/DebtConstants";
 import type {CashData} from "~/models/cash/CashConfig";
 import CashConfig from "~/models/cash/CashConfig";
 import type {ExpensePlanData} from "~/models/expense/ExpensePlanConfig";

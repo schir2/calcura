@@ -17,6 +17,7 @@ export const MAX_PAYMENT: number = 1_000_000;
 
 export const DEBT_TEMPLATE: Record<string, DebtData> = {
     default: {
+        id: '1',
         name: DEFAULT_DEBT_NAME,
         interestRate: DEFAULT_INTEREST_RATE,
         paymentFixedAmount: DEFAULT_FIXED_PAYMENT,

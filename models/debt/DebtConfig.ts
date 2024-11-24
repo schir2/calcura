@@ -1,4 +1,4 @@
-import {DEBT_TEMPLATE} from "~/models/debt/constants";
+import {DEBT_TEMPLATE} from "~/models/debt/DebtConstants";
 
 export type DebtPaymentStrategy = 'fixed' | 'max' | 'percentage_of_debt'
 
