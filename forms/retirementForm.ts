@@ -20,7 +20,7 @@ import {
 } from "~/models/constants/retirement";
 import type {SelectOption} from "~/components/form/Select.vue";
 import type {RetirementStrategy} from "~/types";
-import {MAX_NAME_LENGTH, MIN_NAME_LENGTH} from "~/models/income/constants";
+import {MAX_NAME_LENGTH, MIN_NAME_LENGTH} from "~/models/income/IncomeConstants";
 
 export const retirementStrategyOptions: Record<RetirementStrategy, SelectOption> = {
     age: {label: 'Age', value: 'age'},
