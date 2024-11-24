@@ -21,7 +21,7 @@ export default class DebtManager extends ManagerBase<DebtConfig, DebtState> {
         }
     }
 
-    process(planState: PlanState): PlanState {
+    override process(planState: PlanState): PlanState {
         const currentState = this.getCurrentState();
         if (currentState.processed) {
             throw new Error("The current state has already been processed.");
