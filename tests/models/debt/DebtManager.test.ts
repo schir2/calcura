@@ -51,7 +51,7 @@ const initialPlanState: PlanState = {
     iraLimit: 7500,
     inflationRate: 2,
     savingsStartOfYear: 10000,
-    endOfYearSavings: 0,
+    savingsEndOfYear: 0,
     allowNegativeDisposableIncome: AllowNegativeDisposableIncome.none,
 }
 
