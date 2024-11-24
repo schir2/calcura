@@ -9,7 +9,8 @@ export default interface PlanState {
     deferredLimit: number;
     iraLimit: number;
     inflationRate: number;
-    savingsStartOfYear: number;
-    endOfYearSavings: number;
     allowNegativeDisposableIncome: AllowNegativeDisposableIncome;
+
+    savingsStartOfYear: number;
+    savingsEndOfYear: number;
 }
