@@ -59,9 +59,9 @@ export function adjustForAllowNegativeDisposableIncome(
 ): number {
     switch (allowNegative) {
         case AllowNegativeDisposableIncome.none:
-            return Math.min(amount, disposableIncome, minimum);
+            return Math.max(Math.min(amount, disposableIncome), minimum);
         case AllowNegativeDisposableIncome.minimumOnly:
-            return Math.min(amount, disposableIncome + minimum, minimum);
+            return Math.max(Math.min(amount, disposableIncome), minimum);
         case AllowNegativeDisposableIncome.full:
             return amount;
         default:
