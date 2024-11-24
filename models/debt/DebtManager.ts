@@ -9,7 +9,7 @@ import type Command from "~/models/common/Command";
 
 export default class DebtManager extends ManagerBase<DebtConfig, DebtState> {
 
-    override createInitialState(): DebtState {
+    protected override createInitialState(): DebtState {
         return {
             payment: 0,
             principalStartOfYear: this.config.principal,
