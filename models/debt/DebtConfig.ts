@@ -1,5 +1,6 @@
-import type {DebtPaymentStrategy} from "~/types";
 import {DEBT_TEMPLATE} from "~/models/debt/constants";
+
+export type DebtPaymentStrategy = 'fixed' | 'max' | 'percentage_of_debt'
 
 export interface DebtData {
     id: string;
