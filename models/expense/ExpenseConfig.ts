@@ -66,8 +66,8 @@ export default class ExpenseConfig {
         this.isTaxDeductible = data.isTaxDeductible
     }
 
-    static defaultValues(template: keyof typeof EXPENSE_TEMPLATE) {
-
+    static defaultValues(template: keyof typeof EXPENSE_TEMPLATE): ExpenseData {
+        return EXPENSE_TEMPLATE[template ?? 'default']
     }
 
     calculateAnnualExpense(): number {
