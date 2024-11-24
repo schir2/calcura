@@ -1,3 +1,5 @@
+import type {AllowNegativeDisposableIncome} from "~/models/plan/PlanConfig";
+
 export default interface PlanState {
     age: number;
     year: number;
@@ -9,4 +11,5 @@ export default interface PlanState {
     inflationRate: number;
     savingsStartOfYear: number;
     endOfYearSavings: number;
+    allowNegativeDisposableIncome: AllowNegativeDisposableIncome;
 }
