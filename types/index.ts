@@ -6,5 +6,4 @@ export type ExpensesGrowthStrategy = 'fixed' | 'percentage_increase';
 export type IraContributionStrategy = 'fixed' | 'percent_of_income' | 'max';
 export type InvestmentGrowthApplicationStrategy = 'start' | 'end';
 export type TaxableContributionStrategy = 'fixed' | 'percent_of_income';
-export type DebtPaymentStrategy = 'fixed' | 'max' | 'percentage_of_debt'
 
