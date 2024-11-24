@@ -3,7 +3,7 @@ import {calculateCompoundInterest} from "./financial";
 import {TAX_DEFERRED_CONTRIBUTION_LIMIT_2024, TAX_DEFERRED_DEFAULT_YEAR, TAX_DEFERRED_ELECTIVE_CONTRIBUTION_CATCH_UP_LIMIT_2024, TAX_DEFERRED_ELECTIVE_CONTRIBUTION_LIMIT_2024, TAX_DEFERRED_LIMIT_INFLATION_RATE} from "~/models/taxDeferred/TaxDeferredInvestmentConstants";
 
 
-export function calculateTaxDeferredContributionLimit(year: number): number {
+export function getTaxDeferredContributionLimit(year: number, age: number): number {
     return calculateCompoundInterest(
         TAX_DEFERRED_CONTRIBUTION_LIMIT_2024,
         TAX_DEFERRED_LIMIT_INFLATION_RATE / 100,
@@ -13,7 +13,7 @@ export function calculateTaxDeferredContributionLimit(year: number): number {
 
 }
 
-export function calculateTaxDeferredElectiveContributionLimit(year: number): number {
+export function getTaxDeferredElectiveContributionLimit(year: number, age:number): number {
     return calculateCompoundInterest(
         TAX_DEFERRED_ELECTIVE_CONTRIBUTION_LIMIT_2024,
         TAX_DEFERRED_LIMIT_INFLATION_RATE / 100,
@@ -23,7 +23,7 @@ export function calculateTaxDeferredElectiveContributionLimit(year: number): num
 
 }
 
-export function calculateTaxDeferredElectiveContributionCatchUpLimit(year: number): number {
+export function getTaxDeferredElectiveContributionCatchUpLimit(year: number): number {
     return calculateCompoundInterest(
         TAX_DEFERRED_ELECTIVE_CONTRIBUTION_CATCH_UP_LIMIT_2024,
         TAX_DEFERRED_LIMIT_INFLATION_RATE / 100,
@@ -32,3 +32,4 @@ export function calculateTaxDeferredElectiveContributionCatchUpLimit(year: numbe
     )
 
 }
+
