@@ -33,5 +33,5 @@ export const PLAN_TEMPLATE: Record<string, PlanData> = {
         debts: [DebtConfig.defaultValues()],
         taxDeferredInvestments: [TaxDeferredInvestmentConfig.defaultValues()],
 
-    }
+    },
 }
