@@ -2,7 +2,6 @@ import type IForm from '~/types/IForm';
 import type {
     ExpensesGrowthStrategy,
     GrowthStrategy,
-    IncomeTaxStrategy,
     InflationGrowthStrategy,
     InvestmentGrowthApplicationStrategy,
     IraContributionStrategy,
@@ -18,6 +17,7 @@ import {
 import DebtConfig from "~/models/debt/DebtConfig";
 import type {EmployerContributionStrategy, TaxDeferredContributionStrategy} from "~/models/taxDeferred/TaxDeferredInvestmentConstants";
 import {TAX_DEFERRED_CATCH_UP_AGE, TAX_DEFERRED_LIMIT_INFLATION_RATE} from "~/models/taxDeferred/TaxDeferredInvestmentConstants";
+import type {IncomeTaxStrategy} from "~/models/tax/TaxConfig";
 
 export default class Row {
     age: number;
