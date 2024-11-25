@@ -35,11 +35,11 @@ export function adjustForAllowNegativeDisposableIncome(
     }
 ): number {
     switch (allowNegative) {
-        case AllowNegativeDisposableIncome.none:
+        case 'none':
             return Math.max(Math.min(amount, disposableIncome), minimum);
-        case AllowNegativeDisposableIncome.minimumOnly:
+        case 'minimum_only':
             return Math.max(Math.min(amount, disposableIncome), minimum);
-        case AllowNegativeDisposableIncome.full:
+        case 'full':
             return amount;
         default:
             throw new Error(`Unknown AllowNegativeDisposableIncome option: ${allowNegative}`);
