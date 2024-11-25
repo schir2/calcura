@@ -15,7 +15,7 @@
 </template>
 <script setup lang="ts">
 import {retirementFields} from "~/forms/retirementForm";
-import RetirementConstants from "~/models/retirement/RetirementConstants";
+import RetirementConfig from "~/models/retirement/RetirementConfig";
 
 const fieldMetadata = retirementFields;
 
@@ -23,6 +23,6 @@ interface Props {
   showAdvancedOptions?: boolean;
 }
 
-const retirement = reactive(new RetirementConstants(RetirementConstants.defaultValues()))
+const retirement = reactive(new RetirementConfig(RetirementConfig.defaultValues()))
 const {showAdvancedOptions = false} = defineProps<Props>()
 </script>

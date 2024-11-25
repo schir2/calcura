@@ -1,8 +1,10 @@
 import * as yup from "yup"
 import type {TaxData} from "~/models/tax/TaxConfig"
-import type { FieldData } from "~/interfaces/FieldData";
+import type {FieldData} from "~/interfaces/FieldData";
 import {DEFAULT_TAX_STRATEGY} from "~/models/tax/TaxConstants";
-import {IncomeTaxStrategy} from "~/models/tax/TaxConfig";
+
+export const MIN_TAX_RATE = 0;
+export const MAX_TAX_RATE = 100;
 
 export const taxFields: Record<keyof TaxData, FieldData> = {
     taxStrategy: {
@@ -14,7 +16,21 @@ export const taxFields: Record<keyof TaxData, FieldData> = {
         defaultValue: DEFAULT_TAX_STRATEGY,
         rules: yup.mixed().required('Tax strategy is required'),
         options: [
-            {label: "Simple", value: IncomeTaxStrategy.Simple}
+            {label: "Simple", value: 'simple'}
         ],
-    }
+    },
+    taxRate: {
+        name: 'taxRate',
+        label: 'Tax Rate (%)',
+        placeholder: 'Enter tax rate',
+        helpText: 'Effective tax rate for this income.',
+        type: 'number',
+        defaultValue: 0, // Defaulting to 0%
+        rules: yup
+            .number()
+            .required('Tax rate is required')
+            .min(MIN_TAX_RATE, 'Tax rate cannot be negative.')
+            .max(MAX_TAX_RATE, 'Tax rate must be 100% or less.'),
+    },
+
 }

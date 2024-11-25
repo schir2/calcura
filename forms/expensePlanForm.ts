@@ -1,6 +1,6 @@
 import * as yup from "yup";
 import type {FieldData} from "~/interfaces/FieldData";
-import {EXPENSE_PLAN_NAME_MAX_LENGTH, EXPENSE_PLAN_NAME_MIN_LENGTH, ExpenseGrowthStrategy, ExpensePlanType} from "~/models/expense/ExpensePlanConfig";
+import {EXPENSE_PLAN_NAME_MAX_LENGTH, EXPENSE_PLAN_NAME_MIN_LENGTH, type ExpenseGrowthStrategy, type ExpensePlanType} from "~/models/expense/ExpensePlanConfig";
 
 export const expensePlanFields: Record<string, FieldData> = {
     name: {
@@ -22,13 +22,13 @@ export const expensePlanFields: Record<string, FieldData> = {
         placeholder: "Select plan type",
         helpText: "Choose between a simple or itemized expense plan.",
         type: "select",
-        defaultValue: ExpensePlanType.Simple,
+        defaultValue: 'simple',
         rules: yup
             .mixed<ExpensePlanType>()
             .required("Plan type is required"),
         options: [
-            {label: "Simple", value: ExpensePlanType.Simple},
-            {label: "Itemized", value: ExpensePlanType.Itemized},
+            {label: "Simple", value: 'simple'},
+            {label: "Itemized", value: 'itemized'},
         ],
     },
     growthStrategy: {
@@ -37,15 +37,15 @@ export const expensePlanFields: Record<string, FieldData> = {
         placeholder: "Select growth strategy",
         helpText: "Choose how your expenses will grow over time.",
         type: "select",
-        defaultValue: ExpenseGrowthStrategy.Inflation,
+        defaultValue: 'inflation',
         rules: yup
             .mixed<ExpenseGrowthStrategy>()
             .required("Growth strategy is required"),
         options: [
-            {label: "Fixed", value: ExpenseGrowthStrategy.Fixed},
-            {label: "Inflation", value: ExpenseGrowthStrategy.Inflation},
-            {label: "Percentage of Income", value: ExpenseGrowthStrategy.PercentageOfIncome},
-            {label: "No Growth", value: ExpenseGrowthStrategy.NoGrowth},
+            {label: "Fixed", value: 'fixed'},
+            {label: "Inflation", value: 'inflation'},
+            {label: "Percentage of Income", value: 'percentageOfIncome'},
+            {label: "No Growth", value: 'noGrowth'},
         ],
     },
 };

@@ -45,7 +45,7 @@ const initialPlanState: PlanState = {
     age: 30,
     year: 2024,
     grossIncome: 60000,
-    disposableIncome: 500,
+    taxedIncome: 500,
     electiveLimit: 19500,
     deferredLimit: 20000,
     iraLimit: 7500,
@@ -70,21 +70,21 @@ describe("DebtManager", () => {
 
     it("should calculate fixed payment correctly", () => {
         const state = debtManager.getCurrentState();
-        const payment = debtManager.calculatePayment(state, initialPlanState.disposableIncome, initialPlanState.allowNegativeDisposableIncome);
+        const payment = debtManager.calculatePayment(state, initialPlanState.taxedIncome, initialPlanState.allowNegativeDisposableIncome);
         expect(payment).toBe(100); // Fixed amount
     });
 
     it("should calculate percentage payment correctly", () => {
         debtManager = new DebtManager(fixedDebtData)
         const state = debtManager.getCurrentState();
-        const payment = debtManager.calculatePayment(state, initialPlanState.disposableIncome, initialPlanState.allowNegativeDisposableIncome);
+        const payment = debtManager.calculatePayment(state, initialPlanState.taxedIncome, initialPlanState.allowNegativeDisposableIncome);
         expect(payment).toBe(100); // 10% of principal (1000 * 0.1)
     });
 
     it("should calculate max payment correctly", () => {
         debtManager = new DebtManager(maxDebtData)
         const state = debtManager.getCurrentState();
-        const payment = debtManager.calculatePayment(state, initialPlanState.disposableIncome, initialPlanState.allowNegativeDisposableIncome);
+        const payment = debtManager.calculatePayment(state, initialPlanState.taxedIncome, initialPlanState.allowNegativeDisposableIncome);
         expect(payment).toBe(500); // Full principal
     });
 
@@ -103,7 +103,7 @@ describe("DebtManager", () => {
         expect(currentState.interestAmount).toBeCloseTo(45); // (Principal - Payment) * Interest Rate
         expect(currentState.principalEndOfYear).toBeCloseTo(945); // Updated principal
         expect(currentState.processed).toBe(true);
-        expect(planState.disposableIncome).toBe(400); // Disposable income reduced by payment
+        expect(planState.taxedIncome).toBe(400); // Disposable income reduced by payment
     });
 
     it("should throw error if processing already processed state", () => {

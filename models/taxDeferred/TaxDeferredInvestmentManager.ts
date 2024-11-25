@@ -1,6 +1,6 @@
 import TaxDeferredInvestmentConfig from './TaxDeferredInvestmentConfig';
 import {adjustContributionForDisposableIncome, assertDefined, calculateInvestmentGrowthAmount} from "~/utils";
-import {AllowNegativeDisposableIncome} from "~/models/plan/PlanConfig";
+import {type AllowNegativeDisposableIncome} from "~/models/plan/PlanConfig";
 import {TaxDeferredInvestmentState} from "~/models/taxDeferred/TaxDeferredInvestmentState";
 
 export class TaxDeferredInvestmentService {

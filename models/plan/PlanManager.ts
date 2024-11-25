@@ -4,23 +4,30 @@ import DebtManager from "~/models/debt/DebtManager";
 import ManagerBase from "~/models/common/ManagerBase";
 import {getIraLimit, getTaxDeferredContributionLimit, getTaxDeferredElectiveContributionLimit} from "~/utils";
 import type Command from "~/models/common/Command";
+import IncomeManager from "~/models/income/IncomeManager";
+import TaxManager from "~/models/tax/TaxManager";
 
 export default class PlanManager extends ManagerBase<PlanConfig, PlanState> {
+    taxManager: TaxManager
     debtManagers: DebtManager[]
+    incomeManagers: IncomeManager[]
 
     constructor(config: PlanConfig) {
         super(config)
+        this.taxManager = new TaxManager(config.tax)
         this.debtManagers = config.debts.map((debtConfig) => new DebtManager(debtConfig))
+        this.incomeManagers = config.incomes.map((incomeConfig) => new IncomeManager(incomeConfig))
 
     }
 
     protected createInitialState(): PlanState {
-        const grossIncome = this.config.incomes.reduce((accruedValue, income) => accruedValue + income.grossIncome, 0)
+        const grossIncome = this.config.incomes.reduce((agg, income) => agg + income.grossIncome, 0);
         return {
             age: this.config.age,
             year: this.config.year,
             grossIncome: grossIncome,
-            disposableIncome: getDisposableIncome(grossIncome),
+            taxableIncome: grossIncome,
+            taxedIncome: 0,
             electiveLimit: getTaxDeferredElectiveContributionLimit(this.config.year, this.config.age),
             deferredLimit: getTaxDeferredContributionLimit(this.config.year, this.config.age),
             iraLimit: getIraLimit(this.config.year, this.config.age),
@@ -39,18 +46,19 @@ export default class PlanManager extends ManagerBase<PlanConfig, PlanState> {
             age: age,
             year: year,
             grossIncome: 0,
-            disposableIncome: 0,
+            taxedIncome: 0,
             electiveLimit: getTaxDeferredElectiveContributionLimit(year, age),
             deferredLimit: getTaxDeferredContributionLimit(year, age),
             iraLimit: getIraLimit(year, age),
             savingsStartOfYear: previousState.savingsEndOfYear,
-            savingsEndOfYear:0,
+            savingsEndOfYear: 0,
         }
     }
 
     getCommands(): Command[] {
         const commands: Command[] = []
         this.debtManagers.forEach((debtManager => commands.push(...debtManager.getCommands())))
+        this.incomeManagers.forEach((incomeManager) => commands.push(...incomeManager.getCommands()))
         return commands;
     }
 

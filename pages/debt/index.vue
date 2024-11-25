@@ -30,7 +30,7 @@
         </thead>
         <tbody>
         <tr v-for="(state, index) in planStates">
-          <td>{{ state.disposableIncome }}</td>
+          <td>{{ state.taxedIncome }}</td>
         </tr>
         </tbody>
       </table>
@@ -58,7 +58,7 @@ watch(debtConfig, (newValue) => {
     age: 30,
     year: 2024,
     grossIncome: 100000,
-    disposableIncome: 70000,
+    taxedIncome: 70000,
     electiveLimit: 22500,
     deferredLimit: 66000,
     iraLimit: 7000,
@@ -79,7 +79,7 @@ watch(debtConfig, (newValue) => {
       break;
 
     }
-    if (planState.disposableIncome <= 0) {
+    if (planState.taxedIncome <= 0) {
       console.log("No more disposable income. Stopping iteration.");
       break;
     }

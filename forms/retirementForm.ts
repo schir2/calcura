@@ -1,6 +1,6 @@
 import * as yup from "yup";
 import type {FieldData} from "~/interfaces/FieldData";
-import type {RetirementData} from "~/models/retirement/RetirementConstants";
+import type {RetirementData} from "~/models/retirement/RetirementConfig";
 import {
     DEFAULT_RETIREMENT_AGE,
     DEFAULT_RETIREMENT_INCOME_GOAL,

@@ -6,14 +6,14 @@
           :key="index"
           :expenseIndex="index"
           :expense="expense"
-          :showAdvancedOptions="expensePlan.planType === ExpensePlanType.Itemized"
+          :showAdvancedOptions="expensePlan.planType === 'itemized'"
       />
     </CommonList>
   </CommonCard>
 
 </template>
 <script setup lang="ts">
-import ExpensePlanConfig, {ExpensePlanType} from "~/models/expense/ExpensePlanConfig";
+import ExpensePlanConfig from "~/models/expense/ExpensePlanConfig";
 
 interface Props {
   expensePlan: ExpensePlanConfig

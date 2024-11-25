@@ -1,12 +1,6 @@
 import {INCOME_TEMPLATE} from "~/models/income/IncomeConstants";
 
-export enum IncomeType {
-    Ordinary = 'Ordinary',
-    CapitalGains = 'CapitalGains',
-    TaxExempt = 'TaxExempt',
-    SelfEmployedIncome = 'SelfEmployedIncome',
-
-}
+export type IncomeType = 'ordinary'
 
 
 export interface IncomeData {

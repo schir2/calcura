@@ -1,6 +1,6 @@
 import DebtConfig from "~/models/debt/DebtConfig";
 import type DebtState from "~/models/debt/DebtState";
-import {AllowNegativeDisposableIncome} from "~/models/plan/PlanConfig";
+import {type AllowNegativeDisposableIncome} from "~/models/plan/PlanConfig";
 import {adjustForAllowNegativeDisposableIncome, assertDefined} from "~/utils";
 import ManagerBase from "~/models/common/ManagerBase";
 import type PlanState from "~/models/plan/PlanState";
@@ -26,7 +26,7 @@ export default class DebtManager extends ManagerBase<DebtConfig, DebtState> {
         if (currentState.processed) {
             throw new Error("The current state has already been processed.");
         }
-        const payment = this.calculatePayment(currentState, planState.disposableIncome, planState.allowNegativeDisposableIncome)
+        const payment = this.calculatePayment(currentState, planState.taxedIncome, planState.allowNegativeDisposableIncome)
         const principalEndOfYear = currentState.principalStartOfYear - payment;
         const interestAmount = principalEndOfYear * (this.config.interestRate / 100);
         const interestLifetime = currentState.interestLifetime + interestAmount;
@@ -41,10 +41,10 @@ export default class DebtManager extends ManagerBase<DebtConfig, DebtState> {
             paymentLifetime: paymentLifetime,
             principalEndOfYear: updatedPrincipalEndOfYear
         })
-        const updatedDisposableIncome = planState.disposableIncome - payment
+        const updatedDisposableIncome = planState.taxedIncome - payment
         return {
             ...planState,
-            disposableIncome: updatedDisposableIncome
+            taxedIncome: updatedDisposableIncome
         };
     }
 

@@ -12,7 +12,7 @@ export interface RetirementData {
 
 }
 
-export default class RetirementConstants {
+export default class RetirementConfig {
     name: string;
     lifeExpectancy: number;
     retirementStrategy: RetirementStrategy;

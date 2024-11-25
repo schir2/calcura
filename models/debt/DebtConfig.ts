@@ -3,7 +3,6 @@ import {DEBT_TEMPLATE} from "~/models/debt/DebtConstants";
 export type DebtPaymentStrategy = 'fixed' | 'max' | 'percentage_of_debt'
 
 export interface DebtData {
-    id: string;
     name: string;
     principal: number;
     interestRate: number;
@@ -14,7 +13,6 @@ export interface DebtData {
 }
 
 export default class DebtConfig {
-    id: string;
     name: string;
     principal: number;
     interestRate: number;
@@ -24,7 +22,6 @@ export default class DebtConfig {
     paymentPercentage: number;
 
     constructor(data: DebtData) {
-        this.id = data.id;
         this.name = data.name;
         this.principal = data.principal;
         this.interestRate = data.interestRate;

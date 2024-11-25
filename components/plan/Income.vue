@@ -11,10 +11,8 @@
         <div class="grid grid-cols-6 gap-3">
           <FormField :field="fieldMetadata.name" :model="income"></FormField>
           <FormField :field="fieldMetadata.grossIncome" :model="income"></FormField>
-          <FormSelect :field="fieldMetadata.growthStrategy" :model="income"></FormSelect>
           <FormField :field="fieldMetadata.growthRate" :model="income"></FormField>
-          <FormField :field="fieldMetadata.taxRate" :model="income"></FormField>
-          <FormSelect :field="fieldMetadata.taxStrategy" :model="income"></FormSelect>
+          <FormSelect :field="fieldMetadata.incomeType" :model="income"></FormSelect>
         </div>
       </section>
     </Form>

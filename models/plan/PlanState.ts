@@ -4,7 +4,8 @@ export default interface PlanState {
     age: number;
     year: number;
     grossIncome: number;
-    disposableIncome: number;
+    taxableIncome: number;
+    taxedIncome: number;
     electiveLimit: number;
     deferredLimit: number;
     iraLimit: number;
