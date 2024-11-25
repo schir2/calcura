@@ -1,4 +1,4 @@
-import type {IncomeTaxStrategy, InvestmentGrowthApplicationStrategy} from "~/types";
+import type {InvestmentGrowthApplicationStrategy} from "~/types";
 import {AllowNegativeDisposableIncome} from "~/models/plan/PlanConfig";
 
 export function calculateCompoundInterest(principal: number, interestRate: number, numberOfInterestApplicationsPerPeriod: number = 1, numberOfPeriods: number): number {
@@ -43,18 +43,5 @@ export function adjustForAllowNegativeDisposableIncome(
             return amount;
         default:
             throw new Error(`Unknown AllowNegativeDisposableIncome option: ${allowNegative}`);
-    }
-}
-
-export interface TaxConfig {
-    taxRate: number
-}
-
-export function getTaxedIncome(amount: number, taxConfig: TaxConfig, taxStrategy: IncomeTaxStrategy): number {
-    switch (taxStrategy) {
-        case "simple":
-            return amount * taxConfig.taxRate / 100
-        default:
-            return amount * taxConfig.taxRate / 100
     }
 }
