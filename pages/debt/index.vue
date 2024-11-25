@@ -38,17 +38,18 @@
   </div>
 </template>
 <script setup lang="ts">
-import { reactive, ref, watch } from 'vue';
+import {reactive, ref, watch} from 'vue';
 import DebtConfig from '~/models/debt/DebtConfig';
 import DebtManager from '~/models/debt/DebtManager';
-import { AllowNegativeDisposableIncome } from '~/models/plan/PlanConfig';
 import type PlanState from '~/models/plan/PlanState';
 import type DebtState from "~/models/debt/DebtState";
+import PlanConfig from "~/models/plan/PlanConfig";
+import PlanManager from "~/models/plan/PlanManager";
 
 const debtConfig = reactive(new DebtConfig(DebtConfig.defaultValues()));
+const planConfig = new PlanConfig(PlanConfig.defaultValues());
+const planManager = ref(new PlanManager(planConfig));
 const debtManager = ref(new DebtManager(debtConfig));
-const cmd = debtManager.value.getCommands()
-const planStates = ref<PlanState[]>([]);
 const MAX_ITERATIONS = 30;
 
 watch(debtConfig, (newValue) => {
@@ -59,13 +60,14 @@ watch(debtConfig, (newValue) => {
     year: 2024,
     grossIncome: 100000,
     taxedIncome: 70000,
+    taxableIncome: 10000,
     electiveLimit: 22500,
     deferredLimit: 66000,
     iraLimit: 7000,
     inflationRate: 3,
     savingsStartOfYear: 0,
     savingsEndOfYear: 0,
-    allowNegativeDisposableIncome: AllowNegativeDisposableIncome.none,
+    allowNegativeDisposableIncome: 'none',
   };
   planStates.value = [planState];
   while (i < MAX_ITERATIONS) {
@@ -83,11 +85,11 @@ watch(debtConfig, (newValue) => {
       console.log("No more disposable income. Stopping iteration.");
       break;
     }
-    if (i == MAX_ITERATIONS - 1){
+    if (i == MAX_ITERATIONS - 1) {
       break;
     }
     debtManager.value.advanceTimePeriod();
     i += 1;
   }
-}, { deep: true });
+}, {deep: true});
 </script>
