@@ -65,4 +65,15 @@ export default class PlanManager extends ManagerBase<PlanConfig, PlanState> {
     process(planState: PlanState): PlanState {
         return planState
     }
+
+    simulate(): PlanState[] {
+        while (true){
+            const newState = this.process(this.getCurrentState())
+            this.updateCurrentState(newState)
+            if (this.retirementManager.retirementAchieved()){
+                return this.states
+            }
+            this.advanceTimePeriod()
+        }
+    }
 }
