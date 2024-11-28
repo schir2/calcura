@@ -13,6 +13,17 @@ export default abstract class ManagerBase<TConfig, TState> {
 
     protected abstract createInitialState(): TState;
 
+    getInitialState(): TState {
+        return this.getState(0)
+    }
+
+    getState(index: number): TState {
+        if (this.states.length < index) {
+            throw new Error(`The state at ${index} does not exist.`);
+        }
+        return this.states[index]
+    }
+
     getCurrentState(): TState {
         if (this.states.length === 0) {
             throw new Error("No states available. Ensure an initial state is created.");

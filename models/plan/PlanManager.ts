@@ -6,14 +6,18 @@ import {getIraLimit, getTaxDeferredContributionLimit, getTaxDeferredElectiveCont
 import type Command from "~/models/common/Command";
 import IncomeManager from "~/models/income/IncomeManager";
 import TaxManager from "~/models/tax/TaxManager";
+import RetirementManager from "~/models/retirement/RetirementManager";
+import type {IncomeType} from "~/models/income/IncomeConfig";
 
 export default class PlanManager extends ManagerBase<PlanConfig, PlanState> {
+    retirementManager: RetirementManager
     taxManager: TaxManager
     debtManagers: DebtManager[]
     incomeManagers: IncomeManager[]
 
     constructor(config: PlanConfig) {
         super(config)
+        this.retirementManager = new RetirementManager(config.retirement)
         this.taxManager = new TaxManager(config.tax)
         this.debtManagers = config.debts.map((debtConfig) => new DebtManager(debtConfig))
         this.incomeManagers = config.incomes.map((incomeConfig) => new IncomeManager(incomeConfig))
@@ -75,5 +79,19 @@ export default class PlanManager extends ManagerBase<PlanConfig, PlanState> {
             }
             this.advanceTimePeriod()
         }
+    }
+
+    getIncomeSummary(stateIndex?: number): Record<IncomeType, number>{
+        let incomeTypes: Record<IncomeType, number> = {
+            ordinary: 0
+        }
+        this.incomeManagers.forEach((incomeManager) =>{
+            const incomeState = incomeManager.getState(stateIndex?? 0)
+            incomeTypes[incomeManager.getConfig().incomeType] = incomeState.grossIncome
+        })
+
+
+
+        return incomeTypes
     }
 }

@@ -7,7 +7,7 @@ import {
     MAX_EXPENSE_AMOUNT,
     EXPENSE_NAME_MIN_LENGTH,
     EXPENSE_NAME_MAX_LENGTH,
-} from "~/models/expense/constants";
+} from "~/models/expense/ExpenseConstants";
 
 export const expenseFields: Record<keyof ExpenseData, FieldData> = {
     name: {

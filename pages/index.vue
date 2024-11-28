@@ -1,4 +1,7 @@
 <template>
+  <Teleport to="#right-side-bar">
+    <PlanSummary :planManager="planManager"></PlanSummary>
+  </Teleport>
   <div class="col-span-4 space-y-6">
     <InputToggle name="showAdvancedOptions" v-model="showAdvancedOptions" label="Show Advanced Options"/>
     <PlanRetirement :showAdvancedOptions="showAdvancedOptions"/>
@@ -7,7 +10,7 @@
     <CommonCard class="space-y-6 bg-skin-muted">
       <div class="flex align-middle gap-6">
         <h2 class="text-3xl">IncomeConfig(s)</h2>
-        <CommonButton @click="planConfig.addIncome()">Add IncomeConfig</CommonButton>
+        <CommonButton @click="handleAddIncome">Add Income</CommonButton>
       </div>
       <CommonList>
         <PlanIncome
@@ -81,7 +84,6 @@
       </CommonList>
     </CommonCard>
   </div>
-  <PlanSummary class="col-span-1"/>
 </template>
 <script setup lang="ts">
 import InputToggle from "~/components/form/InputToggle.vue";
@@ -96,6 +98,10 @@ useHead({
   ],
 })
 
+function handleAddIncome(){
+  planConfig.addIncome()
+}
+
 function handleDeleteIncome(payload: { index: number }) {
   planConfig.deleteIncome(payload.index)
 }
@@ -109,7 +115,7 @@ function handleDeleteDebt(payload: { index: number }) {
 }
 
 const planConfig = reactive(new PlanConfig(PlanConfig.defaultValues()))
-const planManager = new PlanManager(planConfig)
+const planManager = reactive(new PlanManager(planConfig))
 
 const showAdvancedOptions = ref<boolean>(false)
 </script>
