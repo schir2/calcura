@@ -30,10 +30,10 @@
         <h2 class="text-3xl">ExpenseConfig PlanConfig</h2>
       </div>
       <div class="grid grid-cols-2 gap-3">
-        <CommonCard @click="planConfig.activeExpensePlan='simple'" :class="{'bg-skin-accent': planConfig.activeExpensePlan==='simple'}">
+        <CommonCard @click="planConfig.ExpenseTrackingStrategy='simple'" :class="{'bg-skin-accent': planConfig.ExpenseTrackingStrategy==='simple'}">
           <h3 class="text-2xl">Simple ExpenseConfig PlanConfig</h3>
         </CommonCard>
-        <CommonCard @click="planConfig.activeExpensePlan='itemized'" :class="{'bg-skin-accent': planConfig.activeExpensePlan==='itemized'}">
+        <CommonCard @click="planConfig.ExpenseTrackingStrategy='itemized'" :class="{'bg-skin-accent': planConfig.ExpenseTrackingStrategy==='itemized'}">
           <h3 class="text-2xl">Itemized ExpenseConfig PlanConfig</h3>
         </CommonCard>
       </div>

@@ -1,6 +1,6 @@
 import ManagerBase from "~/models/common/ManagerBase";
 import type TaxState from "~/models/tax/TaxState";
-import TaxConfig from "~/models/tax/TaxConfig";
+import type TaxConfig from "~/models/tax/TaxConfig";
 import type PlanState from "~/models/plan/PlanState";
 import type Command from "~/models/common/Command";
 import type {IncomeType} from "~/models/income/IncomeConfig";

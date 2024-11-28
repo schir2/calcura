@@ -7,7 +7,7 @@ export interface ExpensePlanState {
 
 }
 
-export default class ExpensePlanManager extends ManagerBase<ExpensePlanConfig, ExpensePlanState> {
+export default class ExpenseManager extends ManagerBase<ExpensePlanConfig, ExpensePlanState> {
     protected createInitialState(): ExpensePlanState {
         return undefined;
     }

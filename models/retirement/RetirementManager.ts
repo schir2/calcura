@@ -1,5 +1,5 @@
 import ManagerBase from "~/models/common/ManagerBase";
-import  RetirementConfig from "~/models/retirement/RetirementConfig";
+import  type RetirementConfig from "~/models/retirement/RetirementConfig";
 import type RetirementState from "~/models/retirement/RetirementState";
 import type PlanState from "~/models/plan/PlanState";
 import type Command from "~/models/common/Command";
