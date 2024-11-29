@@ -1,4 +1,4 @@
-import PlanConfig from "~/models/plan/PlanConfig";
+import type PlanConfig from "~/models/plan/PlanConfig";
 import type PlanState from "~/models/plan/PlanState";
 import DebtManager from "~/models/debt/DebtManager";
 import ManagerBase from "~/models/common/ManagerBase";

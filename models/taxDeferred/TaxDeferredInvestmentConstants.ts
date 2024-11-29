@@ -1,5 +1,5 @@
 import type {SelectOption} from "~/components/form/BaseSelect.vue";
-import type {TaxDeferredInvestmentConfigData} from "~/models/taxDeferred/TaxDeferredInvestmentConfig";
+import type TaxDeferredInvestmentConfig from "~/models/taxDeferred/TaxDeferredInvestmentConfig";
 import {DEFAULT_GROWTH_APPLICATION_STRATEGY} from "~/constants/financial";
 
 export const TAX_DEFERRED_DEFAULT_BALANCE: number = 0
@@ -36,24 +36,3 @@ export const TaxDeferredContributionOptions: Record<string, SelectOption> = {
 export type TaxDeferredContributionStrategy = keyof typeof TaxDeferredContributionOptions;
 
 export const DEFAULT_ELECTIVE_CONTRIBUTION_FIXED_AMOUNT: number = 0
-export const TAX_DEFERRED_INVESTMENT_TEMPLATE: Record<string, TaxDeferredInvestmentConfigData> = {
-    default: {
-        name: '401k',
-
-        growthApplicationStrategy: DEFAULT_GROWTH_APPLICATION_STRATEGY,
-        growthRate: DEFAULT_DAX_DEFERRED_GROWTH_RATE,
-        initialBalance: TAX_DEFERRED_DEFAULT_BALANCE,
-
-        electiveContributionStrategy: DEFAULT_ELECTIVE_CONTRIBUTION_STRATEGY,
-        electiveContributionPercentage: DEFAULT_ELECTIVE_CONTRIBUTION_PERCENTAGE,
-        electiveContributionFixedAmount: 0,
-
-        employerContributes: DEFAULT_EMPLOYER_CONTRIBUTES,
-        employerContributionStrategy: DEFAULT_EMPLOYER_CONTRIBUTION_STRATEGY,
-        employerMatchPercentage: DEFAULT_EMPLOYER_MATCH_PERCENTAGE,
-        employerMatchPercentageLimit: DEFAULT_EMPLOYER_MATCH_PERCENTAGE_LIMIT,
-        employerContributionFixedAmount: 0,
-        employerCompensationMatchPercentage: 0,
-
-    }
-}

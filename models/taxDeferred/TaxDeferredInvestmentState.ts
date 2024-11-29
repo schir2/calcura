@@ -1,4 +1,4 @@
-export interface TaxDeferredInvestmentStateData {
+export interface TaxDeferredInvestmentState {
     year: number;
     balanceStartOfYear: number;
 
@@ -19,7 +19,7 @@ export class TaxDeferredInvestmentState {
     growthAmount: number;
     balanceEndOfYear: number;
 
-    constructor(data: TaxDeferredInvestmentStateData) {
+    constructor(data: TaxDeferredInvestmentState) {
         this.year = data.year;
         this.balanceStartOfYear = data.balanceStartOfYear;
 

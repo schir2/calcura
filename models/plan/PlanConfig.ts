@@ -1,10 +1,10 @@
 import type DebtConfig from "~/models/debt/DebtConfig";
-import TaxDeferredInvestmentConfig from "~/models/taxDeferred/TaxDeferredInvestmentConfig";
+import type TaxDeferredInvestmentConfig from "~/models/taxDeferred/TaxDeferredInvestmentConfig";
 import type IncomeConfig from "~/models/income/IncomeConfig";
 import type RetirementConfig from "~/models/retirement/RetirementConfig";
-import CashConfig from "~/models/cash/CashConfig";
+import type CashConfig from "~/models/cash/CashConfig";
 import type TaxConfig from "~/models/tax/TaxConfig";
-import type ExpenseConfig, {ExpenseTrackingStrategy} from "~/models/expense/ExpenseConfig";
+import type ExpenseConfig from "~/models/expense/ExpenseConfig";
 
 
 export type AllowNegativeDisposableIncome = 'none' | 'minimum_only' | 'full'
@@ -22,7 +22,6 @@ export default interface PlanConfig {
     tax: TaxConfig
     incomes: IncomeConfig[]
     expenses: ExpenseConfig[]
-    ExpenseTrackingStrategy: ExpenseTrackingStrategy
     debts: DebtConfig[]
     taxDeferredInvestments: TaxDeferredInvestmentConfig[];
 }

@@ -1,9 +1,14 @@
-import {DEFAULT_TAX_RATE, DEFAULT_TAX_STRATEGY} from "~/models/tax/TaxConstants";
-import type TaxConfig from "~/models/tax/TaxConfig";
+import type RetirementConfig from "~/models/retirement/RetirementConfig";
+import {DEFAULT_RETIREMENT_AGE, DEFAULT_RETIREMENT_LIFE_EXPECTANCY} from "~/models/retirement/RetirementConstants";
 
-export function defaultTaxFactory(): TaxConfig {
+export function ageRetirementFactory(): RetirementConfig {
     return {
-        taxRate: DEFAULT_TAX_RATE,
-        taxStrategy: DEFAULT_TAX_STRATEGY,
+        name: 'Retire by a Certain Age',
+        retirementStrategy: 'age',
+        retirementAge: DEFAULT_RETIREMENT_AGE,
+        lifeExpectancy: DEFAULT_RETIREMENT_LIFE_EXPECTANCY,
+        retirementSavingsAmount: 0,
+        retirementWithdrawalRate: 0,
+        retirementIncomeGoal: 0,
     }
 }

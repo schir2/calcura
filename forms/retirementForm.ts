@@ -17,7 +17,7 @@ import {
     MIN_RETIREMENT_INCOME_GOAL,
     MIN_RETIREMENT_LIFE_EXPECTANCY,
     MIN_RETIREMENT_WITHDRAWAL_RATE,
-} from "~/models/constants/retirement";
+} from "~/models/retirement/RetirementConstants";
 import type {SelectOption} from "~/components/form/Select.vue";
 import type {RetirementStrategy} from "~/types";
 import {MAX_NAME_LENGTH, MIN_NAME_LENGTH} from "~/models/income/IncomeConstants";

@@ -1,24 +1,19 @@
-import TaxDeferredInvestmentConfig from './TaxDeferredInvestmentConfig';
-import {adjustContributionForDisposableIncome, assertDefined, calculateInvestmentGrowthAmount} from "~/utils";
+import type TaxDeferredInvestmentConfig from './TaxDeferredInvestmentConfig';
+import {adjustForAllowNegativeDisposableIncome, assertDefined, calculateInvestmentGrowthAmount} from "~/utils";
 import {type AllowNegativeDisposableIncome} from "~/models/plan/PlanConfig";
 import {TaxDeferredInvestmentState} from "~/models/taxDeferred/TaxDeferredInvestmentState";
+import ManagerBase from "~/models/common/ManagerBase";
+import type PlanState from "~/models/plan/PlanState";
+import type Command from "~/models/common/Command";
 
-export class TaxDeferredInvestmentService {
-    config: TaxDeferredInvestmentConfig;
-    states: TaxDeferredInvestmentState[]
-
-    constructor(config: TaxDeferredInvestmentConfig) {
-        this.config = config;
-        this.states = [];
-    }
-
+export default class TaxDeferredInvestmentManager extends ManagerBase<TaxDeferredInvestmentConfig, TaxDeferredInvestmentState> {
 
     calculateElectiveContribution(
         limit: number,
         disposableIncome: number,
         incomePreTaxed?: number,
         employerMatchLimit: number = 0,
-        allowNegativeDisposableIncome: AllowNegativeDisposableIncome = AllowNegativeDisposableIncome.none
+        allowNegativeDisposableIncome: AllowNegativeDisposableIncome = 'none'
     ): number {
         let contribution = 0
         switch (this.config.electiveContributionStrategy) {
@@ -36,11 +31,11 @@ export class TaxDeferredInvestmentService {
                 contribution = limit
                 break
         }
-        return adjustContributionForDisposableIncome(
+        return adjustForAllowNegativeDisposableIncome(
             {
                 amount: contribution,
                 disposableIncome: disposableIncome,
-                allowNegativeDisposableIncome: allowNegativeDisposableIncome
+                allowNegative: allowNegativeDisposableIncome
             }
         )
     }
@@ -50,7 +45,7 @@ export class TaxDeferredInvestmentService {
         disposableIncome: number,
         incomePreTaxed?: number,
         employerMatchLimit: number = 0,
-        allowNegativeDisposableIncome: AllowNegativeDisposableIncome = AllowNegativeDisposableIncome.none
+        allowNegativeDisposableIncome: AllowNegativeDisposableIncome = 'none'
     ): number {
         let employerContribution = 0
         const electiveContribution = this.calculateElectiveContribution(
@@ -71,20 +66,36 @@ export class TaxDeferredInvestmentService {
                 break
             case "percentage_of_compensation":
                 assertDefined(incomePreTaxed, 'incomePreTaxed')
-                employerContribution = incomePreTaxed * (this.config.employerContributionPercentage / 100)
+                employerContribution = incomePreTaxed * (this.config.employerCompensationMatchPercentage / 100)
                 break
         }
         return Math.min(employerContribution, limit - electiveContribution)
 
     }
 
-    calculateGrowthAmount(): number {
+    calculateGrowthAmount(state:TaxDeferredInvestmentState): number {
         return calculateInvestmentGrowthAmount({
-                principal: this.balanceStartOfYear,
+                principal: state.balanceStartOfYear,
                 growthRate: this.config.growthRate,
                 growthApplicationStrategy: this.config.growthApplicationStrategy,
-                contribution: this.electiveContribution
+                contribution: state.electiveContribution
             }
         )
+    }
+
+    protected createInitialState(): TaxDeferredInvestmentState {
+        return undefined;
+    }
+
+    protected createNextState(previousState: TaxDeferredInvestmentState): TaxDeferredInvestmentState {
+        return undefined;
+    }
+
+    getCommands(): Command[] {
+        return [];
+    }
+
+    process(planState: PlanState): PlanState {
+        return undefined;
     }
 }

@@ -1,7 +1,7 @@
 import * as yup from "yup";
 import type {FieldData} from "~/interfaces/FieldData";
-import {DEFAULT_CASH_MAINTENANCE_NAME, DEFAULT_CASH_MAINTENANCE_RESERVE_AMOUNT, DEFAULT_CASH_MAINTENANCE_RESERVE_MONTHS, DEFAULT_CASH_MAINTENANCE_STRATEGY, MAX_RESERVE_AMOUNT, MAX_RESERVE_MONTHS, MIN_RESERVE_AMOUNT, MIN_RESERVE_MONTHS} from "~/models/cash/constants";
-import type {CashData, CashMaintenanceStrategy} from "~/models/cash/CashConfig";
+import {DEFAULT_CASH_MAINTENANCE_NAME, DEFAULT_CASH_MAINTENANCE_RESERVE_AMOUNT, DEFAULT_CASH_MAINTENANCE_RESERVE_MONTHS, DEFAULT_CASH_MAINTENANCE_STRATEGY, MAX_RESERVE_AMOUNT, MAX_RESERVE_MONTHS, MIN_RESERVE_AMOUNT, MIN_RESERVE_MONTHS} from "~/models/cash/CashConstants";
+import type {CashConfig, CashMaintenanceStrategy} from "~/models/cash/CashConfig";
 import type {SelectOption} from "~/components/form/Select.vue";
 
 export const cashMaintenanceStrategyOptions: Record<CashMaintenanceStrategy, SelectOption> = {
