@@ -39,15 +39,15 @@
 </template>
 <script setup lang="ts">
 import {reactive, ref, watch} from 'vue';
-import DebtConfig from '~/models/debt/DebtConfig';
 import DebtManager from '~/models/debt/DebtManager';
 import type PlanState from '~/models/plan/PlanState';
 import type DebtState from "~/models/debt/DebtState";
-import PlanConfig from "~/models/plan/PlanConfig";
 import PlanManager from "~/models/plan/PlanManager";
+import {defaultPlanFactory} from "~/models/plan/PlanFactories";
+import {defaultDebtFactory} from "~/models/debt/DebtFactories";
 
-const debtConfig = reactive(new DebtConfig(DebtConfig.defaultValues()));
-const planConfig = new PlanConfig(PlanConfig.defaultValues());
+const debtConfig = reactive(defaultDebtFactory());
+const planConfig = defaultPlanFactory()
 const planManager = ref(new PlanManager(planConfig));
 const debtManager = ref(new DebtManager(debtConfig));
 const MAX_ITERATIONS = 30;
@@ -69,7 +69,7 @@ watch(debtConfig, (newValue) => {
     savingsEndOfYear: 0,
     allowNegativeDisposableIncome: 'none',
   };
-  planStates.value = [planState];
+  const planStates = ref([planState]);
   while (i < MAX_ITERATIONS) {
     debtManager.value.getCommands().forEach((c) => {
       planStates.value.push(c.execute(planState))

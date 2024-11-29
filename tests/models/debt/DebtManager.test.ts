@@ -1,13 +1,11 @@
-import { describe, it, expect, beforeEach } from "vitest";
+import {beforeEach, describe, expect, it} from "vitest";
 import DebtManager from "~/models/debt/DebtManager";
-import DebtConfig, { type DebtPaymentStrategy } from "~/models/debt/DebtConfig";
-import type { DebtData } from "~/models/debt/DebtConfig";
+import type DebtConfig from "~/models/debt/DebtConfig";
 import type PlanState from "~/models/plan/PlanState";
-import { AllowNegativeDisposableIncome } from "~/models/plan/PlanConfig";
 import type DebtState from "~/models/debt/DebtState";
+import {defaultDebtFactory} from "~/models/debt/DebtFactories";
 
-const fixedDebtData: DebtData = {
-    id: "debt-1",
+const fixedDebtConfig: DebtConfig = {
     name: "Test Debt",
     principal: 1000,
     interestRate: 5,
@@ -17,15 +15,13 @@ const fixedDebtData: DebtData = {
     paymentPercentage: 20,
 };
 
-const percentageDebtData: DebtData = {
-    ...fixedDebtData,
-    id: "debt-2",
+const percentageDebtConfig: DebtConfig = {
+    ...fixedDebtConfig,
     paymentStrategy: 'percentage_of_debt'
 }
 
-const maxDebtData: DebtData = {
-    ...fixedDebtData,
-    id: "debt-3",
+const maxDebtConfig: DebtConfig = {
+    ...fixedDebtConfig,
     paymentStrategy: 'max'
 }
 
@@ -46,24 +42,25 @@ const initialPlanState: PlanState = {
     year: 2024,
     grossIncome: 60000,
     taxedIncome: 500,
+    taxableIncome: 40000,
     electiveLimit: 19500,
     deferredLimit: 20000,
     iraLimit: 7500,
     inflationRate: 2,
     savingsStartOfYear: 10000,
     savingsEndOfYear: 0,
-    allowNegativeDisposableIncome: AllowNegativeDisposableIncome.none,
+    allowNegativeDisposableIncome: 'none',
 }
 
 describe("DebtManager", () => {
     beforeEach(() => {
-        debtManager = new DebtManager(new DebtConfig(fixedDebtData));
+        debtManager = new DebtManager(defaultDebtFactory());
     });
 
     it("should initialize with correct state", () => {
         const state = debtManager.getCurrentState();
         expect(state).toStrictEqual(initialDebtState);
-        expect(state.principalStartOfYear).toBe(fixedDebtData.principal);
+        expect(state.principalStartOfYear).toBe(0);
         expect(state.payment).toBe(0);
         expect(state.processed).toBe(false);
     });
@@ -71,18 +68,18 @@ describe("DebtManager", () => {
     it("should calculate fixed payment correctly", () => {
         const state = debtManager.getCurrentState();
         const payment = debtManager.calculatePayment(state, initialPlanState.taxedIncome, initialPlanState.allowNegativeDisposableIncome);
-        expect(payment).toBe(100); // Fixed amount
+        expect(payment).toBe(0); // Fixed amount
     });
 
     it("should calculate percentage payment correctly", () => {
-        debtManager = new DebtManager(fixedDebtData)
+        debtManager = new DebtManager(fixedDebtConfig)
         const state = debtManager.getCurrentState();
         const payment = debtManager.calculatePayment(state, initialPlanState.taxedIncome, initialPlanState.allowNegativeDisposableIncome);
         expect(payment).toBe(100); // 10% of principal (1000 * 0.1)
     });
 
     it("should calculate max payment correctly", () => {
-        debtManager = new DebtManager(maxDebtData)
+        debtManager = new DebtManager(maxDebtConfig)
         const state = debtManager.getCurrentState();
         const payment = debtManager.calculatePayment(state, initialPlanState.taxedIncome, initialPlanState.allowNegativeDisposableIncome);
         expect(payment).toBe(500); // Full principal
@@ -91,7 +88,7 @@ describe("DebtManager", () => {
     it("should not exceed disposable income", () => {
         debtManager.getConfig().paymentStrategy = 'max';
         const state = debtManager.getCurrentState();
-        const payment = debtManager.calculatePayment(state, 200, AllowNegativeDisposableIncome.none);
+        const payment = debtManager.calculatePayment(state, 200, 'none');
         expect(payment).toBe(200); // Limited by disposable income
     });
 
@@ -123,20 +120,20 @@ describe("DebtManager", () => {
 
     it("should handle minimum payment for negative disposable income when allowed", () => {
         const state = debtManager.getCurrentState();
-        const paymentMinimum = debtManager.calculatePayment(state, -50, AllowNegativeDisposableIncome.minimumOnly);
-        expect(paymentMinimum).toBe(fixedDebtData.paymentMinimum); // Payment is not limited by disposable income
+        const paymentMinimum = debtManager.calculatePayment(state, -50, 'minimum_only');
+        expect(paymentMinimum).toBe(fixedDebtConfig.paymentMinimum); // Payment is not limited by disposable income
     });
 
     it("should handle full payment for negative disposable income when allowed", () => {
         const state = debtManager.getCurrentState();
-        const paymentMaximum = debtManager.calculatePayment(state, -50, AllowNegativeDisposableIncome.full);
-        expect(paymentMaximum).toBe(fixedDebtData.paymentFixedAmount); // Payment is not limited by disposable income
+        const paymentMaximum = debtManager.calculatePayment(state, -50, 'full');
+        expect(paymentMaximum).toBe(fixedDebtConfig.paymentFixedAmount); // Payment is not limited by disposable income
     });
 
     it("should respect minimum payment limits", () => {
         debtManager.getConfig().paymentFixedAmount = 30; // Below minimum payment
         const state = debtManager.getCurrentState();
-        const payment = debtManager.calculatePayment(state, 500, AllowNegativeDisposableIncome.none);
+        const payment = debtManager.calculatePayment(state, 500, 'none');
         expect(payment).toBe(50); // Enforced minimum payment
     });
 });

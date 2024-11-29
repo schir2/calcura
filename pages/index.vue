@@ -1,10 +1,10 @@
 <template>
   <Teleport to="#right-side-bar">
-    <PlanSummary :planManager="planManager"></PlanSummary>
+    <PlanSummary :planConfig="planManager.getConfig()"></PlanSummary>
   </Teleport>
   <div class="col-span-4 space-y-6">
     <InputToggle name="showAdvancedOptions" v-model="showAdvancedOptions" label="Show Advanced Options"/>
-    <PlanRetirement :showAdvancedOptions="showAdvancedOptions"/>
+    <PlanRetirement :retirementConfig="planConfig.retirement" :showAdvancedOptions="showAdvancedOptions"/>
 
     <!-- Incomes -->
     <CommonCard class="space-y-6 bg-skin-muted">
@@ -27,18 +27,17 @@
     <!-- Expenses -->
     <CommonCard class="space-y-6 bg-skin-muted">
       <div class="flex align-middle gap-6">
-        <h2 class="text-3xl">ExpenseConfig PlanConfig</h2>
+        <h2 class="text-3xl">Expenses</h2>
+        <CommonButton @click="handleAddExpense">Add Income</CommonButton>
       </div>
-      <div class="grid grid-cols-2 gap-3">
-        <CommonCard @click="planConfig.ExpenseTrackingStrategy='simple'" :class="{'bg-skin-accent': planConfig.ExpenseTrackingStrategy==='simple'}">
-          <h3 class="text-2xl">Simple ExpenseConfig PlanConfig</h3>
-        </CommonCard>
-        <CommonCard @click="planConfig.ExpenseTrackingStrategy='itemized'" :class="{'bg-skin-accent': planConfig.ExpenseTrackingStrategy==='itemized'}">
-          <h3 class="text-2xl">Itemized ExpenseConfig PlanConfig</h3>
-        </CommonCard>
-      </div>
-      <ExpensePlan :expensePlan="planConfig.simpleExpensePlan"></ExpensePlan>
-      <ExpensePlan :expensePlan="planConfig.itemizedExpensePlan"></ExpensePlan>
+      <CommonList>
+        <PlanExpense
+            v-for="(expense, index) in planConfig.expenses"
+            :key="index"
+            :expenseIndex="index"
+            :expense="expense"
+        />
+      </CommonList>
     </CommonCard>
 
     <!-- CashConfig Maintenance -->
@@ -56,7 +55,7 @@
     <CommonCard class="bg-skin-muted space-y-6">
       <nav class="flex align-middle gap-6">
         <h2 class="text-3xl">DebtConfig(s)</h2>
-        <CommonButton @click="planConfig.addDebt()">Add DebtConfig</CommonButton>
+        <CommonButton @click="handleAddDebt">Add DebtConfig</CommonButton>
       </nav>
       <PlanDebt
           v-for="(debt, index) in planConfig.debts"
@@ -70,7 +69,7 @@
     <CommonCard class="bg-skin-muted space-y-6">
       <nav class="flex align-middle gap-6">
         <h2 class="text-3xl">Tax Deferred Investments</h2>
-        <CommonButton @click="planConfig.addTaxDeferredInvestment()">Add IncomeConfig</CommonButton>
+        <CommonButton @click="handleAddTaxDeferredInvestment">Add Tax Deferred Investment</CommonButton>
       </nav>
       <CommonList>
         <PlanTaxDeferredInvestment
@@ -87,9 +86,12 @@
 </template>
 <script setup lang="ts">
 import InputToggle from "~/components/form/InputToggle.vue";
-import ExpensePlan from "~/components/plan/ExpensePlan.vue";
-import PlanConfig from "~/models/plan/PlanConfig";
 import PlanManager from "~/models/plan/PlanManager";
+import {defaultPlanFactory} from "~/models/plan/PlanFactories";
+import {defaultIncomeFactory} from "~/models/income/IncomeFactories";
+import {defaultTaxDeferredInvestmentFactory} from "~/models/taxDeferred/TaxDeferredInvestmentFactories";
+import {defaultDebtFactory} from "~/models/debt/DebtFactories";
+import {simpleExpenseFactory} from "~/models/expense/ExpenseFactories";
 
 useHead({
   title: 'Calcura Dashboard',
@@ -98,23 +100,35 @@ useHead({
   ],
 })
 
-function handleAddIncome(){
-  planConfig.addIncome()
+function handleAddIncome() {
+  planConfig.incomes.push(defaultIncomeFactory())
 }
 
 function handleDeleteIncome(payload: { index: number }) {
-  planConfig.deleteIncome(payload.index)
+  planConfig.incomes.splice(payload.index, 1)
+}
+
+function handleAddTaxDeferredInvestment() {
+  planConfig.taxDeferredInvestments.push(defaultTaxDeferredInvestmentFactory())
 }
 
 function handleDeleteTaxDeferredInvestment(payload: { index: number }) {
-  planConfig.deleteTaxDeferredInvestment(payload.index)
+  planConfig.taxDeferredInvestments.splice(payload.index, 1)
+}
+
+function handleAddDebt() {
+  planConfig.debts.push(defaultDebtFactory())
 }
 
 function handleDeleteDebt(payload: { index: number }) {
-  planConfig.deleteDebt(payload.index)
+  planConfig.debts.splice(payload.index, 1)
 }
 
-const planConfig = reactive(new PlanConfig(PlanConfig.defaultValues()))
+function handleAddExpense() {
+  planConfig.expenses.push(simpleExpenseFactory())
+}
+
+const planConfig = reactive(defaultPlanFactory())
 const planManager = reactive(new PlanManager(planConfig))
 
 const showAdvancedOptions = ref<boolean>(false)

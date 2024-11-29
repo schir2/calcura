@@ -2,7 +2,7 @@ import {DEFAULT_GROSS_INCOME, DEFAULT_GROWTH_RATE, DEFAULT_INCOME_NAME, DEFAULT_
 import type IncomeConfig from "~/models/income/IncomeConfig";
 
 
-export function regularIncomeFactory(): IncomeConfig {
+export function defaultIncomeFactory(): IncomeConfig {
     return {
         name: DEFAULT_INCOME_NAME,
         grossIncome: DEFAULT_GROSS_INCOME,

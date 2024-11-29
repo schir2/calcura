@@ -43,8 +43,9 @@
 <script setup lang="ts">
 import TaxDeferredInvestmentConfig from "~/models/taxDeferred/TaxDeferredInvestmentConfig";
 import {taxDeferredInvestmentFields} from "~/forms/taxDeferredInvestmentForm";
+import {defaultTaxDeferredInvestmentFactory} from "~/models/taxDeferred/TaxDeferredInvestmentFactories";
 
-const taxDeferredInvestment = reactive(new TaxDeferredInvestmentConfig(TaxDeferredInvestmentConfig.defaultValues()))
+const taxDeferredInvestment = reactive(defaultTaxDeferredInvestmentFactory())
 
 const fieldMetadata = taxDeferredInvestmentFields
 

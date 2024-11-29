@@ -18,7 +18,7 @@ interface Props {
   showAdvancedOptions?: boolean,
 }
 
-const {expense, expenseIndex, showAdvancedOptions = false} = defineProps<Props>()
+const {expense, expenseIndex, showAdvancedOptions = true} = defineProps<Props>()
 function applyAdvancedOptions(advancedOptions: boolean){
   return  advancedOptions ? 'grid grid-cols-6 gap-3' : ''
 }
