@@ -3,7 +3,7 @@ import {
   calculateCompoundInterest,
   calculateInvestmentGrowthAmount,
   adjustContributionForDisposableIncome,
-} from './financial';
+} from '../../utils/financial';
 
 describe('calculateCompoundInterest', () => {
   it('calculates compound interest correctly for annual compounding', () => {

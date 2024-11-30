@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { formatValue } from './formatValue';
+import { formatValue } from '../../utils/formatValue';
 import { FormatType } from '~/enums/FormatType';
 
 describe('formatValue', () => {
