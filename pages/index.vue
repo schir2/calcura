@@ -9,7 +9,7 @@
     <!-- Incomes -->
     <CommonCard class="space-y-6 bg-skin-muted">
       <div class="flex align-middle gap-6">
-        <h2 class="text-3xl">IncomeConfig(s)</h2>
+        <h2 class="text-3xl">Income(s)</h2>
         <CommonButton @click="handleAddIncome">Add Income</CommonButton>
       </div>
       <CommonList>
@@ -36,6 +36,7 @@
             :key="index"
             :expenseIndex="index"
             :expense="expense"
+            @deleteExpense="handleDeleteExpense"
         />
       </CommonList>
     </CommonCard>
@@ -54,8 +55,8 @@
     <!-- Debts -->
     <CommonCard class="bg-skin-muted space-y-6">
       <nav class="flex align-middle gap-6">
-        <h2 class="text-3xl">DebtConfig(s)</h2>
-        <CommonButton @click="handleAddDebt">Add DebtConfig</CommonButton>
+        <h2 class="text-3xl">Debt(s)</h2>
+        <CommonButton @click="handleAddDebt">Add Debt</CommonButton>
       </nav>
       <PlanDebt
           v-for="(debt, index) in planConfig.debts"
@@ -82,6 +83,22 @@
         />
       </CommonList>
     </CommonCard>
+    <CommonCard class="bg-skin-muted space-y-6">
+      <nav class="flex align-middle gap-6">
+        <h2 class="text-3xl">Brokerage Investments</h2>
+        <CommonButton @click="handleAddBrokerageInvestment">Add Brokerage Investment</CommonButton>
+      </nav>
+      <CommonList>
+        <PlanBrokerageInvestment
+            v-for="(investment, index) in planConfig.brokerageInvestments"
+            :investment="investment"
+            :key="index"
+            :investmentIndex="index"
+            :showAdvancedOptions="showAdvancedOptions"
+            @deleteInvestment="handleDeleteBrokerageInvestment"
+        />
+      </CommonList>
+    </CommonCard>
   </div>
 </template>
 <script setup lang="ts">
@@ -92,6 +109,7 @@ import {defaultIncomeFactory} from "~/models/income/IncomeFactories";
 import {defaultTaxDeferredInvestmentFactory} from "~/models/taxDeferred/TaxDeferredInvestmentFactories";
 import {defaultDebtFactory} from "~/models/debt/DebtFactories";
 import {simpleExpenseFactory} from "~/models/expense/ExpenseFactories";
+import {defaultBrokerageInvestmentFactory} from "~/models/brokerage/BrokerageInvestmentFactories";
 
 useHead({
   title: 'Calcura Dashboard',
@@ -116,6 +134,14 @@ function handleDeleteTaxDeferredInvestment(payload: { index: number }) {
   planConfig.taxDeferredInvestments.splice(payload.index, 1)
 }
 
+function handleAddBrokerageInvestment() {
+  planConfig.brokerageInvestments.push(defaultBrokerageInvestmentFactory())
+}
+
+function handleDeleteBrokerageInvestment(payload: { index: number }) {
+  planConfig.brokerageInvestments.splice(payload.index, 1)
+}
+
 function handleAddDebt() {
   planConfig.debts.push(defaultDebtFactory())
 }
@@ -126,6 +152,11 @@ function handleDeleteDebt(payload: { index: number }) {
 
 function handleAddExpense() {
   planConfig.expenses.push(simpleExpenseFactory())
+}
+
+
+function handleDeleteExpense(payload: { index: number }) {
+  planConfig.expenses.splice(payload.index, 1)
 }
 
 const planConfig = reactive(defaultPlanFactory())

@@ -52,7 +52,7 @@ export const incomeFields: Record<keyof IncomeConfig, FieldData> = {
         type: 'select',
         defaultValue: DEFAULT_INCOME_NAME,
         options: [
-            {label: 'Income Type', value: 'simple'}
+            {label: 'Ordinary', value: 'ordinary'}
         ]
     }
 }

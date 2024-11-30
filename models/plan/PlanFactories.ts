@@ -7,6 +7,7 @@ import {defaultCashFactory} from "~/models/cash/CashFactories";
 import {defaultDebtFactory} from "~/models/debt/DebtFactories";
 import {defaultTaxDeferredInvestmentFactory} from "~/models/taxDeferred/TaxDeferredInvestmentFactories";
 import {ageRetirementFactory} from "~/models/retirement/RetirementFactories";
+import {defaultBrokerageInvestmentFactory} from "~/models/brokerage/BrokerageInvestmentFactories";
 
 export function defaultPlanFactory(): PlanConfig {
     return {
@@ -22,6 +23,7 @@ export function defaultPlanFactory(): PlanConfig {
         cash: defaultCashFactory(),
         debts: [defaultDebtFactory()],
         taxDeferredInvestments: [defaultTaxDeferredInvestmentFactory()],
+        brokerageInvestments: [defaultBrokerageInvestmentFactory()],
 
     }
 }

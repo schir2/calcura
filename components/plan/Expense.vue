@@ -6,6 +6,9 @@
     <FormSelect v-show="showAdvancedOptions" :model="expense" :field="fieldMetadata.type"></FormSelect>
     <FormField v-show="showAdvancedOptions" :model="expense" :field="fieldMetadata.isEssential"></FormField>
     <FormField v-show="showAdvancedOptions" :model="expense" :field="fieldMetadata.isTaxDeductible"></FormField>
+    <CommonButton @click="handleDeleteExpense">
+      <DeleteIcon/>
+    </CommonButton>
   </CommonListItem>
 </template>
 <script setup lang="ts">
@@ -19,8 +22,20 @@ interface Props {
 }
 
 const {expense, expenseIndex, showAdvancedOptions = true} = defineProps<Props>()
-function applyAdvancedOptions(advancedOptions: boolean){
-  return  advancedOptions ? 'grid grid-cols-6 gap-3' : ''
+
+function applyAdvancedOptions(advancedOptions: boolean) {
+  return advancedOptions ? 'grid grid-cols-6 gap-3' : ''
 }
+
 const fieldMetadata = expenseFields
+
+const emit = defineEmits({
+  deleteExpense(payload: { index: number }) {
+  }
+})
+
+function handleDeleteExpense(expenseIndex: number) {
+  emit('deleteExpense', {index: expenseIndex})
+}
+
 </script>
