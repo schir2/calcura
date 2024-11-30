@@ -1,6 +1,5 @@
 import * as yup from "yup";
 import type {FieldData} from "~/interfaces/FieldData";
-import type {TaxDeferredInvestmentConfigData} from "~/models/taxDeferred/TaxDeferredInvestmentConfig";
 import {DEFAULT_GROWTH_APPLICATION_STRATEGY,} from "~/constants/financial";
 import {
     DEFAULT_DAX_DEFERRED_GROWTH_RATE,
@@ -12,11 +11,13 @@ import {
     DEFAULT_EMPLOYER_CONTRIBUTION_FIXED_AMOUNT,
     DEFAULT_EMPLOYER_CONTRIBUTION_STRATEGY,
     DEFAULT_EMPLOYER_MATCH_PERCENTAGE,
-    DEFAULT_EMPLOYER_MATCH_PERCENTAGE_LIMIT, EmployerContributionOptions,
+    DEFAULT_EMPLOYER_MATCH_PERCENTAGE_LIMIT,
+    EmployerContributionOptions,
     TaxDeferredContributionOptions,
 } from "~/models/taxDeferred/TaxDeferredInvestmentConstants";
+import type TaxDeferredInvestmentConfig from "~/models/taxDeferred/TaxDeferredInvestmentConfig";
 
-export const taxDeferredInvestmentFields: Record<keyof TaxDeferredInvestmentConfigData, FieldData> = {
+export const taxDeferredInvestmentFields: Record<keyof TaxDeferredInvestmentConfig, FieldData> = {
     name: {
         name: "name",
         label: "Investment Name",
