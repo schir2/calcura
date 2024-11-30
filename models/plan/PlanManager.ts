@@ -8,12 +8,14 @@ import IncomeManager from "~/models/income/IncomeManager";
 import TaxManager from "~/models/tax/TaxManager";
 import RetirementManager from "~/models/retirement/RetirementManager";
 import type {IncomeType} from "~/models/income/IncomeConfig";
+import BrokerageInvestmentManager from "~/models/brokerage/BrokerageInvestmentManager";
 
 export default class PlanManager extends ManagerBase<PlanConfig, PlanState> {
     retirementManager: RetirementManager
     taxManager: TaxManager
     debtManagers: DebtManager[]
     incomeManagers: IncomeManager[]
+    brokerageInvestmentManagers: BrokerageInvestmentManager[]
 
     constructor(config: PlanConfig) {
         super(config)
@@ -21,6 +23,7 @@ export default class PlanManager extends ManagerBase<PlanConfig, PlanState> {
         this.taxManager = new TaxManager(config.tax)
         this.debtManagers = config.debts.map((debtConfig) => new DebtManager(debtConfig))
         this.incomeManagers = config.incomes.map((incomeConfig) => new IncomeManager(incomeConfig))
+        this.brokerageInvestmentManagers = config.brokerageInvestments.map((brokerageInvestmentConfig) => new BrokerageInvestmentManager(brokerageInvestmentConfig))
 
     }
 

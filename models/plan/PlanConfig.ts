@@ -5,6 +5,7 @@ import type RetirementConfig from "~/models/retirement/RetirementConfig";
 import type CashConfig from "~/models/cash/CashConfig";
 import type TaxConfig from "~/models/tax/TaxConfig";
 import type ExpenseConfig from "~/models/expense/ExpenseConfig";
+import type BrokerageInvestmentConfig from "~/models/brokerage/BrokerageInvestmentConfig";
 
 
 export type AllowNegativeDisposableIncome = 'none' | 'minimum_only' | 'full'
@@ -24,4 +25,5 @@ export default interface PlanConfig {
     expenses: ExpenseConfig[]
     debts: DebtConfig[]
     taxDeferredInvestments: TaxDeferredInvestmentConfig[];
+    brokerageInvestments: BrokerageInvestmentConfig[];
 }
