@@ -3,30 +3,31 @@ import {
     getTaxDeferredContributionLimit,
     getTaxDeferredElectiveContributionCatchUpLimit,
     getTaxDeferredElectiveContributionLimit,
-} from '../../utils/taxDeferred';
+} from '~/utils';
 
 
 import {TAX_DEFERRED_CONTRIBUTION_LIMIT_2024, TAX_DEFERRED_DEFAULT_YEAR, TAX_DEFERRED_ELECTIVE_CONTRIBUTION_CATCH_UP_LIMIT_2024, TAX_DEFERRED_ELECTIVE_CONTRIBUTION_LIMIT_2024, TAX_DEFERRED_LIMIT_INFLATION_RATE} from "~/models/taxDeferred/TaxDeferredInvestmentConstants";
+import {DEFAULT_AGE} from "~/models/plan/PlanConstants";
 
 describe('Tax Deferred Contribution Limit Calculations', () => {
     it('calculates the tax deferred contribution limit for the current year', () => {
-        const result = getTaxDeferredContributionLimit(TAX_DEFERRED_DEFAULT_YEAR);
+        const result = getTaxDeferredContributionLimit(TAX_DEFERRED_DEFAULT_YEAR, DEFAULT_AGE);
         expect(result).toBe(TAX_DEFERRED_CONTRIBUTION_LIMIT_2024);
     });
 
     it('calculates the tax deferred contribution limit for a future year', () => {
-        const result = getTaxDeferredContributionLimit(2029);
+        const result = getTaxDeferredContributionLimit(2029, DEFAULT_AGE);
         const expected = TAX_DEFERRED_CONTRIBUTION_LIMIT_2024 * (1 + TAX_DEFERRED_LIMIT_INFLATION_RATE / 100) ** (2029 - 2024);
         expect(result).toBeCloseTo(expected, 2);
     });
 
     it('calculates the elective contribution limit for the current year', () => {
-        const result = getTaxDeferredElectiveContributionLimit(TAX_DEFERRED_DEFAULT_YEAR);
+        const result = getTaxDeferredElectiveContributionLimit(TAX_DEFERRED_DEFAULT_YEAR, DEFAULT_AGE);
         expect(result).toBe(TAX_DEFERRED_ELECTIVE_CONTRIBUTION_LIMIT_2024);
     });
 
     it('calculates the elective contribution limit for a future year', () => {
-        const result = getTaxDeferredElectiveContributionLimit(2029);
+        const result = getTaxDeferredElectiveContributionLimit(2029, DEFAULT_AGE);
         const expected = TAX_DEFERRED_ELECTIVE_CONTRIBUTION_LIMIT_2024 * (1 + TAX_DEFERRED_LIMIT_INFLATION_RATE / 100) ** (2029 - 2024);
         expect(result).toBeCloseTo(expected, 2);
     });
@@ -43,7 +44,7 @@ describe('Tax Deferred Contribution Limit Calculations', () => {
     });
 
     it('handles edge cases, such as years before the default year', () => {
-        const result = getTaxDeferredContributionLimit(2020); // Before the default year
+        const result = getTaxDeferredContributionLimit(2020, DEFAULT_AGE); // Before the default year
         expect(result).toBeCloseTo(TAX_DEFERRED_CONTRIBUTION_LIMIT_2024 * (1 + TAX_DEFERRED_LIMIT_INFLATION_RATE / 100) ** (2020 - 2024), 2);
     });
 });
