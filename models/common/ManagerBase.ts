@@ -38,7 +38,15 @@ export default abstract class ManagerBase<TConfig, TState> {
         this.states[this.states.length - 1] = newState;
     }
 
-    abstract process(planState: PlanState): PlanState
+    process(planState: PlanState): PlanState{
+        const baseState = this.processImplementation(planState);
+        return {
+            ...planState,
+            processed: true,
+        }
+    }
+
+    protected abstract processImplementation(planState: PlanState): PlanState;
 
     advanceTimePeriod(): TState {
         const previousState = this.getCurrentState();
