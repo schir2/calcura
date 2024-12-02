@@ -9,10 +9,15 @@ export default defineNuxtConfig({
     modules: [
         '@vee-validate/nuxt',
         '@nuxt/test-utils/module',
-        'nuxt-feather-icons',
         '@pinia/nuxt',
         '@vueuse/nuxt',
+        '@nuxt/icon'
     ],
+    icon:{
+        serverBundle: {
+            collections: ['uil',]
+        }
+    },
     postcss: {
         plugins: {
             tailwindcss: {},
@@ -26,5 +31,4 @@ export default defineNuxtConfig({
             }
         }
     },
-    vueTransitions: {}
 })
