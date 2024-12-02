@@ -3,8 +3,7 @@
     <Form class="space-y-6">
       <div class="flex justify-between align-middle">
         <h3 class="text-2xl">{{ brokerageInvestment.name }}</h3>
-        <CommonButton @click="handleDeleteInvestment(investmentIndex)">
-          <TrashIcon/>
+        <CommonButton iconLeft="mdi-delete" @click="handleDeleteInvestment(investmentIndex)">
         </CommonButton>
       </div>
       <div class="grid grid-cols-3 gap-3">

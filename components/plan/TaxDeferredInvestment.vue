@@ -3,8 +3,7 @@
       <Form class="space-y-6">
         <div class="flex justify-between align-middle">
           <h3 class="text-2xl">{{ taxDeferredInvestment.name }}</h3>
-          <CommonButton @click="deleteInvestment(investmentIndex)">
-            <TrashIcon/>
+          <CommonButton iconLeft="mdi:delete" @click="deleteInvestment(investmentIndex)">
           </CommonButton>
         </div>
         <div class="grid grid-cols-3 gap-3">
