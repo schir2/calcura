@@ -3,7 +3,7 @@
   <CommonCard>
     <h3 class="text-2xl">Retirement Plan</h3>
     <CommonList>
-      <ListItem><span>{{ planConfig.retirement.name }}</span></ListItem>
+      <CommonListItem><span>{{ planConfig.retirement.name }}</span></CommonListItem>
     </CommonList>
   </CommonCard>
   <PlanSummaryIncome :incomes="planConfig.incomes"/>
