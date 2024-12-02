@@ -31,7 +31,7 @@ export default class IraInvestmentManager extends ManagerBase<IraInvestmentConfi
             {
                 amount: contribution,
                 disposableIncome: disposableIncome,
-                allowNegative: allowNegativeDisposableIncome
+                allowNegativeDisposableIncome: allowNegativeDisposableIncome
             }
         )
     }
@@ -69,7 +69,7 @@ export default class IraInvestmentManager extends ManagerBase<IraInvestmentConfi
         return [];
     }
 
-    process(planState: PlanState): PlanState {
+    processImplementation(planState: PlanState): PlanState {
         const currentState = this.getCurrentState()
         const contribution = this.getContribution(planState.iraLimit, planState.taxableIncome, planState.grossIncome, planState.allowNegativeDisposableIncome)
         const taxableIncome = planState.taxableIncome - contribution

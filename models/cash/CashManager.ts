@@ -24,7 +24,7 @@ export default class CashManager extends ManagerBase<CashConfig, CashState> {
         return [];
     }
 
-    process(planState: PlanState): PlanState {
+    processImplementation(planState: PlanState): PlanState {
         return planState;
     }
 

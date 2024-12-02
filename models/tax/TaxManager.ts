@@ -19,7 +19,7 @@ export default class TaxManager extends ManagerBase<TaxConfig, TaxState> {
         return [];
     }
 
-    process(planState: PlanState): PlanState {
+    processImplementation(planState: PlanState): PlanState {
         return planState;
     }
 

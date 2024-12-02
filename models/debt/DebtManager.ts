@@ -21,7 +21,7 @@ export default class DebtManager extends ManagerBase<DebtConfig, DebtState> {
         }
     }
 
-    override process(planState: PlanState): PlanState {
+    override processImplementation(planState: PlanState): PlanState {
         const currentState = this.getCurrentState();
         if (currentState.processed) {
             throw new Error("The current state has already been processed.");
@@ -35,7 +35,6 @@ export default class DebtManager extends ManagerBase<DebtConfig, DebtState> {
         this.updateCurrentState({
             ...currentState,
             payment: payment,
-            processed: true,
             interestAmount: interestAmount,
             interestLifetime: interestLifetime,
             paymentLifetime: paymentLifetime,
@@ -67,7 +66,7 @@ export default class DebtManager extends ManagerBase<DebtConfig, DebtState> {
                 disposableIncome: disposableIncome,
                 amount: payment,
                 minimum: this.config.paymentMinimum,
-                allowNegative: allowNegativeDisposableIncome
+                allowNegativeDisposableIncome: allowNegativeDisposableIncome
             }
         )
         return Math.min(payment, state.principalStartOfYear);

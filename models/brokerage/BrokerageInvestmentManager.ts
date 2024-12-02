@@ -30,7 +30,7 @@ export default class BrokerageInvestmentManager extends ManagerBase<BrokerageInv
             {
                 amount: contribution,
                 disposableIncome: disposableIncome,
-                allowNegative: allowNegativeDisposableIncome
+                allowNegativeDisposableIncome: allowNegativeDisposableIncome
             }
         )
     }
@@ -68,7 +68,7 @@ export default class BrokerageInvestmentManager extends ManagerBase<BrokerageInv
         return [];
     }
 
-    process(planState: PlanState): PlanState {
+    processImplementation(planState: PlanState): PlanState {
         const currentState = this.getCurrentState()
         const contribution = this.getContribution(planState.taxableIncome, planState.grossIncome, planState.allowNegativeDisposableIncome)
         const taxableIncome = planState.taxableIncome - contribution
