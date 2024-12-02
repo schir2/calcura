@@ -3,7 +3,12 @@ import { defineVitestConfig } from '@nuxt/test-utils/config'
 export default defineVitestConfig({
     test: {
         coverage: {
-            provider: 'v8' // or 'v8'
+            provider: 'v8',
+            include: ['src/**/*.ts'],
+            exclude: ['node_modules', 'dist', 'test-helpers/**/*.ts'],
+            reporter: ['text', 'json', 'html'],
+            reportsDirectory: './coverage',
+            all:true,
         },
     },
 })
