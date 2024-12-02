@@ -2,8 +2,8 @@ import { describe, it, expect } from 'vitest';
 import {
   calculateCompoundInterest,
   calculateInvestmentGrowthAmount,
-  adjustContributionForDisposableIncome,
-} from '../../utils/financial';
+  adjustForAllowNegativeDisposableIncome,
+} from '@/utils/financial';
 
 describe('calculateCompoundInterest', () => {
   it('calculates compound interest correctly for annual compounding', () => {
@@ -125,9 +125,9 @@ describe('calculateInvestmentGrowthAmount', () => {
   });
 });
 
-describe('adjustContributionForDisposableIncome', () => {
+describe('adjustForAllowNegativeDisposableIncome', () => {
   it('returns the minimum of contribution and disposable income for "none"', () => {
-    const result = adjustContributionForDisposableIncome({
+    const result = adjustForAllowNegativeDisposableIncome({
       amount: 500,
       disposableIncome: 300,
       allowNegativeDisposableIncome: 'none',
@@ -136,7 +136,7 @@ describe('adjustContributionForDisposableIncome', () => {
   });
 
   it('returns the minimum of contribution and disposable income for "minimum_only"', () => {
-    const result = adjustContributionForDisposableIncome({
+    const result = adjustForAllowNegativeDisposableIncome({
       amount: 500,
       disposableIncome: 300,
       allowNegativeDisposableIncome: 'minimum_only',
@@ -145,7 +145,7 @@ describe('adjustContributionForDisposableIncome', () => {
   });
 
   it('returns the full contribution for "full"', () => {
-    const result = adjustContributionForDisposableIncome({
+    const result = adjustForAllowNegativeDisposableIncome({
       amount: 500,
       disposableIncome: 300,
       allowNegativeDisposableIncome: 'full',
@@ -155,7 +155,7 @@ describe('adjustContributionForDisposableIncome', () => {
 
   it('throws an error for an invalid allowNegativeDisposableIncome value', () => {
     expect(() =>
-        adjustContributionForDisposableIncome({
+        adjustForAllowNegativeDisposableIncome({
           amount: 500,
           disposableIncome: 300,
           allowNegativeDisposableIncome: 'invalid' as any,
