@@ -42,13 +42,11 @@ import {reactive, ref, watch} from 'vue';
 import DebtManager from '~/models/debt/DebtManager';
 import type PlanState from '~/models/plan/PlanState';
 import type DebtState from "~/models/debt/DebtState";
-import PlanManager from "~/models/plan/PlanManager";
 import {defaultPlanFactory} from "~/models/plan/PlanFactories";
 import {defaultDebtFactory} from "~/models/debt/DebtFactories";
 
 const debtConfig = reactive(defaultDebtFactory());
 const planConfig = defaultPlanFactory()
-const planManager = ref(new PlanManager(planConfig));
 const debtManager = ref(new DebtManager(debtConfig));
 const MAX_ITERATIONS = 30;
 
