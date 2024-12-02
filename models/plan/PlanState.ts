@@ -14,4 +14,5 @@ export default interface PlanState {
 
     savingsStartOfYear: number;
     savingsEndOfYear: number;
+    processed: boolean;
 }
