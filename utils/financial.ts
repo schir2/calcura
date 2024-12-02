@@ -30,11 +30,11 @@ export function calculateInvestmentGrowthAmount(
 
 
 export function adjustForAllowNegativeDisposableIncome(
-    {disposableIncome, amount, minimum = 0, allowNegative}: {
-        disposableIncome: number, amount: number, minimum?: number, allowNegative: AllowNegativeDisposableIncome
+    {disposableIncome, amount, minimum = 0, allowNegativeDisposableIncome}: {
+        disposableIncome: number, amount: number, minimum?: number, allowNegativeDisposableIncome: AllowNegativeDisposableIncome
     }
 ): number {
-    switch (allowNegative) {
+    switch (allowNegativeDisposableIncome) {
         case 'none':
             return Math.max(Math.min(amount, disposableIncome), minimum);
         case 'minimum_only':
@@ -42,6 +42,6 @@ export function adjustForAllowNegativeDisposableIncome(
         case 'full':
             return amount;
         default:
-            throw new Error(`Unknown AllowNegativeDisposableIncome option: ${allowNegative}`);
+            throw new Error(`Unknown AllowNegativeDisposableIncome option: ${allowNegativeDisposableIncome}`);
     }
 }
