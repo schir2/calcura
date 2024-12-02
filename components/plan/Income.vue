@@ -2,8 +2,8 @@
   <CommonListItem color="secondary">
     <div class="flex justify-between align-middle">
       <h3 class="text-2xl">IncomeConfig {{ incomeIndex + 1 }}: {{ income.name }}</h3>
-      <CommonButton @click="deleteIncome(incomeIndex)">
-        <TrashIcon/>
+      <CommonButton iconLeft="mdi:delete" @click="deleteIncome(incomeIndex)">
+        Delete
       </CommonButton>
     </div>
     <Form>
