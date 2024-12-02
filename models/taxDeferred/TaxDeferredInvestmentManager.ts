@@ -1,7 +1,7 @@
 import type TaxDeferredInvestmentConfig from './TaxDeferredInvestmentConfig';
 import {adjustForAllowNegativeDisposableIncome, assertDefined, calculateInvestmentGrowthAmount} from "~/utils";
 import {type AllowNegativeDisposableIncome} from "~/models/plan/PlanConfig";
-import {TaxDeferredInvestmentState} from "~/models/taxDeferred/TaxDeferredInvestmentState";
+import type TaxDeferredInvestmentState from "~/models/taxDeferred/TaxDeferredInvestmentState";
 import ManagerBase from "~/models/common/ManagerBase";
 import type PlanState from "~/models/plan/PlanState";
 import type Command from "~/models/common/Command";
@@ -35,7 +35,7 @@ export default class TaxDeferredInvestmentManager extends ManagerBase<TaxDeferre
             {
                 amount: contribution,
                 disposableIncome: disposableIncome,
-                allowNegative: allowNegativeDisposableIncome
+                allowNegativeDisposableIncome: allowNegativeDisposableIncome
             }
         )
     }
@@ -95,7 +95,9 @@ export default class TaxDeferredInvestmentManager extends ManagerBase<TaxDeferre
         return [];
     }
 
-    process(planState: PlanState): PlanState {
-        return undefined;
+    processImplementation(planState: PlanState): PlanState {
+        const currentState = this.getCurrentState()
+        const electiveContribution = currentState.electiveContribution ?? this.calculateElectiveContribution(...planState);
+        if (currentState.electiveContribution === undefined) {}
     }
 }

@@ -20,7 +20,7 @@ export default class RetirementManager extends ManagerBase<RetirementConfig, Ret
         return [];
     }
 
-    process(planState: PlanState): PlanState {
+    processImplementation(planState: PlanState): PlanState {
         return planState;
     }
 
