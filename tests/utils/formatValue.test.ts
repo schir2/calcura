@@ -1,6 +1,6 @@
-import { describe, it, expect } from 'vitest';
-import { formatValue } from '../../utils/formatValue';
-import { FormatType } from '~/enums/FormatType';
+import {describe, expect, it} from 'vitest';
+import {formatValue} from '~/utils/formatValue';
+import {FormatType} from '~/enums/FormatType';
 
 describe('formatValue', () => {
     it('formats a number as currency', () => {
