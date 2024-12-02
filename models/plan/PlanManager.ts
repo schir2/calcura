@@ -9,22 +9,28 @@ import TaxManager from "~/models/tax/TaxManager";
 import RetirementManager from "~/models/retirement/RetirementManager";
 import type {IncomeType} from "~/models/income/IncomeConfig";
 import BrokerageInvestmentManager from "~/models/brokerage/BrokerageInvestmentManager";
+import ExpenseManager from "~/models/expense/ExpenseManager";
 
 export default class PlanManager extends ManagerBase<PlanConfig, PlanState> {
-    retirementManager: RetirementManager
-    taxManager: TaxManager
-    debtManagers: DebtManager[]
-    incomeManagers: IncomeManager[]
-    brokerageInvestmentManagers: BrokerageInvestmentManager[]
+    managers: {
+        retirementManager: RetirementManager
+        taxManager: TaxManager
+        debtManagers: DebtManager[]
+        incomeManagers: IncomeManager[]
+        brokerageInvestmentManagers: BrokerageInvestmentManager[]
+        expenseManagers: ExpenseManager[]
+    }
 
     constructor(config: PlanConfig) {
         super(config)
-        this.retirementManager = new RetirementManager(config.retirement)
-        this.taxManager = new TaxManager(config.tax)
-        this.debtManagers = config.debts.map((debtConfig) => new DebtManager(debtConfig))
-        this.incomeManagers = config.incomes.map((incomeConfig) => new IncomeManager(incomeConfig))
-        this.brokerageInvestmentManagers = config.brokerageInvestments.map((brokerageInvestmentConfig) => new BrokerageInvestmentManager(brokerageInvestmentConfig))
-
+        this.managers = {
+            retirementManager: new RetirementManager(config.retirement),
+            taxManager: new TaxManager(config.tax),
+            debtManagers: config.debts.map((debtConfig) => new DebtManager(debtConfig)),
+            incomeManagers: config.incomes.map((incomeConfig) => new IncomeManager(incomeConfig)),
+            brokerageInvestmentManagers: config.brokerageInvestments.map((brokerageInvestmentConfig) => new BrokerageInvestmentManager(brokerageInvestmentConfig)),
+            expenseManagers: config.expenses.map((expenseConfig) => new ExpenseManager(expenseConfig)),
+        }
     }
 
     protected createInitialState(): PlanState {
@@ -41,12 +47,17 @@ export default class PlanManager extends ManagerBase<PlanConfig, PlanState> {
             inflationRate: this.config.inflationRate,
             savingsStartOfYear: 0,
             savingsEndOfYear: 0,
-            allowNegativeDisposableIncome: this.config.allowNegativeDisposableIncome
+            allowNegativeDisposableIncome: this.config.allowNegativeDisposableIncome,
+            processed: false,
         }
     }
 
+    getGrossIncome() {
+        return this.managers.incomeManagers.reduce((grossIncome, incomeManager) => incomeManager.getCurrentState().grossIncome, 0)
+    }
+
     protected createNextState(previousState: PlanState): PlanState {
-        const age = previousState.year + 1
+        const age = previousState.age + 1
         const year = previousState.year + 1
         return {
             ...previousState,
@@ -62,37 +73,73 @@ export default class PlanManager extends ManagerBase<PlanConfig, PlanState> {
         }
     }
 
+    getAllManagers(): ManagerBase<any, any>[] {
+        const managerValues = Object.values(this.managers);
+        const allManagers: ManagerBase<any, any>[] = [];
+
+        managerValues.forEach((managerOrManagers) => {
+            if (Array.isArray(managerOrManagers)) {
+                allManagers.push(...managerOrManagers);
+            } else {
+                allManagers.push(managerOrManagers as ManagerBase<any, any>);
+            }
+        });
+
+        return allManagers;
+    }
+
     getCommands(): Command[] {
         const commands: Command[] = []
-        this.debtManagers.forEach((debtManager => commands.push(...debtManager.getCommands())))
-        this.incomeManagers.forEach((incomeManager) => commands.push(...incomeManager.getCommands()))
+        this.getAllManagers().forEach(manager => commands.push(...manager.getCommands()))
         return commands;
     }
 
-    process(planState: PlanState): PlanState {
+    override processImplementation(planState: PlanState): PlanState {
         return planState
     }
 
-    simulate(): PlanState[] {
-        while (true){
-            const newState = this.process(this.getCurrentState())
-            this.updateCurrentState(newState)
-            if (this.retirementManager.retirementAchieved()){
+    simulate(commands?: Command[]): PlanState[] {
+        const allManagers = this.getAllManagers()
+        for (let i = 0; i < 1; i++) {
+
+            let currentState = this.getCurrentState()
+            if (commands) {
+                commands.forEach(command => {
+                    currentState = command.execute(currentState)
+                })
+            }
+            allManagers.forEach(manager => {
+                currentState = this.processUnprocessed(manager)
+                console.log(currentState, manager)
+            })
+            const processedState = this.process(currentState)
+            this.updateCurrentState(processedState)
+            if (this.managers.retirementManager.retirementAchieved()) {
                 return this.states
             }
+            // allManagers.forEach((manager) => manager.advanceTimePeriod())
             this.advanceTimePeriod()
         }
+        return this.states
     }
 
-    getIncomeSummary(stateIndex?: number): Record<IncomeType, number>{
+    processUnprocessed(manager: ManagerBase<any, any>): PlanState {
+        let planState = this.getCurrentState()
+        const managerState = manager.getCurrentState()
+        if (!managerState.processed) {
+            planState = manager.process(planState)
+        }
+        return planState
+    }
+
+    getIncomeSummary(stateIndex?: number): Record<IncomeType, number> {
         let incomeTypes: Record<IncomeType, number> = {
             ordinary: 0
         }
-        this.incomeManagers.forEach((incomeManager) =>{
-            const incomeState = incomeManager.getState(stateIndex?? 0)
+        this.managers.incomeManagers.forEach((incomeManager) => {
+            const incomeState = incomeManager.getState(stateIndex ?? 0)
             incomeTypes[incomeManager.getConfig().incomeType] = incomeState.grossIncome
         })
-
 
 
         return incomeTypes
