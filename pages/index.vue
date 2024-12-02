@@ -1,7 +1,14 @@
 <template>
-  <Teleport to="#right-side-bar">
-    <PlanSummary :planConfig="planManager.getConfig()"></PlanSummary>
-  </Teleport>
+  <ClientOnly>
+    <Teleport to="#right-side-bar">
+      <PlanSummary :planConfig="planConfig"></PlanSummary>
+    </Teleport>
+  </ClientOnly>
+  <ClientOnly>
+    <Teleport to="#left-side-bar">
+      <PlanProjection :planStates="planStates"></PlanProjection>
+    </Teleport>
+  </ClientOnly>
   <div class="col-span-4 space-y-6">
     <InputToggle name="showAdvancedOptions" v-model="showAdvancedOptions" label="Show Advanced Options"/>
     <PlanRetirement :retirementConfig="planConfig.retirement" :showAdvancedOptions="showAdvancedOptions"/>
@@ -10,7 +17,7 @@
     <CommonCard class="space-y-6 bg-skin-muted">
       <div class="flex align-middle gap-6">
         <h2 class="text-3xl">Income(s)</h2>
-        <CommonButton @click="handleAddIncome">Add Income</CommonButton>
+        <CommonButton iconLeft="mdi:add" @click="handleAddIncome">Add Income</CommonButton>
       </div>
       <CommonList>
         <PlanIncome
@@ -28,7 +35,7 @@
     <CommonCard class="space-y-6 bg-skin-muted">
       <div class="flex align-middle gap-6">
         <h2 class="text-3xl">Expenses</h2>
-        <CommonButton @click="handleAddExpense">Add Income</CommonButton>
+        <CommonButton iconLeft="mdi:add" @click="handleAddExpense">Add Expense</CommonButton>
       </div>
       <CommonList>
         <PlanExpense
@@ -56,7 +63,7 @@
     <CommonCard class="bg-skin-muted space-y-6">
       <nav class="flex align-middle gap-6">
         <h2 class="text-3xl">Debt(s)</h2>
-        <CommonButton @click="handleAddDebt">Add Debt</CommonButton>
+        <CommonButton iconLeft="mdi:add" @click="handleAddDebt">Add Debt</CommonButton>
       </nav>
       <PlanDebt
           v-for="(debt, index) in planConfig.debts"
@@ -110,6 +117,7 @@ import {defaultTaxDeferredInvestmentFactory} from "~/models/taxDeferred/TaxDefer
 import {defaultDebtFactory} from "~/models/debt/DebtFactories";
 import {simpleExpenseFactory} from "~/models/expense/ExpenseFactories";
 import {defaultBrokerageInvestmentFactory} from "~/models/brokerage/BrokerageInvestmentFactories";
+import type PlanState from "~/models/plan/PlanState";
 
 useHead({
   title: 'Calcura Dashboard',
@@ -160,7 +168,13 @@ function handleDeleteExpense(payload: { index: number }) {
 }
 
 const planConfig = reactive(defaultPlanFactory())
-const planManager = reactive(new PlanManager(planConfig))
+let planManager: PlanManager = new PlanManager(planConfig)
+const planStates = ref<PlanState[]>(planManager.simulate())
+
+watch(planConfig, (previousState, newState) => {
+  planManager = new PlanManager(newState)
+  planStates.value = planManager.simulate()
+})
 
 const showAdvancedOptions = ref<boolean>(false)
 </script>
