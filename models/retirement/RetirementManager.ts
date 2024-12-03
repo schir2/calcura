@@ -9,6 +9,7 @@ export default class RetirementManager extends ManagerBase<RetirementConfig, Ret
         return {
             retired: false,
             retirementIncomeProjected: 0,
+            processed: false,
         };
     }
 

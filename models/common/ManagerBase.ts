@@ -40,9 +40,10 @@ export default abstract class ManagerBase<TConfig, TState> {
 
     process(planState: PlanState): PlanState{
         const baseState = this.processImplementation(planState);
+        const currentState = {...this.getCurrentState(), processed: true};
+        this.updateCurrentState(currentState);
         return {
             ...planState,
-            processed: true,
         }
     }
 
@@ -51,7 +52,7 @@ export default abstract class ManagerBase<TConfig, TState> {
     advanceTimePeriod(): TState {
         const previousState = this.getCurrentState();
         if (!(previousState as any).processed) {
-            throw new Error("The current state has not been processed.");
+            throw new Error(`The current state has not been processed. ${JSON.stringify(previousState)}`);
         }
         const newState = this.createNextState(previousState);
         this.states.push(newState);

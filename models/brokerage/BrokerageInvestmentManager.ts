@@ -72,9 +72,11 @@ export default class BrokerageInvestmentManager extends ManagerBase<BrokerageInv
         const currentState = this.getCurrentState()
         const contribution = this.getContribution(planState.taxableIncome, planState.grossIncome, planState.allowNegativeDisposableIncome)
         const taxableIncome = planState.taxableIncome - contribution
+        const balanceEndOfYear = currentState.balanceStartOfYear + this.calculateGrowthAmount(currentState)
         this.updateCurrentState(
             {
                 ...currentState,
+                balanceEndOfYear: balanceEndOfYear
 
             }
         )

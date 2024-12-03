@@ -53,6 +53,7 @@ export default class PlanManager extends ManagerBase<PlanConfig, PlanState> {
     }
 
     getGrossIncome() {
+        this.managers.incomeManagers.forEach((income) => {console.log(JSON.stringify(income.getConfig().name));});
         return this.managers.incomeManagers.reduce((grossIncome, incomeManager) => incomeManager.getCurrentState().grossIncome, 0)
     }
 
@@ -63,7 +64,7 @@ export default class PlanManager extends ManagerBase<PlanConfig, PlanState> {
             ...previousState,
             age: age,
             year: year,
-            grossIncome: 0,
+            grossIncome: this.getGrossIncome(),
             taxedIncome: 0,
             electiveLimit: getTaxDeferredElectiveContributionLimit(year, age),
             deferredLimit: getTaxDeferredContributionLimit(year, age),
@@ -100,7 +101,7 @@ export default class PlanManager extends ManagerBase<PlanConfig, PlanState> {
 
     simulate(commands?: Command[]): PlanState[] {
         const allManagers = this.getAllManagers()
-        for (let i = 0; i < 1; i++) {
+        for (let i = 0; i < 3; i++) {
 
             let currentState = this.getCurrentState()
             if (commands) {
@@ -110,14 +111,12 @@ export default class PlanManager extends ManagerBase<PlanConfig, PlanState> {
             }
             allManagers.forEach(manager => {
                 currentState = this.processUnprocessed(manager)
-                console.log(currentState, manager)
             })
-            const processedState = this.process(currentState)
-            this.updateCurrentState(processedState)
+            this.process(currentState)
             if (this.managers.retirementManager.retirementAchieved()) {
                 return this.states
             }
-            // allManagers.forEach((manager) => manager.advanceTimePeriod())
+            allManagers.forEach((manager) => manager.advanceTimePeriod())
             this.advanceTimePeriod()
         }
         return this.states
@@ -140,8 +139,6 @@ export default class PlanManager extends ManagerBase<PlanConfig, PlanState> {
             const incomeState = incomeManager.getState(stateIndex ?? 0)
             incomeTypes[incomeManager.getConfig().incomeType] = incomeState.grossIncome
         })
-
-
         return incomeTypes
     }
 }

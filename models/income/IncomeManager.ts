@@ -26,11 +26,8 @@ export default class IncomeManager extends ManagerBase<IncomeConfig, IncomeState
     }
 
     processImplementation(planState: PlanState): PlanState {
-
-        const grossIncome = this.getCurrentState().grossIncome
         return {
             ...planState,
-            grossIncome: planState.grossIncome + grossIncome
         };
     }
 
