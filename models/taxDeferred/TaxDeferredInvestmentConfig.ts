@@ -3,6 +3,7 @@ import type {EmployerContributionStrategy, TaxDeferredContributionStrategy} from
 
 
 export default interface TaxDeferredInvestmentConfig {
+    id?: number;
     name: string;
 
     growthApplicationStrategy: InvestmentGrowthApplicationStrategy

@@ -1,5 +1,5 @@
 import {DEFAULT_AGE, DEFAULT_ALLOW_NEGATIVE_DISPOSABLE_INCOME, DEFAULT_EXPENSE_PLAN_NAME, DEFAULT_INFLATION_RATE, DEFAULT_YEAR} from "~/models/plan/PlanConstants";
-import type PlanConfig from "~/models/plan/PlanConfig";
+import type {PlanConfig} from "~/models/plan/PlanConfig";
 import {simpleExpenseFactory} from "~/models/expense/ExpenseFactories";
 import {defaultIncomeFactory} from "~/models/income/IncomeFactories";
 import {simpleTaxFactory} from "~/models/tax/TaxFactories";

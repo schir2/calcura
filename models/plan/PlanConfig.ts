@@ -11,7 +11,7 @@ import type BrokerageInvestmentConfig from "~/models/brokerage/BrokerageInvestme
 export type AllowNegativeDisposableIncome = 'none' | 'minimum_only' | 'full'
 
 
-export default interface PlanConfig {
+export interface PlanConfig {
     name: string;
     age: number;
     year: number;
@@ -26,4 +26,23 @@ export default interface PlanConfig {
     debts: DebtConfig[]
     taxDeferredInvestments: TaxDeferredInvestmentConfig[];
     brokerageInvestments: BrokerageInvestmentConfig[];
+}
+
+export interface PlanConfigWithIds {
+    id: number;
+    name: string;
+    age: number;
+    year: number;
+    inflationRate: number;
+    allowNegativeDisposableIncome: AllowNegativeDisposableIncome;
+
+    retirementId: number;
+    cashId: number;
+    taxId: number;
+    incomeIds: number[];
+    expenseIds: number[];
+    debtIds: number[];
+    taxDeferredInvestmentIds: number[];
+    brokerageInvestmentIds: number[];
+    iraInvestmentIds: number[];
 }

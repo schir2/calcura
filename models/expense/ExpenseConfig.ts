@@ -14,6 +14,7 @@ export enum Frequency {
 }
 
 export default interface ExpenseConfig {
+    id?: number;
     name: string,
     amount: number,
     type: ExpenseType,

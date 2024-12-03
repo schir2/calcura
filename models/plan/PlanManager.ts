@@ -1,4 +1,4 @@
-import type PlanConfig from "~/models/plan/PlanConfig";
+import type {PlanConfig} from "~/models/plan/PlanConfig";
 import type PlanState from "~/models/plan/PlanState";
 import DebtManager from "~/models/debt/DebtManager";
 import ManagerBase from "~/models/common/ManagerBase";
@@ -53,7 +53,9 @@ export default class PlanManager extends ManagerBase<PlanConfig, PlanState> {
     }
 
     getGrossIncome() {
-        this.managers.incomeManagers.forEach((income) => {console.log(JSON.stringify(income.getConfig().name));});
+        this.managers.incomeManagers.forEach((income) => {
+            console.log(JSON.stringify(income.getConfig().name));
+        });
         return this.managers.incomeManagers.reduce((grossIncome, incomeManager) => incomeManager.getCurrentState().grossIncome, 0)
     }
 

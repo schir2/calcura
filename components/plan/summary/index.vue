@@ -18,7 +18,7 @@
 
 </template>
 <script setup lang="ts">
-import type PlanConfig from "~/models/plan/PlanConfig";
+import type {PlanConfig} from "~/models/plan/PlanConfig";
 
 interface Props {
   planConfig: PlanConfig
