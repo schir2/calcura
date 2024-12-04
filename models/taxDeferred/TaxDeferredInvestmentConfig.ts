@@ -1,12 +1,10 @@
-import type {InvestmentGrowthApplicationStrategy} from "~/types";
-import type {EmployerContributionStrategy, TaxDeferredContributionStrategy} from "~/models/taxDeferred/TaxDeferredInvestmentConstants";
+export type EmployerContributionStrategy = 'none' | 'percentage_of_contribution' | 'percentage_of_compensation' | 'fixed'
+export type TaxDeferredContributionStrategy = 'none' | 'until_company_match' | 'percentage_of_income' | 'fixed' | 'max'
 
-
-export default interface TaxDeferredInvestmentConfig {
+export interface TaxDeferredInvestmentConfig {
     id?: number;
     name: string;
 
-    growthApplicationStrategy: InvestmentGrowthApplicationStrategy
     growthRate: number;
     initialBalance: number;
 
