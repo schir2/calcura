@@ -1,6 +1,5 @@
 import type {SelectOption} from "~/components/form/BaseSelect.vue";
-import type TaxDeferredInvestmentConfig from "~/models/taxDeferred/TaxDeferredInvestmentConfig";
-import {DEFAULT_GROWTH_APPLICATION_STRATEGY} from "~/constants/financial";
+import type {EmployerContributionStrategy, TaxDeferredContributionStrategy} from "~/models/taxDeferred/TaxDeferredInvestmentConfig";
 
 export const TAX_DEFERRED_DEFAULT_BALANCE: number = 0
 export const TAX_DEFERRED_DEFAULT_YEAR = 2024
@@ -16,7 +15,8 @@ export const EmployerContributionOptions: Record<string, SelectOption> = {
     percentage_of_compensation: {label: 'Percentage of Compensation', value: 'percentage_of_compensation'},
     fixed: {label: 'Fixed', value: 'fixed'},
 } as const;
-export type EmployerContributionStrategy = keyof typeof EmployerContributionOptions;
+
+
 export const DEFAULT_EMPLOYER_CONTRIBUTION_STRATEGY: EmployerContributionStrategy = 'percentage_of_contribution'
 export const DEFAULT_EMPLOYER_COMPENSATION_MATCH_PERCENTAGE: number = 0
 export const DEFAULT_EMPLOYER_CONTRIBUTION_FIXED_AMOUNT: number = 0
@@ -33,6 +33,5 @@ export const TaxDeferredContributionOptions: Record<string, SelectOption> = {
     fixed: {label: 'Fixed', value: 'fixed'},
     max: {label: 'Max', value: 'max'}
 } as const;
-export type TaxDeferredContributionStrategy = keyof typeof TaxDeferredContributionOptions;
 
 export const DEFAULT_ELECTIVE_CONTRIBUTION_FIXED_AMOUNT: number = 0
