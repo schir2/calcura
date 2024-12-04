@@ -22,6 +22,37 @@ model User {
   Retirement            Retirement[]
   Tax                   Tax[]
   TaxDeferredInvestment TaxDeferredInvestment[]
+  BrokerageInvestment   BrokerageInvestment[]
+}
+
+enum BrokerageContributionStrategy {
+  fixed
+  percentage_of_income
+  max
+}
+
+model BrokerageInvestment {
+  id                      Int                           @id @default(autoincrement())
+  name                    String
+  growthRate              Decimal                       @default(0)
+  initialBalance          Decimal                       @default(0)
+  contributionStrategy    BrokerageContributionStrategy
+  contributionPercentage  Decimal                       @default(0)
+  contributionFixedAmount Decimal                       @default(0)
+  userId                  Int
+  user                    User                          @relation(fields: [userId], references: [id])
+  Plan                    Plan[]
+}
+
+model BrokerageInvestmentTemplate {
+  id                      Int                           @id @default(autoincrement())
+  name                    String
+  growthRate              Decimal                       @default(0)
+  initialBalance          Decimal                       @default(0)
+  contributionStrategy    BrokerageContributionStrategy
+  contributionPercentage  Decimal                       @default(0)
+  contributionFixedAmount Decimal                       @default(0)
+  PlanTemplate            PlanTemplate[]
 }
 
 enum CashMaintenanceStrategy {
@@ -38,6 +69,7 @@ model Cash {
   reserveMonths           Int
   userId                  Int
   user                    User                    @relation(fields: [userId], references: [id])
+  Plan                    Plan[]  @relation("PlanCash")
 }
 
 model CashTemplate {
@@ -47,6 +79,7 @@ model CashTemplate {
   cashMaintenanceStrategy CashMaintenanceStrategy
   reserveAmount           Decimal                 @default(0)
   reserveMonths           Int
+  PlanTemplate            PlanTemplate[]
 }
 
 enum DebtPaymentStrategy {
@@ -66,6 +99,7 @@ model Debt {
   paymentPercentage  Decimal             @default(0)
   userId             Int
   user               User                @relation(fields: [userId], references: [id])
+  Plan               Plan[]
 }
 
 model DebtTemplate {
@@ -77,6 +111,7 @@ model DebtTemplate {
   paymentStrategy    DebtPaymentStrategy
   paymentFixedAmount Decimal             @default(0)
   paymentPercentage  Decimal             @default(0)
+  PlanTemplate       PlanTemplate[]
 }
 
 enum ExpenseType {
@@ -102,16 +137,18 @@ model Expense {
   isTaxDeductible Boolean     @default(false)
   userId          Int
   user            User        @relation(fields: [userId], references: [id])
+  Plan            Plan[]
 }
 
 model ExpenseTemplate {
-  id              Int         @id @default(autoincrement())
+  id              Int           @id @default(autoincrement())
   name            String
-  amount          Decimal     @default(0)
+  amount          Decimal       @default(0)
   type            ExpenseType
   frequency       Frequency
-  isEssential     Boolean     @default(false)
-  isTaxDeductible Boolean     @default(false)
+  isEssential     Boolean       @default(false)
+  isTaxDeductible Boolean       @default(false)
+  PlanTemplate    PlanTemplate[]
 }
 
 enum IncomeType {
@@ -127,14 +164,16 @@ model Income {
   incomeType  IncomeType
   userId      Int
   user        User       @relation(fields: [userId], references: [id])
+  Plan        Plan[]
 }
 
 model IncomeTemplate {
-  id          Int        @id @default(autoincrement())
-  name        String
-  grossIncome Decimal    @default(0)
-  growthRate  Decimal    @default(0)
-  incomeType  IncomeType
+  id             Int           @id @default(autoincrement())
+  name           String
+  grossIncome    Decimal       @default(0)
+  growthRate     Decimal       @default(0)
+  incomeType     IncomeType
+  PlanTemplate   PlanTemplate[]
 }
 
 enum IraType {
@@ -159,6 +198,7 @@ model IraInvestment {
   contributionFixedAmount Decimal                 @default(0)
   userId                  Int
   user                    User                    @relation(fields: [userId], references: [id])
+  Plan                    Plan[]
 }
 
 model IraInvestmentTemplate {
@@ -170,6 +210,7 @@ model IraInvestmentTemplate {
   contributionStrategy    IraContributionStrategy
   contributionPercentage  Decimal                 @default(0)
   contributionFixedAmount Decimal                 @default(0)
+  PlanTemplate            PlanTemplate[]
 }
 
 enum RetirementStrategy {
@@ -189,6 +230,7 @@ model Retirement {
   retirementSavingsAmount  Decimal            @default(0)
   userId                   Int
   user                     User               @relation(fields: [userId], references: [id])
+  Plan                     Plan[]
 }
 
 model RetirementTemplate {
@@ -200,6 +242,7 @@ model RetirementTemplate {
   retirementIncomeGoal     Decimal            @default(0)
   retirementAge            Int
   retirementSavingsAmount  Decimal            @default(0)
+  PlanTemplate             PlanTemplate[]
 }
 
 enum IncomeTaxStrategy {
@@ -212,12 +255,14 @@ model Tax {
   taxRate     Decimal           @default(0)
   userId      Int
   user        User              @relation(fields: [userId], references: [id])
+  Plan        Plan[]
 }
 
 model TaxTemplate {
-  id          Int               @id @default(autoincrement())
-  taxStrategy IncomeTaxStrategy
-  taxRate     Decimal           @default(0)
+  id           Int               @id @default(autoincrement())
+  taxStrategy  IncomeTaxStrategy
+  taxRate      Decimal           @default(0)
+  PlanTemplate PlanTemplate[]
 }
 
 enum EmployerContributionStrategy {
@@ -251,6 +296,7 @@ model TaxDeferredInvestment {
   employerMatchPercentageLimit        Decimal                         @default(0)
   userId                              Int
   user                                User                            @relation(fields: [userId], references: [id])
+  Plan                                Plan[]
 }
 
 model TaxDeferredInvestmentTemplate {
@@ -267,4 +313,56 @@ model TaxDeferredInvestmentTemplate {
   employerContributionFixedAmount     Decimal                         @default(0)
   employerMatchPercentage             Decimal                         @default(0)
   employerMatchPercentageLimit        Decimal                         @default(0)
+  PlanTemplate                        PlanTemplate[]
+}
+
+enum AllowNegativeDisposableIncome {
+  none
+  minimum_only
+  full
+}
+
+model Plan {
+  id                            Int                           @id @default(autoincrement())
+  name                          String
+  age                           Int
+  year                          Int
+  inflationRate                 Decimal                       @default(0)
+  allowNegativeDisposableIncome AllowNegativeDisposableIncome
+
+  retirements          Retirement[]          @relation("PlanRetirements")
+  cash                 Cash[]                @relation("PlanCash")
+  taxes                Tax[]                 @relation("PlanTaxes")
+  incomes              Income[]              @relation("PlanIncomes")
+  expenses             Expense[]             @relation("PlanExpenses")
+  debts                Debt[]                @relation("PlanDebts")
+  taxDeferredInvestments TaxDeferredInvestment[] @relation("PlanTaxDeferredInvestments")
+  brokerageInvestments BrokerageInvestment[] @relation("PlanBrokerageInvestments")
+  iraInvestments       IraInvestment[]       @relation("PlanIraInvestments")
+}
+
+
+model PlanTemplate {
+  id                            Int                           @id @default(autoincrement())
+  name                          String
+  age                           Int
+  year                          Int
+  inflationRate                 Decimal                       @default(0)
+  allowNegativeDisposableIncome AllowNegativeDisposableIncome
+
+  retirementId Int
+  retirement   RetirementTemplate @relation(fields: [retirementId], references: [id])
+
+  cashId Int
+  cash   CashTemplate @relation(fields: [cashId], references: [id])
+
+  taxId Int
+  tax   TaxTemplate @relation(fields: [taxId], references: [id])
+
+  incomes                IncomeTemplate[]                @relation("PlanTemplateIncomes")
+  expenses               ExpenseTemplate[]               @relation("PlanTemplateExpenses")
+  debts                  DebtTemplate[]                  @relation("PlanTemplateDebts")
+  taxDeferredInvestments TaxDeferredInvestmentTemplate[] @relation("PlanTemplateTaxDeferredInvestments")
+  brokerageInvestments   BrokerageInvestmentTemplate[]   @relation("PlanTemplateBrokerageInvestments")
+  iraInvestments         IraInvestmentTemplate[]         @relation("PlanTemplateIraInvestments")
 }
