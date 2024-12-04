@@ -166,7 +166,6 @@ function handleAddExpense() {
 function handleDeleteExpense(payload: { index: number }) {
   planConfig.expenses.splice(payload.index, 1)
 }
-const {$db} = useNuxtApp()
 
 const planConfig = reactive(defaultPlanFactory())
 let planManager: PlanManager = new PlanManager(planConfig)

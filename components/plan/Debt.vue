@@ -1,8 +1,8 @@
 <template>
   <CommonCard color="secondary">
     <div class="flex justify-between align-middle">
-      <h3 class="text-2xl">DebtConfig {{ debtIndex + 1 }}: {{ debt.name }}</h3>
-      <CommonButton iconLeft="mdi:delete" @click="deleteDebt(debtIndex)">
+      <h3 class="text-2xl">DebtConfig {{ debt.id }}: {{ debt.name }}</h3>
+      <CommonButton iconLeft="mdi:delete" @click="deleteDebt">
       </CommonButton>
     </div>
     <Form>
@@ -22,25 +22,22 @@
 
 </template>
 <script setup lang="ts">
-import DebtConfig from "~/models/debt/DebtConfig";
 import {debtFields} from "~/forms/debtForm";
+import type DebtConfig from "~/models/debt/DebtConfig";
 
 interface Props {
   debt: DebtConfig
-  showAdvancedOptions: boolean;
-  debtIndex: number;
+  showAdvancedOptions?: boolean;
 }
 
-const {showAdvancedOptions = false, debt, debtIndex} = defineProps<Props>()
+const {showAdvancedOptions = false, debt} = defineProps<Props>()
 const fieldMetadata = debtFields
 
-const emit = defineEmits({
-  deleteDebt(payload: { index: number }) {
-  }
-})
+const emit = defineEmits(['deleteDebt']);
 
-function deleteDebt(debtIndex: number) {
-  emit('deleteDebt', {index: debtIndex})
+function deleteDebt() {
+  assertDefined(debt.id, 'debtId')
+  emit('deleteDebt', debt.id)
 }
 
 

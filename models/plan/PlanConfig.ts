@@ -6,12 +6,14 @@ import type CashConfig from "~/models/cash/CashConfig";
 import type TaxConfig from "~/models/tax/TaxConfig";
 import type ExpenseConfig from "~/models/expense/ExpenseConfig";
 import type BrokerageInvestmentConfig from "~/models/brokerage/BrokerageInvestmentConfig";
+import type IraInvestmentConfig from "~/models/ira/IraInvestmentConfig";
 
 
 export type AllowNegativeDisposableIncome = 'none' | 'minimum_only' | 'full'
 
 
 export interface PlanConfig {
+    id?: number;
     name: string;
     age: number;
     year: number;
@@ -26,6 +28,7 @@ export interface PlanConfig {
     debts: DebtConfig[]
     taxDeferredInvestments: TaxDeferredInvestmentConfig[];
     brokerageInvestments: BrokerageInvestmentConfig[];
+    iraInvestments: IraInvestmentConfig[];
 }
 
 export interface PlanConfigWithIds {
