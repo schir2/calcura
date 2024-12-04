@@ -11,9 +11,17 @@ datasource db {
 }
 
 model User {
-  id    Int     @id @default(autoincrement())
-  email String  @unique
-  name  String?
+  id                    Int                     @id @default(autoincrement())
+  email                 String                  @unique
+  name                  String?
+  Cash                  Cash[]
+  Debt                  Debt[]
+  Expense               Expense[]
+  Income                Income[]
+  IraInvestment         IraInvestment[]
+  Retirement            Retirement[]
+  Tax                   Tax[]
+  TaxDeferredInvestment TaxDeferredInvestment[]
 }
 
 enum CashMaintenanceStrategy {
@@ -22,10 +30,241 @@ enum CashMaintenanceStrategy {
 }
 
 model Cash {
-  id                       Int                   @id @default(autoincrement())
+  id                      Int                     @id @default(autoincrement())
+  name                    String
+  initialAmount           Decimal                 @default(0)
+  cashMaintenanceStrategy CashMaintenanceStrategy
+  reserveAmount           Decimal                 @default(0)
+  reserveMonths           Int
+  userId                  Int
+  user                    User                    @relation(fields: [userId], references: [id])
+}
+
+model CashTemplate {
+  id                      Int                     @id @default(autoincrement())
+  name                    String
+  initialAmount           Decimal                 @default(0)
+  cashMaintenanceStrategy CashMaintenanceStrategy
+  reserveAmount           Decimal                 @default(0)
+  reserveMonths           Int
+}
+
+enum DebtPaymentStrategy {
+  MINIMUM_PAYMENT
+  FIXED_AMOUNT
+  PERCENTAGE
+}
+
+model Debt {
+  id                 Int                 @id @default(autoincrement())
+  name               String
+  principal          Decimal             @default(0)
+  interestRate       Decimal             @default(0)
+  paymentMinimum     Decimal             @default(0)
+  paymentStrategy    DebtPaymentStrategy
+  paymentFixedAmount Decimal             @default(0)
+  paymentPercentage  Decimal             @default(0)
+  userId             Int
+  user               User                @relation(fields: [userId], references: [id])
+}
+
+model DebtTemplate {
+  id                 Int                 @id @default(autoincrement())
+  name               String
+  principal          Decimal             @default(0)
+  interestRate       Decimal             @default(0)
+  paymentMinimum     Decimal             @default(0)
+  paymentStrategy    DebtPaymentStrategy
+  paymentFixedAmount Decimal             @default(0)
+  paymentPercentage  Decimal             @default(0)
+}
+
+enum ExpenseType {
+  Fixed
+  Variable
+}
+
+enum Frequency {
+  Monthly
+  Weekly
+  Quarterly
+  Annually
+  OneTime
+}
+
+model Expense {
+  id              Int         @id @default(autoincrement())
+  name            String
+  amount          Decimal     @default(0)
+  type            ExpenseType
+  frequency       Frequency
+  isEssential     Boolean     @default(false)
+  isTaxDeductible Boolean     @default(false)
+  userId          Int
+  user            User        @relation(fields: [userId], references: [id])
+}
+
+model ExpenseTemplate {
+  id              Int         @id @default(autoincrement())
+  name            String
+  amount          Decimal     @default(0)
+  type            ExpenseType
+  frequency       Frequency
+  isEssential     Boolean     @default(false)
+  isTaxDeductible Boolean     @default(false)
+}
+
+enum IncomeType {
+  Fixed
+  Variable
+}
+
+model Income {
+  id          Int        @id @default(autoincrement())
+  name        String
+  grossIncome Decimal    @default(0)
+  growthRate  Decimal    @default(0)
+  incomeType  IncomeType
+  userId      Int
+  user        User       @relation(fields: [userId], references: [id])
+}
+
+model IncomeTemplate {
+  id          Int        @id @default(autoincrement())
+  name        String
+  grossIncome Decimal    @default(0)
+  growthRate  Decimal    @default(0)
+  incomeType  IncomeType
+}
+
+enum IraType {
+  taxExempt
+  taxDeferred
+}
+
+enum IraContributionStrategy {
+  fixed
+  percentage_of_income
+  max
+}
+
+model IraInvestment {
+  id                      Int                     @id @default(autoincrement())
+  name                    String
+  iraType                 IraType
+  growthRate              Decimal                 @default(0)
+  initialBalance          Decimal                 @default(0)
+  contributionStrategy    IraContributionStrategy
+  contributionPercentage  Decimal                 @default(0)
+  contributionFixedAmount Decimal                 @default(0)
+  userId                  Int
+  user                    User                    @relation(fields: [userId], references: [id])
+}
+
+model IraInvestmentTemplate {
+  id                      Int                     @id @default(autoincrement())
+  name                    String
+  iraType                 IraType
+  growthRate              Decimal                 @default(0)
+  initialBalance          Decimal                 @default(0)
+  contributionStrategy    IraContributionStrategy
+  contributionPercentage  Decimal                 @default(0)
+  contributionFixedAmount Decimal                 @default(0)
+}
+
+enum RetirementStrategy {
+  FIRE
+  TRADITIONAL
+  COAST
+}
+
+model Retirement {
+  id                       Int                @id @default(autoincrement())
   name                     String
-  initialAmount            Decimal               @default(0)
-  cashMaintenanceStrategy  CashMaintenanceStrategy
-  reserveAmount            Decimal               @default(0)
-  reserveMonths            Int
+  lifeExpectancy           Int
+  retirementStrategy       RetirementStrategy
+  retirementWithdrawalRate Decimal            @default(0)
+  retirementIncomeGoal     Decimal            @default(0)
+  retirementAge            Int
+  retirementSavingsAmount  Decimal            @default(0)
+  userId                   Int
+  user                     User               @relation(fields: [userId], references: [id])
+}
+
+model RetirementTemplate {
+  id                       Int                @id @default(autoincrement())
+  name                     String
+  lifeExpectancy           Int
+  retirementStrategy       RetirementStrategy
+  retirementWithdrawalRate Decimal            @default(0)
+  retirementIncomeGoal     Decimal            @default(0)
+  retirementAge            Int
+  retirementSavingsAmount  Decimal            @default(0)
+}
+
+enum IncomeTaxStrategy {
+  simple
+}
+
+model Tax {
+  id          Int               @id @default(autoincrement())
+  taxStrategy IncomeTaxStrategy
+  taxRate     Decimal           @default(0)
+  userId      Int
+  user        User              @relation(fields: [userId], references: [id])
+}
+
+model TaxTemplate {
+  id          Int               @id @default(autoincrement())
+  taxStrategy IncomeTaxStrategy
+  taxRate     Decimal           @default(0)
+}
+
+enum EmployerContributionStrategy {
+  none
+  percentage_of_contribution
+  percentage_of_compensation
+  fixed
+}
+
+enum TaxDeferredContributionStrategy {
+  none
+  until_company_match
+  percentage_of_income
+  fixed
+  max
+}
+
+model TaxDeferredInvestment {
+  id                                  Int                             @id @default(autoincrement())
+  name                                String
+  growthRate                          Decimal                         @default(0)
+  initialBalance                      Decimal                         @default(0)
+  electiveContributionStrategy        TaxDeferredContributionStrategy
+  electiveContributionPercentage      Decimal                         @default(0)
+  electiveContributionFixedAmount     Decimal                         @default(0)
+  employerContributes                 Boolean                         @default(false)
+  employerContributionStrategy        EmployerContributionStrategy
+  employerCompensationMatchPercentage Decimal                         @default(0)
+  employerContributionFixedAmount     Decimal                         @default(0)
+  employerMatchPercentage             Decimal                         @default(0)
+  employerMatchPercentageLimit        Decimal                         @default(0)
+  userId                              Int
+  user                                User                            @relation(fields: [userId], references: [id])
+}
+
+model TaxDeferredInvestmentTemplate {
+  id                                  Int                             @id @default(autoincrement())
+  name                                String
+  growthRate                          Decimal                         @default(0)
+  initialBalance                      Decimal                         @default(0)
+  electiveContributionStrategy        TaxDeferredContributionStrategy
+  electiveContributionPercentage      Decimal                         @default(0)
+  electiveContributionFixedAmount     Decimal                         @default(0)
+  employerContributes                 Boolean                         @default(false)
+  employerContributionStrategy        EmployerContributionStrategy
+  employerCompensationMatchPercentage Decimal                         @default(0)
+  employerContributionFixedAmount     Decimal                         @default(0)
+  employerMatchPercentage             Decimal                         @default(0)
+  employerMatchPercentageLimit        Decimal                         @default(0)
 }
