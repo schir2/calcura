@@ -1,4 +1,4 @@
-import type TaxDeferredInvestmentConfig from "~/models/taxDeferred/TaxDeferredInvestmentConfig";
+import type {TaxDeferredInvestmentConfig} from "~/models/taxDeferred/TaxDeferredInvestmentConfig";
 import {DEFAULT_GROWTH_APPLICATION_STRATEGY} from "~/constants/financial";
 import {
     DEFAULT_DAX_DEFERRED_GROWTH_RATE,

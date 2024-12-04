@@ -1,4 +1,4 @@
-import type TaxDeferredInvestmentConfig from './TaxDeferredInvestmentConfig';
+import type {TaxDeferredInvestmentConfig} from './TaxDeferredInvestmentConfig';
 import {adjustForAllowNegativeDisposableIncome, assertDefined, calculateInvestmentGrowthAmount} from "~/utils";
 import {type AllowNegativeDisposableIncome} from "~/models/plan/PlanConfig";
 import type TaxDeferredInvestmentState from "~/models/taxDeferred/TaxDeferredInvestmentState";

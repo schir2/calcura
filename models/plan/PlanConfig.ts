@@ -1,5 +1,5 @@
 import type DebtConfig from "~/models/debt/DebtConfig";
-import type TaxDeferredInvestmentConfig from "~/models/taxDeferred/TaxDeferredInvestmentConfig";
+import type {TaxDeferredInvestmentConfig} from "~/models/taxDeferred/TaxDeferredInvestmentConfig";
 import type IncomeConfig from "~/models/income/IncomeConfig";
 import type RetirementConfig from "~/models/retirement/RetirementConfig";
 import type CashConfig from "~/models/cash/CashConfig";
