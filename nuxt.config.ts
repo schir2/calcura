@@ -11,7 +11,8 @@ export default defineNuxtConfig({
         '@nuxt/test-utils/module',
         '@pinia/nuxt',
         '@vueuse/nuxt',
-        '@nuxt/icon'
+        '@nuxt/icon',
+        '@nuxt/prisma',
     ],
     icon:{
         serverBundle: {
