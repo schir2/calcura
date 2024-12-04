@@ -12,7 +12,7 @@ export default defineNuxtConfig({
         '@pinia/nuxt',
         '@vueuse/nuxt',
         '@nuxt/icon',
-        '@nuxt/prisma',
+        '@prisma/nuxt',
     ],
     icon:{
         serverBundle: {
