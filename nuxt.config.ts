@@ -7,12 +7,11 @@ export default defineNuxtConfig({
     ],
     devtools: {enabled: true},
     modules: [
-        '@vee-validate/nuxt',
-        '@nuxt/test-utils/module',
-        '@pinia/nuxt',
-        '@vueuse/nuxt',
-        '@nuxt/icon',
-        '@prisma/nuxt',
+      '@vee-validate/nuxt',
+      '@nuxt/test-utils/module',
+      '@pinia/nuxt',
+      '@vueuse/nuxt',
+      '@nuxt/icon',
     ],
     icon:{
         serverBundle: {
@@ -24,10 +23,6 @@ export default defineNuxtConfig({
             tailwindcss: {},
             autoprefixer: {},
         },
-    },
-    prisma: {
-        generateClient: false,
-        autoSetupPrisma: false,
     },
     app: {
         head: {
