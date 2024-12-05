@@ -7,7 +7,7 @@
 <script setup lang="ts">
 import {defaultDebtFactory} from "~/models/debt/DebtFactories";
 import type DebtConfig from "~/models/debt/DebtConfig";
-import {dbService} from "~/services/dbService";
+import {debtService} from "~/server/service/debtService";
 
 async function handleAddDebt() {
   const debtConfig = defaultDebtFactory();
@@ -15,7 +15,7 @@ async function handleAddDebt() {
 }
 
 async function handleDeleteDebt(index: number) {
-  await dbService.table('debts').delete(index)
+  await debtService.delete(index)
   await loadDebts();
 }
 
@@ -23,7 +23,7 @@ const debtConfigs = ref<DebtConfig[]>([])
 
 async function loadDebts() {
   try {
-    debtConfigs.value = await dbService.table('debts').toArray();
+    debtConfigs.value = await debtService.findMany();
   } catch (error) {
     console.error('Failed to load debts:', error);
   }

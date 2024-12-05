@@ -3,7 +3,6 @@
 
 generator client {
   provider        = "prisma-client-js"
-  previewFeatures = ["prismaSchemaFolder"]
 }
 
 datasource db {
@@ -88,6 +87,7 @@ model CashTemplate {
 
 enum DebtPaymentStrategy {
   MINIMUM_PAYMENT
+  MAXIMUM_PAYMENT
   FIXED_AMOUNT
   PERCENTAGE
 }

@@ -1,6 +1,7 @@
 import type IraInvestmentConfig from "~/models/ira/IraInvestmentConfig";
 import {DEFAULT_IRA_BALANCE, DEFAULT_IRA_CONTRIBUTION_PERCENTAGE, DEFAULT_IRA_CONTRIBUTION_STRATEGY, DEFAULT_IRA_GROWTH_RATE} from "~/models/ira/IraInvestmentConstants";
-import {DEFAULT_GROWTH_APPLICATION_STRATEGY} from "~/constants/financial";
+
+import {DEFAULT_GROWTH_APPLICATION_STRATEGY} from "~/models/plan/PlanConstants";
 
 export function rothIraInvestmentFactory(): IraInvestmentConfig {
     return {

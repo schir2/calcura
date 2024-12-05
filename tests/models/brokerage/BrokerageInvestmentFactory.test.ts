@@ -1,7 +1,8 @@
 import {describe, expect, it} from "vitest";
 import {defaultBrokerageInvestmentFactory} from "~/models/brokerage/BrokerageInvestmentFactories";
 import {DEFAULT_BROKERAGE_BALANCE, DEFAULT_BROKERAGE_CONTRIBUTION_FIXED_AMOUNT, DEFAULT_BROKERAGE_CONTRIBUTION_PERCENTAGE, DEFAULT_BROKERAGE_CONTRIBUTION_STRATEGY, DEFAULT_BROKERAGE_GROWTH_RATE} from "~/models/brokerage/BrokerageInvestmentConstants";
-import {DEFAULT_GROWTH_APPLICATION_STRATEGY} from "~/constants/financial";
+
+import {DEFAULT_GROWTH_APPLICATION_STRATEGY} from "~/models/plan/PlanConstants";
 
 
 describe("BrokerageInvestmentFactory", () => {

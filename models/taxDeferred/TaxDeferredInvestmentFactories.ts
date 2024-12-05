@@ -1,5 +1,4 @@
 import type {TaxDeferredInvestmentConfig} from "~/models/taxDeferred/TaxDeferredInvestmentConfig";
-import {DEFAULT_GROWTH_APPLICATION_STRATEGY} from "~/constants/financial";
 import {
     DEFAULT_DAX_DEFERRED_GROWTH_RATE,
     DEFAULT_ELECTIVE_CONTRIBUTION_PERCENTAGE,
@@ -10,6 +9,7 @@ import {
     DEFAULT_EMPLOYER_MATCH_PERCENTAGE_LIMIT,
     TAX_DEFERRED_DEFAULT_BALANCE
 } from "~/models/taxDeferred/TaxDeferredInvestmentConstants";
+import {DEFAULT_GROWTH_APPLICATION_STRATEGY} from "~/models/plan/PlanConstants";
 
 export function defaultTaxDeferredInvestmentFactory(): TaxDeferredInvestmentConfig {
     return {

@@ -25,6 +25,10 @@ export default defineNuxtConfig({
             autoprefixer: {},
         },
     },
+    prisma: {
+        generateClient: false,
+        autoSetupPrisma: false,
+    },
     app: {
         head: {
             bodyAttrs: {
@@ -32,4 +36,5 @@ export default defineNuxtConfig({
             }
         }
     },
+
 })
