@@ -67,7 +67,7 @@
       </nav>
       <PlanDebt
           v-for="(debt, index) in planConfig.debts"
-          :debt="debt"
+          :debtConfig="debt"
           :key="index"
           :debtIndex="index"
           :showAdvancedOptions="showAdvancedOptions"

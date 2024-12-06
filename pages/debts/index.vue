@@ -1,7 +1,7 @@
 <template>
   <CommonButton @click="handleAddDebt()">Add</CommonButton>
   <div class="container">
-    <PlanDebt v-for="(debtConfig, index) in debtConfigs" :debt="debtConfig" :key="debtConfig.id" @deleteDebt="handleDeleteDebt" @updateDebt="handleUpdateDebt"></PlanDebt>
+    <PlanDebt v-for="(debtConfig, index) in debtConfigs" :debtConfig="debtConfig" :key="debtConfig.id" @deleteDebt="handleDeleteDebt" @updateDebt="handleUpdateDebt"></PlanDebt>
   </div>
 </template>
 <script setup lang="ts">
