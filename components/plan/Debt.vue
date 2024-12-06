@@ -2,8 +2,8 @@
   <CommonCard color="secondary">
     <div class="flex justify-between align-middle">
       <h3 class="text-2xl">DebtConfig {{ debt.id }}: {{ debt.name }}</h3>
-      <CommonButton iconLeft="mdi:delete" @click="deleteDebt">
-      </CommonButton>
+      <CommonButton iconLeft="mdi:delete" @click="deleteDebt"/>
+      <CommonButton iconLeft="mdi:content-save" @click="updateDebt"/>
     </div>
     <Form>
       <section>
@@ -33,12 +33,25 @@ interface Props {
 const {showAdvancedOptions = false, debt} = defineProps<Props>()
 const fieldMetadata = debtFields
 
-const emit = defineEmits(['deleteDebt']);
+const emit = defineEmits(['deleteDebt', 'updateDebt']);
 
 function deleteDebt() {
   assertDefined(debt.id, 'debtId')
   emit('deleteDebt', debt.id)
 }
 
+function updateDebt() {
+  assertDefined(debt.id, 'debtId')
+  emit('updateDebt', debt)
+}
+
+const currentDebt = reactive({ ...debt });
+const isModified = computed(() =>
+    JSON.stringify(currentDebt) !== JSON.stringify(debt)
+);
+
+function resetDebt() {
+  Object.assign(currentDebt, { ...debt });
+}
 
 </script>

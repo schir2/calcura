@@ -1,7 +1,7 @@
 <template>
   <CommonButton @click="handleAddDebt()">Add</CommonButton>
   <div class="container">
-    <PlanDebt v-for="(debtConfig, index) in debtConfigs" :debt="debtConfig" :key="debtConfig.id" @deleteDebt="handleDeleteDebt"/>
+    <PlanDebt v-for="(debtConfig, index) in debtConfigs" :debt="debtConfig" :key="debtConfig.id" @deleteDebt="handleDeleteDebt" @updateDebt="handleUpdateDebt"></PlanDebt>
   </div>
 </template>
 <script setup lang="ts">
@@ -19,6 +19,12 @@ async function handleAddDebt() {
 
 async function handleDeleteDebt(index: number) {
   await debtService.delete(index)
+  await loadDebts();
+}
+
+async function handleUpdateDebt(debtConfig: DebtConfig) {
+  console.log(debtConfig)
+  await debtService.update(debtConfig.id, debtConfig)
   await loadDebts();
 }
 
