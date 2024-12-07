@@ -1,17 +1,20 @@
 <template>
-  <CommonButton @click="handleAddDebt()">Add</CommonButton>
-  <div class="container">
-    <PlanDebt v-for="(debtConfig, index) in debtConfigs" :debtConfig="debtConfig" :key="debtConfig.id" @deleteDebt="handleDeleteDebt" @updateDebt="handleUpdateDebt"></PlanDebt>
-  </div>
+  <DebtList :debts="debtConfigs"
+            @createDebt="handleCreateDebt"
+            @updateDebt="handleUpdateDebt"
+            @deleteDebt="handleDeleteDebt"
+  ></DebtList>
 </template>
 <script setup lang="ts">
 import {defaultDebtFactory} from "~/models/debt/DebtFactories";
 import type DebtConfig from "~/models/debt/DebtConfig";
 
-import {debtService} from "~/services/debtService";
+import {useDebtService} from "~/composables/debtService";
+
+const debtService = useDebtService();
 
 
-async function handleAddDebt() {
+async function handleCreateDebt() {
   const debtConfig = defaultDebtFactory();
   await debtService.create(debtConfig)
   await loadDebts();
@@ -32,7 +35,7 @@ const debtConfigs = ref<DebtConfig[]>([])
 
 async function loadDebts() {
   try {
-    debtConfigs.value = await debtService.fetchList();
+    debtConfigs.value = await debtService.list();
   } catch (error) {
     console.error('Failed to load debts:', error);
   }
