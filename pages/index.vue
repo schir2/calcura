@@ -20,14 +20,7 @@
         <CommonButton iconLeft="mdi:add" @click="handleAddIncome">Add Income</CommonButton>
       </div>
       <CommonList>
-        <PlanIncome
-            v-for="(income, index) in planConfig.incomes"
-            :income="income"
-            :key="index"
-            :incomeIndex="index"
-            :showAdvancedOptions="showAdvancedOptions"
-            @deleteIncome="handleDeleteIncome"
-        ></PlanIncome>
+        <IncomeList :incomes="planConfig.incomes"></IncomeList>
       </CommonList>
     </CommonCard>
 
@@ -53,26 +46,22 @@
       <nav class="flex align-middle gap-6">
         <h2 class="text-3xl">CashConfig to Maintain</h2>
       </nav>
-      <PlanCash
-          :cash="planConfig.cash"
+      <Cash
+          :cash="planConfig.cashes"
           :showAdvancedOptions="showAdvancedOptions"
-      ></PlanCash>
+      ></Cash>
     </CommonCard>
 
     <!-- Debts -->
     <CommonCard class="bg-skin-muted space-y-6">
       <nav class="flex align-middle gap-6">
         <h2 class="text-3xl">Debt(s)</h2>
-        <CommonButton iconLeft="mdi:add" @click="handleAddDebt">Add Debt</CommonButton>
       </nav>
-      <PlanDebt
-          v-for="(debt, index) in planConfig.debts"
-          :debtConfig="debt"
-          :key="index"
-          :debtIndex="index"
-          :showAdvancedOptions="showAdvancedOptions"
-          @deleteDebt="handleDeleteDebt"
-      ></PlanDebt>
+      <DebtList :debts="planConfig.debts"
+                @createDebt="handleCreateDebt"
+                @updateDebt="handleUpdateDebt"
+                @deleteDebt="handleDeleteDebt"
+      ></DebtList>
     </CommonCard>
     <CommonCard class="bg-skin-muted space-y-6">
       <nav class="flex align-middle gap-6">
@@ -112,12 +101,14 @@
 import InputToggle from "~/components/form/InputToggle.vue";
 import PlanManager from "~/models/plan/PlanManager";
 import {defaultPlanFactory} from "~/models/plan/PlanFactories";
-import {defaultIncomeFactory} from "~/models/income/IncomeFactories";
 import {defaultTaxDeferredInvestmentFactory} from "~/models/taxDeferred/TaxDeferredInvestmentFactories";
-import {defaultDebtFactory} from "~/models/debt/DebtFactories";
 import {simpleExpenseFactory} from "~/models/expense/ExpenseFactories";
 import {defaultBrokerageInvestmentFactory} from "~/models/brokerage/BrokerageInvestmentFactories";
 import type PlanState from "~/models/plan/PlanState";
+import {defaultDebtFactory} from "~/models/debt/DebtFactories";
+import type DebtConfig from "~/models/debt/DebtConfig";
+
+const debtService = useDebtService()
 
 useHead({
   title: 'Calcura Dashboard',
@@ -126,13 +117,36 @@ useHead({
   ],
 })
 
-function handleAddIncome() {
-  planConfig.incomes.push(defaultIncomeFactory())
+async function handleCreateDebt() {
+  const debtConfig = defaultDebtFactory();
+  await debtService.create(debtConfig)
+  await refresh();
 }
 
-function handleDeleteIncome(payload: { index: number }) {
-  planConfig.incomes.splice(payload.index, 1)
+async function handleDeleteDebt(index: number) {
+  await debtService.delete(index)
+  await refresh();
 }
+
+async function handleUpdateDebt(debtConfig: DebtConfig) {
+  await debtService.update(debtConfig.id, debtConfig)
+  await refresh();
+}
+
+async function refresh() {
+  try {
+    planConfig.debts = await debtService.list();
+  } catch (error) {
+  }
+}
+
+onMounted(async () => {
+  await refresh();
+});
+
+
+
+
 
 function handleAddTaxDeferredInvestment() {
   planConfig.taxDeferredInvestments.push(defaultTaxDeferredInvestmentFactory())
@@ -148,14 +162,6 @@ function handleAddBrokerageInvestment() {
 
 function handleDeleteBrokerageInvestment(payload: { index: number }) {
   planConfig.brokerageInvestments.splice(payload.index, 1)
-}
-
-function handleAddDebt() {
-  planConfig.debts.push(defaultDebtFactory())
-}
-
-function handleDeleteDebt(payload: { index: number }) {
-  planConfig.debts.splice(payload.index, 1)
 }
 
 function handleAddExpense() {

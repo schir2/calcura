@@ -14,7 +14,7 @@
   </CommonCard>
 </template>
 <script setup lang="ts">
-import {retirementFields} from "~/forms/retirementForm";
+import {retirementFields} from "~/forms/planForm";
 import type RetirementConfig from "~/models/retirement/RetirementConfig";
 
 const fieldMetadata = retirementFields;

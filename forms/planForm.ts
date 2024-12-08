@@ -1,5 +1,8 @@
 import * as yup from "yup";
 import type {FieldData} from "~/interfaces/FieldData";
+import type {SelectOption} from "~/components/form/Select.vue";
+import type {RetirementStrategy} from "~/types";
+import {MAX_NAME_LENGTH, MIN_NAME_LENGTH} from "~/models/income/IncomeConstants";
 import {
     DEFAULT_RETIREMENT_AGE,
     DEFAULT_RETIREMENT_INCOME_GOAL,
@@ -7,20 +10,19 @@ import {
     DEFAULT_RETIREMENT_PLAN_NAME,
     DEFAULT_RETIREMENT_SAVINGS_AMOUNT,
     DEFAULT_RETIREMENT_WITHDRAWAL_RATE,
+    DEFAULT_TAX_STRATEGY,
     MAX_RETIREMENT_AGE_FOR_WITHDRAWAL,
     MAX_RETIREMENT_INCOME_GOAL,
     MAX_RETIREMENT_LIFE_EXPECTANCY,
     MAX_RETIREMENT_SAVINGS_AMOUNT,
     MAX_RETIREMENT_WITHDRAWAL_RATE,
+    MAX_TAX_RATE,
     MIN_RETIREMENT_AGE_FOR_WITHDRAWAL,
     MIN_RETIREMENT_INCOME_GOAL,
     MIN_RETIREMENT_LIFE_EXPECTANCY,
     MIN_RETIREMENT_WITHDRAWAL_RATE,
-} from "~/models/retirement/RetirementConstants";
-import type {SelectOption} from "~/components/form/Select.vue";
-import type {RetirementStrategy} from "~/types";
-import {MAX_NAME_LENGTH, MIN_NAME_LENGTH} from "~/models/income/IncomeConstants";
-import type RetirementConfig from "~/models/retirement/RetirementConfig";
+    MIN_TAX_RATE
+} from "~/models/plan/PlanConstants";
 
 export const retirementStrategyOptions: Record<RetirementStrategy, SelectOption> = {
     age: {label: 'Age', value: 'age'},
@@ -29,7 +31,7 @@ export const retirementStrategyOptions: Record<RetirementStrategy, SelectOption>
     targetSavings: {label: 'Savings Amount', value: 'targetSavings'}
 } as const;
 
-export const retirementFields: Record<keyof RetirementConfig, FieldData> = {
+export const retirementFields: Record<string, FieldData> = {
     name: {
         name: 'name',
         label: 'Name',
@@ -123,6 +125,31 @@ export const retirementFields: Record<keyof RetirementConfig, FieldData> = {
             .required("Retirement savings amount is required")
             .min(0, "Retirement savings must be at least $0.")
             .max(MAX_RETIREMENT_SAVINGS_AMOUNT, `Retirement savings must be at most $${MAX_RETIREMENT_SAVINGS_AMOUNT}.`),
+    },
+    taxStrategy: {
+        name: 'taxStrategy',
+        label: 'Tax Strategy',
+        placeholder: 'Select tax strategy',
+        helpText: 'Select how this income is taxed.',
+        type: 'select',
+        defaultValue: DEFAULT_TAX_STRATEGY,
+        rules: yup.mixed().required('Tax strategy is required'),
+        options: [
+            {label: "Simple", value: 'simple'}
+        ],
+    },
+    taxRate: {
+        name: 'taxRate',
+        label: 'Tax Rate (%)',
+        placeholder: 'Enter tax rate',
+        helpText: 'Effective tax rate for this income.',
+        type: 'number',
+        defaultValue: 0, // Defaulting to 0%
+        rules: yup
+            .number()
+            .required('Tax rate is required')
+            .min(MIN_TAX_RATE, 'Tax rate cannot be negative.')
+            .max(MAX_TAX_RATE, 'Tax rate must be 100% or less.'),
     },
 }
 

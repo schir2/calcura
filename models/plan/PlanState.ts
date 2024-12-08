@@ -12,6 +12,9 @@ export default interface PlanState {
     inflationRate: number;
     allowNegativeDisposableIncome: AllowNegativeDisposableIncome;
 
+    retirementIncomeProjected: number,
+    retired: boolean,
+
     savingsStartOfYear: number;
     savingsEndOfYear: number;
     processed: boolean;

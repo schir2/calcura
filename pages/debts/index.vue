@@ -26,7 +26,6 @@ async function handleDeleteDebt(index: number) {
 }
 
 async function handleUpdateDebt(debtConfig: DebtConfig) {
-  console.log(debtConfig)
   await debtService.update(debtConfig.id, debtConfig)
   await loadDebts();
 }
@@ -37,7 +36,6 @@ async function loadDebts() {
   try {
     debtConfigs.value = await debtService.list();
   } catch (error) {
-    console.error('Failed to load debts:', error);
   }
 }
 
