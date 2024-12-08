@@ -1,15 +1,15 @@
 import type {
-    ExpensesGrowthStrategy,
-    GrowthStrategy,
-    InflationGrowthStrategy,
-    InvestmentGrowthApplicationStrategy,
     IraContributionStrategy,
-    RetirementStrategy,
     TaxableContributionStrategy,
 } from "~/types";
 import type {EmployerContributionStrategy, TaxDeferredContributionStrategy} from "~/models/taxDeferred/TaxDeferredInvestmentConstants";
 import type {DebtData} from "~/models/debt/DebtConfig";
 import type {IncomeTaxStrategy} from "~/models/tax/TaxConfig";
+import type {
+    ExpensesGrowthStrategy, GrowthStrategy,
+    InflationGrowthStrategy,
+    InvestmentGrowthApplicationStrategy, RetirementStrategy
+} from "~/models/plan/PlanConfig";
 
 export default interface IForm {
     /* Profile */

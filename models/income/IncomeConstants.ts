@@ -1,5 +1,5 @@
-import type {GrowthStrategy} from "~/types";
 import type {IncomeType} from "~/models/income/IncomeConfig";
+import type {GrowthStrategy} from "~/models/plan/PlanConfig";
 
 export const DEFAULT_INCOME_NAME = 'Ordinary Income';
 export const DEFAULT_GROSS_INCOME = 37585;

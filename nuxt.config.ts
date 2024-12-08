@@ -1,3 +1,7 @@
+import AutoImport from 'unplugin-auto-import/vite'
+import { NaiveUiResolver } from 'unplugin-vue-components/resolvers'
+import Components from 'unplugin-vue-components/vite'
+
 export default defineNuxtConfig({
     compatibilityDate: '2024-04-03',
     css: [
@@ -12,6 +16,7 @@ export default defineNuxtConfig({
       '@pinia/nuxt',
       '@vueuse/nuxt',
       '@nuxt/icon',
+      'nuxtjs-naive-ui',
     ],
     icon:{
         serverBundle: {
@@ -36,6 +41,26 @@ export default defineNuxtConfig({
             apiBaseUrl: process.env.API_BASE_URL,
             apiHost: process.env.API_HOST,
         }
+    },
+    vite: {
+        plugins: [
+            AutoImport({
+                imports: [
+                    {
+                        'naive-ui': [
+                            'useDialog',
+                            'useMessage',
+                            'useNotification',
+                            'useLoadingBar',
+                        ]
+                    }
+                ]
+            }),
+            Components({
+                resolvers: [NaiveUiResolver()],
+                dts: true,
+            })
+        ]
     }
 
 })

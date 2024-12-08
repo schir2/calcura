@@ -1,7 +1,6 @@
 import * as yup from "yup";
 import type {FieldData} from "~/interfaces/FieldData";
 import type {SelectOption} from "~/components/form/Select.vue";
-import type {RetirementStrategy} from "~/types";
 import {MAX_NAME_LENGTH, MIN_NAME_LENGTH} from "~/models/income/IncomeConstants";
 import {
     DEFAULT_RETIREMENT_AGE,
@@ -23,6 +22,7 @@ import {
     MIN_RETIREMENT_WITHDRAWAL_RATE,
     MIN_TAX_RATE
 } from "~/models/plan/PlanConstants";
+import type {RetirementStrategy} from "~/models/plan/PlanConfig";
 
 export const retirementStrategyOptions: Record<RetirementStrategy, SelectOption> = {
     age: {label: 'Age', value: 'age'},

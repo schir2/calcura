@@ -1,5 +1,5 @@
 <template>
-  <CommonButton @click="handleCreatePlan()">Add</CommonButton>
+  <NButton @click="handleCreatePlan()">Add</NButton>
   <div class="container">
     <Plan v-for="(planConfig, index) in plans" :planConfig="planConfig" :key="planConfig.id"
           @deletePlan="handleDeletePlan" @updatePlan="handleUpdatePlan"></Plan>
