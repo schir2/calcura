@@ -1,16 +1,16 @@
 <template>
   <NButton @click="handleCreatePlan()">Add</NButton>
-  <div class="container">
-    <Plan v-for="(planConfig, index) in plans" :planConfig="planConfig" :key="planConfig.id"
-          @deletePlan="handleDeletePlan" @updatePlan="handleUpdatePlan"></Plan>
-  </div>
+  <NList class="container">
+    <PlanListItem v-for="(planConfig, index) in plans" :planConfig="planConfig" :key="planConfig.id"
+          @deletePlan="handleDeletePlan" @updatePlan="handleUpdatePlan"></PlanListItem>
+  </NList>
 
 </template>
 <script lang="ts" setup>
-import type {PlanConfig} from "~/models/plan/PlanConfig";
+import type {Plan} from "~/models/plan/Plan";
 
 interface Props {
-  plans: PlanConfig[]
+  plans: Plan[]
 }
 
 const props = defineProps<Props>()
@@ -25,7 +25,7 @@ function handleCreatePlan() {
   emit('createPlan');
 }
 
-function handleUpdatePlan(planConfig: PlanConfig) {
+function handleUpdatePlan(planConfig: Plan) {
   emit('updatePlan', planConfig);
 }
 

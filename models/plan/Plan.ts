@@ -15,7 +15,7 @@ export type ExpensesGrowthStrategy = 'fixed' | 'percentage_increase';
 export type InvestmentGrowthApplicationStrategy = 'start' | 'end';
 export type IncomeTaxStrategy = 'simple'
 
-export interface PlanConfig {
+export interface Plan {
     id?: number;
     name: string;
     age: number;

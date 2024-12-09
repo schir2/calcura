@@ -2,9 +2,9 @@
   <CommonCard color="secondary">
     <div class="flex justify-between align-middle">
       <h3 class="text-2xl">DebtConfig {{ debtConfig.id }}: {{ currentDebtConfig.name }}</h3>
-      <CommonButton iconLeft="mdi:delete" @click="deleteDebt">Delete</CommonButton>
-      <CommonButton v-if="isModified" iconLeft="mdi:history" @click="resetDebt">Reset</CommonButton>
-      <CommonButton v-if="isModified" iconLeft="mdi:content-save" @click="updateDebt">Save</CommonButton>
+      <NButton iconLeft="mdi:delete" @click="deleteDebt">Delete</NButton>
+      <NButton v-if="isModified" iconLeft="mdi:history" @click="resetDebt">Reset</NButton>
+      <NButton v-if="isModified" iconLeft="mdi:content-save" @click="updateDebt">Save</NButton>
     </div>
     <Form>
       <section>

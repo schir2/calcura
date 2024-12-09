@@ -22,7 +22,7 @@ import {
     MIN_RETIREMENT_WITHDRAWAL_RATE,
     MIN_TAX_RATE
 } from "~/models/plan/PlanConstants";
-import type {RetirementStrategy} from "~/models/plan/PlanConfig";
+import type {RetirementStrategy} from "~/models/plan/Plan";
 
 export const retirementStrategyOptions: Record<RetirementStrategy, SelectOption> = {
     age: {label: 'Age', value: 'age'},

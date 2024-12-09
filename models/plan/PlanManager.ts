@@ -1,31 +1,25 @@
-import type {PlanConfig} from "~/models/plan/PlanConfig";
+import type {Plan} from "~/models/plan/Plan";
 import type PlanState from "~/models/plan/PlanState";
 import DebtManager from "~/models/debt/DebtManager";
 import ManagerBase from "~/models/common/ManagerBase";
 import {getIraLimit, getTaxDeferredContributionLimit, getTaxDeferredElectiveContributionLimit} from "~/utils";
 import type Command from "~/models/common/Command";
 import IncomeManager from "~/models/income/IncomeManager";
-import TaxManager from "~/models/tax/TaxManager";
-import RetirementManager from "~/models/retirement/RetirementManager";
 import type {IncomeType} from "~/models/income/IncomeConfig";
 import BrokerageInvestmentManager from "~/models/brokerage/BrokerageInvestmentManager";
 import ExpenseManager from "~/models/expense/ExpenseManager";
 
-export default class PlanManager extends ManagerBase<PlanConfig, PlanState> {
+export default class PlanManager extends ManagerBase<Plan, PlanState> {
     managers: {
-        retirementManager: RetirementManager
-        taxManager: TaxManager
         debtManagers: DebtManager[]
         incomeManagers: IncomeManager[]
         brokerageInvestmentManagers: BrokerageInvestmentManager[]
         expenseManagers: ExpenseManager[]
     }
 
-    constructor(config: PlanConfig) {
+    constructor(config: Plan) {
         super(config)
         this.managers = {
-            retirementManager: new RetirementManager(config.retirement),
-            taxManager: new TaxManager(config.tax),
             debtManagers: config.debts.map((debtConfig) => new DebtManager(debtConfig)),
             incomeManagers: config.incomes.map((incomeConfig) => new IncomeManager(incomeConfig)),
             brokerageInvestmentManagers: config.brokerageInvestments.map((brokerageInvestmentConfig) => new BrokerageInvestmentManager(brokerageInvestmentConfig)),
@@ -49,7 +43,26 @@ export default class PlanManager extends ManagerBase<PlanConfig, PlanState> {
             savingsEndOfYear: 0,
             allowNegativeDisposableIncome: this.config.allowNegativeDisposableIncome,
             processed: false,
+            retirementIncomeProjected: 0,
+            retired: false
         }
+    }
+
+    canRetire(): boolean {
+        switch (this.config.retirementStrategy) {
+            case "age":
+                return this.getCurrentState().age === this.config.retirementAge;
+            case "debt_free":
+                return this.getCurrentDebt() <= 0
+            case "percent_rule":
+                return this.config.retirementIncomeGoal === this.getCurrentState().retirementIncomeProjected
+            case "target_savings":
+                return this.config.retirementSavingsAmount === this.getCurrentState().savingsEndOfYear
+        }
+    }
+
+    getCurrentDebt(): number {
+        return this.managers.debtManagers.reduce((total, debtManager)=> total + debtManager.getCurrentState().principalStartOfYear, 0)
     }
 
     getGrossIncome() {
@@ -115,9 +128,6 @@ export default class PlanManager extends ManagerBase<PlanConfig, PlanState> {
                 currentState = this.processUnprocessed(manager)
             })
             this.process(currentState)
-            if (this.managers.retirementManager.retirementAchieved()) {
-                return this.states
-            }
             allManagers.forEach((manager) => manager.advanceTimePeriod())
             this.advanceTimePeriod()
         }

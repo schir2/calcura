@@ -1,5 +1,5 @@
 <template>
-  <CommonButton @click="handleCreateExpense()">Add</CommonButton>
+  <NButton @click="handleCreateExpense()">Add</NButton>
   <div class="container">
     <Expense v-for="(debtConfig, index) in debts" :debtConfig="debtConfig" :key="debtConfig.id"
           @deleteExpense="handleDeleteExpense" @updateExpense="handleUpdateExpense"></Expense>

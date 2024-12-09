@@ -8,9 +8,9 @@ import {
     DEFAULT_RETIREMENT_PLAN_STRATEGY, DEFAULT_RETIREMENT_WITHDRAWAL_RATE, DEFAULT_TAX_RATE, DEFAULT_TAX_STRATEGY,
     DEFAULT_YEAR
 } from "~/models/plan/PlanConstants";
-import type {PlanConfig} from "~/models/plan/PlanConfig";
+import type {Plan} from "~/models/plan/Plan";
 
-export function defaultPlanFactory(): PlanConfig {
+export function defaultPlanFactory(): Plan {
     return {
         iraInvestments: [],
         lifeExpectancy: DEFAULT_RETIREMENT_LIFE_EXPECTANCY,

@@ -6,7 +6,7 @@
     <FormSelect v-show="showAdvancedOptions" :model="expense" :field="fieldMetadata.type"></FormSelect>
     <FormField v-show="showAdvancedOptions" :model="expense" :field="fieldMetadata.isEssential"></FormField>
     <FormField v-show="showAdvancedOptions" :model="expense" :field="fieldMetadata.isTaxDeductible"></FormField>
-    <span><CommonButton iconLeft="mdi:delete" @click="handleDeleteExpense">Delete</CommonButton></span>
+    <span><NButton iconLeft="mdi:delete" @click="handleDeleteExpense">Delete</NButton></span>
   </CommonListItem>
 </template>
 <script setup lang="ts">

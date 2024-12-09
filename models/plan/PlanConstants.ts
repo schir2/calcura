@@ -2,7 +2,7 @@ import {
     type AllowNegativeDisposableIncome,
     InvestmentGrowthApplicationStrategy,
     RetirementStrategy
-} from "~/models/plan/PlanConfig";
+} from "~/models/plan/Plan";
 import type {IncomeTaxStrategy} from "~/models/tax/TaxConfig";
 
 export const DEFAULT_EXPENSE_PLAN_NAME: string = 'Blank Plan'

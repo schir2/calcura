@@ -1,6 +1,6 @@
 import type DebtConfig from "~/models/debt/DebtConfig";
 import type DebtState from "~/models/debt/DebtState";
-import {type AllowNegativeDisposableIncome} from "~/models/plan/PlanConfig";
+import {type AllowNegativeDisposableIncome} from "~/models/plan/Plan";
 import {adjustForAllowNegativeDisposableIncome, assertDefined} from "~/utils";
 import ManagerBase from "~/models/common/ManagerBase";
 import type PlanState from "~/models/plan/PlanState";

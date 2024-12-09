@@ -1,5 +1,5 @@
 <template>
-  <PlanList :plans="planConfigs"
+  <PlanList :plans="plans"
             @createPlan="handleCreatePlan"
             @updatePlan="handleUpdatePlan"
             @deletePlan="handleDeletePlan"
@@ -11,7 +11,7 @@ import {usePlanService} from "~/composables/planService";
 const planService = usePlanService()
 
 import {defaultPlanFactory} from "~/models/plan/PlanFactories";
-import type {PlanConfig} from "~/models/plan/PlanConfig";
+import type {Plan} from "~/models/plan/Plan";
 
 async function handleCreatePlan() {
   const planConfig = defaultPlanFactory();
@@ -24,16 +24,16 @@ async function handleDeletePlan(index: number) {
   await loadPlans();
 }
 
-async function handleUpdatePlan(planConfig: PlanConfig) {
-  await planService.update(planConfig.id, planConfig)
+async function handleUpdatePlan(plan: Plan) {
+  await planService.update(plan.id, plan)
   await loadPlans();
 }
 
-const planConfigs = ref<PlanConfig[]>([])
+const plans = ref<Plan[]>([])
 
 async function loadPlans() {
   try {
-    planConfigs.value = await planService.list();
+    plans.value = await planService.list();
   } catch (error) {
   }
 }

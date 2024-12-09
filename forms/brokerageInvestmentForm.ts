@@ -3,7 +3,7 @@ import type BrokerageInvestmentConfig from "~/models/brokerage/BrokerageInvestme
 import type {BrokerageContributionStrategy} from "~/models/brokerage/BrokerageInvestmentConfig";
 import type {FieldData} from "~/interfaces/FieldData";
 
-import type {InvestmentGrowthApplicationStrategy} from "~/models/plan/PlanConfig";
+import type {InvestmentGrowthApplicationStrategy} from "~/models/plan/Plan";
 
 export const brokerageInvestmentFields: Record<keyof BrokerageInvestmentConfig, FieldData> = {
     name: {

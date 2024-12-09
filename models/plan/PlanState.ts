@@ -1,4 +1,4 @@
-import type {AllowNegativeDisposableIncome} from "~/models/plan/PlanConfig";
+import type {AllowNegativeDisposableIncome} from "~/models/plan/Plan";
 
 export default interface PlanState {
     age: number;

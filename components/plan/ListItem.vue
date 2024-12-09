@@ -1,22 +1,23 @@
 <template>
-  <CommonCard color="secondary">
+  <NListItem color="secondary">
     <div class="flex justify-between align-middle">
-      <h3 class="text-2xl">PlanConfig {{ planConfig.id }}: {{ currentPlanConfig.name }}</h3>
-      <CommonButton iconLeft="mdi:delete" @click="deletePlan">Delete</CommonButton>
-      <CommonButton v-if="isModified" iconLeft="mdi:history" @click="resetPlan">Reset</CommonButton>
-      <CommonButton v-if="isModified" iconLeft="mdi:content-save" @click="updatePlan">Save</CommonButton>
+      <NuxtLink :to="{name: 'plans-id', params: {id: planConfig.id}}"><h3 class="text-2xl">Plan {{ planConfig.id }}: {{ currentPlanConfig.name }}</h3></NuxtLink>
+      <NButton type="error" secondary @click="deletePlan">
+        <Icon name="mdi:delete"/>
+        Delete
+      </NButton>
     </div>
     <span>{{ planConfig.id }}</span>
     <span>{{ planConfig.name }}</span>
-  </CommonCard>
+  </NListItem>
 
 </template>
 <script setup lang="ts">
 
-import type {PlanConfig} from "~/models/plan/PlanConfig";
+import type {Plan} from "~/models/plan/Plan";
 
 interface Props {
-  planConfig: PlanConfig
+  planConfig: Plan
   showAdvancedOptions?: boolean;
 }
 

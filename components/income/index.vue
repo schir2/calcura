@@ -1,10 +1,10 @@
 <template>
-  <CommonCard color="secondary">
+  <NListItem color="secondary">
     <div class="flex justify-between align-middle">
       <h3 class="text-2xl">IncomeConfig {{ incomeConfig.id }}: {{ currentIncomeConfig.name }}</h3>
-      <CommonButton iconLeft="mdi:delete" @click="deleteIncome">Delete</CommonButton>
-      <CommonButton v-if="isModified" iconLeft="mdi:history" @click="resetIncome">Reset</CommonButton>
-      <CommonButton v-if="isModified" iconLeft="mdi:content-save" @click="updateIncome">Save</CommonButton>
+      <NButton iconLeft="mdi:delete" @click="deleteIncome">Delete</NButton>
+      <NButton v-if="isModified" iconLeft="mdi:history" @click="resetIncome">Reset</NButton>
+      <NButton v-if="isModified" iconLeft="mdi:content-save" @click="updateIncome">Save</NButton>
     </div>
     <Form>
       <section>
@@ -16,7 +16,7 @@
         </div>
       </section>
     </Form>
-  </CommonCard>
+  </NListItem>
 
 </template>
 <script setup lang="ts">

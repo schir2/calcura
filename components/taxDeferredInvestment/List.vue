@@ -1,5 +1,5 @@
 <template>
-  <CommonButton @click="handleCreateTaxDeferredInvestment()">Add</CommonButton>
+  <NButton @click="handleCreateTaxDeferredInvestment()">Add</NButton>
   <div class="container">
     <TaxDeferredInvestment v-for="(debtConfig, index) in debts" :debtConfig="debtConfig" :key="debtConfig.id"
           @deleteTaxDeferredInvestment="handleDeleteTaxDeferredInvestment" @updateTaxDeferredInvestment="handleUpdateTaxDeferredInvestment"></TaxDeferredInvestment>

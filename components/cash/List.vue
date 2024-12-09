@@ -1,5 +1,5 @@
 <template>
-  <CommonButton @click="handleCreateDebt()">Add</CommonButton>
+  <NButton @click="handleCreateDebt()">Add</NButton>
   <div class="container">
     <Debt v-for="(debtConfig, index) in debts" :debtConfig="debtConfig" :key="debtConfig.id"
           @deleteDebt="handleDeleteDebt" @updateDebt="handleUpdateDebt"></Debt>

@@ -1,5 +1,5 @@
 <template>
-  <CommonButton @click="handleCreateBrokerageInvestment()">Add</CommonButton>
+  <NButton @click="handleCreateBrokerageInvestment()">Add</NButton>
   <div class="container">
     <BrokerageInvestment v-for="(debtConfig, index) in debts" :debtConfig="debtConfig" :key="debtConfig.id"
           @deleteBrokerageInvestment="handleDeleteBrokerageInvestment" @updateBrokerageInvestment="handleUpdateBrokerageInvestment"></BrokerageInvestment>

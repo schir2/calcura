@@ -18,10 +18,10 @@
 
 </template>
 <script setup lang="ts">
-import type {PlanConfig} from "~/models/plan/PlanConfig";
+import type {Plan} from "~/models/plan/Plan";
 
 interface Props {
-  planConfig: PlanConfig
+  planConfig: Plan
 }
 
 const props = defineProps<Props>()

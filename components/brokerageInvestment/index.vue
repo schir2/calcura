@@ -3,8 +3,8 @@
     <Form class="space-y-6">
       <div class="flex justify-between align-middle">
         <h3 class="text-2xl">{{ brokerageInvestment.name }}</h3>
-        <CommonButton iconLeft="mdi-delete" @click="handleDeleteInvestment(investmentIndex)">
-        </CommonButton>
+        <NButton iconLeft="mdi-delete" @click="handleDeleteInvestment(investmentIndex)">
+        </NButton>
       </div>
       <div class="grid grid-cols-3 gap-3">
         <FormField :model="brokerageInvestment" :field="fieldMetadata.name"/>

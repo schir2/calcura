@@ -4,7 +4,7 @@ import type IraInvestmentState from "~/models/ira/IraInvestmentState";
 import ManagerBase from "~/models/common/ManagerBase";
 import type PlanState from "~/models/plan/PlanState";
 import type Command from "~/models/common/Command";
-import type {AllowNegativeDisposableIncome} from "~/models/plan/PlanConfig";
+import type {AllowNegativeDisposableIncome} from "~/models/plan/Plan";
 
 export default class IraInvestmentManager extends ManagerBase<IraInvestmentConfig, IraInvestmentState> {
 

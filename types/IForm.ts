@@ -9,7 +9,7 @@ import type {
     ExpensesGrowthStrategy, GrowthStrategy,
     InflationGrowthStrategy,
     InvestmentGrowthApplicationStrategy, RetirementStrategy
-} from "~/models/plan/PlanConfig";
+} from "~/models/plan/Plan";
 
 export default interface IForm {
     /* Profile */

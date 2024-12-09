@@ -25,10 +25,10 @@ const toggleMenu = () => {
         <span>middle</span>
       </div>
       <div class="flex items-center space-x-3">
-        <CommonButton @click="themeStore.toggleTheme()">
+        <NButton @click="themeStore.toggleTheme()">
           <SunIcon class="text-yellow-500" v-if="themeStore.theme === 'dark'"/>
           <MoonIcon class="text-purple-500" v-if="themeStore.theme === 'light'"/>
-        </CommonButton>
+        </NButton>
       </div>
       <div v-show="menu.open"
            class="absolute top-16 left-0 w-full bg-skin-surface shadow-md sm:hidden flex flex-col items-start space-y-2 p-4"
