@@ -10,10 +10,17 @@
     </Teleport>
   </ClientOnly>
   <div v-if="plan" class="col-span-4 space-y-6">
-    {{ plan }}
-    <InputToggle name="showAdvancedOptions" v-model="showAdvancedOptions" label="Show Advanced Options"/>
-
-    Incomes
+    <!-- Debts -->
+    <CommonCard class="bg-skin-muted space-y-6">
+      <nav class="flex align-middle gap-6">
+        <h2 class="text-3xl">Debt(s)</h2>
+      </nav>
+      <DebtList :debts="plan.debts"
+                @createDebt="handleCreateDebt"
+                @updateDebt="handleUpdateDebt"
+                @deleteDebt="handleDeleteDebt"
+      ></DebtList>
+    </CommonCard>
     <CommonCard class="space-y-6 bg-skin-muted">
 
       <IncomeList :debts="plan.incomes"
@@ -51,17 +58,7 @@
       ></Cash>
     </CommonCard>
 
-    <!-- Debts -->
-    <CommonCard class="bg-skin-muted space-y-6">
-      <nav class="flex align-middle gap-6">
-        <h2 class="text-3xl">Debt(s)</h2>
-      </nav>
-      <DebtList :debts="plan.debts"
-                @createDebt="handleCreateDebt"
-                @updateDebt="handleUpdateDebt"
-                @deleteDebt="handleDeleteDebt"
-      ></DebtList>
-    </CommonCard>
+
     <CommonCard class="bg-skin-muted space-y-6">
       <nav class="flex align-middle gap-6">
         <h2 class="text-3xl">Tax Deferred Investments</h2>
@@ -97,7 +94,6 @@
   </div>
 </template>
 <script setup lang="ts">
-import InputToggle from "~/components/form/InputToggle.vue";
 import PlanManager from "~/models/plan/PlanManager";
 import type PlanState from "~/models/plan/PlanState";
 import {defaultDebtFactory} from "~/models/debt/DebtFactories";
@@ -120,7 +116,8 @@ useHead({
 
 async function handleCreateDebt() {
   const debtConfig = defaultDebtFactory();
-  await debtService.create(debtConfig)
+  const debt = await debtService.create(debtConfig)
+  await planService.addRelatedModel(planId, 'debts', debt.id)
   await loadPlan();
 }
 
