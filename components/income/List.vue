@@ -3,7 +3,7 @@
   <div class="container">
     <div class="flex align-middle gap-6">
       <h2 class="text-3xl">Income(s)</h2>
-      <NButton iconLeft="mdi:add" @click="handleAddIncome">Add Income</NButton>
+      <NButton iconLeft="mdi:add" @click="handleCreateIncome">Add Income</NButton>
     </div>
     <NList>
     <Income v-for="(incomeConfig, index) in incomes" :incomeConfig="incomeConfig" :key="incomeConfig.id"

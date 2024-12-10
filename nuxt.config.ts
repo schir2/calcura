@@ -9,6 +9,9 @@ export default defineNuxtConfig({
         'animate.css/animate.min.css',
 
     ],
+    experimental: {
+        asyncContext: true,
+    },
     devtools: {enabled: true},
     modules: [
       '@vee-validate/nuxt',

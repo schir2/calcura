@@ -30,12 +30,18 @@ async function handleUpdateDebt(debtConfig: DebtConfig) {
   await loadDebts();
 }
 
+const {$api} = useNuxtApp()
+
 const debtConfigs = ref<DebtConfig[]>([])
 
 async function loadDebts() {
+  if (!$api) {
+    console.error('API service not available');
+  }
   try {
     debtConfigs.value = await debtService.list();
   } catch (error) {
+    console.error('Error loading debts:', error);
   }
 }
 
