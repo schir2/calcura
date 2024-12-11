@@ -7,5 +7,5 @@ export function useBrokerageInvestmentService() {
         throw new Error('API service is not available');
     }
 
-    return createBaseService<BrokerageInvestment>($api, 'brokerageInvestments/');
+    return createBaseService<BrokerageInvestment>($api, 'brokerage_investments/');
 }
