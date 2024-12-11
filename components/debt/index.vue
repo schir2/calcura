@@ -1,7 +1,7 @@
 <template>
   <CommonCard color="secondary">
     <div class="flex justify-between align-middle">
-      <h3 class="text-2xl">DebtConfig {{ debtConfig.id }}: {{ currentDebtConfig.name }}</h3>
+      <h3 class="text-2xl">Debt {{ debt.id }}: {{ currentDebtConfig.name }}</h3>
       <NButton iconLeft="mdi:delete" @click="deleteDebt">Delete</NButton>
       <NButton v-if="isModified" iconLeft="mdi:history" @click="resetDebt">Reset</NButton>
       <NButton v-if="isModified" iconLeft="mdi:content-save" @click="updateDebt">Save</NButton>
@@ -31,28 +31,28 @@ interface Props {
   showAdvancedOptions?: boolean;
 }
 
-const {showAdvancedOptions = false, debtConfig} = defineProps<Props>()
+const {showAdvancedOptions = false, debt} = defineProps<Props>()
 const fieldMetadata = debtFields
 
 const emit = defineEmits(['deleteDebt', 'updateDebt']);
 
 function deleteDebt() {
-  assertDefined(debtConfig.id, 'debtId')
-  emit('deleteDebt', debtConfig.id)
+  assertDefined(debt.id, 'debtId')
+  emit('deleteDebt', debt.id)
 }
 
 function updateDebt() {
-  assertDefined(debtConfig.id, 'debtId')
-  emit('updateDebt', debtConfig)
+  assertDefined(debt.id, 'debtId')
+  emit('updateDebt', debt)
 }
 
-const currentDebtConfig = reactive({ ...debtConfig });
+const currentDebtConfig = reactive({ ...debt });
 const isModified = computed(() =>
-    JSON.stringify(currentDebtConfig) !== JSON.stringify(debtConfig)
+    JSON.stringify(currentDebtConfig) !== JSON.stringify(debt)
 );
 
 function resetDebt() {
-  Object.assign(currentDebtConfig, { ...debtConfig });
+  Object.assign(currentDebtConfig, { ...debt });
 }
 
 </script>

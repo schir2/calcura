@@ -1,28 +1,30 @@
 <template>
-  <NButton @click="handleCreateDebt()">Add</NButton>
+  <NButton @click="handleCreateCash()">Add</NButton>
   <div class="container">
-    <Debt v-for="(debtConfig, index) in debts" :debtConfig="debtConfig" :key="debtConfig.id"
-          @deleteDebt="handleDeleteDebt" @updateDebt="handleUpdateDebt"></Debt>
+    <Cash v-for="(cash, index) in cashes" :cash="cash" :key="cash.id"
+          @deleteCash="handleDeleteCash" @updateCash="handleUpdateCash"></Cash>
   </div>
 
 </template>
 <script lang="ts" setup>
+import type Cash from "~/models/cash/Cash";
+
 interface Props {
-  debts: CashConfig[]
+  cashes: Cash[]
 }
 
 const props = defineProps<Props>()
 
 const emit = defineEmits(['deleteCash', 'updateCash', 'createCash']);
-function handleDeleteCash(debtId: number){
-  emit('deleteCash',debtId);
+function handleDeleteCash(cashId: number){
+  emit('deleteCash',cashId);
 }
 function handleCreateCash(){
   emit('createCash');
 }
 
-function handleUpdateCash(debtConfig: debtConfig) {
-  emit('updateCash', debtConfig);
+function handleUpdateCash(cash: Cash) {
+  emit('updateCash', cash);
 }
 
 </script>

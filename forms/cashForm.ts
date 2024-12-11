@@ -4,12 +4,12 @@ import {DEFAULT_CASH_MAINTENANCE_NAME, DEFAULT_CASH_MAINTENANCE_RESERVE_AMOUNT, 
 import type {Cash, CashMaintenanceStrategy} from "~/models/cash/Cash";
 import type {SelectOption} from "~/components/form/Select.vue";
 
-export const cashMaintenanceStrategyOptions: Record<CashMaintenanceStrategy, SelectOption> = {
+export const cashStrategyOptions: Record<CashMaintenanceStrategy, SelectOption> = {
     fixedCashReserve: { label: "Fixed Cash Reserve", value: "fixedCashReserve" },
     variableCashReserve: { label: "Variable Cash Reserve", value: "variableCashReserve" },
 };
 
-export const cashMaintenanceFields: Record<keyof CashData, FieldData> = {
+export const cashFields: Record<keyof Cash, FieldData> = {
     name: {
         name: "name",
         label: "Name",
@@ -31,7 +31,7 @@ export const cashMaintenanceFields: Record<keyof CashData, FieldData> = {
         type: "select",
         defaultValue: DEFAULT_CASH_MAINTENANCE_STRATEGY,
         rules: yup.mixed<CashMaintenanceStrategy>().required("Cash maintenance strategy is required"),
-        options: cashMaintenanceStrategyOptions,
+        options: cashStrategyOptions,
     },
     reserveAmount: {
         name: "reserveAmount",

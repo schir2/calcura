@@ -7,8 +7,10 @@
 
 </template>
 <script lang="ts" setup>
+import type Debt from "~/models/debt/Debt";
+
 interface Props {
-  debts: DebtConfig[]
+  debts: Debt[]
 }
 
 const props = defineProps<Props>()
@@ -21,7 +23,7 @@ function handleCreateDebt(){
   emit('createDebt');
 }
 
-function handleUpdateDebt(debtConfig: debtConfig) {
+function handleUpdateDebt(debtConfig: Debt) {
   emit('updateDebt', debtConfig);
 }
 

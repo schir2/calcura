@@ -7,5 +7,5 @@ export function useCashService() {
         throw new Error('API service is not available');
     }
 
-    return createBaseService<Cash>($api, 'cashs/');
+    return createBaseService<Cash>($api, 'cashes/');
 }

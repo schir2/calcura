@@ -23,7 +23,7 @@ export default defineNuxtConfig({
     ],
     icon:{
         serverBundle: {
-            collections: ['uil',]
+            collections: ['uil','mdi',]
         }
     },
     postcss: {
