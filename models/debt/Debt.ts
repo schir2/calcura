@@ -1,6 +1,6 @@
 export type DebtPaymentStrategy = 'fixed' | 'minimum_payment' | 'maximum_payment' | 'percentage_of_debt'
 
-export default interface Debt {
+export interface Debt {
     id?: number;
     name: string;
     principal: number;
