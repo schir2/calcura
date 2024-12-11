@@ -23,36 +23,27 @@
 
 </template>
 <script setup lang="ts">
-import {debtFields} from "~/forms/debtForm";
-import type Debt from "~/models/debt/Debt";
+import { useEntityManager } from '~/composables/useEntityManager';
+import { debtFields } from '~/forms/debtForm';
+import type { Debt } from '~/models/debt/Debt';
 
 interface Props {
-  debtConfig: Debt
+  debt: Debt;
   showAdvancedOptions?: boolean;
 }
 
-const {showAdvancedOptions = false, debt} = defineProps<Props>()
-const fieldMetadata = debtFields
+const { showAdvancedOptions = false, debt } = defineProps<Props>();
+const fieldMetadata = debtFields;
 
 const emit = defineEmits(['deleteDebt', 'updateDebt']);
 
-function deleteDebt() {
-  assertDefined(debt.id, 'debtId')
-  emit('deleteDebt', debt.id)
-}
+const {
+  currentConfig: currentDebtConfig,
+  isModified,
+  resetEntity: resetDebt,
+  deleteEntity: deleteDebt,
+  updateEntity: updateDebt
+} = useEntityManager<Debt>(debt, emit, 'debt');
 
-function updateDebt() {
-  assertDefined(debt.id, 'debtId')
-  emit('updateDebt', debt)
-}
-
-const currentDebtConfig = reactive({ ...debt });
-const isModified = computed(() =>
-    JSON.stringify(currentDebtConfig) !== JSON.stringify(debt)
-);
-
-function resetDebt() {
-  Object.assign(currentDebtConfig, { ...debt });
-}
 
 </script>
