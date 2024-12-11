@@ -1,7 +1,7 @@
 <template>
   <NButton @click="handleCreateDebt()">Add</NButton>
   <div class="container">
-    <Debt v-for="(debtConfig, index) in debts" :debtConfig="debtConfig" :key="debtConfig.id"
+    <Debt v-for="(debt, index) in debts" :debt="debt" :key="debt.id"
           @deleteDebt="handleDeleteDebt" @updateDebt="handleUpdateDebt"></Debt>
   </div>
 
