@@ -1,8 +1,8 @@
+
 <template>
   <CommonCard color="secondary">
     <div class="flex justify-between align-middle">
-      <h3 class="text-2xl">Cash {{ cash.name }}</h3>
-
+      <h3 class="text-2xl">Cash {{ cash.id }}: {{ currentCashConfig.name }}</h3>
       <NButton iconLeft="mdi:delete" @click="deleteCash">Delete</NButton>
       <NButton v-if="isModified" iconLeft="mdi:history" @click="resetCash">Reset</NButton>
       <NButton v-if="isModified" iconLeft="mdi:content-save" @click="updateCash">Save</NButton>
@@ -27,36 +27,27 @@
 
 </template>
 <script setup lang="ts">
-import {cashFields} from "~/forms/cashForm";
-import type Cash from "~/models/cash/Cash";
+import { useEntityManager } from '~/composables/useEntityManager';
+import { cashFields } from '~/forms/cashForm';
+import type { Cash } from '~/models/cash/Cash';
 
 interface Props {
-  cash: Cash
+  cash: Cash;
   showAdvancedOptions?: boolean;
 }
 
-const {showAdvancedOptions = false, cash} = defineProps<Props>()
-const fieldMetadata = cashFields
+const { showAdvancedOptions = false, cash } = defineProps<Props>();
+const fieldMetadata = cashFields;
 
 const emit = defineEmits(['deleteCash', 'updateCash']);
 
-function deleteCash() {
-  assertDefined(cash.id, 'cashId')
-  emit('deleteCash', cash.id)
-}
+const {
+  currentConfig: currentCashConfig,
+  isModified,
+  resetEntity: resetCash,
+  deleteEntity: deleteCash,
+  updateEntity: updateCash
+} = useEntityManager<Cash>(cash, emit, 'cash');
 
-function updateCash() {
-  assertDefined(cash.id, 'cashId')
-  emit('updateCash', cash)
-}
-
-const currentCashConfig = reactive({ ...cash });
-const isModified = computed(() =>
-    JSON.stringify(currentCashConfig) !== JSON.stringify(cash)
-);
-
-function resetCash() {
-  Object.assign(currentCashConfig, { ...cash });
-}
 
 </script>

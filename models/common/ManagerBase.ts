@@ -1,5 +1,5 @@
 import type Command from "~/models/common/Command";
-import type PlanState from "~/models/plan/PlanState";
+import type {PlanState} from "~/models/plan/PlanState";
 
 export default abstract class ManagerBase<TConfig, TState> {
     protected states: TState[] = [];

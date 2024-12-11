@@ -1,7 +1,7 @@
 import ManagerBase from "~/models/common/ManagerBase";
 import type IncomeState from "~/models/income/IncomeState";
-import type Income from "~/models/income/Income";
-import type PlanState from "~/models/plan/PlanState";
+import type {Income} from "~/models/income/Income";
+import type {PlanState} from "~/models/plan/PlanState";
 import type Command from "~/models/common/Command";
 
 export default class IncomeManager extends ManagerBase<Income, IncomeState> {

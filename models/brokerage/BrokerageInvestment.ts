@@ -1,6 +1,7 @@
 export type BrokerageContributionStrategy = 'fixed' | 'percentage_of_income' | 'max'
 
-export default interface BrokerageInvestment {
+export interface BrokerageInvestment {
+    id: number
     name: string;
 
     growthRate: number;
@@ -12,3 +13,5 @@ export default interface BrokerageInvestment {
 
 
 }
+
+export type BrokerageInvestmentPartial = Partial<Omit<BrokerageInvestment, 'id'>>

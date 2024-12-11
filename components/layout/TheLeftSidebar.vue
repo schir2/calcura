@@ -35,12 +35,12 @@
         </li>
         <li>
           <n-button quaternary><template #icon><Icon name="mdi-sack-outline"/></template>
-            <NuxtLink to="/iras">IRA Investments</NuxtLink>
+            <NuxtLink to="/iraInvestments">IRA Investments</NuxtLink>
           </n-button>
         </li>
         <li>
           <n-button quaternary><template #icon><Icon name="mdi:sack-outline"/></template>
-            <NuxtLink to="/taxDeferreds">Tax Deferred Investments</NuxtLink>
+            <NuxtLink to="/taxDeferredInvestments">Tax Deferred Investments</NuxtLink>
           </n-button>
         </li>
       </ul>

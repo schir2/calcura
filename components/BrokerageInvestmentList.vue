@@ -1,28 +1,30 @@
 <template>
   <NButton @click="handleCreateBrokerageInvestment()">Add</NButton>
   <div class="container">
-    <BrokerageInvestment v-for="(debtConfig, index) in debts" :debtConfig="debtConfig" :key="debtConfig.id"
+    <BrokerageInvestment v-for="(brokerageInvestment, index) in brokerageInvestments" :brokerageInvestment="brokerageInvestment" :key="brokerageInvestment.id"
           @deleteBrokerageInvestment="handleDeleteBrokerageInvestment" @updateBrokerageInvestment="handleUpdateBrokerageInvestment"></BrokerageInvestment>
   </div>
 
 </template>
 <script lang="ts" setup>
+import type {BrokerageInvestment} from "~/models/brokerage/BrokerageInvestment";
+
 interface Props {
-  debts: BrokerageInvestmentConfig[]
+  brokerageInvestments: BrokerageInvestment[]
 }
 
 const props = defineProps<Props>()
 
 const emit = defineEmits(['deleteBrokerageInvestment', 'updateBrokerageInvestment', 'createBrokerageInvestment']);
-function handleDeleteBrokerageInvestment(debtId: number){
-  emit('deleteBrokerageInvestment',debtId);
+function handleDeleteBrokerageInvestment(brokerageInvestmentId: number){
+  emit('deleteBrokerageInvestment',brokerageInvestmentId);
 }
 function handleCreateBrokerageInvestment(){
   emit('createBrokerageInvestment');
 }
 
-function handleUpdateBrokerageInvestment(debtConfig: debtConfig) {
-  emit('updateBrokerageInvestment', debtConfig);
+function handleUpdateBrokerageInvestment(brokerageInvestmentConfig: BrokerageInvestment) {
+  emit('updateBrokerageInvestment', brokerageInvestmentConfig);
 }
 
 </script>

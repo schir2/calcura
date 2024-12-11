@@ -1,5 +1,5 @@
 import type {Plan} from "~/models/plan/Plan";
-import type PlanState from "~/models/plan/PlanState";
+import type {PlanState} from "~/models/plan/PlanState";
 import DebtManager from "~/models/debt/DebtManager";
 import ManagerBase from "~/models/common/ManagerBase";
 import {getIraLimit, getTaxDeferredContributionLimit, getTaxDeferredElectiveContributionLimit} from "~/utils";

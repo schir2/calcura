@@ -1,8 +1,8 @@
-import type IraInvestment from './IraInvestment';
-import {adjustForAllowNegativeDisposableIncome, assertDefined, calculateInvestmentGrowthAmount} from "~/utils";
-import type IraInvestmentState from "~/models/ira/IraInvestmentState";
+import type {IraInvestment} from './IraInvestment';
+import {adjustForAllowNegativeDisposableIncome, assertDefined} from "~/utils";
+import type IraInvestmentState from "~/models/iraInvestment/IraInvestmentState";
 import ManagerBase from "~/models/common/ManagerBase";
-import type PlanState from "~/models/plan/PlanState";
+import type {PlanState} from "~/models/plan/PlanState";
 import type Command from "~/models/common/Command";
 import type {AllowNegativeDisposableIncome} from "~/models/plan/Plan";
 
@@ -32,16 +32,6 @@ export default class IraInvestmentManager extends ManagerBase<IraInvestment, Ira
                 amount: contribution,
                 disposableIncome: disposableIncome,
                 allowNegativeDisposableIncome: allowNegativeDisposableIncome
-            }
-        )
-    }
-
-    calculateGrowthAmount(state: IraInvestmentState): number {
-        return calculateInvestmentGrowthAmount({
-                principal: state.balanceStartOfYear,
-                growthRate: this.config.growthRate,
-                growthApplicationStrategy: this.config.growthApplicationStrategy,
-                contribution: state.contribution
             }
         )
     }

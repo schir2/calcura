@@ -1,7 +1,7 @@
 import * as yup from "yup";
 import type {FieldData} from "~/interfaces/FieldData";
 import {
-    DEFAULT_DAX_DEFERRED_GROWTH_RATE,
+    DEFAULT_TAX_DEFERRED_GROWTH_RATE,
     DEFAULT_ELECTIVE_CONTRIBUTION_FIXED_AMOUNT,
     DEFAULT_ELECTIVE_CONTRIBUTION_PERCENTAGE,
     DEFAULT_ELECTIVE_CONTRIBUTION_STRATEGY,
@@ -13,11 +13,10 @@ import {
     DEFAULT_EMPLOYER_MATCH_PERCENTAGE_LIMIT,
     EmployerContributionOptions,
     TaxDeferredContributionOptions,
-} from "~/models/taxDeferred/TaxDeferredInvestmentConstants";
-import type {TaxDeferredInvestment} from "~/models/taxDeferred/TaxDeferredInvestment";
-import {DEFAULT_GROWTH_APPLICATION_STRATEGY} from "~/models/plan/PlanConstants";
+} from "~/models/taxDeferredInvestment/TaxDeferredInvestmentConstants";
+import type {TaxDeferredInvestment} from "~/models/taxDeferredInvestment/TaxDeferredInvestment";
 
-export const taxDeferredInvestmentFields: Record<keyof TaxDeferredInvestment, FieldData> = {
+export const taxDeferredInvestmentFields: Record<keyof Partial<Omit<TaxDeferredInvestment, 'id'>>, FieldData> = {
     name: {
         name: "name",
         label: "Investment Name",
@@ -35,7 +34,7 @@ export const taxDeferredInvestmentFields: Record<keyof TaxDeferredInvestment, Fi
         helpText: "The annual percentage growth rate of your investment.",
         resourceId: "growth-rate",
         type: "number",
-        defaultValue: DEFAULT_DAX_DEFERRED_GROWTH_RATE,
+        defaultValue: DEFAULT_TAX_DEFERRED_GROWTH_RATE,
         rules: yup
             .number()
             .min(0, "Growth rate must be at least 0")
@@ -54,16 +53,6 @@ export const taxDeferredInvestmentFields: Record<keyof TaxDeferredInvestment, Fi
             .number()
             .min(0, "Balance must be at least 0")
             .required("Balance is required"),
-    },
-    growthApplicationStrategy: {
-        name: "growthApplicationStrategy",
-        label: "Growth Application Strategy",
-        placeholder: "Select growth application strategy",
-        helpText: "Determines when the growth is applied to your investment.",
-        resourceId: "growth-application-strategy",
-        type: "select",
-        defaultValue: DEFAULT_GROWTH_APPLICATION_STRATEGY,
-        rules: yup.string().required("Growth application strategy is required"),
     },
     electiveContributionStrategy: {
         name: "electiveContributionStrategy",

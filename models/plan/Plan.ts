@@ -1,10 +1,10 @@
-import type Debt from "~/models/debt/Debt";
-import type {TaxDeferredInvestment} from "~/models/taxDeferred/TaxDeferredInvestment";
-import type Income from "~/models/income/Income";
-import type Expense from "~/models/expense/Expense";
-import type BrokerageInvestment from "~/models/brokerage/BrokerageInvestment";
-import type IraInvestment from "~/models/ira/IraInvestment";
-import type Cash from "~/models/cash/Cash";
+import type {Debt} from "~/models/debt/Debt";
+import type {TaxDeferredInvestment} from "~/models/taxDeferredInvestment/TaxDeferredInvestment";
+import type {Income} from "~/models/income/Income";
+import type {Expense} from "~/models/expense/Expense";
+import type {BrokerageInvestment} from "~/models/brokerage/BrokerageInvestment";
+import type {IraInvestment} from "~/models/iraInvestment/IraInvestment";
+import type {Cash} from "~/models/cash/Cash";
 
 
 export type AllowNegativeDisposableIncome = 'none' | 'minimum_only' | 'full'
@@ -16,7 +16,7 @@ export type InvestmentGrowthApplicationStrategy = 'start' | 'end';
 export type IncomeTaxStrategy = 'simple'
 
 export interface Plan {
-    id?: number;
+    id: number;
     name: string;
     age: number;
     year: number;
@@ -41,3 +41,5 @@ export interface Plan {
     brokerageInvestments: BrokerageInvestment[];
     iraInvestments: IraInvestment[];
 }
+
+export type PlanPartial = Partial<Omit<Plan, 'id'>>

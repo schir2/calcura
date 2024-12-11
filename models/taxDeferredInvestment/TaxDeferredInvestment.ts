@@ -2,7 +2,7 @@ export type EmployerContributionStrategy = 'none' | 'percentage_of_contribution'
 export type TaxDeferredContributionStrategy = 'none' | 'until_company_match' | 'percentage_of_income' | 'fixed' | 'max'
 
 export interface TaxDeferredInvestment {
-    id?: number;
+    id: number;
     name: string;
 
     growthRate: number;
@@ -20,3 +20,5 @@ export interface TaxDeferredInvestment {
     employerMatchPercentageLimit: number;
 
 }
+
+export type TaxDeferredInvestmentPartial = Partial<Omit<TaxDeferredInvestment, 'id'>>

@@ -1,51 +1,52 @@
 <template>
-  <DebtList :debts="debtConfigs"
-            @createDebt="handleCreateDebt"
-            @updateDebt="handleUpdateDebt"
-            @deleteDebt="handleDeleteDebt"
-  ></DebtList>
+  <BrokerageInvestmentList :brokerageInvestments="brokerageInvestmentConfigs"
+            @createBrokerageInvestment="handleCreateBrokerageInvestment"
+            @updateBrokerageInvestment="handleUpdateBrokerageInvestment"
+            @deleteBrokerageInvestment="handleDeleteBrokerageInvestment"
+  ></BrokerageInvestmentList>
 </template>
 <script setup lang="ts">
-import {defaultDebtFactory} from "~/models/debt/DebtFactories";
-import type Debt from "~/models/debt/Debt";
+import {defaultBrokerageInvestmentFactory} from "~/models/brokerage/BrokerageInvestmentFactories";
+import type {BrokerageInvestment} from "~/models/brokerage/BrokerageInvestment";
 
-import {useDebtService} from "~/composables/debtService";
+import {useBrokerageInvestmentService} from "~/composables/brokerageInvestmentService";
 
-const debtService = useDebtService();
+const brokerageInvestmentService = useBrokerageInvestmentService();
 
 
-async function handleCreateDebt() {
-  const debtConfig = defaultDebtFactory();
-  await debtService.create(debtConfig)
-  await loadDebts();
+async function handleCreateBrokerageInvestment() {
+  const brokerageInvestmentConfig = defaultBrokerageInvestmentFactory();
+  await brokerageInvestmentService.create(brokerageInvestmentConfig)
+  await loadBrokerageInvestments();
 }
 
-async function handleDeleteDebt(index: number) {
-  await debtService.delete(index)
-  await loadDebts();
+async function handleDeleteBrokerageInvestment(index: number) {
+  await brokerageInvestmentService.delete(index)
+  await loadBrokerageInvestments();
 }
 
-async function handleUpdateDebt(debtConfig: Debt) {
-  await debtService.update(debtConfig.id, debtConfig)
-  await loadDebts();
+async function handleUpdateBrokerageInvestment(brokerageInvestment: BrokerageInvestment) {
+  assertDefined(brokerageInvestment.id, 'brokerageInvestment.id');
+  await brokerageInvestmentService.update(brokerageInvestment.id, brokerageInvestment)
+  await loadBrokerageInvestments();
 }
 
 const {$api} = useNuxtApp()
 
-const debtConfigs = ref<Debt[]>([])
+const brokerageInvestmentConfigs = ref<BrokerageInvestment[]>([])
 
-async function loadDebts() {
+async function loadBrokerageInvestments() {
   if (!$api) {
     console.error('API service not available');
   }
   try {
-    debtConfigs.value = await debtService.list();
+    brokerageInvestmentConfigs.value = await brokerageInvestmentService.list();
   } catch (error) {
-    console.error('Error loading debts:', error);
+    console.error('Error loading brokerageInvestments:', error);
   }
 }
 
 onMounted(async () => {
-  await loadDebts();
+  await loadBrokerageInvestments();
 });
 </script>

@@ -22,3 +22,5 @@ export interface Expense {
     isEssential: boolean,
     isTaxDeductible: boolean,
 }
+
+export type ExpensePartial = Partial<Omit<Expense, 'id'>>

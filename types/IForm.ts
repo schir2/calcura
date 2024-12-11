@@ -2,7 +2,7 @@ import type {
     IraContributionStrategy,
     TaxableContributionStrategy,
 } from "~/types";
-import type {EmployerContributionStrategy, TaxDeferredContributionStrategy} from "~/models/taxDeferred/TaxDeferredInvestmentConstants";
+import type {EmployerContributionStrategy, TaxDeferredContributionStrategy} from "~/models/taxDeferredInvestment/TaxDeferredInvestmentConstants";
 import type {DebtData} from "~/models/debt/Debt";
 import type {IncomeTaxStrategy} from "~/models/tax/TaxConfig";
 import type {

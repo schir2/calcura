@@ -5,12 +5,15 @@ import {
     DEFAULT_INFLATION_RATE,
     DEFAULT_RETIREMENT_AGE,
     DEFAULT_RETIREMENT_LIFE_EXPECTANCY,
-    DEFAULT_RETIREMENT_PLAN_STRATEGY, DEFAULT_RETIREMENT_WITHDRAWAL_RATE, DEFAULT_TAX_RATE, DEFAULT_TAX_STRATEGY,
+    DEFAULT_RETIREMENT_PLAN_STRATEGY,
+    DEFAULT_RETIREMENT_WITHDRAWAL_RATE,
+    DEFAULT_TAX_RATE,
+    DEFAULT_TAX_STRATEGY,
     DEFAULT_YEAR
 } from "~/models/plan/PlanConstants";
-import type {Plan} from "~/models/plan/Plan";
+import type {PlanPartial} from "~/models/plan/Plan";
 
-export function defaultPlanFactory(): Plan {
+export function defaultPlanFactory(): PlanPartial {
     return {
         iraInvestments: [],
         lifeExpectancy: DEFAULT_RETIREMENT_LIFE_EXPECTANCY,

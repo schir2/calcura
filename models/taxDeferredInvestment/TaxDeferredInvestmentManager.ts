@@ -1,9 +1,9 @@
 import type {TaxDeferredInvestment} from './TaxDeferredInvestment';
 import {adjustForAllowNegativeDisposableIncome, assertDefined, calculateInvestmentGrowthAmount} from "~/utils";
 import {type AllowNegativeDisposableIncome} from "~/models/plan/Plan";
-import type TaxDeferredInvestmentState from "~/models/taxDeferred/TaxDeferredInvestmentState";
+import type TaxDeferredInvestmentState from "~/models/taxDeferredInvestment/TaxDeferredInvestmentState";
 import ManagerBase from "~/models/common/ManagerBase";
-import type PlanState from "~/models/plan/PlanState";
+import type {PlanState} from "~/models/plan/PlanState";
 import type Command from "~/models/common/Command";
 
 export default class TaxDeferredInvestmentManager extends ManagerBase<TaxDeferredInvestment, TaxDeferredInvestmentState> {
@@ -20,7 +20,7 @@ export default class TaxDeferredInvestmentManager extends ManagerBase<TaxDeferre
             case 'fixed':
                 contribution = this.config.electiveContributionFixedAmount
                 break
-            case 'percent_of_income':
+            case 'percentage_of_income':
                 assertDefined(incomePreTaxed, 'incomePreTaxed')
                 contribution = incomePreTaxed * (this.config.electiveContributionPercentage / 100)
                 break

@@ -1,5 +1,5 @@
 import type {SelectOption} from "~/components/form/BaseSelect.vue";
-import type {EmployerContributionStrategy, TaxDeferredContributionStrategy} from "~/models/taxDeferred/TaxDeferredInvestment";
+import type {EmployerContributionStrategy, TaxDeferredContributionStrategy} from "~/models/taxDeferredInvestment/TaxDeferredInvestment";
 
 export const TAX_DEFERRED_DEFAULT_BALANCE: number = 0
 export const TAX_DEFERRED_DEFAULT_YEAR = 2024
@@ -21,7 +21,7 @@ export const DEFAULT_EMPLOYER_CONTRIBUTION_STRATEGY: EmployerContributionStrateg
 export const DEFAULT_EMPLOYER_COMPENSATION_MATCH_PERCENTAGE: number = 0
 export const DEFAULT_EMPLOYER_CONTRIBUTION_FIXED_AMOUNT: number = 0
 export const DEFAULT_EMPLOYER_MATCH_PERCENTAGE: number = 100
-export const DEFAULT_DAX_DEFERRED_GROWTH_RATE: number = 6
+export const DEFAULT_TAX_DEFERRED_GROWTH_RATE: number = 6
 export const DEFAULT_ELECTIVE_CONTRIBUTION_STRATEGY: TaxDeferredContributionStrategy = 'none'
 export const DEFAULT_ELECTIVE_CONTRIBUTION_PERCENTAGE: number = 0
 

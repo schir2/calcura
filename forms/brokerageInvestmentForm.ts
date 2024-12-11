@@ -1,11 +1,8 @@
 import * as yup from "yup";
-import type BrokerageInvestment from "~/models/brokerage/BrokerageInvestment";
-import type {BrokerageContributionStrategy} from "~/models/brokerage/BrokerageInvestment";
+import type {BrokerageContributionStrategy, BrokerageInvestmentPartial} from "~/models/brokerage/BrokerageInvestment";
 import type {FieldData} from "~/interfaces/FieldData";
 
-import type {InvestmentGrowthApplicationStrategy} from "~/models/plan/Plan";
-
-export const brokerageInvestmentFields: Record<keyof BrokerageInvestment, FieldData> = {
+export const brokerageInvestmentFields: Record<keyof BrokerageInvestmentPartial, FieldData> = {
     name: {
         name: "name",
         label: "Investment Name",
@@ -31,21 +28,6 @@ export const brokerageInvestmentFields: Record<keyof BrokerageInvestment, FieldD
             .required("Growth rate is required")
             .min(0, "Growth rate cannot be negative.")
             .max(100, "Growth rate must be less than or equal to 100."),
-    },
-    growthApplicationStrategy: {
-        name: "growthApplicationStrategy",
-        label: "Growth Application Strategy",
-        placeholder: "Select growth strategy",
-        helpText: "Choose how growth is applied to this investment.",
-        type: "select",
-        defaultValue: 'start',
-        rules: yup
-            .mixed<InvestmentGrowthApplicationStrategy>()
-            .required("Growth application strategy is required"),
-        options: [
-            {label: "Start of Year", value: 'start'},
-            {label: "End of Year", value: 'end'},
-        ],
     },
     initialBalance: {
         name: "initialBalance",

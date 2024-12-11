@@ -1,51 +1,51 @@
 <template>
-  <DebtList :debts="debtConfigs"
-            @createDebt="handleCreateDebt"
-            @updateDebt="handleUpdateDebt"
-            @deleteDebt="handleDeleteDebt"
-  ></DebtList>
+  <ExpenseList :expenses="expenseConfigs"
+            @createExpense="handleCreateExpense"
+            @updateExpense="handleUpdateExpense"
+            @deleteExpense="handleDeleteExpense"
+  ></ExpenseList>
 </template>
 <script setup lang="ts">
-import {defaultDebtFactory} from "~/models/debt/DebtFactories";
-import type Debt from "~/models/debt/Debt";
+import {defaultExpenseFactory} from "~/models/expense/ExpenseFactories";
+import type {Expense} from "~/models/expense/Expense";
 
-import {useDebtService} from "~/composables/debtService";
+import {useExpenseService} from "~/composables/expenseService";
 
-const debtService = useDebtService();
+const expenseService = useExpenseService();
 
 
-async function handleCreateDebt() {
-  const debtConfig = defaultDebtFactory();
-  await debtService.create(debtConfig)
-  await loadDebts();
+async function handleCreateExpense() {
+  const expenseConfig = defaultExpenseFactory();
+  await expenseService.create(expenseConfig)
+  await loadExpenses();
 }
 
-async function handleDeleteDebt(index: number) {
-  await debtService.delete(index)
-  await loadDebts();
+async function handleDeleteExpense(index: number) {
+  await expenseService.delete(index)
+  await loadExpenses();
 }
 
-async function handleUpdateDebt(debtConfig: Debt) {
-  await debtService.update(debtConfig.id, debtConfig)
-  await loadDebts();
+async function handleUpdateExpense(expense: Expense) {
+  await expenseService.update(expense.id, expense)
+  await loadExpenses();
 }
 
 const {$api} = useNuxtApp()
 
-const debtConfigs = ref<Debt[]>([])
+const expenseConfigs = ref<Expense[]>([])
 
-async function loadDebts() {
+async function loadExpenses() {
   if (!$api) {
     console.error('API service not available');
   }
   try {
-    debtConfigs.value = await debtService.list();
+    expenseConfigs.value = await expenseService.list();
   } catch (error) {
-    console.error('Error loading debts:', error);
+    console.error('Error loading expenses:', error);
   }
 }
 
 onMounted(async () => {
-  await loadDebts();
+  await loadExpenses();
 });
 </script>

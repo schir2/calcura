@@ -1,10 +1,10 @@
 import * as yup from "yup";
-import type Expense from "~/models/expense/Expense";
+import type {ExpensePartial} from "~/models/expense/Expense";
 import {ExpenseType, Frequency} from "~/models/expense/Expense";
 import type {FieldData} from "~/interfaces/FieldData";
 import {EXPENSE_NAME_MAX_LENGTH, EXPENSE_NAME_MIN_LENGTH, MAX_EXPENSE_AMOUNT, MIN_EXPENSE_AMOUNT,} from "~/models/expense/ExpenseConstants";
 
-export const expenseFields: Record<keyof Expense, FieldData> = {
+export const expenseFields: Record<keyof ExpensePartial, FieldData> = {
     name: {
         name: "name",
         label: "Expense Name",

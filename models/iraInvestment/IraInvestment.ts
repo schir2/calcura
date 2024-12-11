@@ -1,10 +1,9 @@
-export type IraType = 'taxExempt' | 'taxDeferred'
 export type IraContributionStrategy = 'fixed' | 'percentage_of_income' | 'max'
 
-export default interface IraInvestment {
-    id?: number;
+export interface IraInvestment {
+    id: number;
     name: string;
-    iraType: IraType;
+    isContributionTaxDeferred: boolean;
 
     growthRate: number;
     initialBalance: number;
@@ -15,3 +14,5 @@ export default interface IraInvestment {
 
 
 }
+
+export type IraInvestmentPartial = Partial<Omit<IraInvestment, 'id'>>

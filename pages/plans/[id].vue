@@ -137,7 +137,7 @@ useHead({
 async function handleCreateDebt() {
   const debtConfig = defaultDebtFactory();
   const debt = await debtService.create(debtConfig)
-  await planService.addRelatedModel(planId, 'debts', debt.id)
+  await planService.addRelatedModel(planId, 'taxDeferredInvestment', debt.id)
   await loadPlan();
 }
 

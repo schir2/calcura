@@ -1,7 +1,7 @@
-import type Cash from "~/models/cash/Cash";
+import type {Cash, CashPartial} from "~/models/cash/Cash";
 import {DEFAULT_CASH_MAINTENANCE_NAME, DEFAULT_CASH_MAINTENANCE_RESERVE_AMOUNT, DEFAULT_CASH_MAINTENANCE_RESERVE_MONTHS, DEFAULT_CASH_MAINTENANCE_STRATEGY} from "~/models/cash/CashConstants";
 
-export function defaultCashFactory(): Cash {
+export function defaultCashFactory(): CashPartial {
     return {
         name: DEFAULT_CASH_MAINTENANCE_NAME,
         initialAmount: 0,

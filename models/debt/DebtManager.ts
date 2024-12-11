@@ -1,9 +1,9 @@
-import type Debt from "~/models/debt/Debt";
+import type {Debt} from "~/models/debt/Debt";
 import type DebtState from "~/models/debt/DebtState";
 import {type AllowNegativeDisposableIncome} from "~/models/plan/Plan";
 import {adjustForAllowNegativeDisposableIncome, assertDefined} from "~/utils";
 import ManagerBase from "~/models/common/ManagerBase";
-import type PlanState from "~/models/plan/PlanState";
+import type {PlanState} from "~/models/plan/PlanState";
 import {ProcessDebtCommand} from "~/models/debt/DebtCommands";
 import type Command from "~/models/common/Command";
 
@@ -57,7 +57,7 @@ export default class DebtManager extends ManagerBase<Debt, DebtState> {
             case 'percentage_of_debt':
                 payment = this.config.principal * (this.config.paymentPercentage / 100);
                 break
-            case 'max':
+            case 'maximum_payment':
                 payment = state.principalStartOfYear;
                 break
         }

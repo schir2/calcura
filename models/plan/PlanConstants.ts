@@ -1,9 +1,4 @@
-import {
-    type AllowNegativeDisposableIncome,
-    InvestmentGrowthApplicationStrategy,
-    RetirementStrategy
-} from "~/models/plan/Plan";
-import type {IncomeTaxStrategy} from "~/models/tax/TaxConfig";
+import type {AllowNegativeDisposableIncome, IncomeTaxStrategy, InvestmentGrowthApplicationStrategy, RetirementStrategy} from "~/models/plan/Plan";
 
 export const DEFAULT_EXPENSE_PLAN_NAME: string = 'Blank Plan'
 export const DEFAULT_AGE: number = 30;

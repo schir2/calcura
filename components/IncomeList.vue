@@ -6,14 +6,14 @@
       <NButton iconLeft="mdi:add" @click="handleCreateIncome">Add Income</NButton>
     </div>
     <NList>
-    <Income v-for="(incomeConfig, index) in incomes" :incomeConfig="incomeConfig" :key="incomeConfig.id"
+    <Income v-for="(income, index) in incomes" :income="income" :key="income.id"
           @deleteIncome="handleDeleteIncome" @updateIncome="handleUpdateIncome"></Income>
     </NList>
   </div>
 
 </template>
 <script lang="ts" setup>
-import type Income from "~/models/income/Income";
+import type {Income} from "~/models/income/Income";
 
 interface Props {
   incomes: Income[]
@@ -29,8 +29,8 @@ function handleCreateIncome(){
   emit('createIncome');
 }
 
-function handleUpdateIncome(incomeConfig: Income) {
-  emit('updateIncome', incomeConfig);
+function handleUpdateIncome(income: Income) {
+  emit('updateIncome', income);
 }
 
 </script>

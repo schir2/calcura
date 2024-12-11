@@ -1,4 +1,4 @@
-import type {IraContributionStrategy} from "~/models/ira/IraInvestment";
+import type {IraContributionStrategy} from "~/models/iraInvestment/IraInvestment";
 
 export const DEFAULT_IRA_BALANCE: number = 0
 export const IRA_DEFAULT_YEAR = 2024
@@ -9,5 +9,5 @@ export const IRA_CATCH_UP_AGE = 50
 export const DEFAULT_IRA_GROWTH_RATE: number = 6
 export const DEFAULT_IRA_CONTRIBUTION_STRATEGY: IraContributionStrategy = 'percentage_of_income'
 export const DEFAULT_IRA_CONTRIBUTION_PERCENTAGE: number = 0
-
+export const DEFAULT_IRA_IS_CONTRIBUTION_TAX_DEFERRED: boolean = false
 export const DEFAULT_IRA_CONTRIBUTION_FIXED_AMOUNT: number = 0

@@ -1,6 +1,6 @@
 import ManagerBase from "~/models/common/ManagerBase";
-import type Cash from "~/models/cash/Cash";
-import type PlanState from "~/models/plan/PlanState";
+import type {Cash} from "~/models/cash/Cash";
+import type {PlanState} from "~/models/plan/PlanState";
 import type CashState from "~/models/cash/CashState";
 import type Command from "~/models/common/Command";
 
