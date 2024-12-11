@@ -22,6 +22,11 @@
             <NuxtLink to="/expenses">Expenses</NuxtLink>
           </n-button>
         </li>
+        <li>
+          <n-button quaternary><template #icon><Icon name="mdi:trending-down"/></template>
+            <NuxtLink to="/debts">Debts</NuxtLink>
+          </n-button>
+        </li>
         <n-divider/>
         <li>
           <n-button quaternary><template #icon><Icon name="mdi:sack-outline"/></template>
