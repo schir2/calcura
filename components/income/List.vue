@@ -13,10 +13,10 @@
 
 </template>
 <script lang="ts" setup>
-import type IncomeConfig from "~/models/income/IncomeConfig";
+import type Income from "~/models/income/Income";
 
 interface Props {
-  incomes: IncomeConfig[]
+  incomes: Income[]
 }
 
 const props = defineProps<Props>()
@@ -29,7 +29,7 @@ function handleCreateIncome(){
   emit('createIncome');
 }
 
-function handleUpdateIncome(incomeConfig: IncomeConfig) {
+function handleUpdateIncome(incomeConfig: Income) {
   emit('updateIncome', incomeConfig);
 }
 

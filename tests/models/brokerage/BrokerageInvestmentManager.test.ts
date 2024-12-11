@@ -1,12 +1,12 @@
 import {beforeEach, describe, expect, it} from "vitest";
 import BrokerageInvestmentManager from "~/models/brokerage/BrokerageInvestmentManager";
-import type BrokerageInvestmentConfig from "~/models/brokerage/BrokerageInvestmentConfig";
+import type BrokerageInvestment from "~/models/brokerage/BrokerageInvestment";
 import type BrokerageInvestmentState from "~/models/brokerage/BrokerageInvestmentState";
 import type PlanState from "~/models/plan/PlanState";
 
 describe("BrokerageInvestmentManager", () => {
     let manager: BrokerageInvestmentManager;
-    const config: BrokerageInvestmentConfig = {
+    const config: BrokerageInvestment = {
         name: "Test Brokerage Investment Config",
         contributionStrategy: 'fixed',
         contributionFixedAmount: 100,

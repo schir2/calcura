@@ -40,7 +40,7 @@
     </CommonCard>
 </template>
 <script setup lang="ts">
-import TaxDeferredInvestmentConfig from "~/models/taxDeferred/TaxDeferredInvestmentConfig";
+import TaxDeferredInvestmentConfig from "~/models/taxDeferred/TaxDeferredInvestment";
 import {taxDeferredInvestmentFields} from "~/forms/taxDeferredInvestmentForm";
 import {defaultTaxDeferredInvestmentFactory} from "~/models/taxDeferred/TaxDeferredInvestmentFactories";
 

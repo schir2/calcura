@@ -1,6 +1,11 @@
 import {createBaseService} from '~/services/baseService';
+import type BrokerageInvestment from "~/models/brokerage/BrokerageInvestment";
 
-export function useBrokerageInvestmentServiceService<BrokerageInvestmentServiceConfig>() {
-    const config = useRuntimeConfig();
-    return createBaseService(config.public.apiBaseUrl, 'brokerage-investment-configs/');
+export function useBrokerageInvestmentService() {
+    const { $api } = useNuxtApp();
+    if (!$api) {
+        throw new Error('API service is not available');
+    }
+
+    return createBaseService<BrokerageInvestment>($api, 'brokerageInvestments/');
 }

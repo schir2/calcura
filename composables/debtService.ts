@@ -1,5 +1,5 @@
 import {createBaseService} from '~/services/baseService';
-import type DebtConfig from "~/models/debt/DebtConfig";
+import type Debt from "~/models/debt/Debt";
 
 export function useDebtService() {
     const { $api } = useNuxtApp();
@@ -7,5 +7,5 @@ export function useDebtService() {
         throw new Error('API service is not available');
     }
 
-    return createBaseService<DebtConfig>($api, 'debts/');
+    return createBaseService<Debt>($api, 'debts/');
 }

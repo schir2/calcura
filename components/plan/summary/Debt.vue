@@ -18,10 +18,10 @@
 
 <script setup lang="ts">
 
-import type DebtConfig from "~/models/debt/DebtConfig";
+import type Debt from "~/models/debt/Debt";
 
 interface Props {
-  debts: DebtConfig[]
+  debts: Debt[]
 }
 
 const props = defineProps<Props>()

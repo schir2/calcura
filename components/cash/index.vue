@@ -1,7 +1,7 @@
 <template>
   <CommonCard color="secondary">
     <div class="flex justify-between align-middle">
-      <h3 class="text-2xl">CashConfig {{ cash.name }}</h3>
+      <h3 class="text-2xl">Cash {{ cash.name }}</h3>
     </div>
     <Form>
       <section>
@@ -23,11 +23,11 @@
 
 </template>
 <script setup lang="ts">
-import CashConfig from "~/models/cash/CashConfig";
+import Cash from "~/models/cash/Cash";
 import {cashMaintenanceFields} from "~/forms/cashForm";
 
 interface Props {
-  cash: CashConfig
+  cash: Cash
   showAdvancedOptions: boolean;
 }
 

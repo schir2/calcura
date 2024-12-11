@@ -23,7 +23,7 @@
   </CommonCard>
 </template>
 <script setup lang="ts">
-import BrokerageInvestmentConfig from "~/models/brokerage/BrokerageInvestmentConfig";
+import BrokerageInvestment from "~/models/brokerage/BrokerageInvestment";
 import {brokerageInvestmentFields} from "~/forms/brokerageInvestmentForm";
 import {defaultBrokerageInvestmentFactory} from "~/models/brokerage/BrokerageInvestmentFactories";
 
@@ -33,7 +33,7 @@ const fieldMetadata = brokerageInvestmentFields
 
 interface Props {
   showAdvancedOptions: boolean;
-  investment: BrokerageInvestmentConfig;
+  investment: BrokerageInvestment;
   investmentIndex: number;
 }
 

@@ -24,10 +24,10 @@
 </template>
 <script setup lang="ts">
 import {debtFields} from "~/forms/debtForm";
-import type DebtConfig from "~/models/debt/DebtConfig";
+import type Debt from "~/models/debt/Debt";
 
 interface Props {
-  debtConfig: DebtConfig
+  debtConfig: Debt
   showAdvancedOptions?: boolean;
 }
 

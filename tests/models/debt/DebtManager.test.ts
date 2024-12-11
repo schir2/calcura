@@ -1,11 +1,11 @@
 import {beforeEach, describe, expect, it} from "vitest";
 import DebtManager from "~/models/debt/DebtManager";
-import type DebtConfig from "~/models/debt/DebtConfig";
+import type Debt from "~/models/debt/Debt";
 import type PlanState from "~/models/plan/PlanState";
 import type DebtState from "~/models/debt/DebtState";
 import {defaultDebtFactory} from "~/models/debt/DebtFactories";
 
-const fixedDebtConfig: DebtConfig = {
+const fixedDebtConfig: Debt = {
     name: "Test Debt",
     principal: 1000,
     interestRate: 5,
@@ -15,12 +15,12 @@ const fixedDebtConfig: DebtConfig = {
     paymentPercentage: 20,
 };
 
-const percentageDebtConfig: DebtConfig = {
+const percentageDebtConfig: Debt = {
     ...fixedDebtConfig,
     paymentStrategy: 'percentage_of_debt'
 }
 
-const maxDebtConfig: DebtConfig = {
+const maxDebtConfig: Debt = {
     ...fixedDebtConfig,
     paymentStrategy: 'max'
 }

@@ -18,11 +18,11 @@
 
 <script setup lang="ts">
 
-import type IncomeConfig from "~/models/income/IncomeConfig";
-import type {IncomeType} from "~/models/income/IncomeConfig";
+import type Income from "~/models/income/Income";
+import type {IncomeType} from "~/models/income/Income";
 
 interface Props {
-  incomes: IncomeConfig[]
+  incomes: Income[]
 }
 
 const props = defineProps<Props>()

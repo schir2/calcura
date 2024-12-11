@@ -1,7 +1,7 @@
 export type IncomeType = 'ordinary'
 
 
-export default interface IncomeConfig {
+export default interface Income {
     id?: number;
     name: string;
     grossIncome: number;

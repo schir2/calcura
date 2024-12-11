@@ -7,7 +7,7 @@
 </template>
 <script setup lang="ts">
 import {defaultDebtFactory} from "~/models/debt/DebtFactories";
-import type DebtConfig from "~/models/debt/DebtConfig";
+import type Debt from "~/models/debt/Debt";
 
 import {useDebtService} from "~/composables/debtService";
 
@@ -25,14 +25,14 @@ async function handleDeleteDebt(index: number) {
   await loadDebts();
 }
 
-async function handleUpdateDebt(debtConfig: DebtConfig) {
+async function handleUpdateDebt(debtConfig: Debt) {
   await debtService.update(debtConfig.id, debtConfig)
   await loadDebts();
 }
 
 const {$api} = useNuxtApp()
 
-const debtConfigs = ref<DebtConfig[]>([])
+const debtConfigs = ref<Debt[]>([])
 
 async function loadDebts() {
   if (!$api) {

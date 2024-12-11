@@ -1,7 +1,7 @@
 export type EmployerContributionStrategy = 'none' | 'percentage_of_contribution' | 'percentage_of_compensation' | 'fixed'
 export type TaxDeferredContributionStrategy = 'none' | 'until_company_match' | 'percentage_of_income' | 'fixed' | 'max'
 
-export interface TaxDeferredInvestmentConfig {
+export interface TaxDeferredInvestment {
     id?: number;
     name: string;
 

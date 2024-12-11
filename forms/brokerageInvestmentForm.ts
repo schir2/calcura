@@ -1,11 +1,11 @@
 import * as yup from "yup";
-import type BrokerageInvestmentConfig from "~/models/brokerage/BrokerageInvestmentConfig";
-import type {BrokerageContributionStrategy} from "~/models/brokerage/BrokerageInvestmentConfig";
+import type BrokerageInvestment from "~/models/brokerage/BrokerageInvestment";
+import type {BrokerageContributionStrategy} from "~/models/brokerage/BrokerageInvestment";
 import type {FieldData} from "~/interfaces/FieldData";
 
 import type {InvestmentGrowthApplicationStrategy} from "~/models/plan/Plan";
 
-export const brokerageInvestmentFields: Record<keyof BrokerageInvestmentConfig, FieldData> = {
+export const brokerageInvestmentFields: Record<keyof BrokerageInvestment, FieldData> = {
     name: {
         name: "name",
         label: "Investment Name",

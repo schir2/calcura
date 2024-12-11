@@ -1,4 +1,4 @@
-import type {IncomeType} from "~/models/income/IncomeConfig";
+import type {IncomeType} from "~/models/income/Income";
 import type {GrowthStrategy} from "~/models/plan/Plan";
 
 export const DEFAULT_INCOME_NAME = 'Ordinary Income';

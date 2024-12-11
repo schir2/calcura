@@ -1,6 +1,6 @@
 export type CashMaintenanceStrategy = 'fixedCashReserve' | 'variableCashReserve'
 
-export default interface CashConfig {
+export default interface Cash {
     id?: number;
     name: string,
     initialAmount: number,

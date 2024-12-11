@@ -5,7 +5,7 @@ import ManagerBase from "~/models/common/ManagerBase";
 import {getIraLimit, getTaxDeferredContributionLimit, getTaxDeferredElectiveContributionLimit} from "~/utils";
 import type Command from "~/models/common/Command";
 import IncomeManager from "~/models/income/IncomeManager";
-import type {IncomeType} from "~/models/income/IncomeConfig";
+import type {IncomeType} from "~/models/income/Income";
 import BrokerageInvestmentManager from "~/models/brokerage/BrokerageInvestmentManager";
 import ExpenseManager from "~/models/expense/ExpenseManager";
 

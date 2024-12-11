@@ -3,7 +3,7 @@ import type {
     TaxableContributionStrategy,
 } from "~/types";
 import type {EmployerContributionStrategy, TaxDeferredContributionStrategy} from "~/models/taxDeferred/TaxDeferredInvestmentConstants";
-import type {DebtData} from "~/models/debt/DebtConfig";
+import type {DebtData} from "~/models/debt/Debt";
 import type {IncomeTaxStrategy} from "~/models/tax/TaxConfig";
 import type {
     ExpensesGrowthStrategy, GrowthStrategy,

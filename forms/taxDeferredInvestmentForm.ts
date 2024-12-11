@@ -14,10 +14,10 @@ import {
     EmployerContributionOptions,
     TaxDeferredContributionOptions,
 } from "~/models/taxDeferred/TaxDeferredInvestmentConstants";
-import type {TaxDeferredInvestmentConfig} from "~/models/taxDeferred/TaxDeferredInvestmentConfig";
+import type {TaxDeferredInvestment} from "~/models/taxDeferred/TaxDeferredInvestment";
 import {DEFAULT_GROWTH_APPLICATION_STRATEGY} from "~/models/plan/PlanConstants";
 
-export const taxDeferredInvestmentFields: Record<keyof TaxDeferredInvestmentConfig, FieldData> = {
+export const taxDeferredInvestmentFields: Record<keyof TaxDeferredInvestment, FieldData> = {
     name: {
         name: "name",
         label: "Investment Name",

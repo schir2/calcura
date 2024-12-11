@@ -1,6 +1,11 @@
 import {createBaseService} from '~/services/baseService';
+import type {TaxDeferredInvestment} from "~/models/taxDeferred/TaxDeferredInvestment";
 
-export function useTaxDeferredInvestmentService<TaxDeferredInvestmentConfig>() {
-    const config = useRuntimeConfig();
-    return createBaseService(config.public.apiBaseUrl, 'tax-deferred-investment-configs/');
+export function useDebtService() {
+    const {$api} = useNuxtApp();
+    if (!$api) {
+        throw new Error('API service is not available');
+    }
+
+    return createBaseService<TaxDeferredInvestment>($api, 'tax_deferred_incomes/');
 }

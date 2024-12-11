@@ -1,7 +1,7 @@
 import {DEFAULT_DEBT_NAME, DEFAULT_FIXED_PAYMENT, DEFAULT_INTEREST_RATE, DEFAULT_MINIMUM_PAYMENT, DEFAULT_PAYMENT_STRATEGY, DEFAULT_PRINCIPAL} from "~/models/debt/DebtConstants";
-import type DebtConfig from "~/models/debt/DebtConfig";
+import type Debt from "~/models/debt/Debt";
 
-export function defaultDebtFactory(): DebtConfig {
+export function defaultDebtFactory(): Debt {
     return {
         name: DEFAULT_DEBT_NAME,
         interestRate: DEFAULT_INTEREST_RATE,

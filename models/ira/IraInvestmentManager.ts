@@ -1,4 +1,4 @@
-import type IraInvestmentConfig from './IraInvestmentConfig';
+import type IraInvestment from './IraInvestment';
 import {adjustForAllowNegativeDisposableIncome, assertDefined, calculateInvestmentGrowthAmount} from "~/utils";
 import type IraInvestmentState from "~/models/ira/IraInvestmentState";
 import ManagerBase from "~/models/common/ManagerBase";
@@ -6,7 +6,7 @@ import type PlanState from "~/models/plan/PlanState";
 import type Command from "~/models/common/Command";
 import type {AllowNegativeDisposableIncome} from "~/models/plan/Plan";
 
-export default class IraInvestmentManager extends ManagerBase<IraInvestmentConfig, IraInvestmentState> {
+export default class IraInvestmentManager extends ManagerBase<IraInvestment, IraInvestmentState> {
 
     getContribution(
         limit: number,

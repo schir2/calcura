@@ -2,8 +2,8 @@ import type {SelectOption} from "~/components/form/Select.vue";
 import * as yup from "yup";
 import type {FieldData} from "~/interfaces/FieldData";
 import {DEFAULT_DEBT_NAME, DEFAULT_FIXED_PAYMENT, DEFAULT_INTEREST_RATE, DEFAULT_MINIMUM_PAYMENT, DEFAULT_PAYMENT_PERCENTAGE, DEFAULT_PAYMENT_STRATEGY, MAX_DEBT_NAME_LENGTH, MAX_INTEREST_RATE, MAX_PAYMENT, MIN_DEBT_NAME_LENGTH, MIN_INTEREST_RATE, MIN_PAYMENT,} from "~/models/debt/DebtConstants";
-import type {DebtPaymentStrategy} from "~/models/debt/DebtConfig";
-import type DebtConfig from "~/models/debt/DebtConfig";
+import type {DebtPaymentStrategy} from "~/models/debt/Debt";
+import type Debt from "~/models/debt/Debt";
 
 export const paymentStrategyOptions: Record<DebtPaymentStrategy, SelectOption> = {
     fixed: {label: "Fixed Payment", value: "fixed"},
@@ -11,7 +11,7 @@ export const paymentStrategyOptions: Record<DebtPaymentStrategy, SelectOption> =
     max: {label: "Pay Maximum", value: "max"},
 };
 
-export const debtFields: Record<keyof DebtConfig, FieldData> = {
+export const debtFields: Record<keyof Debt, FieldData> = {
     name: {
         name: "name",
         label: "Debt Name",

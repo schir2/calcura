@@ -1,7 +1,7 @@
 import {DEFAULT_EXPENSE_AMOUNT, DEFAULT_EXPENSE_FREQUENCY, DEFAULT_EXPENSE_IS_ESSENTIAL, DEFAULT_EXPENSE_IS_TAX_DEDUCTIBLE, DEFAULT_EXPENSE_NAME, DEFAULT_EXPENSE_TYPE} from "~/models/expense/ExpenseConstants";
-import type ExpenseConfig from "~/models/expense/ExpenseConfig";
+import type Expense from "~/models/expense/Expense";
 
-export function simpleExpenseFactory(): ExpenseConfig {
+export function simpleExpenseFactory(): Expense {
     return {
         name: DEFAULT_EXPENSE_NAME,
         amount: DEFAULT_EXPENSE_AMOUNT,

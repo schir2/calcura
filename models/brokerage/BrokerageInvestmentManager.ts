@@ -1,4 +1,4 @@
-import type BrokerageInvestmentConfig from './BrokerageInvestmentConfig';
+import type BrokerageInvestment from './BrokerageInvestment';
 import {adjustForAllowNegativeDisposableIncome, assertDefined, calculateInvestmentGrowthAmount} from "~/utils";
 import type BrokerageInvestmentState from "~/models/brokerage/BrokerageInvestmentState";
 import ManagerBase from "~/models/common/ManagerBase";
@@ -6,7 +6,7 @@ import type PlanState from "~/models/plan/PlanState";
 import type Command from "~/models/common/Command";
 import type {AllowNegativeDisposableIncome} from "~/models/plan/Plan";
 
-export default class BrokerageInvestmentManager extends ManagerBase<BrokerageInvestmentConfig, BrokerageInvestmentState> {
+export default class BrokerageInvestmentManager extends ManagerBase<BrokerageInvestment, BrokerageInvestmentState> {
 
     getContribution(
         disposableIncome: number,

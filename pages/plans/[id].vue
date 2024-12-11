@@ -15,7 +15,7 @@
       <nav class="flex align-middle gap-6">
         <h2 class="text-3xl">Debt(s)</h2>
       </nav>
-      <DebtList :debts="plan.debts"
+      <DebtList v-if="plan.debts" :debts="plan.debts"
                 @createDebt="handleCreateDebt"
                 @updateDebt="handleUpdateDebt"
                 @deleteDebt="handleDeleteDebt"
@@ -23,7 +23,7 @@
     </CommonCard>
     <CommonCard class="space-y-6 bg-skin-muted">
 
-      <IncomeList :debts="plan.incomes"
+      <IncomeList v-if="plan.incomes" :incomes="plan.incomes"
                   @createIncome="handleCreateIncome"
                   @updateIncome="handleUpdateIncome"
                   @deleteIncome="handleDeleteIncome"
@@ -47,10 +47,10 @@
       </CommonList>
     </CommonCard>
 
-    <!-- CashConfig Maintenance -->
+    <!-- Cash Maintenance -->
     <CommonCard class="bg-skin-muted space-y-6">
       <nav class="flex align-middle gap-6">
-        <h2 class="text-3xl">CashConfig to Maintain</h2>
+        <h2 class="text-3xl">Cash to Maintain</h2>
       </nav>
       <Cash
           :cash="plan.cashes"
@@ -97,7 +97,7 @@
 import PlanManager from "~/models/plan/PlanManager";
 import type PlanState from "~/models/plan/PlanState";
 import {defaultDebtFactory} from "~/models/debt/DebtFactories";
-import type DebtConfig from "~/models/debt/DebtConfig";
+import type Debt from "~/models/debt/Debt";
 import type {Plan} from "~/models/plan/Plan";
 
 const planService = usePlanService()
@@ -126,7 +126,7 @@ async function handleDeleteDebt(index: number) {
   await loadPlan();
 }
 
-async function handleUpdateDebt(debtConfig: DebtConfig) {
+async function handleUpdateDebt(debtConfig: Debt) {
   await debtService.update(debtConfig.id, debtConfig)
   await loadPlan();
 }

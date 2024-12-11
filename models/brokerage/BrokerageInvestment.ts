@@ -1,6 +1,6 @@
 export type BrokerageContributionStrategy = 'fixed' | 'percentage_of_income' | 'max'
 
-export default interface BrokerageInvestmentConfig {
+export default interface BrokerageInvestment {
     name: string;
 
     growthRate: number;

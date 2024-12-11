@@ -21,10 +21,10 @@
 </template>
 <script setup lang="ts">
 import {incomeFields} from "~/forms/incomeForm";
-import type IncomeConfig from "~/models/income/IncomeConfig";
+import type Income from "~/models/income/Income";
 
 interface Props {
-  incomeConfig: IncomeConfig
+  incomeConfig: Income
   showAdvancedOptions?: boolean;
 }
 

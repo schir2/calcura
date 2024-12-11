@@ -1,4 +1,4 @@
-import type {TaxDeferredInvestmentConfig} from './TaxDeferredInvestmentConfig';
+import type {TaxDeferredInvestment} from './TaxDeferredInvestment';
 import {adjustForAllowNegativeDisposableIncome, assertDefined, calculateInvestmentGrowthAmount} from "~/utils";
 import {type AllowNegativeDisposableIncome} from "~/models/plan/Plan";
 import type TaxDeferredInvestmentState from "~/models/taxDeferred/TaxDeferredInvestmentState";
@@ -6,7 +6,7 @@ import ManagerBase from "~/models/common/ManagerBase";
 import type PlanState from "~/models/plan/PlanState";
 import type Command from "~/models/common/Command";
 
-export default class TaxDeferredInvestmentManager extends ManagerBase<TaxDeferredInvestmentConfig, TaxDeferredInvestmentState> {
+export default class TaxDeferredInvestmentManager extends ManagerBase<TaxDeferredInvestment, TaxDeferredInvestmentState> {
 
     calculateElectiveContribution(
         limit: number,

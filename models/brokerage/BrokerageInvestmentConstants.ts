@@ -1,4 +1,4 @@
-import type {BrokerageContributionStrategy} from "~/models/brokerage/BrokerageInvestmentConfig";
+import type {BrokerageContributionStrategy} from "~/models/brokerage/BrokerageInvestment";
 
 export const DEFAULT_BROKERAGE_BALANCE: number = 0
 export const DEFAULT_BROKERAGE_GROWTH_RATE: number = 6

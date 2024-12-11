@@ -2,9 +2,9 @@ import * as yup from "yup";
 import type {FieldData} from "~/interfaces/FieldData";
 
 import {DEFAULT_GROSS_INCOME, DEFAULT_GROWTH_RATE, DEFAULT_INCOME_NAME, MAX_GROWTH_RATE, MAX_NAME_LENGTH, MIN_GROSS_INCOME, MIN_GROWTH_RATE, MIN_NAME_LENGTH,} from '~/models/income/IncomeConstants';
-import type IncomeConfig from "~/models/income/IncomeConfig";
+import type Income from "~/models/income/Income";
 
-export const incomeFields: Record<keyof IncomeConfig, FieldData> = {
+export const incomeFields: Record<keyof Income, FieldData> = {
     name: {
         name: 'name',
         label: 'Income Name',

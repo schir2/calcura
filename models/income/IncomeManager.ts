@@ -1,10 +1,10 @@
 import ManagerBase from "~/models/common/ManagerBase";
 import type IncomeState from "~/models/income/IncomeState";
-import type IncomeConfig from "~/models/income/IncomeConfig";
+import type Income from "~/models/income/Income";
 import type PlanState from "~/models/plan/PlanState";
 import type Command from "~/models/common/Command";
 
-export default class IncomeManager extends ManagerBase<IncomeConfig, IncomeState> {
+export default class IncomeManager extends ManagerBase<Income, IncomeState> {
     protected createInitialState(): IncomeState {
         return {
             grossIncome: this.config.grossIncome

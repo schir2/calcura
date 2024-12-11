@@ -1,10 +1,10 @@
-import type DebtConfig from "~/models/debt/DebtConfig";
-import type {TaxDeferredInvestmentConfig} from "~/models/taxDeferred/TaxDeferredInvestmentConfig";
-import type IncomeConfig from "~/models/income/IncomeConfig";
-import type ExpenseConfig from "~/models/expense/ExpenseConfig";
-import type BrokerageInvestmentConfig from "~/models/brokerage/BrokerageInvestmentConfig";
-import type IraInvestmentConfig from "~/models/ira/IraInvestmentConfig";
-import type CashConfig from "~/models/cash/CashConfig";
+import type Debt from "~/models/debt/Debt";
+import type {TaxDeferredInvestment} from "~/models/taxDeferred/TaxDeferredInvestment";
+import type Income from "~/models/income/Income";
+import type Expense from "~/models/expense/Expense";
+import type BrokerageInvestment from "~/models/brokerage/BrokerageInvestment";
+import type IraInvestment from "~/models/ira/IraInvestment";
+import type Cash from "~/models/cash/Cash";
 
 
 export type AllowNegativeDisposableIncome = 'none' | 'minimum_only' | 'full'
@@ -33,11 +33,11 @@ export interface Plan {
     retirementAge: number;
     retirementSavingsAmount: number;
 
-    cashes: CashConfig[]
-    incomes: IncomeConfig[]
-    expenses: ExpenseConfig[]
-    debts: DebtConfig[]
-    taxDeferredInvestments: TaxDeferredInvestmentConfig[];
-    brokerageInvestments: BrokerageInvestmentConfig[];
-    iraInvestments: IraInvestmentConfig[];
+    cashes: Cash[]
+    incomes: Income[]
+    expenses: Expense[]
+    debts: Debt[]
+    taxDeferredInvestments: TaxDeferredInvestment[];
+    brokerageInvestments: BrokerageInvestment[];
+    iraInvestments: IraInvestment[];
 }

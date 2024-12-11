@@ -18,10 +18,10 @@
 
 <script setup lang="ts">
 
-import type ExpenseConfig from "~/models/expense/ExpenseConfig";
+import type Expense from "~/models/expense/Expense";
 
 interface Props {
-  expenses: ExpenseConfig[]
+  expenses: Expense[]
 }
 
 const props = defineProps<Props>()

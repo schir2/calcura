@@ -1,4 +1,4 @@
-import type {TaxDeferredInvestmentConfig} from "~/models/taxDeferred/TaxDeferredInvestmentConfig";
+import type {TaxDeferredInvestment} from "~/models/taxDeferred/TaxDeferredInvestment";
 import {
     DEFAULT_DAX_DEFERRED_GROWTH_RATE,
     DEFAULT_ELECTIVE_CONTRIBUTION_PERCENTAGE,
@@ -11,7 +11,7 @@ import {
 } from "~/models/taxDeferred/TaxDeferredInvestmentConstants";
 import {DEFAULT_GROWTH_APPLICATION_STRATEGY} from "~/models/plan/PlanConstants";
 
-export function defaultTaxDeferredInvestmentFactory(): TaxDeferredInvestmentConfig {
+export function defaultTaxDeferredInvestmentFactory(): TaxDeferredInvestment {
     return {
         name: '401k',
 
