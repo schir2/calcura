@@ -1,5 +1,5 @@
 <template>
-  <DebtList :debts="debtConfigs"
+  <DebtList v-if="debts" :debts="debts"
             @createDebt="handleCreateDebt"
             @updateDebt="handleUpdateDebt"
             @deleteDebt="handleDeleteDebt"
@@ -7,7 +7,7 @@
 </template>
 <script setup lang="ts">
 import {defaultDebtFactory} from "~/models/debt/DebtFactories";
-import type Debt from "~/models/debt/Debt";
+import type {Debt} from "~/models/debt/Debt";
 
 import {useDebtService} from "~/composables/debtService";
 
@@ -25,21 +25,22 @@ async function handleDeleteDebt(index: number) {
   await loadDebts();
 }
 
-async function handleUpdateDebt(debtConfig: Debt) {
-  await debtService.update(debtConfig.id, debtConfig)
+async function handleUpdateDebt(debt: Debt) {
+  assertDefined(debt.id, 'debt.id');
+  await debtService.update(debt.id, debt)
   await loadDebts();
 }
 
 const {$api} = useNuxtApp()
 
-const debtConfigs = ref<Debt[]>([])
+const debts = ref<Debt[]>([])
 
 async function loadDebts() {
   if (!$api) {
     console.error('API service not available');
   }
   try {
-    debtConfigs.value = await debtService.list();
+    debts.value = await debtService.list();
   } catch (error) {
     console.error('Error loading debts:', error);
   }
