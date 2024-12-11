@@ -13,7 +13,7 @@ export enum Frequency {
     OneTime = 'OneTime',
 }
 
-export default interface Expense {
+export interface Expense {
     id?: number;
     name: string,
     amount: number,

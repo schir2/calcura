@@ -1,6 +1,6 @@
 import type {AllowNegativeDisposableIncome} from "~/models/plan/Plan";
 
-export default interface PlanState {
+export interface PlanState {
     age: number;
     year: number;
     grossIncome: number;
