@@ -1,11 +1,13 @@
-import { reactive, computed } from 'vue';
-
 export function useEntityManager<T>(entity: T, emit: any, entityName: string) {
-    const currentConfig = reactive<T>(entity);
+    const currentConfig = reactive({ ...entity });
 
     const isModified = computed(() =>
         JSON.stringify(currentConfig) !== JSON.stringify(entity)
     );
+
+    watch(() => entity, (newVal) => {
+        Object.assign(currentConfig, { ...newVal });
+    });
 
     function resetEntity() {
         Object.assign(currentConfig, { ...entity });
