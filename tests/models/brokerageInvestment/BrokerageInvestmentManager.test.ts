@@ -1,19 +1,19 @@
 import {beforeEach, describe, expect, it} from "vitest";
-import BrokerageInvestmentManager from "~/models/brokerage/BrokerageInvestmentManager";
-import type BrokerageInvestment from "~/models/brokerage/BrokerageInvestment";
-import type BrokerageInvestmentState from "~/models/brokerage/BrokerageInvestmentState";
-import type PlanState from "~/models/plan/PlanState";
+import BrokerageInvestmentManager from "~/models/brokerageInvestment/BrokerageInvestmentManager";
+import type {BrokerageInvestment} from "~/models/brokerageInvestment/BrokerageInvestment";
+import type BrokerageInvestmentState from "~/models/brokerageInvestment/BrokerageInvestmentState";
+import type {PlanState} from "~/models/plan/PlanState";
 
 describe("BrokerageInvestmentManager", () => {
     let manager: BrokerageInvestmentManager;
     const config: BrokerageInvestment = {
+        id: 1,
         name: "Test Brokerage Investment Config",
         contributionStrategy: 'fixed',
         contributionFixedAmount: 100,
         contributionPercentage: 10,
         initialBalance: 1000,
         growthRate: 5,
-        growthApplicationStrategy: 'start',
     };
     beforeEach(() => {
         manager = new BrokerageInvestmentManager(config);

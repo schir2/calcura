@@ -1,10 +1,10 @@
-import type BrokerageInvestment from './BrokerageInvestment';
+import type {BrokerageInvestment} from './BrokerageInvestment';
 import {adjustForAllowNegativeDisposableIncome, assertDefined, calculateInvestmentGrowthAmount} from "~/utils";
-import type BrokerageInvestmentState from "~/models/brokerage/BrokerageInvestmentState";
+import type BrokerageInvestmentState from "~/models/brokerageInvestment/BrokerageInvestmentState";
 import ManagerBase from "~/models/common/ManagerBase";
-import type PlanState from "~/models/plan/PlanState";
+import type {PlanState} from "~/models/plan/PlanState";
 import type Command from "~/models/common/Command";
-import type {AllowNegativeDisposableIncome} from "~/models/plan/Plan";
+import type {AllowNegativeDisposableIncome, GrowthApplicationStrategy} from "~/models/plan/Plan";
 
 export default class BrokerageInvestmentManager extends ManagerBase<BrokerageInvestment, BrokerageInvestmentState> {
 
@@ -35,11 +35,11 @@ export default class BrokerageInvestmentManager extends ManagerBase<BrokerageInv
         )
     }
 
-    calculateGrowthAmount(state: BrokerageInvestmentState): number {
+    calculateGrowthAmount(state: BrokerageInvestmentState, growthApplicationStrategy: GrowthApplicationStrategy): number {
         return calculateInvestmentGrowthAmount({
                 principal: state.balanceStartOfYear,
                 growthRate: this.config.growthRate,
-                growthApplicationStrategy: this.config.growthApplicationStrategy,
+                growthApplicationStrategy: growthApplicationStrategy,
                 contribution: state.contribution
             }
         )
@@ -72,7 +72,7 @@ export default class BrokerageInvestmentManager extends ManagerBase<BrokerageInv
         const currentState = this.getCurrentState()
         const contribution = this.getContribution(planState.taxableIncome, planState.grossIncome, planState.allowNegativeDisposableIncome)
         const taxableIncome = planState.taxableIncome - contribution
-        const balanceEndOfYear = currentState.balanceStartOfYear + this.calculateGrowthAmount(currentState)
+        const balanceEndOfYear = currentState.balanceStartOfYear + this.calculateGrowthAmount(currentState, planState.growthApplicationStrategy)
         this.updateCurrentState(
             {
                 ...currentState,

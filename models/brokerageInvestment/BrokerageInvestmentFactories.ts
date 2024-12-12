@@ -1,5 +1,5 @@
-import type {BrokerageInvestmentPartial} from "~/models/brokerage/BrokerageInvestment";
-import {DEFAULT_BROKERAGE_BALANCE, DEFAULT_BROKERAGE_CONTRIBUTION_FIXED_AMOUNT, DEFAULT_BROKERAGE_CONTRIBUTION_PERCENTAGE, DEFAULT_BROKERAGE_CONTRIBUTION_STRATEGY, DEFAULT_BROKERAGE_GROWTH_RATE} from "~/models/brokerage/BrokerageInvestmentConstants";
+import type {BrokerageInvestmentPartial} from "~/models/brokerageInvestment/BrokerageInvestment";
+import {DEFAULT_BROKERAGE_BALANCE, DEFAULT_BROKERAGE_CONTRIBUTION_FIXED_AMOUNT, DEFAULT_BROKERAGE_CONTRIBUTION_PERCENTAGE, DEFAULT_BROKERAGE_CONTRIBUTION_STRATEGY, DEFAULT_BROKERAGE_GROWTH_RATE} from "~/models/brokerageInvestment/BrokerageInvestmentConstants";
 
 export function defaultBrokerageInvestmentFactory(): BrokerageInvestmentPartial {
     return {
