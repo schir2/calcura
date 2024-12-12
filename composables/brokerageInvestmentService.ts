@@ -1,5 +1,5 @@
 import {createBaseService} from '~/services/baseService';
-import type {BrokerageInvestment} from "~/models/brokerage/BrokerageInvestment";
+import type {BrokerageInvestment} from "~/models/brokerageInvestment/BrokerageInvestment";
 
 export function useBrokerageInvestmentService() {
     const { $api } = useNuxtApp();
