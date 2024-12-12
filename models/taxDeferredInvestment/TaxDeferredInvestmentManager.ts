@@ -1,6 +1,6 @@
 import type {TaxDeferredInvestment} from './TaxDeferredInvestment';
 import {adjustForAllowNegativeDisposableIncome, assertDefined, calculateInvestmentGrowthAmount} from "~/utils";
-import {type AllowNegativeDisposableIncome} from "~/models/plan/Plan";
+import {type AllowNegativeDisposableIncome, GrowthApplicationStrategy} from "~/models/plan/Plan";
 import type TaxDeferredInvestmentState from "~/models/taxDeferredInvestment/TaxDeferredInvestmentState";
 import ManagerBase from "~/models/common/ManagerBase";
 import type {PlanState} from "~/models/plan/PlanState";
@@ -73,11 +73,11 @@ export default class TaxDeferredInvestmentManager extends ManagerBase<TaxDeferre
 
     }
 
-    calculateGrowthAmount(state:TaxDeferredInvestmentState): number {
+    calculateGrowthAmount(state:TaxDeferredInvestmentState, growthApplicationStrategy: GrowthApplicationStrategy): number {
         return calculateInvestmentGrowthAmount({
                 principal: state.balanceStartOfYear,
                 growthRate: this.config.growthRate,
-                growthApplicationStrategy: this.config.growthApplicationStrategy,
+                growthApplicationStrategy: growthApplicationStrategy,
                 contribution: state.electiveContribution
             }
         )
