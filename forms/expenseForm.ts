@@ -70,7 +70,6 @@ export const expenseFields: Record<keyof ExpensePartial, FieldData> = {
         helpText: "Mark this expense as essential if it is critical for your budget.",
         type: "checkbox",
         defaultValue: true,
-        rules: yup.boolean().required(),
     },
     isTaxDeductible: {
         name: "isTaxDeductible",
@@ -78,6 +77,5 @@ export const expenseFields: Record<keyof ExpensePartial, FieldData> = {
         helpText: "Check this if the expense is tax deductible.",
         type: "checkbox",
         defaultValue: false,
-        rules: yup.boolean().required(),
     },
 };
