@@ -5,8 +5,8 @@ import type {CashReserveStrategy, CashReservePartial} from "~/models/cashReserve
 import type {SelectOption} from "~/components/form/Select.vue";
 
 export const cashReserveStrategyOptions: Record<CashReserveStrategy, SelectOption> = {
-    fixedCashReserve: {label: "Fixed CashReserve Reserve", value: "fixedCashReserve"},
-    variableCashReserve: {label: "Variable CashReserve Reserve", value: "variableCashReserve"},
+    fixedCashReserve: {label: "Fixed Cash Reserve", value: "fixedCashReserve"},
+    variableCashReserve: {label: "Variable Cash Reserve", value: "variableCashReserve"},
 };
 
 export const cashReserveFields: Record<keyof CashReservePartial, FieldData> = {
@@ -36,7 +36,7 @@ export const cashReserveFields: Record<keyof CashReservePartial, FieldData> = {
         name: "cashReserveMaintenanceStrategy",
         label: "CashReserve Maintenance Strategy",
         placeholder: "Select cashReserve maintenance strategy",
-        helpText: "Choose the strategy for maintaining your cashReserve reserve.",
+        helpText: "Choose the strategy for maintaining your cash Reserve.",
         type: "select",
         defaultValue: DEFAULT_CASH_MAINTENANCE_STRATEGY,
         rules: yup.mixed<CashReserveStrategy>().required("CashReserve maintenance strategy is required"),

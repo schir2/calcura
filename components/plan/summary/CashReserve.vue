@@ -1,6 +1,6 @@
 <template>
   <CommonCard>
-    <h3 class="text-2xl">CashReserve Reserve(s)</h3>
+    <h3 class="text-2xl">Cash Reserve(s)</h3>
     <ul v-if="cashReserves">
       <li v-for="(cashReserve, index) in cashReserves" :Key="index" class="">
         <n-tag :bordered="false" type="success">{{ cashReserve.cashReserveStrategy }}</n-tag>

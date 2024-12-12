@@ -2,7 +2,7 @@
 <template>
   <CommonCard color="secondary">
     <div class="flex justify-between align-middle">
-      <h3 class="text-2xl">CashReserve: {{ currentCashReserveConfig.name }}</h3>
+      <h3 class="text-2xl">Cash Reserve: {{ currentCashReserveConfig.name }}</h3>
       <NButton iconLeft="mdi:delete" @click="deleteCashReserve">Delete</NButton>
       <NButton v-if="isModified" iconLeft="mdi:history" @click="resetCashReserve">Reset</NButton>
       <NButton v-if="isModified" iconLeft="mdi:content-save" @click="updateCashReserve">Save</NButton>

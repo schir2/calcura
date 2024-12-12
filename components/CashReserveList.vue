@@ -1,6 +1,6 @@
 <template>
 
-  <h2 class="text-3xl">CashReserve Reserve(s)</h2>
+  <h2 class="text-3xl">Cash Reserve(s)</h2>
   <NButton @click="handleCreateCashReserve()">Add</NButton>
   <div class="container">
     <CashReserve v-for="(cashReserve, index) in cashReserves" :cashReserve="cashReserve" :key="cashReserve.id"
