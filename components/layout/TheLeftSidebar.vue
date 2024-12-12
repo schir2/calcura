@@ -14,7 +14,7 @@
         </li>
         <li>
           <n-button quaternary><template #icon><Icon name="mdi:cash"/></template>
-            <NuxtLink to="/cashes">Cash</NuxtLink>
+            <NuxtLink to="/cashReserves">CashReserve</NuxtLink>
           </n-button>
         </li>
         <li>
