@@ -9,10 +9,10 @@
     <CommonListItem :class="applyAdvancedOptions(showAdvancedOptions)">
       <FormField :model="expense" :field="fieldMetadata.name"></FormField>
       <FormField :model="expense" :field="fieldMetadata.amount"></FormField>
-      <FormSelect v-show="showAdvancedOptions" :model="expense" :field="fieldMetadata.frequency"></FormSelect>
-      <FormSelect v-show="showAdvancedOptions" :model="expense" :field="fieldMetadata.type"></FormSelect>
-      <FormField v-show="showAdvancedOptions" :model="expense" :field="fieldMetadata.isEssential"></FormField>
-      <FormField v-show="showAdvancedOptions" :model="expense" :field="fieldMetadata.isTaxDeductible"></FormField>
+      <FormSelect v-show="showAdvancedOptions" :model="currentExpenseConfig" :field="fieldMetadata.frequency"></FormSelect>
+      <FormSelect v-show="showAdvancedOptions" :model="currentExpenseConfig" :field="fieldMetadata.type"></FormSelect>
+      <FormField v-show="showAdvancedOptions" :model="currentExpenseConfig" :field="fieldMetadata.isEssential"></FormField>
+      <FormField v-show="showAdvancedOptions" :model="currentExpenseConfig" :field="fieldMetadata.isTaxDeductible"></FormField>
     </CommonListItem>
   </Form>
 </template>
