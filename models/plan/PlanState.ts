@@ -1,4 +1,4 @@
-import type {AllowNegativeDisposableIncome} from "~/models/plan/Plan";
+import type {AllowNegativeDisposableIncome, GrowthApplicationStrategy} from "~/models/plan/Plan";
 
 export interface PlanState {
     age: number;
@@ -11,6 +11,7 @@ export interface PlanState {
     iraLimit: number;
     inflationRate: number;
     allowNegativeDisposableIncome: AllowNegativeDisposableIncome;
+    growthApplicationStrategy: GrowthApplicationStrategy
 
     retirementIncomeProjected: number,
     retired: boolean,
