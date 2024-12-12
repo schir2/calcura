@@ -6,8 +6,8 @@
   ></BrokerageInvestmentList>
 </template>
 <script setup lang="ts">
-import {defaultBrokerageInvestmentFactory} from "~/models/brokerage/BrokerageInvestmentFactories";
-import type {BrokerageInvestment} from "~/models/brokerage/BrokerageInvestment";
+import {defaultBrokerageInvestmentFactory} from "~/models/brokerageInvestment/BrokerageInvestmentFactories";
+import type {BrokerageInvestment} from "~/models/brokerageInvestment/BrokerageInvestment";
 
 import {useBrokerageInvestmentService} from "~/composables/brokerageInvestmentService";
 
