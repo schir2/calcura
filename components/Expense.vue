@@ -6,13 +6,13 @@
       <NButton v-if="isModified" iconLeft="mdi:history" @click="resetExpense">Reset</NButton>
       <NButton v-if="isModified" iconLeft="mdi:content-save" @click="updateExpense">Save</NButton>
     </div>
-    <CommonCard class="flex">
+    <CommonCard>
       <FormField :model="expense" :field="fieldMetadata.name"></FormField>
       <FormField :model="expense" :field="fieldMetadata.amount"></FormField>
       <FormSelect :model="currentExpenseConfig" :field="fieldMetadata.frequency"></FormSelect>
       <FormSelect :model="currentExpenseConfig" :field="fieldMetadata.type"></FormSelect>
-      <FormField :model="currentExpenseConfig" :field="fieldMetadata.isEssential"></FormField>
-      <FormField :model="currentExpenseConfig" :field="fieldMetadata.isTaxDeductible"></FormField>
+      <FormToggle :model="currentExpenseConfig" :field="fieldMetadata.isEssential"></FormToggle>
+      <FormToggle :model="currentExpenseConfig" :field="fieldMetadata.isTaxDeductible"></FormToggle>
     </CommonCard>
   </Form>
 </template>
