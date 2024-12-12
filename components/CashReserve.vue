@@ -10,16 +10,19 @@
     <Form>
       <section>
         <div class="grid grid-cols-3 gap-3">
-          <FormField :field="fieldMetadata.name" :model="cashReserve"></FormField>
-          <FormSelect :field="fieldMetadata.cashReserveStrategy" :model="cashReserve"></FormSelect>
+          <FormField :field="fieldMetadata.name" :model="currentCashReserveConfig"></FormField>
+          <FormField :field="fieldMetadata.initialAmount" :model="currentCashReserveConfig"></FormField>
+          <FormSelect :field="fieldMetadata.cashReserveStrategy" :model="currentCashReserveConfig"></FormSelect>
+          <FormField :field="fieldMetadata.reserveAmount" :model="currentCashReserveConfig"></FormField>
+          <FormField :field="fieldMetadata.reserveMonths" :model="currentCashReserveConfig"></FormField>
           <FormField
-              v-if="cashReserve.cashReserveStrategy === 'fixedCashReserve'"
+              v-if="currentCashReserveConfig.cashReserveStrategy === 'fixedCashReserve'"
               :field="fieldMetadata.reserveAmount"
-              :model="cashReserve"></FormField>
+              :model="currentCashReserveConfig"></FormField>
           <FormField
-              v-if="cashReserve.cashReserveStrategy === 'variableCashReserve'"
+              v-if="currentCashReserveConfig.cashReserveStrategy === 'variableCashReserve'"
               :field="fieldMetadata.reserveMonths"
-              :model="cashReserve"></FormField>
+              :model="currentCashReserveConfig"></FormField>
         </div>
       </section>
     </Form>
