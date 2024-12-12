@@ -1,4 +1,6 @@
 <template>
+
+  <h2 class="text-3xl">Brokerage(s)</h2>
   <NButton @click="handleCreateBrokerageInvestment()">Add</NButton>
   <div class="container">
     <BrokerageInvestment v-for="(brokerageInvestment, index) in brokerageInvestments" :brokerageInvestment="brokerageInvestment" :key="brokerageInvestment.id"
@@ -7,7 +9,7 @@
 
 </template>
 <script lang="ts" setup>
-import type {BrokerageInvestment} from "~/models/brokerage/BrokerageInvestment";
+import type {BrokerageInvestment} from "~/models/brokerageInvestment/BrokerageInvestment";
 
 interface Props {
   brokerageInvestments: BrokerageInvestment[]
