@@ -2,9 +2,9 @@ import type {Debt} from "~/models/debt/Debt";
 import type {TaxDeferredInvestment} from "~/models/taxDeferredInvestment/TaxDeferredInvestment";
 import type {Income} from "~/models/income/Income";
 import type {Expense} from "~/models/expense/Expense";
-import type {BrokerageInvestment} from "~/models/brokerage/BrokerageInvestment";
+import type {BrokerageInvestment} from "~/models/brokerageInvestment/BrokerageInvestment";
 import type {IraInvestment} from "~/models/iraInvestment/IraInvestment";
-import type {Cash} from "~/models/cash/Cash";
+import type {CashReserve} from "~/models/cashReserve/CashReserve";
 
 
 export type AllowNegativeDisposableIncome = 'none' | 'minimum_only' | 'full'
@@ -12,7 +12,7 @@ export type RetirementStrategy = 'debt_free' | 'age' | 'percent_rule' | 'target_
 export type GrowthStrategy = 'fixed' | 'percentage_increase';
 export type InflationGrowthStrategy = 'fixed' | 'percentage_increase';
 export type ExpensesGrowthStrategy = 'fixed' | 'percentage_increase';
-export type InvestmentGrowthApplicationStrategy = 'start' | 'end';
+export type GrowthApplicationStrategy = 'start' | 'end';
 export type IncomeTaxStrategy = 'simple'
 
 export interface Plan {
@@ -21,7 +21,8 @@ export interface Plan {
     age: number;
     year: number;
     inflationRate: number;
-    allowNegativeDisposableIncome: AllowNegativeDisposableIncome
+    allowNegativeDisposableIncome: AllowNegativeDisposableIncome;
+    growthApplicationStrategy: GrowthApplicationStrategy
 
     taxStrategy: IncomeTaxStrategy
     taxRate: number
@@ -33,7 +34,7 @@ export interface Plan {
     retirementAge: number;
     retirementSavingsAmount: number;
 
-    cashes: Cash[]
+    cashReserves: CashReserve[]
     incomes: Income[]
     expenses: Expense[]
     debts: Debt[]
