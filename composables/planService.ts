@@ -4,7 +4,7 @@ import type {Plan} from "~/models/plan/Plan";
 type PlanRelatedModel =
     'Incomes'
     | 'Expenses'
-    | 'Cashes'
+    | 'CashReserves'
     | 'IraInvestments'
     | 'TaxDeferredInvestments'
     | 'BrokerageInvestments'
