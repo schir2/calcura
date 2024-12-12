@@ -1,4 +1,4 @@
-import type {AllowNegativeDisposableIncome, IncomeTaxStrategy, InvestmentGrowthApplicationStrategy, RetirementStrategy} from "~/models/plan/Plan";
+import type {AllowNegativeDisposableIncome, IncomeTaxStrategy, GrowthApplicationStrategy, RetirementStrategy} from "~/models/plan/Plan";
 
 export const DEFAULT_EXPENSE_PLAN_NAME: string = 'Blank Plan'
 export const DEFAULT_AGE: number = 30;
@@ -6,7 +6,7 @@ export const DEFAULT_YEAR: number = new Date().getFullYear();
 export const DEFAULT_INFLATION_RATE = 3
 export const DEFAULT_ALLOW_NEGATIVE_DISPOSABLE_INCOME: AllowNegativeDisposableIncome = 'none'
 export const DEFAULT_INVESTMENT_GROWTH_RATE = 2.5
-export const DEFAULT_GROWTH_APPLICATION_STRATEGY: InvestmentGrowthApplicationStrategy = 'start'
+export const DEFAULT_GROWTH_APPLICATION_STRATEGY: GrowthApplicationStrategy = 'start'
 export const DEFAULT_TAX_STRATEGY: IncomeTaxStrategy = 'simple';
 export const MIN_TAX_RATE = 0;
 export const MAX_TAX_RATE = 100;
