@@ -1,11 +1,11 @@
 import {createBaseService} from '~/services/baseService';
-import type Cash from "~/models/cash/Cash";
+import type {CashReserve} from "~/models/cashReserve/CashReserve";
 
-export function useCashService() {
+export function useCashReserveService() {
     const { $api } = useNuxtApp();
     if (!$api) {
         throw new Error('API service is not available');
     }
 
-    return createBaseService<Cash>($api, 'cashes/');
+    return createBaseService<CashReserve>($api, 'cash-reserves/');
 }
