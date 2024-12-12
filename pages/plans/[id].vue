@@ -1,20 +1,17 @@
 <template>
-<!--  <ClientOnly>-->
-<!--    <Teleport to="#right-side-bar">-->
-<!--      &lt;!&ndash;      <PlanSummary :plan="plan"></PlanSummary>&ndash;&gt;-->
-<!--    </Teleport>-->
-<!--  </ClientOnly>-->
-<!--  <ClientOnly>-->
-<!--    <Teleport to="#left-side-bar">-->
-<!--      <PlanProjection :planStates="planStates"></PlanProjection>-->
-<!--    </Teleport>-->
-<!--  </ClientOnly>-->
+    <ClientOnly>
+      <Teleport to="#right-side-bar">
+              <PlanSummary v-if="plan" :plan="plan"></PlanSummary>
+      </Teleport>
+    </ClientOnly>
+<!--    <ClientOnly>-->
+  <!--    <Teleport to="#left-side-bar">-->
+  <!--      <PlanProjection :planStates="planStates"></PlanProjection>-->
+  <!--    </Teleport>-->
+  <!--  </ClientOnly>-->
   <div v-if="plan" class="col-span-4 space-y-6">
     <!-- Debts -->
     <CommonCard class="bg-skin-muted space-y-6">
-      <nav class="flex align-middle gap-6">
-        <h2 class="text-3xl">Debt(s)</h2>
-      </nav>
       <DebtList v-if="plan.debts" :debts="plan.debts"
                 @createDebt="handleCreateDebt"
                 @updateDebt="handleUpdateDebt"
@@ -22,83 +19,44 @@
       ></DebtList>
     </CommonCard>
     <CommonCard class="space-y-6 bg-skin-muted">
-
       <IncomeList v-if="plan.incomes" :incomes="plan.incomes"
                   @createIncome="handleCreateIncome"
                   @updateIncome="handleUpdateIncome"
                   @deleteIncome="handleDeleteIncome"
-      ></IncomeList>
+      />
     </CommonCard>
     <CommonCard class="space-y-6 bg-skin-muted">
 
       <ExpenseList v-if="plan.expenses" :expenses="plan.expenses"
-                  @createExpense="handleCreateExpense"
-                  @updateExpense="handleUpdateExpense"
-                  @deleteExpense="handleDeleteExpense"
-      ></ExpenseList>
+                   @createExpense="handleCreateExpense"
+                   @updateExpense="handleUpdateExpense"
+                   @deleteExpense="handleDeleteExpense"
+      />
     </CommonCard>
+    <CommonCard class="space-y-6 bg-skin-muted">
 
-<!--    &lt;!&ndash; Expenses &ndash;&gt;-->
-<!--    <CommonCard class="space-y-6 bg-skin-muted">-->
-<!--      <div class="flex align-middle gap-6">-->
-<!--        <h2 class="text-3xl">Expenses</h2>-->
-<!--        <NButton iconLeft="mdi:add" @click="handleAddExpense">Add Expense</NButton>-->
-<!--      </div>-->
-<!--      <CommonList>-->
-<!--        <PlanExpense-->
-<!--            v-for="(expense, index) in plan.expenses"-->
-<!--            :key="index"-->
-<!--            :expenseIndex="index"-->
-<!--            :expense="expense"-->
-<!--            @deleteExpense="handleDeleteExpense"-->
-<!--        />-->
-<!--      </CommonList>-->
-<!--    </CommonCard>-->
+      <CashReserveList v-if="plan.cashReserves" :cashReserves="plan.cashReserves"
+                @createCashReserve="handleCreateCashReserve"
+                @updateCashReserve="handleUpdateCashReserve"
+                @deleteCashReserve="handleDeleteCashReserve"
+      />
+    </CommonCard>
+    <CommonCard class="space-y-6 bg-skin-muted">
 
-<!--    &lt;!&ndash; Cash Maintenance &ndash;&gt;-->
-<!--    <CommonCard class="bg-skin-muted space-y-6">-->
-<!--      <nav class="flex align-middle gap-6">-->
-<!--        <h2 class="text-3xl">Cash to Maintain</h2>-->
-<!--      </nav>-->
-<!--      <Cash-->
-<!--          :cash="plan.cashes"-->
-<!--          :showAdvancedOptions="showAdvancedOptions"-->
-<!--      ></Cash>-->
-<!--    </CommonCard>-->
+      <BrokerageInvestmentList v-if="plan.brokerageInvestments" :brokerageInvestments="plan.brokerageInvestments"
+                               @createBrokerageInvestment="handleCreateBrokerageInvestment"
+                               @updateBrokerageInvestment="handleUpdateBrokerageInvestment"
+                               @deleteBrokerageInvestment="handleDeleteBrokerageInvestment"
+      />
+    </CommonCard>
+    <CommonCard class="space-y-6 bg-skin-muted">
 
-
-<!--    <CommonCard class="bg-skin-muted space-y-6">-->
-<!--      <nav class="flex align-middle gap-6">-->
-<!--        <h2 class="text-3xl">Tax Deferred Investments</h2>-->
-<!--        <NButton @click="handleAddTaxDeferredInvestment">Add Tax Deferred Investment</NButton>-->
-<!--      </nav>-->
-<!--      <CommonList>-->
-<!--        <PlanTaxDeferredInvestment-->
-<!--            v-for="(investment, index) in plan.taxDeferredInvestments"-->
-<!--            :investment="investment"-->
-<!--            :key="index"-->
-<!--            :investmentIndex="index"-->
-<!--            :showAdvancedOptions="showAdvancedOptions"-->
-<!--            @deleteInvestment="handleDeleteTaxDeferredInvestment"-->
-<!--        />-->
-<!--      </CommonList>-->
-<!--    </CommonCard>-->
-<!--    <CommonCard class="bg-skin-muted space-y-6">-->
-<!--      <nav class="flex align-middle gap-6">-->
-<!--        <h2 class="text-3xl">Brokerage Investments</h2>-->
-<!--        <NButton @click="handleAddBrokerageInvestment">Add Brokerage Investment</NButton>-->
-<!--      </nav>-->
-<!--      <CommonList>-->
-<!--        <PlanBrokerageInvestment-->
-<!--            v-for="(investment, index) in plan.brokerageInvestments"-->
-<!--            :investment="investment"-->
-<!--            :key="index"-->
-<!--            :investmentIndex="index"-->
-<!--            :showAdvancedOptions="showAdvancedOptions"-->
-<!--            @deleteInvestment="handleDeleteBrokerageInvestment"-->
-<!--        />-->
-<!--      </CommonList>-->
-<!--    </CommonCard>-->
+      <IraInvestmentList v-if="plan.iraInvestments" :iraInvestments="plan.iraInvestments"
+                         @createIraInvestment="handleCreateIraInvestment"
+                         @updateIraInvestment="handleUpdateIraInvestment"
+                         @deleteIraInvestment="handleDeleteIraInvestment"
+      />
+    </CommonCard>
   </div>
 </template>
 <script setup lang="ts">
@@ -108,15 +66,19 @@ import {defaultDebtFactory} from "~/models/debt/DebtFactories";
 import type {Debt} from "~/models/debt/Debt";
 import type {Expense} from "~/models/expense/Expense"
 import type {Plan} from "~/models/plan/Plan";
-import {defaultCashFactory} from "~/models/cash/CashFactories";
-import type {Cash} from "~/models/cash/Cash";
-import {defaultBrokerageInvestmentFactory} from "~/models/brokerage/BrokerageInvestmentFactories";
+import {defaultCashReserveFactory} from "~/models/cashReserve/CashReserveFactories";
+import type {CashReserve} from "~/models/cashReserve/CashReserve";
+import {defaultBrokerageInvestmentFactory} from "~/models/brokerageInvestment/BrokerageInvestmentFactories";
 import {defaultIncomeFactory} from "~/models/income/IncomeFactories";
 import {defaultExpenseFactory} from "~/models/expense/ExpenseFactories";
+import {defaultTaxDeferredInvestmentFactory} from "~/models/taxDeferredInvestment/TaxDeferredInvestmentFactories";
+import type {IraInvestment} from "~/models/iraInvestment/IraInvestment";
+import type {TaxDeferredInvestment} from "~/models/taxDeferredInvestment/TaxDeferredInvestment";
+import {defaultIraInvestmentFactory} from "~/models/iraInvestment/IraInvestmentFactories";
 
 const planService = usePlanService()
 const debtService = useDebtService()
-const cashService = useCashService()
+const cashReserveService = useCashReserveService()
 const expenseService = useExpenseService()
 const incomeService = useIncomeService()
 const iraInvestmentService = useIraInvestmentService()
@@ -137,7 +99,7 @@ useHead({
 async function handleCreateDebt() {
   const debtConfig = defaultDebtFactory();
   const debt = await debtService.create(debtConfig)
-  await planService.addRelatedModel(planId, 'taxDeferredInvestment', debt.id)
+  await planService.addRelatedModel(planId, 'debts', debt.id)
   await loadPlan();
 }
 
@@ -152,21 +114,22 @@ async function handleUpdateDebt(debt: Debt) {
   await loadPlan();
 }
 
-async function handleCreateCash() {
-  const cashConfig = defaultCashFactory();
-  const cash = await cashService.create(cashConfig)
-  await planService.addRelatedModel(planId, 'cashes', cash.id)
+async function handleCreateCashReserve() {
+  const cashReserveConfig = defaultCashReserveFactory();
+  const cashReserve = await cashReserveService.create(cashReserveConfig)
+  await planService.addRelatedModel(planId, 'cash_reserves', cashReserve.id)
   await loadPlan();
 }
 
-async function handleDeleteCash(index: number) {
-  await cashService.delete(index)
+async function handleDeleteCashReserve(index: number) {
+  console.log(index)
+  await cashReserveService.delete(index)
   await loadPlan();
 }
 
-async function handleUpdateCash(cash: Cash) {
-  assertDefined(cash.id, 'cash.id')
-  await cashService.update(cash.id, cash)
+async function handleUpdateCashReserve(cashReserve: CashReserve) {
+  assertDefined(cashReserve.id, 'cashReserve.id')
+  await cashReserveService.update(cashReserve.id, cashReserve)
   await loadPlan();
 }
 
@@ -208,8 +171,8 @@ async function handleUpdateIncome(income: Income) {
 
 async function handleCreateBrokerageInvestment() {
   const brokerageInvestmentConfig = defaultBrokerageInvestmentFactory();
-  await brokerageInvestmentService.create(brokerageInvestmentConfig)
-  await planService.addRelatedModel(planId, 'brokerageInvestments', brokerageInvestment.id)
+  const brokerageInvestment = await brokerageInvestmentService.create(brokerageInvestmentConfig)
+  await planService.addRelatedModel(planId, 'brokerage_investments', brokerageInvestment.id)
   await loadPlan();
 }
 
@@ -226,8 +189,8 @@ async function handleUpdateBrokerageInvestment(brokerageInvestment: BrokerageInv
 
 async function handleCreateIraInvestment() {
   const iraInvestmentConfig = defaultIraInvestmentFactory();
-  await iraInvestmentService.create(iraInvestmentConfig)
-  await planService.addRelatedModel(planId, 'iraInvestments', iraInvestment.id)
+  const iraInvestment = await iraInvestmentService.create(iraInvestmentConfig)
+  await planService.addRelatedModel(planId, 'ira_investments', iraInvestment.id)
   await loadPlan();
 }
 
@@ -237,15 +200,14 @@ async function handleDeleteIraInvestment(index: number) {
 }
 
 async function handleUpdateIraInvestment(iraInvestment: IraInvestment) {
-  assertDefined(iraInvestment.id, 'iraInvestment.id')
   await iraInvestmentService.update(iraInvestment.id, iraInvestment)
   await loadPlan();
 }
 
 async function handleCreateTaxDeferredInvestment() {
   const taxDeferredInvestmentConfig = defaultTaxDeferredInvestmentFactory();
-  await taxDeferredInvestmentService.create(taxDeferredInvestmentConfig)
-  await planService.addRelatedModel(planId, 'taxDeferredInvestments', taxDeferredInvestment.id)
+  const taxDeferredInvestment = await taxDeferredInvestmentService.create(taxDeferredInvestmentConfig)
+  await planService.addRelatedModel(planId, 'tax_deferred_investments', taxDeferredInvestment.id)
   await loadPlan();
 }
 
@@ -255,7 +217,6 @@ async function handleDeleteTaxDeferredInvestment(index: number) {
 }
 
 async function handleUpdateTaxDeferredInvestment(taxDeferredInvestment: TaxDeferredInvestment) {
-  assertDefined(taxDeferredInvestment.id, 'taxDeferredInvestment.id')
   await taxDeferredInvestmentService.update(taxDeferredInvestment.id, taxDeferredInvestment)
   await loadPlan();
 }
