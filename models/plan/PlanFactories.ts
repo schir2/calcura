@@ -31,7 +31,7 @@ export function defaultPlanFactory(): PlanPartial {
         allowNegativeDisposableIncome: DEFAULT_ALLOW_NEGATIVE_DISPOSABLE_INCOME,
         incomes: [],
         expenses: [],
-        cashes: [],
+        cashReserves: [],
         debts: [],
         taxDeferredInvestments: [],
         brokerageInvestments: []
