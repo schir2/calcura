@@ -1,4 +1,6 @@
 <template>
+
+  <h2 class="text-3xl">IRA(s)</h2>
   <NButton @click="handleCreateIraInvestment()">Add</NButton>
   <div class="container">
     <IraInvestment v-for="(iraInvestment, index) in iraInvestments" :iraInvestment="iraInvestment" :key="iraInvestment.id"
