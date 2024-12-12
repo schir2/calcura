@@ -8,7 +8,7 @@ import type {IncomeTaxStrategy} from "~/models/tax/TaxConfig";
 import type {
     ExpensesGrowthStrategy, GrowthStrategy,
     InflationGrowthStrategy,
-    InvestmentGrowthApplicationStrategy, RetirementStrategy
+    GrowthApplicationStrategy, RetirementStrategy
 } from "~/models/plan/Plan";
 
 export default interface IForm {
@@ -19,7 +19,7 @@ export default interface IForm {
 
     /* Extra Settings */
     allowNegativeDisposableIncome: 'none' | 'minimum_only' | 'full';
-    investmentGrowthStrategy: InvestmentGrowthApplicationStrategy
+    investmentGrowthStrategy: GrowthApplicationStrategy
 
     /* Retirement Strategies */
     retirementStrategy: RetirementStrategy;
@@ -28,7 +28,7 @@ export default interface IForm {
     retirementAge: number;
     retirementSavingsAmount: number;
 
-    cash: number;
+    cashReserve: number;
 
     /* Income */
     incomePreTaxed: number;
