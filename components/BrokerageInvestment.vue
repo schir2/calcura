@@ -27,7 +27,7 @@
 <script setup lang="ts">
 import {useEntityManager} from '~/composables/useEntityManager';
 import {brokerageInvestmentFields} from '~/forms/brokerageInvestmentForm';
-import type {BrokerageInvestment} from '~/models/brokerage/BrokerageInvestment';
+import type {BrokerageInvestment} from '~/models/brokerageInvestment/BrokerageInvestment';
 
 interface Props {
   brokerageInvestment: BrokerageInvestment;
