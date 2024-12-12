@@ -6,24 +6,33 @@ import {getIraLimit, getTaxDeferredContributionLimit, getTaxDeferredElectiveCont
 import type Command from "~/models/common/Command";
 import IncomeManager from "~/models/income/IncomeManager";
 import type {IncomeType} from "~/models/income/Income";
-import BrokerageInvestmentManager from "~/models/brokerage/BrokerageInvestmentManager";
+import BrokerageInvestmentManager from "~/models/brokerageInvestment/BrokerageInvestmentManager";
 import ExpenseManager from "~/models/expense/ExpenseManager";
+import IraInvestmentManager from "~/models/iraInvestment/IraInvestmentManager";
+import CashReserveManager from "~/models/cashReserve/CashReserveManager";
+import TaxDeferredInvestmentManager from "~/models/taxDeferredInvestment/TaxDeferredInvestmentManager";
 
 export default class PlanManager extends ManagerBase<Plan, PlanState> {
     managers: {
-        debtManagers: DebtManager[]
         incomeManagers: IncomeManager[]
-        brokerageInvestmentManagers: BrokerageInvestmentManager[]
+        cashReserveManagers: CashReserveManager[]
         expenseManagers: ExpenseManager[]
+        debtManagers: DebtManager[]
+        brokerageInvestmentManagers: BrokerageInvestmentManager[]
+        iraInvestmentManagers: IraInvestmentManager[]
+        taxDeferredManagers: TaxDeferredInvestmentManager[]
     }
 
     constructor(config: Plan) {
         super(config)
         this.managers = {
-            debtManagers: config.debts.map((debtConfig) => new DebtManager(debtConfig)),
-            incomeManagers: config.incomes.map((incomeConfig) => new IncomeManager(incomeConfig)),
-            brokerageInvestmentManagers: config.brokerageInvestments.map((brokerageInvestmentConfig) => new BrokerageInvestmentManager(brokerageInvestmentConfig)),
-            expenseManagers: config.expenses.map((expenseConfig) => new ExpenseManager(expenseConfig)),
+            incomeManagers: config.incomes.map((income) => new IncomeManager(income)),
+            cashReserveManagers: config.cashReserves.map((cashReserve) => new CashReserveManager(cashReserve)),
+            expenseManagers: config.expenses.map((expense) => new ExpenseManager(expense)),
+            debtManagers: config.debts.map((debt) => new DebtManager(debt)),
+            brokerageInvestmentManagers: config.brokerageInvestments.map((brokerageInvestment) => new BrokerageInvestmentManager(brokerageInvestment)),
+            iraInvestmentManagers: config.iraInvestments.map((iraInvestment) => new IraInvestmentManager(iraInvestment)),
+            taxDeferredManagers: config.taxDeferredInvestments.map((taxDeferredInvestment) => new TaxDeferredInvestmentManager(taxDeferredInvestment))
         }
     }
 
@@ -44,7 +53,8 @@ export default class PlanManager extends ManagerBase<Plan, PlanState> {
             allowNegativeDisposableIncome: this.config.allowNegativeDisposableIncome,
             processed: false,
             retirementIncomeProjected: 0,
-            retired: false
+            retired: false,
+            growthApplicationStrategy: this.config.growthApplicationStrategy
         }
     }
 
@@ -62,13 +72,10 @@ export default class PlanManager extends ManagerBase<Plan, PlanState> {
     }
 
     getCurrentDebt(): number {
-        return this.managers.debtManagers.reduce((total, debtManager)=> total + debtManager.getCurrentState().principalStartOfYear, 0)
+        return this.managers.debtManagers.reduce((total, debtManager) => total + debtManager.getCurrentState().principalStartOfYear, 0)
     }
 
     getGrossIncome() {
-        this.managers.incomeManagers.forEach((income) => {
-            console.log(JSON.stringify(income.getConfig().name));
-        });
         return this.managers.incomeManagers.reduce((grossIncome, incomeManager) => incomeManager.getCurrentState().grossIncome, 0)
     }
 
