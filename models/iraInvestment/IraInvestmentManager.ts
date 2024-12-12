@@ -61,17 +61,17 @@ export default class IraInvestmentManager extends ManagerBase<IraInvestment, Ira
 
     processImplementation(planState: PlanState): PlanState {
         const currentState = this.getCurrentState()
-        const contribution = this.getContribution(planState.iraLimit, planState.taxableIncome, planState.grossIncome, planState.allowNegativeDisposableIncome)
-        const taxableIncome = planState.taxableIncome - contribution
+        const contribution = this.getContribution(999999, planState.taxedIncome, planState.taxableIncome, planState.allowNegativeDisposableIncome)
+        const balanceEndOfYear = currentState.balanceStartOfYear + contribution
         this.updateCurrentState(
             {
                 ...currentState,
-
+                contribution: contribution,
+                balanceEndOfYear: balanceEndOfYear,
             }
         )
         return {
             ...planState,
-            taxableIncome: taxableIncome
         }
     }
 }
