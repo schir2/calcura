@@ -9,10 +9,10 @@
     <Form>
       <section>
         <div class="grid grid-cols-6 gap-3">
-          <FormField :field="fieldMetadata.name" :model="income"></FormField>
-          <FormField :field="fieldMetadata.grossIncome" :model="income"></FormField>
-          <FormField :field="fieldMetadata.growthRate" :model="income"></FormField>
-          <FormSelect :field="fieldMetadata.incomeType" :model="income"></FormSelect>
+          <FormField :field="fieldMetadata.name" :model="currentIncomeConfig"></FormField>
+          <FormField :field="fieldMetadata.grossIncome" :model="currentIncomeConfig"></FormField>
+          <FormField :field="fieldMetadata.growthRate" :model="currentIncomeConfig"></FormField>
+          <FormSelect :field="fieldMetadata.incomeType" :model="currentIncomeConfig"></FormSelect>
         </div>
       </section>
     </Form>
