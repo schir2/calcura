@@ -1,4 +1,6 @@
 <template>
+
+  <h2 class="text-3xl">Expense(s)</h2>
   <NButton @click="handleCreateExpense()">Add</NButton>
   <div class="container">
     <Expense v-for="(expense, index) in expenses" :expense="expense" :key="expense.id"
