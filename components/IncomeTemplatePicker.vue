@@ -1,6 +1,6 @@
 <template>
   <n-thing>
-    <IncomeModal
+    <IncomeCreateModal
         v-if="isModalOpen && activeIncomeTemplate"
         :incomeTemplate="activeIncomeTemplate"
         @save="handleSaveModal"

@@ -14,9 +14,10 @@
     <CommonCard class="bg-skin-muted space-y-6">
       <CommonCard class="space-y-6 bg-skin-muted">
         <IncomeList v-if="plan.incomes" :incomes="plan.incomes"
-                    @createIncome="handleCreateIncome"
-                    @updateIncome="handleUpdateIncome"
-                    @deleteIncome="handleDeleteIncome"
+                    @create="handleCreateIncome"
+                    @update="handleUpdateIncome"
+                    @delete="handleDeleteIncome"
+                    @remove="handleRemoveIncome"
         />
       </CommonCard>
       <DebtList v-if="plan.debts" :debts="plan.debts"
@@ -70,13 +71,13 @@ import type {Plan} from "~/models/plan/Plan";
 import {defaultCashReserveFactory} from "~/models/cashReserve/CashReserveFactories";
 import type {CashReserve} from "~/models/cashReserve/CashReserve";
 import {defaultBrokerageInvestmentFactory} from "~/models/brokerageInvestment/BrokerageInvestmentFactories";
-import {defaultIncomeFactory} from "~/models/income/IncomeFactories";
 import {defaultExpenseFactory} from "~/models/expense/ExpenseFactories";
 import {defaultTaxDeferredInvestmentFactory} from "~/models/taxDeferredInvestment/TaxDeferredInvestmentFactories";
 import type {IraInvestment} from "~/models/iraInvestment/IraInvestment";
 import type {TaxDeferredInvestment} from "~/models/taxDeferredInvestment/TaxDeferredInvestment";
 import {defaultIraInvestmentFactory} from "~/models/iraInvestment/IraInvestmentFactories";
 import type {IncomeTemplate} from "~/models/income/IncomeTemplate";
+import type {Income} from "~/models/income/Income";
 
 const planService = usePlanService()
 const debtService = useDebtService()
@@ -158,14 +159,18 @@ async function handleCreateIncome(incomeTemplate: IncomeTemplate) {
   await loadPlan();
 }
 
-async function handleDeleteIncome(index: number) {
-  await incomeService.delete(index)
+async function handleDeleteIncome(income: Income) {
+  await incomeService.delete(income.id)
   await loadPlan();
 }
 
 async function handleUpdateIncome(income: Income) {
-  assertDefined(income.id, 'income.id')
   await incomeService.update(income.id, income)
+  await loadPlan();
+}
+
+async function handleRemoveIncome(income: Income) {
+  await planService.removeRelatedModel(planId, 'incomes', income.id)
   await loadPlan();
 }
 

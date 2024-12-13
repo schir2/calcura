@@ -1,6 +1,6 @@
 <template>
   <n-modal :show="showModal">
-    <n-card class="w-96" role="dialog" :bordered="true" aria-modal="true">
+    <n-card class="max-w-xl" role="dialog" :bordered="true" aria-modal="true">
       <template #header>
         <h3 class="text-2xl">Income {{ incomeTemplate.id }}: {{ incomeTemplateRef.name }}</h3>
       </template>
@@ -9,6 +9,7 @@
           <section>
             <FormField :field="fieldMetadata.name" :model="incomeTemplateRef"></FormField>
             <FormSelect :field="fieldMetadata.incomeType" :model="incomeTemplateRef"></FormSelect>
+            <FormSelect :field="fieldMetadata.frequency" :model="incomeTemplateRef"></FormSelect>
             <FormField :field="fieldMetadata.grossIncome" :model="incomeTemplateRef"></FormField>
             <FormField :field="fieldMetadata.growthRate" :model="incomeTemplateRef"></FormField>
           </section>

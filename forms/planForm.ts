@@ -56,15 +56,6 @@ export const planFields: Record<string, FieldData> = {
         rules: yup.number().min(2000),
 
     },
-    taxRate: {
-        name: "taxRate",
-        label: 'Tax Rate',
-        placeholder: 'Enter Tax Rate',
-        type: 'number',
-        defaultValue: DEFAULT_TAX_STRATEGY,
-        rules: yup.number().min(1).max(120)
-
-    },
     lifeExpectancy: {
         name: "lifeExpectancy",
         label: "Life Expectancy",

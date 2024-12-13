@@ -30,6 +30,23 @@ export function usePlanService() {
                     }
                 }
             )
-        }
+        },
+        async removeRelatedModel(
+            planId: number | string,
+            relatedModel: PlanRelatedModel,
+            relatedId: number | string
+        ): Promise<Plan> {
+            return await $api(
+                `plans/${planId}/manage_related_model/`,
+                {
+                    method: 'POST',
+                    body: {
+                        related_model: relatedModel,
+                        related_id: relatedId,
+                        action: 'remove',
+                    }
+                }
+            )
+        },
     })
 }

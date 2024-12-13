@@ -2,12 +2,10 @@
 
   <h2 class="text-3xl">Income(s)</h2>
   <IncomeTemplatePicker  @save="handleCreateIncome" />
-  <div class="container">
-    <NList>
-      <Income v-for="(income, index) in incomes" :income="income" :key="income.id"
-              @deleteIncome="handleDeleteIncome" @updateIncome="handleUpdateIncome"></Income>
-    </NList>
-  </div>
+  <n-list>
+      <IncomeListItem v-for="(income, index) in incomes" :income="income" :key="income.id"
+              @delete="handleDeleteIncome" @update="handleUpdateIncome" @remove="handleRemoveIncome"></IncomeListItem>
+  </n-list>
 
 </template>
 <script lang="ts" setup>
@@ -20,18 +18,22 @@ interface Props {
 
 const props = defineProps<Props>()
 
-const emit = defineEmits(['deleteIncome', 'updateIncome', 'createIncome']);
+const emit = defineEmits(['delete', 'update', 'create', 'remove']);
 
-function handleDeleteIncome(incomeId: number) {
-  emit('deleteIncome', incomeId);
+function handleDeleteIncome(income: Income) {
+  emit('delete', income);
 }
 
 function handleCreateIncome(incomeTemplate: IncomeTemplate) {
-  emit('createIncome', incomeTemplate);
+  emit('create', incomeTemplate);
 }
 
 function handleUpdateIncome(income: Income) {
-  emit('updateIncome', income);
+  emit('update', income);
+}
+
+function handleRemoveIncome(income: Income) {
+  emit('remove', income)
 }
 
 </script>

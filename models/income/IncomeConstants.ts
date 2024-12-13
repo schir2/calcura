@@ -1,7 +1,8 @@
-import type {IncomeType} from "~/models/income/Income";
+import type {IncomeFrequency, IncomeType} from "~/models/income/Income";
 import type {GrowthStrategy} from "~/models/plan/Plan";
 
 export const DEFAULT_INCOME_NAME = 'Ordinary Income';
+export const DEFAULT_INCOME_FREQUENCY: IncomeFrequency = 'annual'
 export const DEFAULT_GROSS_INCOME = 37585;
 export const DEFAULT_GROWTH_RATE = 1.4;
 export const DEFAULT_INCOME_TYPE: IncomeType = 'ordinary';

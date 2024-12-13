@@ -1,8 +1,18 @@
 import * as yup from "yup";
 import type {FieldData} from "~/interfaces/FieldData";
 
-import {DEFAULT_GROSS_INCOME, DEFAULT_GROWTH_RATE, DEFAULT_INCOME_NAME, MAX_GROWTH_RATE, MAX_NAME_LENGTH, MIN_GROSS_INCOME, MIN_GROWTH_RATE, MIN_NAME_LENGTH,} from '~/models/income/IncomeConstants';
-import type Income from "~/models/income/Income";
+import {
+    DEFAULT_GROSS_INCOME,
+    DEFAULT_GROWTH_RATE,
+    DEFAULT_INCOME_FREQUENCY,
+    DEFAULT_INCOME_NAME,
+    MAX_GROWTH_RATE,
+    MAX_NAME_LENGTH,
+    MIN_GROSS_INCOME,
+    MIN_GROWTH_RATE,
+    MIN_NAME_LENGTH,
+} from '~/models/income/IncomeConstants';
+import type {Income} from "~/models/income/Income";
 
 export const incomeFields: Record<keyof Income, FieldData> = {
     name: {
@@ -17,6 +27,21 @@ export const incomeFields: Record<keyof Income, FieldData> = {
             .required('Name is required')
             .min(MIN_NAME_LENGTH, `Name must be at least ${MIN_NAME_LENGTH} characters long.`)
             .max(MAX_NAME_LENGTH, `Name must be at most ${MAX_NAME_LENGTH} characters long.`),
+    },
+    frequency: {
+        name:'frequency',
+        label: 'Frequency',
+        placeholder: 'Enter income frequency',
+        helpText:'How often do you receive this income?',
+        type: 'text',
+        defaultValue: DEFAULT_INCOME_FREQUENCY,
+        options: [
+            {label: 'Weekly', value: 'weekly',},
+            {label: 'Biweekly', value: 'biweekly',},
+            {label: 'Monthly', value: 'monthly',},
+            {label: 'Quarterly', value: 'quarterly',},
+            {label: 'Annual', value: 'annual',},
+        ]
     },
     grossIncome: {
         name: 'grossIncome',
