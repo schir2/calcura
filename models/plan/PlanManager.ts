@@ -11,6 +11,7 @@ import ExpenseManager from "~/models/expense/ExpenseManager";
 import IraInvestmentManager from "~/models/iraInvestment/IraInvestmentManager";
 import CashReserveManager from "~/models/cashReserve/CashReserveManager";
 import TaxDeferredInvestmentManager from "~/models/taxDeferredInvestment/TaxDeferredInvestmentManager";
+import type {ExpenseType} from "~/models/expense/Expense";
 
 export default class PlanManager extends ManagerBase<Plan, PlanState> {
     managers: {
@@ -159,5 +160,17 @@ export default class PlanManager extends ManagerBase<Plan, PlanState> {
             incomeTypes[incomeManager.getConfig().incomeType] = incomeState.grossIncome
         })
         return incomeTypes
+    }
+
+    getExpenseSummary(): Record<ExpenseType, number> {
+        let expenseTypes: Record<ExpenseType, number> = {
+            fixed: 0,
+            variable: 0,
+        }
+        this.config.expenses.forEach((expense) => {
+            expenseTypes[expense.type] += expense.amount
+        })
+        return expenseTypes
+
     }
 }

@@ -2,9 +2,12 @@
   <CommonCard color="secondary">
     <div class="flex justify-between align-middle">
       <h3 class="text-2xl">Income {{ income.id }}: {{ currentIncomeConfig.name }}</h3>
-      <NButton iconLeft="mdi:delete" @click="deleteIncome">Delete</NButton>
-      <NButton v-if="isModified" iconLeft="mdi:history" @click="resetIncome">Reset</NButton>
-      <NButton v-if="isModified" iconLeft="mdi:content-save" @click="updateIncome">Save</NButton>
+
+      <n-button-group size="small">
+        <NButton secondary round v-if="isModified" type="success" @click="updateIncome"><template #icon><Icon name="mdi:content-save"/></template>Save</NButton>
+        <NButton secondary round v-if="isModified" type="warning" @click="resetIncome"><template #icon><Icon name="mdi:history"/></template>Reset</NButton>
+        <NButton secondary round type="error" @click="deleteIncome"><template #icon><Icon name="mdi:delete"/></template>Delete</NButton>
+      </n-button-group>
     </div>
     <Form>
       <section>

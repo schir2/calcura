@@ -5,7 +5,7 @@
       <li v-for="(expense, index) in expenses" :Key="index" class="grid grid-cols-5">
         <span class="col-span-3">{{ expense.name }}</span>
         <CommonChip class="bg-skin-success">{{ expense.type }}</CommonChip>
-        <span class="text-end">{{ expense.amount }}</span>
+        <span class="text-end">{{ getAnnualExpenseAmount(expense) }}</span>
       </li>
       <li class="grid grid-cols-2">
         <span>Total</span>
@@ -18,13 +18,16 @@
 
 <script setup lang="ts">
 
-import type Expense from "~/models/expense/Expense";
+import {type Expense} from "~/models/expense/Expense";
+import {getAnnualExpenseAmount} from "~/utils/expenseUtils";
 
 interface Props {
   expenses: Expense[]
 }
 
 const props = defineProps<Props>()
-const totalExpense = computed(() => props.expenses.reduce((total, expense) => total + expense.amount, 0))
+const totalExpense = computed(() => {
+  return props.expenses.reduce((total, expense) => total+getAnnualExpenseAmount(expense), 0)
+})
 
 </script>

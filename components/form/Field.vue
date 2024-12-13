@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="flex flex-col gap-1">
 
     <FormLabel v-if="field.label" :label="field.label"/>
     <Field v-if="field.type !== 'select'"

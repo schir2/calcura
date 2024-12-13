@@ -1,16 +1,16 @@
 export type ExpenseTrackingStrategy = 'simple' | 'itemized'
 
 export enum ExpenseType {
-    Fixed = 'Fixed',
-    Variable = 'Variable',
+    fixed = 'fixed',
+    variable = 'variable',
 }
 
-export enum Frequency {
-    Monthly = 'Monthly',
-    Weekly = 'Weekly',
-    Quarterly = 'Quarterly',
-    Annually = 'Annually',
-    OneTime = 'OneTime',
+export enum ExpenseFrequency {
+    monthly = 'monthly',
+    weekly = 'weekly',
+    quarterly = 'quarterly',
+    annually = 'annually',
+    one_time = 'one_time',
 }
 
 export interface Expense {
@@ -18,7 +18,7 @@ export interface Expense {
     name: string,
     amount: number,
     type: ExpenseType,
-    frequency: Frequency,
+    frequency: ExpenseFrequency,
     isEssential: boolean,
     isTaxDeductible: boolean,
 }

@@ -1,5 +1,5 @@
 <template>
-  <div class="flex flex-col gap-1">
+  <div>
     <FormLabel v-if="field.label" :label="field.label"/>
     <n-radio-group
         v-model:value="model[field.name]"
@@ -7,13 +7,13 @@
         :id="field.name"
         @update:value="onInput"
     >
-      <n-radio-button
+      <n-radio
           v-for="(option, index) in formattedOptions"
           :key="index"
           :value="option.value"
       >
         {{ option.label }}
-      </n-radio-button>
+      </n-radio>
     </n-radio-group>
   </div>
 </template>

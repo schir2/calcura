@@ -2,37 +2,33 @@
 <template>
   <CommonCard color="secondary">
     <div class="flex justify-between align-middle">
-      <h3 class="text-2xl">Cash Reserve: {{ currentCashReserveConfig.name }}</h3>
-      <NButton iconLeft="mdi:delete" @click="deleteCashReserve">Delete</NButton>
-      <NButton v-if="isModified" iconLeft="mdi:history" @click="resetCashReserve">Reset</NButton>
-      <NButton v-if="isModified" iconLeft="mdi:content-save" @click="updateCashReserve">Save</NButton>
+      <h3 class="text-lg">Cash Reserve</h3>
+      <n-button-group size="small">
+        <NButton secondary round v-if="isModified" type="success" @click="updateCashReserve"><template #icon><Icon name="mdi:content-save"/></template>Save</NButton>
+        <NButton secondary round v-if="isModified" type="warning" @click="resetCashReserve"><template #icon><Icon name="mdi:history"/></template>Reset</NButton>
+        <NButton secondary round type="error" @click="deleteCashReserve"><template #icon><Icon name="mdi:delete"/></template>Delete</NButton>
+      </n-button-group>
     </div>
     <Form>
-      <section>
-        <div class="grid grid-cols-3 gap-3">
           <FormField :field="fieldMetadata.name" :model="currentCashReserveConfig"></FormField>
           <FormField :field="fieldMetadata.initialAmount" :model="currentCashReserveConfig"></FormField>
           <FormSelect :field="fieldMetadata.cashReserveStrategy" :model="currentCashReserveConfig"></FormSelect>
-          <FormField :field="fieldMetadata.reserveAmount" :model="currentCashReserveConfig"></FormField>
-          <FormField :field="fieldMetadata.reserveMonths" :model="currentCashReserveConfig"></FormField>
           <FormField
-              v-if="currentCashReserveConfig.cashReserveStrategy === 'fixedCashReserve'"
+              v-if="currentCashReserveConfig.cashReserveStrategy === 'fixed'"
               :field="fieldMetadata.reserveAmount"
               :model="currentCashReserveConfig"></FormField>
           <FormField
-              v-if="currentCashReserveConfig.cashReserveStrategy === 'variableCashReserve'"
+              v-if="currentCashReserveConfig.cashReserveStrategy === 'variable'"
               :field="fieldMetadata.reserveMonths"
               :model="currentCashReserveConfig"></FormField>
-        </div>
-      </section>
     </Form>
   </CommonCard>
 
 </template>
 <script setup lang="ts">
-import { useEntityManager } from '~/composables/useEntityManager';
-import { cashReserveFields } from '~/forms/cashReserveForm';
-import type { CashReserve } from '~/models/cashReserve/CashReserve';
+import {useEntityManager} from '~/composables/useEntityManager';
+import {cashReserveFields} from '~/forms/cashReserveForm';
+import type {CashReserve} from '~/models/cashReserve/CashReserve';
 
 interface Props {
   cashReserve: CashReserve;

@@ -1,6 +1,6 @@
 import * as yup from "yup";
 import type {ExpensePartial} from "~/models/expense/Expense";
-import {ExpenseType, Frequency} from "~/models/expense/Expense";
+import {ExpenseType, ExpenseFrequency} from "~/models/expense/Expense";
 import type {FieldData} from "~/interfaces/FieldData";
 import {EXPENSE_NAME_MAX_LENGTH, EXPENSE_NAME_MIN_LENGTH, MAX_EXPENSE_AMOUNT, MIN_EXPENSE_AMOUNT,} from "~/models/expense/ExpenseConstants";
 
@@ -37,13 +37,13 @@ export const expenseFields: Record<keyof ExpensePartial, FieldData> = {
         placeholder: "Select type",
         helpText: "Choose whether this expense is fixed or variable.",
         type: "select",
-        defaultValue: ExpenseType.Fixed,
+        defaultValue: ExpenseType.fixed,
         rules: yup
             .mixed<ExpenseType>()
             .required("Expense type is required"),
         options: [
-            {label: "Fixed", value: ExpenseType.Fixed},
-            {label: "Variable", value: ExpenseType.Variable},
+            {label: "Fixed", value: ExpenseType.fixed},
+            {label: "Variable", value: ExpenseType.variable},
         ],
     },
     frequency: {
@@ -52,16 +52,16 @@ export const expenseFields: Record<keyof ExpensePartial, FieldData> = {
         placeholder: "Select frequency",
         helpText: "Specify how often this expense occurs.",
         type: "select",
-        defaultValue: Frequency.Annually,
+        defaultValue: ExpenseFrequency.annually,
         rules: yup
-            .mixed<Frequency>()
+            .mixed<ExpenseFrequency>()
             .required("Frequency is required"),
         options: [
-            {label: "Monthly", value: Frequency.Monthly},
-            {label: "Weekly", value: Frequency.Weekly},
-            {label: "Quarterly", value: Frequency.Quarterly},
-            {label: "Annually", value: Frequency.Annually},
-            {label: "One Time", value: Frequency.OneTime},
+            {label: "Monthly", value: ExpenseFrequency.monthly},
+            {label: "Weekly", value: ExpenseFrequency.weekly},
+            {label: "Quarterly", value: ExpenseFrequency.quarterly},
+            {label: "Annually", value: ExpenseFrequency.annually},
+            {label: "One Time", value: ExpenseFrequency.one_time},
         ],
     },
     isEssential: {

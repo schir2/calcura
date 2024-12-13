@@ -1,15 +1,33 @@
 <template>
   <Form>
     <div class="flex justify-between align-middle">
-      <h3 class="text-2xl">Expense {{ expense.id }}: {{ currentExpenseConfig.name }}</h3>
-      <NButton iconLeft="mdi:delete" @click="handleDeleteExpense">Delete</NButton>
-      <NButton v-if="isModified" iconLeft="mdi:history" @click="resetExpense">Reset</NButton>
-      <NButton v-if="isModified" iconLeft="mdi:content-save" @click="updateExpense">Save</NButton>
+      <h3 class="text-lg">Expense</h3>
+      <n-button-group size="small">
+        <NButton secondary round v-if="isModified" type="success" @click="updateExpense">
+          <template #icon>
+            <Icon name="mdi:content-save"/>
+          </template>
+          Save
+        </NButton>
+        <NButton secondary round v-if="isModified" type="warning" @click="resetExpense">
+          <template #icon>
+            <Icon name="mdi:history"/>
+          </template>
+          Reset
+        </NButton>
+        <NButton secondary round type="error" @click="deleteExpense">
+          <template #icon>
+            <Icon name="mdi:delete"/>
+          </template>
+          Delete
+        </NButton>
+      </n-button-group>
     </div>
     <CommonCard>
-      <FormField :model="expense" :field="fieldMetadata.name"></FormField>
-      <FormField :model="expense" :field="fieldMetadata.amount"></FormField>
+      <FormField :model="currentExpenseConfig" :field="fieldMetadata.name"></FormField>
       <FormSelect :model="currentExpenseConfig" :field="fieldMetadata.frequency"></FormSelect>
+      <FormField :model="currentExpenseConfig" :field="fieldMetadata.amount"></FormField>
+      {{annualAmount}}
       <FormSelect :model="currentExpenseConfig" :field="fieldMetadata.type"></FormSelect>
       <FormToggle :model="currentExpenseConfig" :field="fieldMetadata.isEssential"></FormToggle>
       <FormToggle :model="currentExpenseConfig" :field="fieldMetadata.isTaxDeductible"></FormToggle>
@@ -17,41 +35,39 @@
   </Form>
 </template>
 <script setup lang="ts">
-import {expenseFields} from "~/forms/expenseForm";
-import type {Expense} from "~/models/expense/Expense";
+import {useEntityManager} from '~/composables/useEntityManager';
+import {expenseFields} from '~/forms/expenseForm';
+import type {Expense} from '~/models/expense/Expense';
+import {getAnnualExpenseAmount} from "~/utils/expenseUtils";
 
 interface Props {
-  expense: Expense
+  expense: Expense;
   showAdvancedOptions?: boolean;
 }
 
-const {showAdvancedOptions = false, expense} = defineProps<Props>()
-const fieldMetadata = expenseFields
+const {showAdvancedOptions = false, expense} = defineProps<Props>();
+const fieldMetadata = expenseFields;
 
 const emit = defineEmits(['deleteExpense', 'updateExpense']);
 
-function handleDeleteExpense() {
-  assertDefined(expense.id, 'expenseId')
-  emit('deleteExpense', expense.id)
-}
+const {
+  currentConfig: currentExpenseConfig,
+  isModified,
+  resetEntity: resetExpense,
+  deleteEntity: deleteExpense,
+  updateEntity: updateExpense
+} = useEntityManager<Expense>(expense, emit, 'expense');
 
-function updateExpense() {
-  assertDefined(expense.id, 'expenseId')
-  emit('updateExpense', expense)
-}
+const annualAmount = computed(() =>{
+  return getAnnualExpenseAmount(currentExpenseConfig)
+})
 
-const currentExpenseConfig = reactive({...expense});
-const isModified = computed(() =>
-    JSON.stringify(currentExpenseConfig) !== JSON.stringify(expense)
-);
+import type {NumberAnimationInst} from 'naive-ui';
+const numberAnimationInstRef = ref<NumberAnimationInst | null>(null)
 
-function resetExpense() {
-  Object.assign(currentExpenseConfig, {...expense});
-}
-
-function applyAdvancedOptions(advancedOptions: boolean) {
-  return advancedOptions ? 'grid grid-cols-7 gap-3' : ''
-}
-
+watch(() => currentExpenseConfig, (expnese) => {
+  numberAnimationInstRef.value = getAnnualExpenseAmount(expnese);
+  // TODO FInish this animation
+});
 
 </script>

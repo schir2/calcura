@@ -1,10 +1,10 @@
 <template>
-    <ClientOnly>
-      <Teleport to="#right-side-bar">
-              <PlanSummary v-if="plan" :plan="plan"></PlanSummary>
-      </Teleport>
-    </ClientOnly>
-<!--    <ClientOnly>-->
+  <ClientOnly>
+    <Teleport to="#right-side-bar">
+      <PlanSummary v-if="plan" :plan="plan"></PlanSummary>
+    </Teleport>
+  </ClientOnly>
+  <!--    <ClientOnly>-->
   <!--    <Teleport to="#left-side-bar">-->
   <!--      <PlanProjection :planStates="planStates"></PlanProjection>-->
   <!--    </Teleport>-->
@@ -12,19 +12,20 @@
   <div v-if="plan" class="col-span-4 space-y-6">
     <!-- Debts -->
     <CommonCard class="bg-skin-muted space-y-6">
+      <CommonCard class="space-y-6 bg-skin-muted">
+        <IncomeList v-if="plan.incomes" :incomes="plan.incomes"
+                    @createIncome="handleCreateIncome"
+                    @updateIncome="handleUpdateIncome"
+                    @deleteIncome="handleDeleteIncome"
+        />
+      </CommonCard>
       <DebtList v-if="plan.debts" :debts="plan.debts"
                 @createDebt="handleCreateDebt"
                 @updateDebt="handleUpdateDebt"
                 @deleteDebt="handleDeleteDebt"
       ></DebtList>
     </CommonCard>
-    <CommonCard class="space-y-6 bg-skin-muted">
-      <IncomeList v-if="plan.incomes" :incomes="plan.incomes"
-                  @createIncome="handleCreateIncome"
-                  @updateIncome="handleUpdateIncome"
-                  @deleteIncome="handleDeleteIncome"
-      />
-    </CommonCard>
+
     <CommonCard class="space-y-6 bg-skin-muted">
 
       <ExpenseList v-if="plan.expenses" :expenses="plan.expenses"
@@ -36,9 +37,9 @@
     <CommonCard class="space-y-6 bg-skin-muted">
 
       <CashReserveList v-if="plan.cashReserves" :cashReserves="plan.cashReserves"
-                @createCashReserve="handleCreateCashReserve"
-                @updateCashReserve="handleUpdateCashReserve"
-                @deleteCashReserve="handleDeleteCashReserve"
+                       @createCashReserve="handleCreateCashReserve"
+                       @updateCashReserve="handleUpdateCashReserve"
+                       @deleteCashReserve="handleDeleteCashReserve"
       />
     </CommonCard>
     <CommonCard class="space-y-6 bg-skin-muted">

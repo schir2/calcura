@@ -30,10 +30,10 @@ export default class CashReserveManager extends ManagerBase<CashReserve, CashRes
     calculateContribution(state: CashReserveState, disposableIncome: number, allowNegativeDisposableIncome: AllowNegativeDisposableIncome): number {
         let contribution = 0
         switch (this.config.cashReserveStrategy) {
-            case 'fixedCashReserve':
+            case 'fixed':
                 contribution = Math.max(this.config.reserveAmount - state.cashReserveStartOfYear, 0);
                 break
-            case 'variableCashReserve':
+            case 'variable':
                 contribution = Math.max(this.config.reserveAmount - state.cashReserveStartOfYear, 0);
                 // TODO Implement this
                 break

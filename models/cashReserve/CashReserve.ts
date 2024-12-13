@@ -1,4 +1,4 @@
-export type CashReserveStrategy = 'fixedCashReserve' | 'variableCashReserve'
+export type CashReserveStrategy = 'fixed' | 'variable'
 
 export interface CashReserve {
     id: number;
