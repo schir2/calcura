@@ -1,9 +1,9 @@
 <template>
   <NButton @click="handleCreatePlan()">Add</NButton>
-  <NList class="container">
+  <main>
     <PlanListItem v-for="(planConfig, index) in plans" :planConfig="planConfig" :key="planConfig.id"
           @deletePlan="handleDeletePlan" @updatePlan="handleUpdatePlan"></PlanListItem>
-  </NList>
+  </main>
 
 </template>
 <script lang="ts" setup>
