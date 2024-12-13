@@ -1,7 +1,7 @@
 <template>
 
   <h2 class="text-3xl">Income(s)</h2>
-  <NButton @click="handleCreateIncome()">Add</NButton>
+  <IncomeTemplatePicker  @save="handleCreateIncome" />
   <div class="container">
     <NList>
       <Income v-for="(income, index) in incomes" :income="income" :key="income.id"
@@ -12,6 +12,7 @@
 </template>
 <script lang="ts" setup>
 import type {Income} from "~/models/income/Income";
+import type {IncomeTemplate} from "~/models/income/IncomeTemplate";
 
 interface Props {
   incomes: Income[]
@@ -25,8 +26,8 @@ function handleDeleteIncome(incomeId: number) {
   emit('deleteIncome', incomeId);
 }
 
-function handleCreateIncome() {
-  emit('createIncome');
+function handleCreateIncome(incomeTemplate: IncomeTemplate) {
+  emit('createIncome', incomeTemplate);
 }
 
 function handleUpdateIncome(income: Income) {
