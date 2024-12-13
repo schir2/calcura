@@ -76,6 +76,7 @@ import {defaultTaxDeferredInvestmentFactory} from "~/models/taxDeferredInvestmen
 import type {IraInvestment} from "~/models/iraInvestment/IraInvestment";
 import type {TaxDeferredInvestment} from "~/models/taxDeferredInvestment/TaxDeferredInvestment";
 import {defaultIraInvestmentFactory} from "~/models/iraInvestment/IraInvestmentFactories";
+import type {IncomeTemplate} from "~/models/income/IncomeTemplate";
 
 const planService = usePlanService()
 const debtService = useDebtService()
@@ -147,14 +148,12 @@ async function handleDeleteExpense(index: number) {
 }
 
 async function handleUpdateExpense(expense: Expense) {
-  assertDefined(expense.id, 'expense.id')
   await expenseService.update(expense.id, expense)
   await loadPlan();
 }
 
-async function handleCreateIncome() {
-  const incomeConfig = defaultIncomeFactory();
-  const income = await incomeService.create(incomeConfig)
+async function handleCreateIncome(incomeTemplate: IncomeTemplate) {
+  const income = await incomeService.create(incomeTemplate)
   await planService.addRelatedModel(planId, 'incomes', income.id)
   await loadPlan();
 }
