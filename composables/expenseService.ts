@@ -1,5 +1,5 @@
 import {createBaseService} from '~/services/baseService';
-import type Expense from "~/models/expense/Expense";
+import type {Expense} from "~/models/expense/Expense";
 
 export function useExpenseService() {
     const { $api } = useNuxtApp();
