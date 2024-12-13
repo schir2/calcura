@@ -1,15 +1,20 @@
 <template>
-  <NListItem color="secondary">
+  <n-thing color="secondary">
+    <template #header>
+      <NuxtLink :to="{name: 'plans-id', params: {id: planConfig.id}}"><h3 class="text-2xl">Plan {{ planConfig.id }}:
+        {{ currentPlanConfig.name }}</h3></NuxtLink>
+    </template>
+    <template #header-extra>
+      <n-button-group size="small">
+        <n-button type="warning" secondary round @click="handleUpdatePlan"><template #icon><Icon name="mdi:edit"/></template>Edit</n-button>
+        <n-button type="error" secondary round @click="deletePlan"><template #icon><Icon name="mdi:delete"/></template>Delete</n-button>
+      </n-button-group>
+    </template>
     <div class="flex justify-between align-middle">
-      <NuxtLink :to="{name: 'plans-id', params: {id: planConfig.id}}"><h3 class="text-2xl">Plan {{ planConfig.id }}: {{ currentPlanConfig.name }}</h3></NuxtLink>
-      <NButton type="error" secondary @click="deletePlan">
-        <Icon name="mdi:delete"/>
-        Delete
-      </NButton>
     </div>
     <span>{{ planConfig.id }}</span>
     <span>{{ planConfig.name }}</span>
-  </NListItem>
+  </n-thing>
 
 </template>
 <script setup lang="ts">
