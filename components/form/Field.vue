@@ -2,11 +2,11 @@
   <div class="flex flex-col gap-1">
 
     <FormLabel v-if="field.label" :label="field.label"/>
-    <Field v-if="field.type !== 'select'"
+    <n-input v-if="field.type !== 'select'"
            :id="field.name"
            :name="field.name"
            :type="field.type || 'text'"
-           v-model="model[field.name]"
+           v-model:value="model[field.name]"
            :placeholder="field.placeholder"
            :disabled="field.disabled"
            :readonly="field.readonly"
