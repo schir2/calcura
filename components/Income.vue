@@ -11,12 +11,10 @@
     </div>
     <Form>
       <section>
-        <div class="grid grid-cols-6 gap-3">
           <FormField :field="fieldMetadata.name" :model="currentIncomeConfig"></FormField>
+          <FormSelect :field="fieldMetadata.incomeType" :model="currentIncomeConfig"></FormSelect>
           <FormField :field="fieldMetadata.grossIncome" :model="currentIncomeConfig"></FormField>
           <FormField :field="fieldMetadata.growthRate" :model="currentIncomeConfig"></FormField>
-          <FormSelect :field="fieldMetadata.incomeType" :model="currentIncomeConfig"></FormSelect>
-        </div>
       </section>
     </Form>
   </CommonCard>
@@ -29,10 +27,10 @@ import type {Income} from '~/models/income/Income';
 
 interface Props {
   income: Income;
-  showAdvancedOptions?: boolean;
+  isEditing?: boolean;
 }
 
-const {showAdvancedOptions = false, income} = defineProps<Props>();
+const {isEditing = false, income} = defineProps<Props>();
 const fieldMetadata = incomeFields;
 
 const emit = defineEmits(['deleteIncome', 'updateIncome']);
