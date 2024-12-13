@@ -1,4 +1,5 @@
 <template>
+  <PlanTemplatePicker @save="handleCreatePlan "/>
   <PlanList :plans="plans"
             @createPlan="handleCreatePlan"
             @updatePlan="handleUpdatePlan"
@@ -7,15 +8,14 @@
 </template>
 <script lang="ts" setup>
 import {usePlanService} from "~/composables/planService";
+import type {Plan} from "~/models/plan/Plan";
+import type {PlanTemplate} from "~/models/plan/PlanTemplate";
+import PlanTemplatePicker from "~/components/PlanTemplatePicker.vue";
 
 const planService = usePlanService()
 
-import {defaultPlanFactory} from "~/models/plan/PlanFactories";
-import type {Plan} from "~/models/plan/Plan";
-
-async function handleCreatePlan() {
-  const planConfig = defaultPlanFactory();
-  await planService.create(planConfig)
+async function handleCreatePlan(planTemplate: PlanTemplate) {
+  await planService.create(planTemplate)
   await loadPlans();
 }
 
