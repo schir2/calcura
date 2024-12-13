@@ -27,7 +27,11 @@
       <FormField :model="currentExpenseConfig" :field="fieldMetadata.name"></FormField>
       <FormSelect :model="currentExpenseConfig" :field="fieldMetadata.frequency"></FormSelect>
       <FormField :model="currentExpenseConfig" :field="fieldMetadata.amount"></FormField>
-      {{annualAmount}}
+      <n-number-animation v-if="currentExpenseConfig && prevAmount && currentAmount"
+          :from="prevAmount"
+          :to="currentAmount"
+          :duration="1000"
+      />
       <FormSelect :model="currentExpenseConfig" :field="fieldMetadata.type"></FormSelect>
       <FormToggle :model="currentExpenseConfig" :field="fieldMetadata.isEssential"></FormToggle>
       <FormToggle :model="currentExpenseConfig" :field="fieldMetadata.isTaxDeductible"></FormToggle>
@@ -58,16 +62,18 @@ const {
   updateEntity: updateExpense
 } = useEntityManager<Expense>(expense, emit, 'expense');
 
-const annualAmount = computed(() =>{
-  return getAnnualExpenseAmount(currentExpenseConfig)
-})
 
-import type {NumberAnimationInst} from 'naive-ui';
-const numberAnimationInstRef = ref<NumberAnimationInst | null>(null)
+const prevAmount = ref(0);
+const currentAmount = computed(() => getAnnualExpenseAmount(currentExpenseConfig.value));
 
-watch(() => currentExpenseConfig, (expnese) => {
-  numberAnimationInstRef.value = getAnnualExpenseAmount(expnese);
-  // TODO FInish this animation
-});
-
+watch(
+    currentExpenseConfig,
+    (newConfig: Expense, oldConfig: Expense) => {
+      console.log(newConfig)
+      console.log(oldConfig)
+      if (expense){
+      prevAmount.value = getAnnualExpenseAmount(oldConfig);
+    }
+      }
+);
 </script>
