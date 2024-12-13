@@ -1,15 +1,15 @@
 import * as yup from "yup";
 import type {FieldData} from "~/interfaces/FieldData";
-import type {SelectOption} from "~/components/form/Select.vue";
 import {MAX_NAME_LENGTH, MIN_NAME_LENGTH} from "~/models/income/IncomeConstants";
 import {
+    DEFAULT_AGE,
     DEFAULT_RETIREMENT_AGE,
     DEFAULT_RETIREMENT_INCOME_GOAL,
     DEFAULT_RETIREMENT_LIFE_EXPECTANCY,
     DEFAULT_RETIREMENT_PLAN_NAME,
     DEFAULT_RETIREMENT_SAVINGS_AMOUNT,
     DEFAULT_RETIREMENT_WITHDRAWAL_RATE,
-    DEFAULT_TAX_STRATEGY,
+    DEFAULT_TAX_STRATEGY, DEFAULT_YEAR,
     MAX_RETIREMENT_AGE_FOR_WITHDRAWAL,
     MAX_RETIREMENT_INCOME_GOAL,
     MAX_RETIREMENT_LIFE_EXPECTANCY,
@@ -22,16 +22,8 @@ import {
     MIN_RETIREMENT_WITHDRAWAL_RATE,
     MIN_TAX_RATE
 } from "~/models/plan/PlanConstants";
-import type {RetirementStrategy} from "~/models/plan/Plan";
 
-export const retirementStrategyOptions: Record<RetirementStrategy, SelectOption> = {
-    age: {label: 'Age', value: 'age'},
-    debitFree: {label: 'Debt Free', value: 'debtFree'},
-    percentRule: {label: 'Percent Rule', value: 'percentRule'},
-    targetSavings: {label: 'Savings Amount', value: 'targetSavings'}
-} as const;
-
-export const retirementFields: Record<string, FieldData> = {
+export const planFields: Record<string, FieldData> = {
     name: {
         name: 'name',
         label: 'Name',
@@ -44,6 +36,34 @@ export const retirementFields: Record<string, FieldData> = {
             .required('Name is required')
             .min(MIN_NAME_LENGTH, `Name must be at least ${MIN_NAME_LENGTH} characters long.`)
             .max(MAX_NAME_LENGTH, `Name must be at most ${MAX_NAME_LENGTH} characters long.`),
+    },
+    age: {
+        name: "age",
+        label: 'Age',
+        placeholder: 'Enter Starting Age',
+        helpText: 'Enter the age at which you wich to start your retirement journey',
+        type: 'number',
+        defaultValue: DEFAULT_AGE,
+        rules: yup.number().min(1).max(120)
+    },
+    year: {
+        name: "year",
+        label: 'Year',
+        placeholder: 'Enter Starting Year',
+        helpText: 'Enter the year in the retirement journey',
+        type: 'number',
+        defaultValue: DEFAULT_YEAR,
+        rules: yup.number().min(2000),
+
+    },
+    taxRate: {
+        name: "taxRate",
+        label: 'Tax Rate',
+        placeholder: 'Enter Tax Rate',
+        type: 'number',
+        defaultValue: DEFAULT_TAX_STRATEGY,
+        rules: yup.number().min(1).max(120)
+
     },
     lifeExpectancy: {
         name: "lifeExpectancy",
@@ -68,7 +88,12 @@ export const retirementFields: Record<string, FieldData> = {
         type: "select",
         defaultValue: "age",
         rules: yup.mixed().required("Retirement strategy is required"),
-        options: retirementStrategyOptions,
+        options: [
+            {label: 'Age', value: 'age'},
+            {label: 'Debt Free', value: 'debtFree'},
+            {label: 'Percent Rule', value: 'percentRule'},
+            {label: 'Savings Amount', value: 'targetSavings'}
+        ],
     },
     retirementWithdrawalRate: {
         name: "retirementWithdrawalRate",
