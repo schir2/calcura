@@ -11,4 +11,4 @@ export interface Income {
     incomeType: IncomeType;
 }
 
-export type IncomePartial = Partial<Omit<Income, 'idi'>>
+export type IncomePartial = Partial<Omit<Income, 'id'>>
