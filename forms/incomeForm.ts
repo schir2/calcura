@@ -1,5 +1,5 @@
 import * as yup from "yup";
-import type {FieldData} from "~/interfaces/FieldData";
+import type {FieldData, NumberField, TextField} from "~/interfaces/FieldData";
 
 import {
     DEFAULT_GROSS_INCOME,
@@ -14,26 +14,30 @@ import {
 } from '~/models/income/IncomeConstants';
 import type {IncomePartial} from "~/models/income/Income";
 
-export const incomeFields: Record<keyof IncomePartial, FieldData> = {
-    name: {
-        name: 'name',
-        label: 'Income Name',
-        placeholder: 'Enter income name',
-        helpText: 'Enter a descriptive name for this income source.',
-        type: 'text',
-        defaultValue: DEFAULT_INCOME_NAME,
-        rules: yup
-            .string()
-            .required('Name is required')
-            .min(MIN_NAME_LENGTH, `Name must be at least ${MIN_NAME_LENGTH} characters long.`)
-            .max(MAX_NAME_LENGTH, `Name must be at most ${MAX_NAME_LENGTH} characters long.`),
+const name:TextField = {
+    name: 'name',
+    label: 'Income Name',
+    placeholder: 'Enter income name',
+    helpText: 'Enter a descriptive name for this income source.',
+    inputType: 'text',
+    defaultValue: DEFAULT_INCOME_NAME,
+    rules: yup
+        .string()
+        .required('Name is required')
+        .min(MIN_NAME_LENGTH, `Name must be at least ${MIN_NAME_LENGTH} characters long.`)
+        .max(MAX_NAME_LENGTH, `Name must be at most ${MAX_NAME_LENGTH} characters long.`),
+
+}
+
+export const incomeFields: Record<keyof IncomePartial, NumberField | TextField | SelectField> = {
+    name: {name
     },
     frequency: {
         name:'frequency',
         label: 'Frequency',
         placeholder: 'Enter income frequency',
         helpText:'How often do you receive this income?',
-        type: 'text',
+        inputType: 'text',
         defaultValue: DEFAULT_INCOME_FREQUENCY,
         options: [
             {label: 'Weekly', value: 'weekly',},
@@ -48,7 +52,7 @@ export const incomeFields: Record<keyof IncomePartial, FieldData> = {
         label: 'Gross Income',
         placeholder: 'Enter gross income amount',
         helpText: 'Total income amount before taxes and deductions.',
-        type: 'number',
+        inputType: 'number',
         defaultValue: DEFAULT_GROSS_INCOME,
         rules: yup
             .number()
@@ -60,7 +64,7 @@ export const incomeFields: Record<keyof IncomePartial, FieldData> = {
         label: 'Growth Rate (%)',
         placeholder: 'Enter growth rate',
         helpText: 'Annual growth rate of this income source.',
-        type: 'number',
+        inputType: 'number',
         defaultValue: DEFAULT_GROWTH_RATE,
         rules: yup
             .number()
@@ -74,7 +78,7 @@ export const incomeFields: Record<keyof IncomePartial, FieldData> = {
         label: 'Income Type',
         placeholder: 'Select income type',
         helpText: 'Select type to determine taxation rules.',
-        type: 'select',
+        inputType: 'select',
         defaultValue: DEFAULT_INCOME_NAME,
         options: [
             {label: 'Ordinary', value: 'ordinary'}

@@ -8,7 +8,7 @@ export const brokerageInvestmentFields: Record<keyof BrokerageInvestmentPartial,
         label: "Investment Name",
         placeholder: "Enter investment name",
         helpText: "Provide a descriptive name for this investment.",
-        type: "text",
+        inputType: "text",
         defaultValue: "Default Investment",
         rules: yup
             .string()
@@ -21,7 +21,7 @@ export const brokerageInvestmentFields: Record<keyof BrokerageInvestmentPartial,
         label: "Growth Rate (%)",
         placeholder: "Enter growth rate",
         helpText: "Specify the annual growth rate as a percentage.",
-        type: "number",
+        inputType: "number",
         defaultValue: 5,
         rules: yup
             .number()
@@ -34,7 +34,7 @@ export const brokerageInvestmentFields: Record<keyof BrokerageInvestmentPartial,
         label: "Initial Balance",
         placeholder: "Enter initial balance",
         helpText: "Set the starting balance for this investment.",
-        type: "number",
+        inputType: "number",
         defaultValue: 1000,
         rules: yup
             .number()
@@ -46,7 +46,7 @@ export const brokerageInvestmentFields: Record<keyof BrokerageInvestmentPartial,
         label: "Contribution Strategy",
         placeholder: "Select contribution strategy",
         helpText: "Choose the strategy for contributions.",
-        type: "select",
+        inputType: "select",
         defaultValue: "fixed",
         rules: yup
             .mixed<BrokerageContributionStrategy>()
@@ -62,7 +62,7 @@ export const brokerageInvestmentFields: Record<keyof BrokerageInvestmentPartial,
         label: "Contribution Percentage (%)",
         placeholder: "Enter percentage",
         helpText: "Set the percentage of income to contribute. Only applicable for 'Percentage of Income' strategy.",
-        type: "number",
+        inputType: "number",
         defaultValue: 10,
         rules: yup
             .number()
@@ -75,7 +75,7 @@ export const brokerageInvestmentFields: Record<keyof BrokerageInvestmentPartial,
         label: "Fixed Contribution Amount",
         placeholder: "Enter fixed amount",
         helpText: "Specify the fixed contribution amount. Only applicable for 'Fixed' strategy.",
-        type: "number",
+        inputType: "number",
         defaultValue: 500,
         rules: yup
             .number()

@@ -8,17 +8,17 @@
     </div>
     <Form class="space-y-6">
       <div class="grid grid-cols-3 gap-3">
-        <FormField :model="iraInvestment" :field="fieldMetadata.name"/>
+        <FormTextInput :model="iraInvestment" :field="fieldMetadata.name"/>
         <FormToggle :model="iraInvestment" :field="fieldMetadata.isContributionTaxDeferred"/>
-        <FormField :model="iraInvestment" :field="fieldMetadata.initialBalance"/>
-        <FormField :model="iraInvestment" v-show="showAdvancedOptions" :field="fieldMetadata.growthRate"/>
+        <FormTextInput :model="iraInvestment" :field="fieldMetadata.initialBalance"/>
+        <FormTextInput :model="iraInvestment" v-show="showAdvancedOptions" :field="fieldMetadata.growthRate"/>
       </div>
       <section>
         <h3 class="text-xl">Contributions</h3>
         <div class="grid grid-cols-3 gap-3">
           <FormSelect :model="iraInvestment" :field="fieldMetadata.contributionStrategy"/>
-          <FormField :model="iraInvestment" :field="fieldMetadata.contributionPercentage"/>
-          <FormField :model="iraInvestment" :field="fieldMetadata.contributionFixedAmount"/>
+          <FormTextInput :model="iraInvestment" :field="fieldMetadata.contributionPercentage"/>
+          <FormTextInput :model="iraInvestment" :field="fieldMetadata.contributionFixedAmount"/>
         </div>
       </section>
     </Form>

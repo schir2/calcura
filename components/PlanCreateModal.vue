@@ -6,18 +6,18 @@
       </template>
       <template #default>
         <Form>
-          <FormField :model="planTemplate" :field="fieldMetadata.name"/>
-          <FormField :model="planTemplate" :field="fieldMetadata.year"/>
-          <FormField :model="planTemplate" :field="fieldMetadata.lifeExpectancy"/>
+          <FormTextInput :model="planTemplate" :field="fieldMetadata.name"/>
+          <FormTextInput :model="planTemplate" :field="fieldMetadata.year"/>
+          <FormTextInput :model="planTemplate" :field="fieldMetadata.lifeExpectancy"/>
           <n-divider/>
-          <FormField :model="planTemplate" :field="fieldMetadata.taxRate"/>
+          <FormTextInput :model="planTemplate" :field="fieldMetadata.taxRate"/>
           <FormSelect :model="planTemplate" :field="fieldMetadata.taxStrategy"/>
           <n-divider/>
           <FormSelect :model="planTemplate" :field="fieldMetadata.retirementStrategy"/>
-          <FormField :model="planTemplate" v-if="planTemplate.retirementStrategy === 'age'" :field="fieldMetadata.retirementAge"/>
-          <FormField :model="planTemplate" v-if="planTemplate.retirementStrategy === 'target_savings'" :field="fieldMetadata.retirementSavingsAmount"/>
-          <FormField :model="planTemplate" v-if="planTemplate.retirementStrategy === 'percent_rule'" :field="fieldMetadata.retirementWithdrawalRate"/>
-          <FormField :model="planTemplate" v-if="planTemplate.retirementStrategy === 'percent_rule'" :field="fieldMetadata.retirementPlanGoal"/>
+          <FormTextInput :model="planTemplate" v-if="planTemplate.retirementStrategy === 'age'" :field="fieldMetadata.retirementAge"/>
+          <FormTextInput :model="planTemplate" v-if="planTemplate.retirementStrategy === 'target_savings'" :field="fieldMetadata.retirementSavingsAmount"/>
+          <FormTextInput :model="planTemplate" v-if="planTemplate.retirementStrategy === 'percent_rule'" :field="fieldMetadata.retirementWithdrawalRate"/>
+          <FormTextInput :model="planTemplate" v-if="planTemplate.retirementStrategy === 'percent_rule'" :field="fieldMetadata.retirementPlanGoal"/>
         </Form>
       </template>
 

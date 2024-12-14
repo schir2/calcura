@@ -20,7 +20,7 @@
 <script lang="ts" setup>
 import type {PlanPartial} from "~/models/plan/Plan";
 import type {PlanTemplate} from "~/models/plan/PlanTemplate";
-import {usePlanTemplateService} from "~/composables/planTemplateService";
+import {usePlanTemplateService} from "~/composables/usePlanTemplateService";
 
 const isModalOpen = ref(false);
 const activePlanTemplate = ref<PlanPartial | null>()

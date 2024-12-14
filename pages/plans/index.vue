@@ -7,7 +7,7 @@
   ></PlanList>
 </template>
 <script lang="ts" setup>
-import {usePlanService} from "~/composables/planService";
+import {usePlanService} from "~/composables/usePlanService";
 import type {Plan} from "~/models/plan/Plan";
 import type {PlanTemplate} from "~/models/plan/PlanTemplate";
 import PlanTemplatePicker from "~/components/PlanTemplatePicker.vue";

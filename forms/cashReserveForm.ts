@@ -19,7 +19,7 @@ export const cashReserveFields: Record<keyof CashReservePartial, FieldData> = {
         label: "Name",
         placeholder: "Enter cashReserve maintenance name",
         helpText: "Provide a descriptive name for this cashReserve maintenance strategy.",
-        type: "text",
+        inputType: "text",
         defaultValue: DEFAULT_CASH_MAINTENANCE_NAME,
         rules: yup
             .string()
@@ -32,7 +32,7 @@ export const cashReserveFields: Record<keyof CashReservePartial, FieldData> = {
         label: "Initial Amount",
         placeholder: "Enter the amount currently in your cash reserve",
         helpText: "Enter a number greater than 0",
-        type: "number",
+        inputType: "number",
         defaultValue: DEFAULT_CASH_MAINTENANCE_RESERVE_AMOUNT,
         rules: yup.number().min(0)
     },
@@ -41,7 +41,7 @@ export const cashReserveFields: Record<keyof CashReservePartial, FieldData> = {
         label: "Cash Reserve Strategy",
         placeholder: "Select cash Reserve strategy",
         helpText: "Choose the strategy for maintaining your cash Reserve.",
-        type: "select",
+        inputType: "select",
         defaultValue: DEFAULT_CASH_MAINTENANCE_STRATEGY,
         rules: yup.mixed<CashReserveStrategy>().required("CashReserve maintenance strategy is required"),
         options: [
@@ -54,7 +54,7 @@ export const cashReserveFields: Record<keyof CashReservePartial, FieldData> = {
         label: "Reserve Amount",
         placeholder: "Enter reserve amount",
         helpText: "Specify the amount of cashReserve to reserve if using a fixed strategy.",
-        type: "number",
+        inputType: "number",
         defaultValue: DEFAULT_CASH_MAINTENANCE_RESERVE_AMOUNT,
         rules: yup
             .number()
@@ -67,7 +67,7 @@ export const cashReserveFields: Record<keyof CashReservePartial, FieldData> = {
         label: "Reserve Months",
         placeholder: "Enter reserve months",
         helpText: "Specify the number of months of expenses to reserve if using a variable strategy.",
-        type: "number",
+        inputType: "number",
         defaultValue: DEFAULT_CASH_MAINTENANCE_RESERVE_MONTHS,
         rules: yup
             .number()

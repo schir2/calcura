@@ -9,7 +9,7 @@ export const debtFields: Record<keyof DebtPartial, FieldData> = {
         label: "Debt Name",
         placeholder: "Enter debt name",
         helpText: "Provide a descriptive name for this debt.",
-        type: "text",
+        inputType: "text",
         defaultValue: DEFAULT_DEBT_NAME,
         rules: yup
             .string()
@@ -22,7 +22,7 @@ export const debtFields: Record<keyof DebtPartial, FieldData> = {
         label: "Principal Amount",
         placeholder: "Enter principal amount",
         helpText: "The total starting amount of the debt.",
-        type: "number",
+        inputType: "number",
         defaultValue: 0, // You can define a `DEFAULT_PRINCIPAL` in constants if needed
         rules: yup
             .number()
@@ -35,7 +35,7 @@ export const debtFields: Record<keyof DebtPartial, FieldData> = {
         label: "Interest Rate (%)",
         placeholder: "Enter interest rate",
         helpText: "Annual interest rate for this debt.",
-        type: "number",
+        inputType: "number",
         defaultValue: DEFAULT_INTEREST_RATE,
         rules: yup
             .number()
@@ -48,7 +48,7 @@ export const debtFields: Record<keyof DebtPartial, FieldData> = {
         label: "Minimum Payment",
         placeholder: "Enter minimum payment",
         helpText: "Specify the minimum monthly payment for this debt.",
-        type: "number",
+        inputType: "number",
         defaultValue: DEFAULT_MINIMUM_PAYMENT,
         rules: yup
             .number()
@@ -61,7 +61,7 @@ export const debtFields: Record<keyof DebtPartial, FieldData> = {
         label: "Payment Strategy",
         placeholder: "Select payment strategy",
         helpText: "Choose how payments for this debt will be calculated.",
-        type: "select",
+        inputType: "select",
         defaultValue: DEFAULT_PAYMENT_STRATEGY,
         rules: yup.mixed().required("Payment strategy is required"),
         options: [
@@ -74,7 +74,7 @@ export const debtFields: Record<keyof DebtPartial, FieldData> = {
         label: "Fixed Payment Amount",
         placeholder: "Enter fixed payment amount",
         helpText: "Specify the fixed payment amount if 'Fixed Payment' strategy is selected.",
-        type: "number",
+        inputType: "number",
         defaultValue: DEFAULT_FIXED_PAYMENT,
         rules: yup
             .number()
@@ -86,7 +86,7 @@ export const debtFields: Record<keyof DebtPartial, FieldData> = {
         label: "Payment Percentage",
         placeholder: "Enter payment percentage",
         helpText: "Percentage of the total debt to be paid each month.",
-        type: "number",
+        inputType: "number",
         defaultValue: DEFAULT_PAYMENT_PERCENTAGE,
         rules: yup
             .number()

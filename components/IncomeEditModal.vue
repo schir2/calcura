@@ -5,15 +5,7 @@
         <h3 class="text-2xl">Income {{ incomeTemplate.id }}: {{ incomeTemplateRef.name }}</h3>
       </template>
       <template #default>
-        <Form>
-          <section>
-            <FormTextInput :field="fieldMetadata.name" :model="incomeTemplateRef"></FormTextInput>
-            <FormSelect :field="fieldMetadata.incomeType" :model="incomeTemplateRef"></FormSelect>
-            <FormSelect :field="fieldMetadata.frequency" :model="incomeTemplateRef"></FormSelect>
-            <FormNumberInput :field="fieldMetadata.grossIncome" :model="incomeTemplateRef"></FormNumberInput>
-            <FormNumberInput :field="fieldMetadata.growthRate" :model="incomeTemplateRef"></FormNumberInput>
-          </section>
-        </Form>
+        <IncomeForm :incomePartial="incomeTemplateRef"/>
       </template>
 
       <template #action>
@@ -35,7 +27,6 @@
 
 </template>
 <script setup lang="ts">
-import {incomeFields} from '~/forms/incomeForm';
 import type {IncomeTemplate} from '~/models/income/IncomeTemplate';
 
 interface Props {
@@ -45,7 +36,6 @@ interface Props {
 const props = defineProps<Props>();
 
 const incomeTemplateRef = ref<IncomeTemplate>(JSON.parse(JSON.stringify(props.incomeTemplate)))
-const fieldMetadata = incomeFields;
 const showModal = ref(false);
 
 const emit = defineEmits(['save', 'close']);
@@ -58,6 +48,7 @@ function handleSave() {
 function handleClose() {
   emit('close')
 }
+
 onMounted(async () => {
   showModal.value = true;
 })

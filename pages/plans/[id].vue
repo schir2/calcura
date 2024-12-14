@@ -4,22 +4,14 @@
       <PlanSummary v-if="plan" :plan="plan"></PlanSummary>
     </Teleport>
   </ClientOnly>
-  <!--    <ClientOnly>-->
-  <!--    <Teleport to="#left-side-bar">-->
-  <!--      <PlanProjection :planStates="planStates"></PlanProjection>-->
-  <!--    </Teleport>-->
-  <!--  </ClientOnly>-->
   <div v-if="plan" class="col-span-4 space-y-6">
-    <!-- Debts -->
-    <CommonCard class="bg-skin-muted space-y-6">
-      <CommonCard class="space-y-6 bg-skin-muted">
-        <IncomeList v-if="plan.incomes" :incomes="plan.incomes"
-                    @create="handleCreateIncome"
-                    @update="handleUpdateIncome"
-                    @delete="handleDeleteIncome"
-                    @remove="handleRemoveIncome"
-        />
-      </CommonCard>
+      <IncomeList v-if="plan.incomes" :incomes="plan.incomes"
+                  @create="handleCreateIncome"
+                  @update="handleUpdateIncome"
+                  @delete="handleDeleteIncome"
+                  @remove="handleRemoveIncome"
+      />
+    <CommonCard class="space-y-6 bg-skin-muted">
       <DebtList v-if="plan.debts" :debts="plan.debts"
                 @createDebt="handleCreateDebt"
                 @updateDebt="handleUpdateDebt"

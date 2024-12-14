@@ -8,16 +8,16 @@
     </div>
     <Form class="space-y-6">
       <div class="grid grid-cols-3 gap-3">
-        <FormField :model="brokerageInvestment" :field="fieldMetadata.name"/>
-        <FormField :model="brokerageInvestment" :field="fieldMetadata.initialBalance"/>
-        <FormField :model="brokerageInvestment" v-show="showAdvancedOptions" :field="fieldMetadata.growthRate"/>
+        <FormTextInput :model="brokerageInvestment" :field="fieldMetadata.name"/>
+        <FormTextInput :model="brokerageInvestment" :field="fieldMetadata.initialBalance"/>
+        <FormTextInput :model="brokerageInvestment" v-show="showAdvancedOptions" :field="fieldMetadata.growthRate"/>
       </div>
       <section>
         <h3 class="text-xl">Contributions</h3>
         <div class="grid grid-cols-3 gap-3">
           <FormSelect :model="brokerageInvestment" :field="fieldMetadata.contributionStrategy"/>
-          <FormField :model="brokerageInvestment" :field="fieldMetadata.contributionPercentage"/>
-          <FormField :model="brokerageInvestment" :field="fieldMetadata.contributionFixedAmount"/>
+          <FormTextInput :model="brokerageInvestment" :field="fieldMetadata.contributionPercentage"/>
+          <FormTextInput :model="brokerageInvestment" :field="fieldMetadata.contributionFixedAmount"/>
         </div>
       </section>
     </Form>

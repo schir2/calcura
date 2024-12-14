@@ -12,13 +12,13 @@
     </div>
     <Form>
 
-          <FormField :field="fieldMetadata.name" :model="currentDebtConfig"></FormField>
+          <FormTextInput :field="fieldMetadata.name" :model="currentDebtConfig"></FormTextInput>
           <FormSelect :field="fieldMetadata.paymentStrategy" :model="currentDebtConfig"></FormSelect>
-          <FormField :field="fieldMetadata.principal" :model="currentDebtConfig"></FormField>
-          <FormField :field="fieldMetadata.interestRate" :model="currentDebtConfig"></FormField>
-          <FormField :field="fieldMetadata.paymentMinimum" :model="currentDebtConfig"></FormField>
-          <FormField v-if="currentDebtConfig.paymentStrategy === 'percentage_of_debt'" :field="fieldMetadata.paymentPercentage" :model="currentDebtConfig"></FormField>
-          <FormField v-if="currentDebtConfig.paymentStrategy ==='fixed'" :field="fieldMetadata.paymentFixedAmount" :model="currentDebtConfig"></FormField>
+          <FormTextInput :field="fieldMetadata.principal" :model="currentDebtConfig"></FormTextInput>
+          <FormTextInput :field="fieldMetadata.interestRate" :model="currentDebtConfig"></FormTextInput>
+          <FormTextInput :field="fieldMetadata.paymentMinimum" :model="currentDebtConfig"></FormTextInput>
+          <FormTextInput v-if="currentDebtConfig.paymentStrategy === 'percentage_of_debt'" :field="fieldMetadata.paymentPercentage" :model="currentDebtConfig"></FormTextInput>
+          <FormTextInput v-if="currentDebtConfig.paymentStrategy ==='fixed'" :field="fieldMetadata.paymentFixedAmount" :model="currentDebtConfig"></FormTextInput>
     </Form>
   </CommonCard>
 

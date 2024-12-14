@@ -1,11 +1,14 @@
 <template>
-
-  <h2 class="text-3xl">Income(s)</h2>
-  <IncomeTemplatePicker  @save="handleCreateIncome" />
-  <n-list>
+  <n-card title="Income(s)">
+    <template #header-extra>
+      <IncomeTemplatePicker @save="handleCreateIncome"/>
+    </template>
+    <n-list>
       <IncomeListItem v-for="(income, index) in incomes" :income="income" :key="income.id"
-              @delete="handleDeleteIncome" @update="handleUpdateIncome" @remove="handleRemoveIncome"></IncomeListItem>
-  </n-list>
+                      @delete="handleDeleteIncome" @update="handleUpdateIncome"
+                      @remove="handleRemoveIncome"></IncomeListItem>
+    </n-list>
+  </n-card>
 
 </template>
 <script lang="ts" setup>

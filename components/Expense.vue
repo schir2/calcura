@@ -24,9 +24,9 @@
       </n-button-group>
     </div>
     <CommonCard>
-      <FormField :model="currentExpenseConfig" :field="fieldMetadata.name"></FormField>
+      <FormTextInput :model="currentExpenseConfig" :field="fieldMetadata.name"></FormTextInput>
       <FormSelect :model="currentExpenseConfig" :field="fieldMetadata.frequency"></FormSelect>
-      <FormField :model="currentExpenseConfig" :field="fieldMetadata.amount"></FormField>
+      <FormTextInput :model="currentExpenseConfig" :field="fieldMetadata.amount"></FormTextInput>
       <n-number-animation v-if="currentExpenseConfig && prevAmount && currentAmount"
           :from="prevAmount"
           :to="currentAmount"

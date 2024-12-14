@@ -11,7 +11,7 @@ export const iraInvestmentFields: Record<keyof IraInvestmentPartial, FieldData> 
         placeholder: "Enter the name of the investment",
         helpText: "This is the name of your tax-deferred investment.",
         resourceId: "investment-name",
-        type: "text",
+        inputType: "text",
         defaultValue: "",
         rules: yup.string().required("Name is required").min(3, "Name must be at least 3 characters long").max(32, "Name must be at most 32 characters long"),
     },
@@ -28,7 +28,7 @@ export const iraInvestmentFields: Record<keyof IraInvestmentPartial, FieldData> 
         placeholder: "Enter expected growth rate",
         helpText: "The annual percentage growth rate of your investment.",
         resourceId: "growth-rate",
-        type: "number",
+        inputType: "number",
         defaultValue: DEFAULT_IRA_GROWTH_RATE,
         rules: yup
             .number()
@@ -42,7 +42,7 @@ export const iraInvestmentFields: Record<keyof IraInvestmentPartial, FieldData> 
         placeholder: "Enter your current savings balance",
         helpText: "This is the total amount you have saved so far.",
         resourceId: "current-savings",
-        type: "number",
+        inputType: "number",
         defaultValue: DEFAULT_IRA_BALANCE,
         rules: yup
             .number()
@@ -54,7 +54,7 @@ export const iraInvestmentFields: Record<keyof IraInvestmentPartial, FieldData> 
         label: "Contribution Strategy",
         placeholder: "Select contribution strategy",
         helpText: "Choose the strategy for contributions.",
-        type: "select",
+        inputType: "select",
         defaultValue: "fixed",
         rules: yup
             .mixed<IraContributionStrategy>()
@@ -71,7 +71,7 @@ export const iraInvestmentFields: Record<keyof IraInvestmentPartial, FieldData> 
         placeholder: "Enter elective contribution percentage",
         helpText: "Percentage of your income contributed to the investment.",
         resourceId: "elective-contribution-percentage",
-        type: "number",
+        inputType: "number",
         defaultValue: DEFAULT_IRA_CONTRIBUTION_PERCENTAGE,
         rules: yup
             .number()
@@ -85,7 +85,7 @@ export const iraInvestmentFields: Record<keyof IraInvestmentPartial, FieldData> 
         placeholder: "Enter elective contribution fixed amount",
         helpText: "Fixed amount you contribute to the investment.",
         resourceId: "elective-contribution-fixed-amount",
-        type: "number",
+        inputType: "number",
         defaultValue: DEFAULT_IRA_CONTRIBUTION_FIXED_AMOUNT,
         rules: yup
             .number()

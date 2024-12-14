@@ -11,10 +11,10 @@
     </div>
     <Form>
       <section>
-          <FormField :field="fieldMetadata.name" :model="currentIncomeConfig"></FormField>
+          <FormTextInput :field="fieldMetadata.name" :model="currentIncomeConfig"></FormTextInput>
           <FormSelect :field="fieldMetadata.incomeType" :model="currentIncomeConfig"></FormSelect>
-          <FormField :field="fieldMetadata.grossIncome" :model="currentIncomeConfig"></FormField>
-          <FormField :field="fieldMetadata.growthRate" :model="currentIncomeConfig"></FormField>
+          <FormTextInput :field="fieldMetadata.grossIncome" :model="currentIncomeConfig"></FormTextInput>
+          <FormTextInput :field="fieldMetadata.growthRate" :model="currentIncomeConfig"></FormTextInput>
       </section>
     </Form>
   </CommonCard>

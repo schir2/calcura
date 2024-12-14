@@ -10,17 +10,17 @@
       </n-button-group>
     </div>
     <Form>
-          <FormField :field="fieldMetadata.name" :model="currentCashReserveConfig"></FormField>
-          <FormField :field="fieldMetadata.initialAmount" :model="currentCashReserveConfig"></FormField>
+          <FormTextInput :field="fieldMetadata.name" :model="currentCashReserveConfig"></FormTextInput>
+          <FormTextInput :field="fieldMetadata.initialAmount" :model="currentCashReserveConfig"></FormTextInput>
           <FormSelect :field="fieldMetadata.cashReserveStrategy" :model="currentCashReserveConfig"></FormSelect>
-          <FormField
+          <FormTextInput
               v-if="currentCashReserveConfig.cashReserveStrategy === 'fixed'"
               :field="fieldMetadata.reserveAmount"
-              :model="currentCashReserveConfig"></FormField>
-          <FormField
+              :model="currentCashReserveConfig"></FormTextInput>
+          <FormTextInput
               v-if="currentCashReserveConfig.cashReserveStrategy === 'variable'"
               :field="fieldMetadata.reserveMonths"
-              :model="currentCashReserveConfig"></FormField>
+              :model="currentCashReserveConfig"></FormTextInput>
     </Form>
   </CommonCard>
 

@@ -10,7 +10,7 @@ export const expenseFields: Record<keyof ExpensePartial, FieldData> = {
         label: "Expense Name",
         placeholder: "Enter expense name",
         helpText: "Provide a descriptive name for this expense.",
-        type: "text",
+        inputType: "text",
         defaultValue: "Simple Expense",
         rules: yup
             .string()
@@ -23,7 +23,7 @@ export const expenseFields: Record<keyof ExpensePartial, FieldData> = {
         label: "Expense Amount",
         placeholder: "Enter amount",
         helpText: "The monetary value of the expense.",
-        type: "number",
+        inputType: "number",
         defaultValue: 0,
         rules: yup
             .number()
@@ -36,7 +36,7 @@ export const expenseFields: Record<keyof ExpensePartial, FieldData> = {
         label: "Expense Type",
         placeholder: "Select type",
         helpText: "Choose whether this expense is fixed or variable.",
-        type: "select",
+        inputType: "select",
         defaultValue: ExpenseType.fixed,
         rules: yup
             .mixed<ExpenseType>()
@@ -51,7 +51,7 @@ export const expenseFields: Record<keyof ExpensePartial, FieldData> = {
         label: "Frequency",
         placeholder: "Select frequency",
         helpText: "Specify how often this expense occurs.",
-        type: "select",
+        inputType: "select",
         defaultValue: ExpenseFrequency.annually,
         rules: yup
             .mixed<ExpenseFrequency>()
@@ -68,14 +68,14 @@ export const expenseFields: Record<keyof ExpensePartial, FieldData> = {
         name: "isEssential",
         label: "Essential Expense",
         helpText: "Mark this expense as essential if it is critical for your budget.",
-        type: "checkbox",
+        inputType: "checkbox",
         defaultValue: true,
     },
     isTaxDeductible: {
         name: "isTaxDeductible",
         label: "Tax Deductible",
         helpText: "Check this if the expense is tax deductible.",
-        type: "checkbox",
+        inputType: "checkbox",
         defaultValue: false,
     },
 };
