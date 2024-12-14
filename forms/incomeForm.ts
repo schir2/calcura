@@ -12,9 +12,9 @@ import {
     MIN_GROWTH_RATE,
     MIN_NAME_LENGTH,
 } from '~/models/income/IncomeConstants';
-import type {Income} from "~/models/income/Income";
+import type {IncomePartial} from "~/models/income/Income";
 
-export const incomeFields: Record<keyof Income, FieldData> = {
+export const incomeFields: Record<keyof IncomePartial, FieldData> = {
     name: {
         name: 'name',
         label: 'Income Name',
