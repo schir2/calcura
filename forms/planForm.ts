@@ -1,6 +1,7 @@
 import * as yup from "yup";
 import type {NumberField, SelectField, Field} from "~/interfaces/FieldData";
 import {MAX_NAME_LENGTH, MIN_NAME_LENGTH} from "~/constants/incomeConstants";
+import {createSchema} from "~/utils/schemaUtils";
 
 export const planForm: Record<string, Field | NumberField | SelectField> = {
     name: {
@@ -125,3 +126,5 @@ export const planForm: Record<string, Field | NumberField | SelectField> = {
             .max(MAX_TAX_RATE, 'Tax rate must be 100% or less.'),
     },
 }
+
+export const planFormSchema = createSchema(planForm)

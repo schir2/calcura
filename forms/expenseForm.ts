@@ -1,17 +1,18 @@
 import * as yup from "yup";
 import type {ExpensePartial} from "~/models/expense/Expense";
-import {ExpenseType, ExpenseFrequency} from "~/models/expense/Expense";
-import type {FieldData} from "~/interfaces/FieldData";
+import {ExpenseFrequency, ExpenseType} from "~/models/expense/Expense";
+import type {Field, NumberField, SelectField} from "~/interfaces/FieldData";
 import {EXPENSE_NAME_MAX_LENGTH, EXPENSE_NAME_MIN_LENGTH, MAX_EXPENSE_AMOUNT, MIN_EXPENSE_AMOUNT,} from "~/models/expense/ExpenseConstants";
+import {createSchema} from "~/utils/schemaUtils";
+import type {IncomePartial} from "~/models/income/Income";
+import {incomeFields} from "~/forms/incomeForm";
 
-export const expenseFields: Record<keyof ExpensePartial, FieldData> = {
+export const expenseFields: Record<keyof ExpensePartial, Field | SelectField | NumberField> = {
     name: {
         name: "name",
         label: "Expense Name",
         placeholder: "Enter expense name",
         helpText: "Provide a descriptive name for this expense.",
-        inputType: "text",
-        defaultValue: "Simple Expense",
         rules: yup
             .string()
             .required("Expense name is required")
@@ -23,8 +24,6 @@ export const expenseFields: Record<keyof ExpensePartial, FieldData> = {
         label: "Expense Amount",
         placeholder: "Enter amount",
         helpText: "The monetary value of the expense.",
-        inputType: "number",
-        defaultValue: 0,
         rules: yup
             .number()
             .required("Expense amount is required")
@@ -36,8 +35,6 @@ export const expenseFields: Record<keyof ExpensePartial, FieldData> = {
         label: "Expense Type",
         placeholder: "Select type",
         helpText: "Choose whether this expense is fixed or variable.",
-        inputType: "select",
-        defaultValue: ExpenseType.fixed,
         rules: yup
             .mixed<ExpenseType>()
             .required("Expense type is required"),
@@ -51,8 +48,6 @@ export const expenseFields: Record<keyof ExpensePartial, FieldData> = {
         label: "Frequency",
         placeholder: "Select frequency",
         helpText: "Specify how often this expense occurs.",
-        inputType: "select",
-        defaultValue: ExpenseFrequency.annually,
         rules: yup
             .mixed<ExpenseFrequency>()
             .required("Frequency is required"),
@@ -68,14 +63,12 @@ export const expenseFields: Record<keyof ExpensePartial, FieldData> = {
         name: "isEssential",
         label: "Essential Expense",
         helpText: "Mark this expense as essential if it is critical for your budget.",
-        inputType: "checkbox",
-        defaultValue: true,
     },
     isTaxDeductible: {
         name: "isTaxDeductible",
         label: "Tax Deductible",
         helpText: "Check this if the expense is tax deductible.",
-        inputType: "checkbox",
-        defaultValue: false,
     },
 };
+
+export const expenseFormSchema = createSchema<IncomePartial>(incomeFields);
