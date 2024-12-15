@@ -1,12 +1,11 @@
 <template>
   <n-thing>
-    <PlanModal
-        v-if="isModalOpen && activePlanPartial"
-        :planPartial="activePlanPartial"
-        @create="handleCreate"
-        @close="handleClose"
-        mode="create"
-    />
+    <n-modal v-model:show="showModal">
+      <PlanForm :planPartial="activePlanPartial" mode="create"
+                @create="handleCreate"
+                @cancel="handleClose"
+      />
+    </n-modal>
     <template #header>
       Add Plan
     </template>
@@ -26,14 +25,14 @@ import type {PlanTemplate} from "~/models/plan/PlanTemplate";
 import {usePlanTemplateService} from "~/composables/api/usePlanTemplateService";
 import {processTemplate} from "~/utils/templateProcessorUtils";
 
-const isModalOpen = ref(false);
+const showModal = ref(false);
 const activePlanPartial = ref<PlanPartial | null>()
 const planTemplateService = usePlanTemplateService()
 const planTemplates = ref<PlanPartial[]>([])
 
 function handleOpenModal(planTemplate: Partial<Plan>) {
   activePlanPartial.value = planTemplate
-  isModalOpen.value = true;
+  showModal.value = true;
 }
 
 async function loadPlanTemplates() {
@@ -47,13 +46,13 @@ onMounted(async () => {
 
 const emit = defineEmits(['create'])
 
-function handleCreate(planTemplate: Partial<Plan>) {
-  emit('create', planTemplate)
-  isModalOpen.value = false;
+function handleCreate(planPartial: Partial<Plan>) {
+  emit('create', planPartial)
+  showModal.value = false;
 }
 
 function handleClose() {
-  isModalOpen.value = false
+  showModal.value = false
 }
 
 </script>
