@@ -5,52 +5,46 @@
     </Teleport>
   </ClientOnly>
   <div v-if="plan" class="col-span-4 space-y-6">
-      <IncomeList v-if="plan.incomes" :incomes="plan.incomes"
-                  @create="handleCreateIncome"
-                  @update="handleUpdateIncome"
-                  @delete="handleDeleteIncome"
-                  @remove="handleRemoveIncome"
-      />
-    <CommonCard class="space-y-6 bg-skin-muted">
-      <DebtList v-if="plan.debts" :debts="plan.debts"
-                @createDebt="handleCreateDebt"
-                @updateDebt="handleUpdateDebt"
-                @deleteDebt="handleDeleteDebt"
-      ></DebtList>
-    </CommonCard>
+    <IncomeList v-if="plan.incomes" :incomes="plan.incomes"
+                @create="handleCreateIncome"
+                @update="handleUpdateIncome"
+                @delete="handleDeleteIncome"
+                @remove="handleRemoveIncome"
+    />
+    <DebtList v-if="plan.debts" :debts="plan.debts"
+              @createDebt="handleCreateDebt"
+              @updateDebt="handleUpdateDebt"
+              @deleteDebt="handleDeleteDebt"
+    ></DebtList>
 
-    <CommonCard class="space-y-6 bg-skin-muted">
 
-      <ExpenseList v-if="plan.expenses" :expenses="plan.expenses"
-                   @createExpense="handleCreateExpense"
-                   @updateExpense="handleUpdateExpense"
-                   @deleteExpense="handleDeleteExpense"
-      />
-    </CommonCard>
-    <CommonCard class="space-y-6 bg-skin-muted">
+    <ExpenseList v-if="plan.expenses" :expenses="plan.expenses"
+                 @create="handleCreateExpense"
+                 @update="handleUpdateExpense"
+                 @delete="handleDeleteExpense"
+                 @remove="handleRemoveExpense"
+    />
 
-      <CashReserveList v-if="plan.cashReserves" :cashReserves="plan.cashReserves"
-                       @createCashReserve="handleCreateCashReserve"
-                       @updateCashReserve="handleUpdateCashReserve"
-                       @deleteCashReserve="handleDeleteCashReserve"
-      />
-    </CommonCard>
-    <CommonCard class="space-y-6 bg-skin-muted">
+    <CashReserveList v-if="plan.cashReserves" :cashReserves="plan.cashReserves"
+                     @createCashReserve="handleCreateCashReserve"
+                     @updateCashReserve="handleUpdateCashReserve"
+                     @deleteCashReserve="handleDeleteCashReserve"
+    />
 
-      <BrokerageInvestmentList v-if="plan.brokerageInvestments" :brokerageInvestments="plan.brokerageInvestments"
-                               @createBrokerageInvestment="handleCreateBrokerageInvestment"
-                               @updateBrokerageInvestment="handleUpdateBrokerageInvestment"
-                               @deleteBrokerageInvestment="handleDeleteBrokerageInvestment"
-      />
-    </CommonCard>
-    <CommonCard class="space-y-6 bg-skin-muted">
 
-      <IraInvestmentList v-if="plan.iraInvestments" :iraInvestments="plan.iraInvestments"
-                         @createIraInvestment="handleCreateIraInvestment"
-                         @updateIraInvestment="handleUpdateIraInvestment"
-                         @deleteIraInvestment="handleDeleteIraInvestment"
-      />
-    </CommonCard>
+    <BrokerageInvestmentList v-if="plan.brokerageInvestments" :brokerageInvestments="plan.brokerageInvestments"
+                             @createBrokerageInvestment="handleCreateBrokerageInvestment"
+                             @updateBrokerageInvestment="handleUpdateBrokerageInvestment"
+                             @deleteBrokerageInvestment="handleDeleteBrokerageInvestment"
+    />
+
+
+    <IraInvestmentList v-if="plan.iraInvestments" :iraInvestments="plan.iraInvestments"
+                       @createIraInvestment="handleCreateIraInvestment"
+                       @updateIraInvestment="handleUpdateIraInvestment"
+                       @deleteIraInvestment="handleDeleteIraInvestment"
+    />
+
   </div>
 </template>
 <script setup lang="ts">
@@ -58,12 +52,11 @@ import PlanManager from "~/models/plan/PlanManager";
 import type {PlanState} from "~/models/plan/PlanState";
 import {defaultDebtFactory} from "~/models/debt/DebtFactories";
 import type {Debt} from "~/models/debt/Debt";
-import type {Expense} from "~/models/expense/Expense"
+import type {Expense, ExpenseTemplate} from "~/models/expense/Expense"
 import type {Plan} from "~/models/plan/Plan";
 import {defaultCashReserveFactory} from "~/models/cashReserve/CashReserveFactories";
 import type {CashReserve} from "~/models/cashReserve/CashReserve";
 import {defaultBrokerageInvestmentFactory} from "~/models/brokerageInvestment/BrokerageInvestmentFactories";
-import {defaultExpenseFactory} from "~/models/expense/ExpenseFactories";
 import {defaultTaxDeferredInvestmentFactory} from "~/models/taxDeferredInvestment/TaxDeferredInvestmentFactories";
 import type {IraInvestment} from "~/models/iraInvestment/IraInvestment";
 import type {TaxDeferredInvestment} from "~/models/taxDeferredInvestment/TaxDeferredInvestment";
@@ -128,23 +121,6 @@ async function handleUpdateCashReserve(cashReserve: CashReserve) {
   await loadPlan();
 }
 
-async function handleCreateExpense() {
-  const expenseConfig = defaultExpenseFactory();
-  const expense = await expenseService.create(expenseConfig)
-  await planService.addRelatedModel(planId, 'expenses', expense.id)
-  await loadPlan();
-}
-
-async function handleDeleteExpense(index: number) {
-  await expenseService.delete(index)
-  await loadPlan();
-}
-
-async function handleUpdateExpense(expense: Expense) {
-  await expenseService.update(expense.id, expense)
-  await loadPlan();
-}
-
 async function handleCreateIncome(incomeTemplate: IncomeTemplate) {
   const income = await incomeService.create(incomeTemplate)
   await planService.addRelatedModel(planId, 'incomes', income.id)
@@ -163,6 +139,28 @@ async function handleUpdateIncome(income: Income) {
 
 async function handleRemoveIncome(income: Income) {
   await planService.removeRelatedModel(planId, 'incomes', income.id)
+  await loadPlan();
+}
+
+
+async function handleCreateExpense(expenseTemplate: ExpenseTemplate) {
+  const expense = await expenseService.create(expenseTemplate)
+  await planService.addRelatedModel(planId, 'expenses', expense.id)
+  await loadPlan();
+}
+
+async function handleDeleteExpense(expense: Expense) {
+  await expenseService.delete(expense.id)
+  await loadPlan();
+}
+
+async function handleUpdateExpense(expense: Expense) {
+  await expenseService.update(expense.id, expense)
+  await loadPlan();
+}
+
+async function handleRemoveExpense(expense: Expense) {
+  await planService.removeRelatedModel(planId, 'expenses', expense.id)
   await loadPlan();
 }
 
