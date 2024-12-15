@@ -19,6 +19,7 @@ export function createBaseService<T>(api: $Fetch, resource: string) {
                 method: 'POST',
                 body: toSnakeCase(data),
             });
+            console.debug(`Created ${resource}`, response)
             return toCamelCase(response);
         },
 
@@ -27,6 +28,7 @@ export function createBaseService<T>(api: $Fetch, resource: string) {
                 method: 'PUT',
                 body: toSnakeCase(data),
             });
+            console.debug(`Updated ${resource}`,response)
             return toCamelCase(response);
         },
 
