@@ -1,13 +1,16 @@
 <template>
   <n-card title="Income(s)">
     <template #header-extra>
-      <IncomeTemplatePicker @save="handleCreateIncome"/>
+      <IncomeTemplatePicker @create="handleCreate"/>
     </template>
     <n-list>
       <IncomeListItem v-for="(income, index) in incomes" :income="income" :key="income.id"
-                      @delete="handleDeleteIncome" @update="handleUpdateIncome"
-                      @remove="handleRemoveIncome"></IncomeListItem>
+                      @delete="handleDelete" @update="handleUpdate" @create="handleCreate"
+                      @remove="handleRemove"></IncomeListItem>
     </n-list>
+
+
+
   </n-card>
 
 </template>
@@ -23,19 +26,19 @@ const props = defineProps<Props>()
 
 const emit = defineEmits(['delete', 'update', 'create', 'remove']);
 
-function handleDeleteIncome(income: Income) {
+function handleDelete(income: Income) {
   emit('delete', income);
 }
 
-function handleCreateIncome(incomeTemplate: IncomeTemplate) {
+function handleCreate(incomeTemplate: IncomeTemplate) {
   emit('create', incomeTemplate);
 }
 
-function handleUpdateIncome(income: Income) {
+function handleUpdate(income: Income) {
   emit('update', income);
 }
 
-function handleRemoveIncome(income: Income) {
+function handleRemove(income: Income) {
   emit('remove', income)
 }
 
