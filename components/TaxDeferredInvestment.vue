@@ -42,7 +42,7 @@
 
 </template>
 <script setup lang="ts">
-import { useEntityManager } from '~/composables/useEntityManager';
+import { useEntityManager } from '~/composables/api/useEntityManager';
 import { taxDeferredInvestmentFields } from '~/forms/taxDeferredInvestmentForm';
 import type { TaxDeferredInvestment } from '~/models/taxDeferredInvestment/TaxDeferredInvestment';
 
