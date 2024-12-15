@@ -32,7 +32,7 @@
           :to="currentAmount"
           :duration="1000"
       />
-      <FormSelect :model="currentExpenseConfig" :field="fieldMetadata.type"></FormSelect>
+      <FormSelect :model="currentExpenseConfig" :field="fieldMetadata.expenseType"></FormSelect>
       <FormToggle :model="currentExpenseConfig" :field="fieldMetadata.isEssential"></FormToggle>
       <FormToggle :model="currentExpenseConfig" :field="fieldMetadata.isTaxDeductible"></FormToggle>
     </CommonCard>
@@ -69,8 +69,6 @@ const currentAmount = computed(() => getAnnualExpenseAmount(currentExpenseConfig
 watch(
     currentExpenseConfig,
     (newConfig: Expense, oldConfig: Expense) => {
-      console.log(newConfig)
-      console.log(oldConfig)
       if (expense){
       prevAmount.value = getAnnualExpenseAmount(oldConfig);
     }
