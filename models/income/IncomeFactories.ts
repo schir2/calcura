@@ -1,4 +1,4 @@
-import {DEFAULT_GROSS_INCOME, DEFAULT_GROWTH_RATE, DEFAULT_INCOME_NAME, DEFAULT_INCOME_TYPE} from "~/models/income/IncomeConstants";
+import {DEFAULT_GROSS_INCOME, DEFAULT_GROWTH_RATE, DEFAULT_INCOME_NAME, DEFAULT_INCOME_TYPE} from "~/constants/incomeConstants";
 import type {Income} from "~/models/income/Income";
 
 

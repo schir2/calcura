@@ -23,17 +23,14 @@ export interface Plan {
     inflationRate: number;
     allowNegativeDisposableIncome: AllowNegativeDisposableIncome;
     growthApplicationStrategy: GrowthApplicationStrategy
-
     taxStrategy: IncomeTaxStrategy
     taxRate: number
-
     lifeExpectancy: number;
     retirementStrategy: RetirementStrategy;
     retirementWithdrawalRate: number;
     retirementIncomeGoal: number;
     retirementAge: number;
     retirementSavingsAmount: number;
-
     cashReserves: CashReserve[]
     incomes: Income[]
     expenses: Expense[]
@@ -44,3 +41,27 @@ export interface Plan {
 }
 
 export type PlanPartial = Partial<Omit<Plan, 'id'>>
+
+export const planDefaults: PlanPartial = {
+    name: "Retirement Plan",
+    age: 30,
+    year: new Date().getFullYear(),
+    inflationRate: 3,
+    allowNegativeDisposableIncome: "none",
+    growthApplicationStrategy: "start",
+    taxStrategy: "simple",
+    taxRate: 2.5,
+    lifeExpectancy: 85,
+    retirementStrategy: "age",
+    retirementWithdrawalRate: 4,
+    retirementIncomeGoal: 50000,
+    retirementAge: 65,
+    retirementSavingsAmount: 200000,
+    cashReserves: [],
+    incomes: [],
+    expenses: [],
+    debts: [],
+    taxDeferredInvestments: [],
+    brokerageInvestments: [],
+    iraInvestments: [],
+};

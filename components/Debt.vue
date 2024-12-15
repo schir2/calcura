@@ -12,19 +12,19 @@
     </div>
     <Form>
 
-          <FormTextInput :field="fieldMetadata.name" :model="currentDebtConfig"></FormTextInput>
+          <FormTextInput :field="fieldMetadata.name" :modelValue="currentDebtConfig"></FormTextInput>
           <FormSelect :field="fieldMetadata.paymentStrategy" :model="currentDebtConfig"></FormSelect>
-          <FormTextInput :field="fieldMetadata.principal" :model="currentDebtConfig"></FormTextInput>
-          <FormTextInput :field="fieldMetadata.interestRate" :model="currentDebtConfig"></FormTextInput>
-          <FormTextInput :field="fieldMetadata.paymentMinimum" :model="currentDebtConfig"></FormTextInput>
-          <FormTextInput v-if="currentDebtConfig.paymentStrategy === 'percentage_of_debt'" :field="fieldMetadata.paymentPercentage" :model="currentDebtConfig"></FormTextInput>
-          <FormTextInput v-if="currentDebtConfig.paymentStrategy ==='fixed'" :field="fieldMetadata.paymentFixedAmount" :model="currentDebtConfig"></FormTextInput>
+          <FormTextInput :field="fieldMetadata.principal" :modelValue="currentDebtConfig"></FormTextInput>
+          <FormTextInput :field="fieldMetadata.interestRate" :modelValue="currentDebtConfig"></FormTextInput>
+          <FormTextInput :field="fieldMetadata.paymentMinimum" :modelValue="currentDebtConfig"></FormTextInput>
+          <FormTextInput v-if="currentDebtConfig.paymentStrategy === 'percentage_of_debt'" :field="fieldMetadata.paymentPercentage" :modelValue="currentDebtConfig"></FormTextInput>
+          <FormTextInput v-if="currentDebtConfig.paymentStrategy ==='fixed'" :field="fieldMetadata.paymentFixedAmount" :modelValue="currentDebtConfig"></FormTextInput>
     </Form>
   </CommonCard>
 
 </template>
 <script setup lang="ts">
-import {useEntityManager} from '~/composables/useEntityManager';
+import {useEntityManager} from '~/composables/api/useEntityManager';
 import {debtFields} from '~/forms/debtForm';
 import type {Debt} from '~/models/debt/Debt';
 

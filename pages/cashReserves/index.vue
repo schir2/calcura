@@ -9,7 +9,7 @@
 import {defaultCashReserveFactory} from "~/models/cashReserve/CashReserveFactories";
 import type {CashReserve} from "~/models/cashReserve/CashReserve";
 
-import {useCashReserveService} from "~/composables/useCashReserveService";
+import {useCashReserveService} from "~/composables/api/useCashReserveService";
 
 const cashReserveService = useCashReserveService();
 

@@ -8,17 +8,17 @@
     </div>
     <Form class="space-y-6">
       <div class="grid grid-cols-3 gap-3">
-        <FormTextInput :model="iraInvestment" :field="fieldMetadata.name"/>
+        <FormTextInput :modelValue="iraInvestment" :field="fieldMetadata.name"/>
         <FormToggle :model="iraInvestment" :field="fieldMetadata.isContributionTaxDeferred"/>
-        <FormTextInput :model="iraInvestment" :field="fieldMetadata.initialBalance"/>
-        <FormTextInput :model="iraInvestment" v-show="showAdvancedOptions" :field="fieldMetadata.growthRate"/>
+        <FormTextInput :modelValue="iraInvestment" :field="fieldMetadata.initialBalance"/>
+        <FormTextInput :modelValue="iraInvestment" v-show="showAdvancedOptions" :field="fieldMetadata.growthRate"/>
       </div>
       <section>
         <h3 class="text-xl">Contributions</h3>
         <div class="grid grid-cols-3 gap-3">
           <FormSelect :model="iraInvestment" :field="fieldMetadata.contributionStrategy"/>
-          <FormTextInput :model="iraInvestment" :field="fieldMetadata.contributionPercentage"/>
-          <FormTextInput :model="iraInvestment" :field="fieldMetadata.contributionFixedAmount"/>
+          <FormTextInput :modelValue="iraInvestment" :field="fieldMetadata.contributionPercentage"/>
+          <FormTextInput :modelValue="iraInvestment" :field="fieldMetadata.contributionFixedAmount"/>
         </div>
       </section>
     </Form>
@@ -26,7 +26,7 @@
 
 </template>
 <script setup lang="ts">
-import {useEntityManager} from '~/composables/useEntityManager';
+import {useEntityManager} from '~/composables/api/useEntityManager';
 import {iraInvestmentFields} from '~/forms/iraInvestmentForm';
 import type {IraInvestment} from '~/models/iraInvestment/IraInvestment';
 

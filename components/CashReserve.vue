@@ -10,23 +10,23 @@
       </n-button-group>
     </div>
     <Form>
-          <FormTextInput :field="fieldMetadata.name" :model="currentCashReserveConfig"></FormTextInput>
-          <FormTextInput :field="fieldMetadata.initialAmount" :model="currentCashReserveConfig"></FormTextInput>
+          <FormTextInput :field="fieldMetadata.name" :modelValue="currentCashReserveConfig"></FormTextInput>
+          <FormTextInput :field="fieldMetadata.initialAmount" :modelValue="currentCashReserveConfig"></FormTextInput>
           <FormSelect :field="fieldMetadata.cashReserveStrategy" :model="currentCashReserveConfig"></FormSelect>
           <FormTextInput
               v-if="currentCashReserveConfig.cashReserveStrategy === 'fixed'"
               :field="fieldMetadata.reserveAmount"
-              :model="currentCashReserveConfig"></FormTextInput>
+              :modelValue="currentCashReserveConfig"></FormTextInput>
           <FormTextInput
               v-if="currentCashReserveConfig.cashReserveStrategy === 'variable'"
               :field="fieldMetadata.reserveMonths"
-              :model="currentCashReserveConfig"></FormTextInput>
+              :modelValue="currentCashReserveConfig"></FormTextInput>
     </Form>
   </CommonCard>
 
 </template>
 <script setup lang="ts">
-import {useEntityManager} from '~/composables/useEntityManager';
+import {useEntityManager} from '~/composables/api/useEntityManager';
 import {cashReserveFields} from '~/forms/cashReserveForm';
 import type {CashReserve} from '~/models/cashReserve/CashReserve';
 

@@ -2,8 +2,7 @@
   <div class="flex flex-col gap-1">
 
     <FormLabel v-if="field.label" :label="field.label"/>
-    <n-input-number v-if="field.inputType !== 'select'"
-                    :name="field.name"
+    <n-input-number :name="field.name"
                     v-model:value="value"
                     :placeholder="field.placeholder"
                     :disabled="field.disabled"
@@ -52,5 +51,4 @@ function getMinMaxFromRules(rules): Record<'min' | 'max', undefined | number> {
 }
 
 const {min, max} = getMinMaxFromRules(props.field.rules);
-console.log(min, max)
 </script>

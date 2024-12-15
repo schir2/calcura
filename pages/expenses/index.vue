@@ -9,7 +9,7 @@
 import {defaultExpenseFactory} from "~/models/expense/ExpenseFactories";
 import type {Expense} from "~/models/expense/Expense";
 
-import {useExpenseService} from "~/composables/useExpenseService";
+import {useExpenseService} from "~/composables/api/useExpenseService";
 
 const expenseService = useExpenseService();
 

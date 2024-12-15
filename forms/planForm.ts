@@ -1,36 +1,13 @@
 import * as yup from "yup";
-import type {FieldData} from "~/interfaces/FieldData";
-import {MAX_NAME_LENGTH, MIN_NAME_LENGTH} from "~/models/income/IncomeConstants";
-import {
-    DEFAULT_AGE,
-    DEFAULT_RETIREMENT_AGE,
-    DEFAULT_RETIREMENT_INCOME_GOAL,
-    DEFAULT_RETIREMENT_LIFE_EXPECTANCY,
-    DEFAULT_RETIREMENT_PLAN_NAME,
-    DEFAULT_RETIREMENT_SAVINGS_AMOUNT,
-    DEFAULT_RETIREMENT_WITHDRAWAL_RATE,
-    DEFAULT_TAX_STRATEGY, DEFAULT_YEAR,
-    MAX_RETIREMENT_AGE_FOR_WITHDRAWAL,
-    MAX_RETIREMENT_INCOME_GOAL,
-    MAX_RETIREMENT_LIFE_EXPECTANCY,
-    MAX_RETIREMENT_SAVINGS_AMOUNT,
-    MAX_RETIREMENT_WITHDRAWAL_RATE,
-    MAX_TAX_RATE,
-    MIN_RETIREMENT_AGE_FOR_WITHDRAWAL,
-    MIN_RETIREMENT_INCOME_GOAL,
-    MIN_RETIREMENT_LIFE_EXPECTANCY,
-    MIN_RETIREMENT_WITHDRAWAL_RATE,
-    MIN_TAX_RATE
-} from "~/models/plan/PlanConstants";
+import type {NumberField, SelectField, Field} from "~/interfaces/FieldData";
+import {MAX_NAME_LENGTH, MIN_NAME_LENGTH} from "~/constants/incomeConstants";
 
-export const planFields: Record<string, FieldData> = {
+export const planForm: Record<string, Field | NumberField | SelectField> = {
     name: {
         name: 'name',
         label: 'Name',
         placeholder: 'Enter income name',
-        helpText: 'Enter a descriptive name for this income source.',
-        inputType: 'text',
-        defaultValue: DEFAULT_RETIREMENT_PLAN_NAME,
+        helpText: `Enter a name between ${MIN_NAME_LENGTH} and ${MAX_NAME_LENGTH} characters long`,
         rules: yup
             .string()
             .required('Name is required')
@@ -41,18 +18,14 @@ export const planFields: Record<string, FieldData> = {
         name: "age",
         label: 'Age',
         placeholder: 'Enter Starting Age',
-        helpText: 'Enter the age at which you wich to start your retirement journey',
-        inputType: 'number',
-        defaultValue: DEFAULT_AGE,
-        rules: yup.number().min(1).max(120)
+        helpText: `Enter an age between ${MIN_AGE} and ${MAX_AGE} years.`,
+        rules: yup.number().min(MIN_AGE).max(MAX_AGE)
     },
     year: {
         name: "year",
         label: 'Year',
         placeholder: 'Enter Starting Year',
         helpText: 'Enter the year in the retirement journey',
-        inputType: 'number',
-        defaultValue: DEFAULT_YEAR,
         rules: yup.number().min(2000),
 
     },
@@ -62,8 +35,6 @@ export const planFields: Record<string, FieldData> = {
         placeholder: "Enter your estimated life expectancy",
         helpText: "This is the age to which you expect to live.",
         resourceId: "life-expectancy",
-        inputType: "number",
-        defaultValue: DEFAULT_RETIREMENT_LIFE_EXPECTANCY,
         rules: yup
             .number()
             .required("Life expectancy is required")
@@ -76,14 +47,12 @@ export const planFields: Record<string, FieldData> = {
         placeholder: "Select your retirement strategy",
         helpText: "Choose the strategy you plan to follow for retirement.",
         resourceId: "retirement-strategy",
-        inputType: "select",
-        defaultValue: "age",
         rules: yup.mixed().required("Retirement strategy is required"),
         options: [
             {label: 'Age', value: 'age'},
-            {label: 'Debt Free', value: 'debtFree'},
-            {label: 'Percent Rule', value: 'percentRule'},
-            {label: 'Savings Amount', value: 'targetSavings'}
+            {label: 'Debt Free', value: 'debt_free'},
+            {label: 'Percent Rule', value: 'percent_rule'},
+            {label: 'Savings Amount', value: 'target_savings'}
         ],
     },
     retirementWithdrawalRate: {
@@ -92,8 +61,6 @@ export const planFields: Record<string, FieldData> = {
         placeholder: "Enter your planned withdrawal rate",
         helpText: "The percentage of your retirement savings you plan to withdraw annually.",
         resourceId: "retirement-withdrawal-rate",
-        inputType: "number",
-        defaultValue: DEFAULT_RETIREMENT_WITHDRAWAL_RATE,
         rules: yup
             .number()
             .required("Withdrawal rate is required")
@@ -106,8 +73,6 @@ export const planFields: Record<string, FieldData> = {
         placeholder: "Enter your desired annual retirement income",
         helpText: "The amount of money you want to have as annual income during retirement.",
         resourceId: "retirement-income-goal",
-        inputType: "number",
-        defaultValue: DEFAULT_RETIREMENT_INCOME_GOAL,
         rules: yup
             .number()
             .required("Retirement income goal is required")
@@ -120,8 +85,6 @@ export const planFields: Record<string, FieldData> = {
         placeholder: "Enter your desired retirement age",
         helpText: "The age at which you plan to retire.",
         resourceId: "retirement-age-goal",
-        inputType: "number",
-        defaultValue: DEFAULT_RETIREMENT_AGE,
         rules: yup
             .number()
             .required("Retirement age is required")
@@ -134,8 +97,6 @@ export const planFields: Record<string, FieldData> = {
         placeholder: "Enter your current retirement savings amount",
         helpText: "The total amount of savings you currently have set aside for retirement.",
         resourceId: "retirement-savings-amount",
-        inputType: "number",
-        defaultValue: DEFAULT_RETIREMENT_SAVINGS_AMOUNT,
         rules: yup
             .number()
             .required("Retirement savings amount is required")
@@ -147,8 +108,6 @@ export const planFields: Record<string, FieldData> = {
         label: 'Tax Strategy',
         placeholder: 'Select tax strategy',
         helpText: 'Select how this income is taxed.',
-        inputType: 'select',
-        defaultValue: DEFAULT_TAX_STRATEGY,
         rules: yup.mixed().required('Tax strategy is required'),
         options: [
             {label: "Simple", value: 'simple'}
@@ -159,8 +118,6 @@ export const planFields: Record<string, FieldData> = {
         label: 'Tax Rate (%)',
         placeholder: 'Enter tax rate',
         helpText: 'Effective tax rate for this income.',
-        inputType: 'number',
-        defaultValue: 0, // Defaulting to 0%
         rules: yup
             .number()
             .required('Tax rate is required')
@@ -168,4 +125,3 @@ export const planFields: Record<string, FieldData> = {
             .max(MAX_TAX_RATE, 'Tax rate must be 100% or less.'),
     },
 }
-

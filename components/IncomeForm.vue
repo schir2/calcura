@@ -1,10 +1,10 @@
 <template>
 <Form>
-  <FormTextInput :field="incomeFields.name" :model="incomePartial"></FormTextInput>
+  <FormTextInput :field="incomeFields.name" :modelValue="incomePartial"></FormTextInput>
   <FormSelect :field="incomeFields.incomeType" :model="incomePartial"></FormSelect>
   <FormSelect :field="incomeFields.frequency" :model="incomePartial"></FormSelect>
-  <FormTextInput :field="incomeFields.grossIncome" :model="incomePartial"></FormTextInput>
-  <FormTextInput :field="incomeFields.growthRate" :model="incomePartial"></FormTextInput>
+  <FormTextInput :field="incomeFields.grossIncome" :modelValue="incomePartial"></FormTextInput>
+  <FormTextInput :field="incomeFields.growthRate" :modelValue="incomePartial"></FormTextInput>
 </Form>
 </template>
 <script lang="ts" setup>

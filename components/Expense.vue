@@ -24,9 +24,9 @@
       </n-button-group>
     </div>
     <CommonCard>
-      <FormTextInput :model="currentExpenseConfig" :field="fieldMetadata.name"></FormTextInput>
+      <FormTextInput :modelValue="currentExpenseConfig" :field="fieldMetadata.name"></FormTextInput>
       <FormSelect :model="currentExpenseConfig" :field="fieldMetadata.frequency"></FormSelect>
-      <FormTextInput :model="currentExpenseConfig" :field="fieldMetadata.amount"></FormTextInput>
+      <FormTextInput :modelValue="currentExpenseConfig" :field="fieldMetadata.amount"></FormTextInput>
       <n-number-animation v-if="currentExpenseConfig && prevAmount && currentAmount"
           :from="prevAmount"
           :to="currentAmount"
@@ -39,7 +39,7 @@
   </Form>
 </template>
 <script setup lang="ts">
-import {useEntityManager} from '~/composables/useEntityManager';
+import {useEntityManager} from '~/composables/api/useEntityManager';
 import {expenseFields} from '~/forms/expenseForm';
 import type {Expense} from '~/models/expense/Expense';
 import {getAnnualExpenseAmount} from "~/utils/expenseUtils";

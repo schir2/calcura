@@ -9,7 +9,7 @@
 import {defaultDebtFactory} from "~/models/debt/DebtFactories";
 import type {Debt} from "~/models/debt/Debt";
 
-import {useDebtService} from "~/composables/useDebtService";
+import {useDebtService} from "~/composables/api/useDebtService";
 
 const debtService = useDebtService();
 

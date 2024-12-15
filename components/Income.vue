@@ -11,17 +11,17 @@
     </div>
     <Form>
       <section>
-          <FormTextInput :field="fieldMetadata.name" :model="currentIncomeConfig"></FormTextInput>
+          <FormTextInput :field="fieldMetadata.name" :modelValue="currentIncomeConfig"></FormTextInput>
           <FormSelect :field="fieldMetadata.incomeType" :model="currentIncomeConfig"></FormSelect>
-          <FormTextInput :field="fieldMetadata.grossIncome" :model="currentIncomeConfig"></FormTextInput>
-          <FormTextInput :field="fieldMetadata.growthRate" :model="currentIncomeConfig"></FormTextInput>
+          <FormTextInput :field="fieldMetadata.grossIncome" :modelValue="currentIncomeConfig"></FormTextInput>
+          <FormTextInput :field="fieldMetadata.growthRate" :modelValue="currentIncomeConfig"></FormTextInput>
       </section>
     </Form>
   </CommonCard>
 
 </template>
 <script setup lang="ts">
-import {useEntityManager} from '~/composables/useEntityManager';
+import {useEntityManager} from '~/composables/api/useEntityManager';
 import {incomeFields} from '~/forms/incomeForm';
 import type {Income} from '~/models/income/Income';
 

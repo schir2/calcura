@@ -1,20 +1,9 @@
 import * as yup from "yup";
-import type {FieldData, NumberField, TextField} from "~/interfaces/FieldData";
+import type {NumberField, SelectField, TextField} from "~/interfaces/FieldData";
 
-import {
-    DEFAULT_GROSS_INCOME,
-    DEFAULT_GROWTH_RATE,
-    DEFAULT_INCOME_FREQUENCY,
-    DEFAULT_INCOME_NAME,
-    MAX_GROWTH_RATE,
-    MAX_NAME_LENGTH,
-    MIN_GROSS_INCOME,
-    MIN_GROWTH_RATE,
-    MIN_NAME_LENGTH,
-} from '~/models/income/IncomeConstants';
 import type {IncomePartial} from "~/models/income/Income";
 
-const name:TextField = {
+const name: TextField = {
     name: 'name',
     label: 'Income Name',
     placeholder: 'Enter income name',
@@ -30,13 +19,12 @@ const name:TextField = {
 }
 
 export const incomeFields: Record<keyof IncomePartial, NumberField | TextField | SelectField> = {
-    name: {name
-    },
+    name: name,
     frequency: {
-        name:'frequency',
+        name: 'frequency',
         label: 'Frequency',
         placeholder: 'Enter income frequency',
-        helpText:'How often do you receive this income?',
+        helpText: 'How often do you receive this income?',
         inputType: 'text',
         defaultValue: DEFAULT_INCOME_FREQUENCY,
         options: [

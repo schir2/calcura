@@ -9,7 +9,7 @@
 import {defaultBrokerageInvestmentFactory} from "~/models/brokerageInvestment/BrokerageInvestmentFactories";
 import type {BrokerageInvestment} from "~/models/brokerageInvestment/BrokerageInvestment";
 
-import {useBrokerageInvestmentService} from "~/composables/useBrokerageInvestmentService";
+import {useBrokerageInvestmentService} from "~/composables/api/useBrokerageInvestmentService";
 
 const brokerageInvestmentService = useBrokerageInvestmentService();
 

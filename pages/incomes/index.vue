@@ -9,7 +9,7 @@
 import {defaultIncomeFactory} from "~/models/income/IncomeFactories";
 import type {Income} from "~/models/income/Income";
 
-import {useIncomeService} from "~/composables/useIncomeService";
+import {useIncomeService} from "~/composables/api/useIncomeService";
 
 const incomeService = useIncomeService();
 

@@ -8,16 +8,16 @@
     </div>
     <Form class="space-y-6">
       <div class="grid grid-cols-3 gap-3">
-        <FormTextInput :model="taxDeferredInvestment" :field="fieldMetadata.name"/>
-        <FormTextInput :model="taxDeferredInvestment" :field="fieldMetadata.initialBalance"/>
-        <FormTextInput :model="taxDeferredInvestment" v-show="showAdvancedOptions" :field="fieldMetadata.growthRate"/>
+        <FormTextInput :modelValue="taxDeferredInvestment" :field="fieldMetadata.name"/>
+        <FormTextInput :modelValue="taxDeferredInvestment" :field="fieldMetadata.initialBalance"/>
+        <FormTextInput :modelValue="taxDeferredInvestment" v-show="showAdvancedOptions" :field="fieldMetadata.growthRate"/>
       </div>
       <section>
         <h3 class="text-xl">Elective Contributions</h3>
         <div class="grid grid-cols-3 gap-3">
           <FormSelect :model="taxDeferredInvestment" :field="fieldMetadata.electiveContributionStrategy"/>
-          <FormTextInput :model="taxDeferredInvestment" :field="fieldMetadata.electiveContributionPercentage"/>
-          <FormTextInput :model="taxDeferredInvestment" :field="fieldMetadata.electiveContributionFixedAmount"/>
+          <FormTextInput :modelValue="taxDeferredInvestment" :field="fieldMetadata.electiveContributionPercentage"/>
+          <FormTextInput :modelValue="taxDeferredInvestment" :field="fieldMetadata.electiveContributionFixedAmount"/>
         </div>
         <FormToggle :model="taxDeferredInvestment" :field="fieldMetadata.employerContributes"/>
       </section>
@@ -30,10 +30,10 @@
           <h3 class="text-xl">Employer Contributions</h3>
           <div class="grid grid-cols-3 gap-3">
             <FormSelect :model="taxDeferredInvestment" :field="fieldMetadata.employerContributionStrategy"/>
-            <FormTextInput :model="taxDeferredInvestment" :field="fieldMetadata.employerCompensationMatchPercentage"/>
-            <FormTextInput :model="taxDeferredInvestment" :field="fieldMetadata.employerContributionFixedAmount"/>
-            <FormTextInput :model="taxDeferredInvestment" :field="fieldMetadata.employerMatchPercentage"/>
-            <FormTextInput :model="taxDeferredInvestment" :field="fieldMetadata.employerMatchPercentageLimit"/>
+            <FormTextInput :modelValue="taxDeferredInvestment" :field="fieldMetadata.employerCompensationMatchPercentage"/>
+            <FormTextInput :modelValue="taxDeferredInvestment" :field="fieldMetadata.employerContributionFixedAmount"/>
+            <FormTextInput :modelValue="taxDeferredInvestment" :field="fieldMetadata.employerMatchPercentage"/>
+            <FormTextInput :modelValue="taxDeferredInvestment" :field="fieldMetadata.employerMatchPercentageLimit"/>
           </div>
         </section>
       </transition>

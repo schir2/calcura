@@ -21,6 +21,12 @@ export default defineNuxtConfig({
       '@nuxt/icon',
       'nuxtjs-naive-ui',
     ],
+    imports: {
+        dirs: [
+            'constants',
+            'composables/**'
+        ]
+    },
     icon:{
         serverBundle: {
             collections: ['uil','mdi',]

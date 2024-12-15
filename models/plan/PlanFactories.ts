@@ -4,7 +4,7 @@ import {
     DEFAULT_EXPENSE_PLAN_NAME,
     DEFAULT_INFLATION_RATE,
     DEFAULT_RETIREMENT_AGE,
-    DEFAULT_RETIREMENT_LIFE_EXPECTANCY,
+    DEFAULT_LIFE_EXPECTANCY,
     DEFAULT_RETIREMENT_PLAN_STRATEGY,
     DEFAULT_RETIREMENT_WITHDRAWAL_RATE,
     DEFAULT_TAX_RATE,
@@ -16,7 +16,7 @@ import type {PlanPartial} from "~/models/plan/Plan";
 export function defaultPlanFactory(): PlanPartial {
     return {
         iraInvestments: [],
-        lifeExpectancy: DEFAULT_RETIREMENT_LIFE_EXPECTANCY,
+        lifeExpectancy: DEFAULT_LIFE_EXPECTANCY,
         retirementAge: DEFAULT_RETIREMENT_AGE,
         retirementIncomeGoal: 0,
         retirementSavingsAmount: 0,

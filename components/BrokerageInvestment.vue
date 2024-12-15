@@ -8,16 +8,16 @@
     </div>
     <Form class="space-y-6">
       <div class="grid grid-cols-3 gap-3">
-        <FormTextInput :model="brokerageInvestment" :field="fieldMetadata.name"/>
-        <FormTextInput :model="brokerageInvestment" :field="fieldMetadata.initialBalance"/>
-        <FormTextInput :model="brokerageInvestment" v-show="showAdvancedOptions" :field="fieldMetadata.growthRate"/>
+        <FormTextInput :modelValue="brokerageInvestment" :field="fieldMetadata.name"/>
+        <FormTextInput :modelValue="brokerageInvestment" :field="fieldMetadata.initialBalance"/>
+        <FormTextInput :modelValue="brokerageInvestment" v-show="showAdvancedOptions" :field="fieldMetadata.growthRate"/>
       </div>
       <section>
         <h3 class="text-xl">Contributions</h3>
         <div class="grid grid-cols-3 gap-3">
           <FormSelect :model="brokerageInvestment" :field="fieldMetadata.contributionStrategy"/>
-          <FormTextInput :model="brokerageInvestment" :field="fieldMetadata.contributionPercentage"/>
-          <FormTextInput :model="brokerageInvestment" :field="fieldMetadata.contributionFixedAmount"/>
+          <FormTextInput :modelValue="brokerageInvestment" :field="fieldMetadata.contributionPercentage"/>
+          <FormTextInput :modelValue="brokerageInvestment" :field="fieldMetadata.contributionFixedAmount"/>
         </div>
       </section>
     </Form>
@@ -25,7 +25,7 @@
 
 </template>
 <script setup lang="ts">
-import {useEntityManager} from '~/composables/useEntityManager';
+import {useEntityManager} from '~/composables/api/useEntityManager';
 import {brokerageInvestmentFields} from '~/forms/brokerageInvestmentForm';
 import type {BrokerageInvestment} from '~/models/brokerageInvestment/BrokerageInvestment';
 

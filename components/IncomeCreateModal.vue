@@ -7,7 +7,7 @@
       <template #default>
         <Form>
           <section>
-            <FormTextInput :field="fieldMetadata.name" :model="incomeTemplateRef"></FormTextInput>
+            <FormTextInput :field="fieldMetadata.name" :modelValue="incomeTemplateRef"></FormTextInput>
             <FormSelect :field="fieldMetadata.incomeType" :model="incomeTemplateRef"></FormSelect>
             <FormSelect :field="fieldMetadata.frequency" :model="incomeTemplateRef"></FormSelect>
             <FormNumberInput :field="fieldMetadata.grossIncome" :model="incomeTemplateRef"></FormNumberInput>

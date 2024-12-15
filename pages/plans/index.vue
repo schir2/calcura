@@ -1,26 +1,26 @@
 <template>
-  <PlanTemplatePicker @save="handleCreatePlan "/>
+  <PlanTemplatePicker @create="handleCreatePlan "/>
   <PlanList :plans="plans"
-            @createPlan="handleCreatePlan"
-            @updatePlan="handleUpdatePlan"
-            @deletePlan="handleDeletePlan"
+            @pcreate="handleCreatePlan"
+            @update="handleUpdatePlan"
+            @delete="handleDeletePlan"
   ></PlanList>
 </template>
 <script lang="ts" setup>
-import {usePlanService} from "~/composables/usePlanService";
-import type {Plan} from "~/models/plan/Plan";
-import type {PlanTemplate} from "~/models/plan/PlanTemplate";
+import {usePlanService} from "~/composables/api/usePlanService";
+import type {Plan, PlanPartial} from "~/models/plan/Plan";
 import PlanTemplatePicker from "~/components/PlanTemplatePicker.vue";
 
 const planService = usePlanService()
 
-async function handleCreatePlan(planTemplate: PlanTemplate) {
+async function handleCreatePlan(planTemplate: PlanPartial) {
   await planService.create(planTemplate)
+
   await loadPlans();
 }
 
-async function handleDeletePlan(index: number) {
-  await planService.delete(index)
+async function handleDeletePlan(plan: Plan) {
+  await planService.delete(plan.id)
   await loadPlans();
 }
 
