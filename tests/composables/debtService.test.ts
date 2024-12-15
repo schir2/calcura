@@ -1,5 +1,5 @@
 import { describe, expect, it, vi } from 'vitest';
-import { useDebtService } from '~/composables/useDebtService';
+import { useDebtService } from '~/composables/api/useDebtService';
 
 vi.mock('#app', () => ({
     useRuntimeConfig: () => ({
