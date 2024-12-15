@@ -30,8 +30,8 @@ export const expenseFields: Record<keyof ExpensePartial, Field | SelectField | N
             .min(MIN_EXPENSE_AMOUNT, `Amount must be at least $${MIN_EXPENSE_AMOUNT}.`)
             .max(MAX_EXPENSE_AMOUNT, `Amount must not exceed $${MAX_EXPENSE_AMOUNT}.`),
     },
-    type: {
-        name: "type",
+    expenseType: {
+        name: "expenseType",
         label: "Expense Type",
         placeholder: "Select type",
         helpText: "Choose whether this expense is fixed or variable.",
