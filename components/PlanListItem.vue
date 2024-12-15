@@ -1,12 +1,13 @@
 <template>
-  <PlanModal
-      v-if="isModalOpen && plan"
-      :planPartial="plan"
-      @create="handleCreate"
-      @update="handleUpdate"
-      @close="handleClose"
-      mode="edit"
-  />
+
+  <n-modal v-model:show="showModal">
+    <PlanForm :planPartial="plan" mode="edit"
+              @delete="handleDelete"
+              @create="handleCreate"
+              @update="handleUpdate"
+              @cancel="handleClose"
+    />
+  </n-modal>
   <n-thing>
     <template #header>
       <NuxtLink :to="{name: 'plans-id', params: {id: plan.id}}"><h3 class="text-2xl">Plan {{ plan.id }}:
@@ -14,7 +15,7 @@
     </template>
     <template #header-extra>
       <n-button-group size="small">
-        <n-button type="warning" secondary round @click="isModalOpen = true">
+        <n-button type="warning" secondary round @click="handleEdit">
           <template #icon>
             <Icon name="mdi:edit"/>
           </template>
@@ -50,24 +51,30 @@ interface Props {
 
 const props = defineProps<Props>()
 
-const isModalOpen = ref<boolean>(false)
+const showModal = ref<boolean>(false)
 
 const emit = defineEmits(['delete', 'update', 'create']);
 
-function handleDelete(plan: Plan) {
+function handleDelete() {
   emit('delete', props.plan);
 }
 
 function handleUpdate(plan: Partial<Plan>) {
   emit('update', plan)
+  showModal.value = false;
 }
 
 
-function handleCreate(plan: Partial<Plan>) {
-  emit('create', plan)
+function handleCreate(planPartial: Partial<Plan>) {
+  emit('create', planPartial)
+  showModal.value = false;
 }
 
 function handleClose() {
-  isModalOpen.value = false
+  showModal.value = false;
+}
+
+function handleEdit() {
+  showModal.value = true;
 }
 </script>
