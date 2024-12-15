@@ -12,3 +12,11 @@ export interface Income {
 }
 
 export type IncomePartial = Partial<Omit<Income, 'id'>>
+
+export const incomeDefaults: IncomePartial = {
+    name: "Income",
+    frequency: "annual",
+    grossIncome: 0,
+    growthRate: 0,
+    incomeType: "ordinary",
+}
