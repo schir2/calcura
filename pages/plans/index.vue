@@ -1,7 +1,7 @@
 <template>
   <PlanTemplatePicker @create="handleCreatePlan "/>
   <PlanList :plans="plans"
-            @pcreate="handleCreatePlan"
+            @duplicate="handleCreatePlan"
             @update="handleUpdatePlan"
             @delete="handleDeletePlan"
   ></PlanList>
@@ -15,7 +15,6 @@ const planService = usePlanService()
 
 async function handleCreatePlan(planTemplate: PlanPartial) {
   await planService.create(planTemplate)
-
   await loadPlans();
 }
 
@@ -27,6 +26,9 @@ async function handleDeletePlan(plan: Plan) {
 async function handleUpdatePlan(plan: Plan) {
   await planService.update(plan.id, plan)
   await loadPlans();
+}
+
+async function handleDuplicatePlan(plan: Plan) {
 }
 
 const plans = ref<Plan[]>([])
