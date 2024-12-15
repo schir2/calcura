@@ -14,17 +14,16 @@ interface Props {
 
 const props = defineProps<Props>()
 
-const emit = defineEmits(['delete', 'update', 'create']);
+const emit = defineEmits(['delete', 'update', 'create', 'remove', 'duplicate']);
 
 function handleDelete(plan: Plan) {
   emit('delete', plan);
 }
-function handleUpdate(plan: Partial<Plan>) {
-  console.log(plan)
-  emit('update', plan);
+function handleUpdate(plan:Partial<Plan>) {
+  emit('update',plan);
 }
 function handleCreate(plan: Partial<Plan>) {
-  emit('create', plan);
+  emit('duplicate', plan);
 }
 
 </script>
