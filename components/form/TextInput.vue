@@ -28,43 +28,4 @@ const props = defineProps<Props>();
 const {value, errorMessage} = useField(props.field.name, props.field.rules, {
   initialValue: props.model[props.field.name]
 })
-
-const additionalAttrs = computed(() => {
-  const attrs: Record<string, any> = {};
-  if (props.field.inputType === 'number') {
-    attrs.step = 'any';
-  }
-  const rules = props.field.rules
-  if (rules && typeof rules.describe === 'function') {
-    const description = rules.describe();
-    if (description.tests) {
-      description.tests.forEach((test: any) => {
-        switch (test.name) {
-          case 'min':
-            switch (props.field.inputType) {
-              case 'number':
-                attrs.min = test.params.min;
-                break;
-              case 'text':
-                attrs.minLength = test.params.min;
-                break
-            }
-            break
-
-          case 'max':
-            switch (props.field.inputType) {
-              case 'number':
-                attrs.max = test.params.max;
-                break;
-              case 'text':
-                attrs.maxLength = test.params.max;
-                break
-            }
-            break
-        }
-      })
-    }
-  }
-  return attrs;
-});
 </script>
