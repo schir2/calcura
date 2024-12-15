@@ -1,62 +1,73 @@
 <template>
+  <n-modal v-model:show="showModal">
+    <IncomeForm :incomePartial="income" mode="edit"
+                @delete="handleDelete"
+                @create="handleCreate"
+                @update="handleUpdate"
+                @cancel="handleClose"
+    />
+  </n-modal>
   <n-list-item>
     <n-thing class="p-2">
+      <template #header>
+        <span>{{ income.name }}</span>
+      </template>
+      <template #default>
       <ul class="grid grid-cols-5">
-        <li>{{ income.name }}</li>
         <li>
           <n-tag type="info" size="small">{{ income.incomeType }}</n-tag>
         </li>
         <li>{{ income.grossIncome }}</li>
         <li class="text-end col-span-2">
-          <n-button-group size="small">
-            <n-button tertiary round type="warning" @click="handleEdit">
-              <template #icon>
-                <Icon name="mdi:edit"/>
-              </template>
-              Edit
-            </n-button>
-            <n-button tertiary round type="error" @click="handleRemove">
-              <template #icon>
-                <Icon name="mdi:remove"/>
-              </template>
-              Remove
-
-            </n-button>
-            <n-button secondary round type="error" @click="handleDelete">
-              <template #icon>
-                <Icon name="mdi:delete"/>
-              </template>
-              Delete
-            </n-button>
-          </n-button-group>
         </li>
       </ul>
+      </template>
+      <template #header-extra>
+        <ListItemButtons @edit="handleEdit" @remove="handleRemove" @delete="handleDelete"/>
+      </template>
     </n-thing>
   </n-list-item>
 
 </template>
 <script setup lang="ts">
-import type {Income} from '~/models/income/Income';
+
+import type {Income} from "~/models/income/Income";
 
 interface Props {
-  income: Income;
+  income: Income
 }
 
 const props = defineProps<Props>()
 
-function handleEdit() {
-}
+const showModal = ref<boolean>(false)
+
+const emit = defineEmits(['delete', 'update', 'create', 'remove']);
 
 function handleDelete() {
   emit('delete', props.income);
-
 }
+
+function handleUpdate(income: Partial<Income>) {
+  emit('update', income)
+  showModal.value = false;
+}
+
+
+function handleCreate(incomePartial: Partial<Income>) {
+  emit('create', incomePartial)
+  showModal.value = false;
+}
+
 
 function handleRemove() {
   emit('remove', props.income);
 }
 
-const emit = defineEmits(['delete', 'update', 'remove']);
+function handleClose() {
+  showModal.value = false;
+}
 
-
+function handleEdit() {
+  showModal.value = true;
+}
 </script>
