@@ -1,11 +1,11 @@
 <template>
   <n-thing>
-    <IncomeCreateModal
-        v-if="isModalOpen && activeIncomeTemplate"
-        :incomeTemplate="activeIncomeTemplate"
-        @save="handleSaveModal"
-        @close="handleCloseModal"
-    />
+    <n-modal v-model:show="showModal">
+      <IncomeForm :incomePartial="activeIncomePartial" mode="create"
+                @create="handleCreate"
+                @cancel="handleClose"
+      />
+    </n-modal>
     <template #header>
       Add Income
     </template>
@@ -18,36 +18,39 @@
   </n-thing>
 </template>
 <script lang="ts" setup>
-import type {IncomePartial} from "~/models/income/Income";
+import {type Income, incomeDefaults, type IncomePartial} from "~/models/income/Income";
 import type {IncomeTemplate} from "~/models/income/IncomeTemplate";
+import {useIncomeTemplateService} from "~/composables/api/useIncomeTemplateService";
+import {processTemplate} from "~/utils/templateProcessorUtils";
 
-const isModalOpen = ref(false);
-const activeIncomeTemplate = ref<IncomePartial | null>()
+const showModal = ref(false);
+const activeIncomePartial = ref<IncomePartial | null>()
 const incomeTemplateService = useIncomeTemplateService()
-const incomeTemplates = ref<IncomeTemplate[]>([])
+const incomeTemplates = ref<IncomePartial[]>([])
 
-function handleOpenModal(incomeTemplate: IncomeTemplate) {
-  activeIncomeTemplate.value = incomeTemplate
-  isModalOpen.value = true;
+function handleOpenModal(incomeTemplate: Partial<Income>) {
+  activeIncomePartial.value = incomeTemplate
+  showModal.value = true;
 }
 
 async function loadIncomeTemplates() {
-  incomeTemplates.value = await incomeTemplateService.list()
+  const loadedIncomeTemplates = await incomeTemplateService.list()
+  incomeTemplates.value = loadedIncomeTemplates.map(incomeTemplate => processTemplate<IncomePartial, IncomeTemplate, Income>(incomeDefaults, incomeTemplate));
 }
 
 onMounted(async () => {
   await loadIncomeTemplates()
 })
 
-const emit = defineEmits(['save'])
+const emit = defineEmits(['create'])
 
-function handleSaveModal(incomeTemplate: IncomeTemplate) {
-  emit('save', incomeTemplate)
-  isModalOpen.value = false;
+function handleCreate(incomePartial: Partial<Income>) {
+  emit('create', incomePartial)
+  showModal.value = false;
 }
 
-function handleCloseModal() {
-  isModalOpen.value = false
+function handleClose() {
+  showModal.value = false
 }
 
 </script>
