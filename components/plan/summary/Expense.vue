@@ -4,7 +4,7 @@
     <ul v-if="expenses">
       <li v-for="(expense, index) in expenses" :Key="index" class="grid grid-cols-5">
         <span class="col-span-3">{{ expense.name }}</span>
-        <CommonChip class="bg-skin-success">{{ expense.type }}</CommonChip>
+        <CommonChip class="bg-skin-success">{{ expense.expenseType }}</CommonChip>
         <span class="text-end">{{ getAnnualExpenseAmount(expense) }}</span>
       </li>
       <li class="grid grid-cols-2">
