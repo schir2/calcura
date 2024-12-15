@@ -1,3 +1,5 @@
+import type {Income} from "~/models/income/Income";
+
 export type ExpenseTrackingStrategy = 'simple' | 'itemized'
 
 export enum ExpenseType {
@@ -17,10 +19,23 @@ export interface Expense {
     id?: number;
     name: string,
     amount: number,
-    type: ExpenseType,
+    expenseType: ExpenseType,
     frequency: ExpenseFrequency,
     isEssential: boolean,
     isTaxDeductible: boolean,
 }
 
 export type ExpensePartial = Partial<Omit<Expense, 'id'>>
+
+export interface ExpenseTemplate extends Income {
+    description: string
+}
+
+export const expenseDefaults: ExpensePartial = {
+    name: 'Expense',
+    amount: 0,
+    expenseType: ExpenseType.fixed,
+    frequency: ExpenseFrequency.annually,
+    isEssential: true,
+    isTaxDeductible: false,
+}
