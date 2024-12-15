@@ -168,7 +168,7 @@ export default class PlanManager extends ManagerBase<Plan, PlanState> {
             variable: 0,
         }
         this.config.expenses.forEach((expense) => {
-            expenseTypes[expense.type] += expense.amount
+            expenseTypes[expense.expenseType] += expense.amount
         })
         return expenseTypes
 
