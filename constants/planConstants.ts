@@ -1,5 +1,7 @@
 import type {AllowNegativeDisposableIncome, GrowthApplicationStrategy} from "~/models/plan/Plan";
 
+export const DEFAULT_GROWTH_RATE = 6
+
 export const MIN_TAX_RATE = 0;
 export const MAX_TAX_RATE = 100;
 export const MIN_NAME_LENGTH = 2;
