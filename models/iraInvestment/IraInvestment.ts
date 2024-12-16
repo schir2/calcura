@@ -16,3 +16,17 @@ export interface IraInvestment {
 }
 
 export type IraInvestmentPartial = Partial<Omit<IraInvestment, 'id'>>
+
+export interface IraInvestmentTemplate extends IraInvestment {
+    description: string;
+}
+
+export const iraInvestmentDefaults: IraInvestmentPartial = {
+    name: 'Roth IRA',
+    isContributionTaxDeferred: false,
+    growthRate: 0,
+    initialBalance: 0,
+    contributionStrategy: 'fixed',
+    contributionPercentage: 0,
+    contributionFixedAmount: 0,
+}

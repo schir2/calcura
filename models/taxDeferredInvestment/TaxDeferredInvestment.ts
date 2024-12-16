@@ -22,3 +22,23 @@ export interface TaxDeferredInvestment {
 }
 
 export type TaxDeferredInvestmentPartial = Partial<Omit<TaxDeferredInvestment, 'id'>>
+
+export interface TaxDeferredInvestmentTemplate extends TaxDeferredInvestment {
+    description: string
+}
+
+export const taxDeferredInvestmentDefaults: TaxDeferredInvestmentPartial = {
+    name: 'Tax Deferred Investment',
+    growthRate: DEFAULT_GROWTH_RATE,
+    initialBalance: 0,
+    electiveContributionStrategy: "percentage_of_income",
+    electiveContributionPercentage: 0,
+    electiveContributionFixedAmount: 0,
+
+    employerContributes: false,
+    employerContributionStrategy: "percentage_of_contribution",
+    employerMatchPercentage: 0,
+    employerCompensationMatchPercentage: 100,
+    employerContributionFixedAmount: 0,
+    employerMatchPercentageLimit: 0,
+}
