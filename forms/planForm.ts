@@ -1,9 +1,9 @@
 import * as yup from "yup";
-import type {NumberField, SelectField, Field} from "~/interfaces/FieldData";
-import {MAX_NAME_LENGTH, MIN_NAME_LENGTH} from "~/constants/incomeConstants";
+import type {FormData} from "~/interfaces/FieldData";
 import {createSchema} from "~/utils/schemaUtils";
+import type {Plan} from "~/models/plan/Plan";
 
-export const planForm: Record<string, Field | NumberField | SelectField> = {
+export const planForm: FormData<Plan> = {
     name: {
         name: 'name',
         label: 'Name',
@@ -22,6 +22,35 @@ export const planForm: Record<string, Field | NumberField | SelectField> = {
         helpText: `Enter an age between ${MIN_AGE} and ${MAX_AGE} years.`,
         rules: yup.number().min(MIN_AGE).max(MAX_AGE)
     },
+
+    inflationRate: {
+        name: 'inflationRate',
+        label: 'Inflation Rate',
+        placeholder: 'Enter Inflation Rate',
+        helpText: 'The rate at which inflation grows',
+        rules: yup.number()
+    },
+    allowNegativeDisposableIncome: {
+        name: 'allowNegativeDisposableIncome',
+        label: 'Allow Negative Disposable Income',
+        helpText: 'Choose weather to allow negative disposable income.',
+        options: [
+            {value: 'none', label: 'No'},
+            {value: 'minimum_only', label: 'Only to meet Minimums'},
+            {value: 'full', label: 'Allow'},
+        ]
+
+    },
+    growthApplicationStrategy: {
+        name: 'growthApplicationStrategy',
+        label: 'Growth Application Strategy',
+        helpText: `Select when growth is calculated`,
+        options: [
+            {value: 'start', label: 'Start of Year'},
+            {value: 'end', label: 'End of Year'},
+        ]
+    },
+
     year: {
         name: "year",
         label: 'Year',

@@ -1,16 +1,9 @@
 import * as yup from "yup";
-import type {Field, NumberField, SelectField} from "~/interfaces/FieldData";
-import {
-    MAX_DEBT_NAME_LENGTH,
-    MAX_INTEREST_RATE,
-    MAX_PAYMENT,
-    MIN_DEBT_NAME_LENGTH,
-    MIN_INTEREST_RATE,
-    MIN_PAYMENT,
-} from "~/models/debt/DebtConstants";
-import type {DebtPartial} from "~/models/debt/Debt";
+import type {FormData} from "~/interfaces/FieldData";
+import {MAX_DEBT_NAME_LENGTH, MAX_INTEREST_RATE, MAX_PAYMENT, MIN_DEBT_NAME_LENGTH, MIN_INTEREST_RATE, MIN_PAYMENT,} from "~/models/debt/DebtConstants";
+import type {Debt} from "~/models/debt/Debt";
 
-export const debtForm: Record<keyof DebtPartial, Field | SelectField | NumberField> = {
+export const debtForm: FormData<Debt> = {
     name: {
         name: "name",
         label: "Debt Name",

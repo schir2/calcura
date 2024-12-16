@@ -2,7 +2,7 @@ import * as yup from "yup";
 
 import type {Income, IncomePartial} from "~/models/income/Income";
 import {createSchema} from "~/utils/schemaUtils";
-import {FormData} from "~/interfaces/FieldData"
+import type {FormData} from "~/interfaces/FieldData"
 
 export const incomeFields: FormData<Income> = {
     name: {

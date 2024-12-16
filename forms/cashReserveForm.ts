@@ -1,16 +1,11 @@
 import * as yup from "yup";
-import {
-    MAX_RESERVE_AMOUNT,
-    MAX_RESERVE_MONTHS,
-    MIN_RESERVE_AMOUNT,
-    MIN_RESERVE_MONTHS
-} from "~/models/cashReserve/CashReserveConstants";
-import type {CashReservePartial, CashReserveStrategy} from "~/models/cashReserve/CashReserve";
-import type {Field, NumberField, SelectField} from "~/interfaces/FieldData";
+import {MAX_RESERVE_AMOUNT, MAX_RESERVE_MONTHS, MIN_RESERVE_AMOUNT, MIN_RESERVE_MONTHS} from "~/models/cashReserve/CashReserveConstants";
+import type {CashReserve, CashReserveStrategy} from "~/models/cashReserve/CashReserve";
+import type {FormData} from "~/interfaces/FieldData";
 import {createSchema} from "~/utils/schemaUtils";
 
 
-export const cashReserveForm: Record<keyof CashReservePartial, Field | SelectField | NumberField> = {
+export const cashReserveForm: FormData<CashReserve> = {
     name: {
         name: "name",
         label: "Name",

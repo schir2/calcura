@@ -85,6 +85,12 @@ export const taxDeferredInvestmentForm: FormData<TaxDeferredInvestment> = {
         placeholder: "Select employer contribution strategy",
         helpText: "Determines how your employer contributes to your investment.",
         resourceId: "employer-contribution-strategy",
+        options: [
+            {label: 'None', value: 'none'},
+            {label: 'Percentage of Contribution', value: 'percentage_of_contribution'},
+            {label: 'Percentage of Compensation', value: 'percentage_of_compensation'},
+            {label: 'Fixed', value: 'fixed'},
+        ],
         rules: yup.string().required("Employer contribution strategy is required"),
     },
     employerCompensationMatchPercentage: {

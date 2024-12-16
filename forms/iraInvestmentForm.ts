@@ -1,18 +1,15 @@
 import * as yup from "yup";
-import type {FieldData} from "~/interfaces/FieldData";
-import type {IraInvestmentPartial} from "~/models/iraInvestment/IraInvestment";
-import {DEFAULT_IRA_BALANCE, DEFAULT_IRA_CONTRIBUTION_FIXED_AMOUNT, DEFAULT_IRA_CONTRIBUTION_PERCENTAGE, DEFAULT_IRA_GROWTH_RATE, DEFAULT_IRA_IS_CONTRIBUTION_TAX_DEFERRED} from "~/models/iraInvestment/IraInvestmentConstants";
+import type {FormData} from "~/interfaces/FieldData";
+import type {IraInvestment} from "~/models/iraInvestment/IraInvestment";
 import type {IraContributionStrategy} from "~/types";
 
-export const iraInvestmentFields: Record<keyof IraInvestmentPartial, FieldData> = {
+export const iraInvestmentForm: FormData<IraInvestment> = {
     name: {
         name: "name",
         label: "Investment Name",
         placeholder: "Enter the name of the investment",
         helpText: "This is the name of your tax-deferred investment.",
         resourceId: "investment-name",
-        inputType: "text",
-        defaultValue: "",
         rules: yup.string().required("Name is required").min(3, "Name must be at least 3 characters long").max(32, "Name must be at most 32 characters long"),
     },
     isContributionTaxDeferred: {
@@ -20,7 +17,6 @@ export const iraInvestmentFields: Record<keyof IraInvestmentPartial, FieldData> 
         label: 'Is Contribution Tax Deferred?',
         helpText: "Choose between Tax Deferred or Post Tax Contribution",
         resourceId: "ira-contribution-type",
-        defaultValue: DEFAULT_IRA_IS_CONTRIBUTION_TAX_DEFERRED,
     },
     growthRate: {
         name: 'growthRate',
@@ -28,8 +24,6 @@ export const iraInvestmentFields: Record<keyof IraInvestmentPartial, FieldData> 
         placeholder: "Enter expected growth rate",
         helpText: "The annual percentage growth rate of your investment.",
         resourceId: "growth-rate",
-        inputType: "number",
-        defaultValue: DEFAULT_IRA_GROWTH_RATE,
         rules: yup
             .number()
             .min(0, "Growth rate must be at least 0")
@@ -42,8 +36,6 @@ export const iraInvestmentFields: Record<keyof IraInvestmentPartial, FieldData> 
         placeholder: "Enter your current savings balance",
         helpText: "This is the total amount you have saved so far.",
         resourceId: "current-savings",
-        inputType: "number",
-        defaultValue: DEFAULT_IRA_BALANCE,
         rules: yup
             .number()
             .min(0, "Balance must be at least 0")
@@ -54,8 +46,6 @@ export const iraInvestmentFields: Record<keyof IraInvestmentPartial, FieldData> 
         label: "Contribution Strategy",
         placeholder: "Select contribution strategy",
         helpText: "Choose the strategy for contributions.",
-        inputType: "select",
-        defaultValue: "fixed",
         rules: yup
             .mixed<IraContributionStrategy>()
             .required("Contribution strategy is required"),
@@ -71,8 +61,6 @@ export const iraInvestmentFields: Record<keyof IraInvestmentPartial, FieldData> 
         placeholder: "Enter elective contribution percentage",
         helpText: "Percentage of your income contributed to the investment.",
         resourceId: "elective-contribution-percentage",
-        inputType: "number",
-        defaultValue: DEFAULT_IRA_CONTRIBUTION_PERCENTAGE,
         rules: yup
             .number()
             .min(0, "Elective contribution percentage must be at least 0")
@@ -85,11 +73,11 @@ export const iraInvestmentFields: Record<keyof IraInvestmentPartial, FieldData> 
         placeholder: "Enter elective contribution fixed amount",
         helpText: "Fixed amount you contribute to the investment.",
         resourceId: "elective-contribution-fixed-amount",
-        inputType: "number",
-        defaultValue: DEFAULT_IRA_CONTRIBUTION_FIXED_AMOUNT,
         rules: yup
             .number()
             .min(0, "Elective contribution fixed amount must be at least 0")
             .required("Elective contribution fixed amount is required"),
     },
 }
+
+export const iraInvestmentFormSchema = createSchema(iraInvestmentForm)

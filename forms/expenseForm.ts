@@ -1,13 +1,12 @@
 import * as yup from "yup";
-import type {ExpensePartial} from "~/models/expense/Expense";
-import {ExpenseFrequency, ExpenseType} from "~/models/expense/Expense";
-import type {Field, NumberField, SelectField} from "~/interfaces/FieldData";
+import {type Expense, ExpenseFrequency, ExpenseType} from "~/models/expense/Expense";
+import type {FormData} from "~/interfaces/FieldData";
 import {EXPENSE_NAME_MAX_LENGTH, EXPENSE_NAME_MIN_LENGTH, MAX_EXPENSE_AMOUNT, MIN_EXPENSE_AMOUNT,} from "~/models/expense/ExpenseConstants";
 import {createSchema} from "~/utils/schemaUtils";
 import type {IncomePartial} from "~/models/income/Income";
 import {incomeFields} from "~/forms/incomeForm";
 
-export const expenseFields: Record<keyof ExpensePartial, Field | SelectField | NumberField> = {
+export const expenseFields: FormData<Expense> = {
     name: {
         name: "name",
         label: "Expense Name",
