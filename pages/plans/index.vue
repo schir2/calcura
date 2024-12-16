@@ -9,7 +9,6 @@
 <script lang="ts" setup>
 import {usePlanService} from "~/composables/api/usePlanService";
 import type {Plan, PlanPartial} from "~/models/plan/Plan";
-import PlanTemplatePicker from "~/components/PlanTemplatePicker.vue";
 
 const planService = usePlanService()
 

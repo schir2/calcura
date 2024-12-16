@@ -12,9 +12,10 @@
                 @remove="handleRemoveIncome"
     />
     <DebtList v-if="plan.debts" :debts="plan.debts"
-              @createDebt="handleCreateDebt"
-              @updateDebt="handleUpdateDebt"
-              @deleteDebt="handleDeleteDebt"
+              @creat="handleCreateDebt"
+              @updat="handleUpdateDebt"
+              @delete="handleDeleteDebt"
+              @remove="handleRemoveDebt"
     ></DebtList>
 
 
@@ -26,16 +27,18 @@
     />
 
     <CashReserveList v-if="plan.cashReserves" :cashReserves="plan.cashReserves"
-                     @createCashReserve="handleCreateCashReserve"
-                     @updateCashReserve="handleUpdateCashReserve"
-                     @deleteCashReserve="handleDeleteCashReserve"
+                     @create="handleCreateCashReserve"
+                     @update="handleUpdateCashReserve"
+                     @delete="handleDeleteCashReserve"
+                     @remove="handleRemoveCashReserve"
     />
 
 
     <BrokerageInvestmentList v-if="plan.brokerageInvestments" :brokerageInvestments="plan.brokerageInvestments"
-                             @createBrokerageInvestment="handleCreateBrokerageInvestment"
-                             @updateBrokerageInvestment="handleUpdateBrokerageInvestment"
-                             @deleteBrokerageInvestment="handleDeleteBrokerageInvestment"
+                             @create="handleCreateBrokerageInvestment"
+                             @update="handleUpdateBrokerageInvestment"
+                             @delete="handleDeleteBrokerageInvestment"
+                             @remove="handleRemoveBrokerageInvestment"
     />
 
 
@@ -43,6 +46,7 @@
                        @createIraInvestment="handleCreateIraInvestment"
                        @updateIraInvestment="handleUpdateIraInvestment"
                        @deleteIraInvestment="handleDeleteIraInvestment"
+                       @removeIraInvestment="handleRemoveIraInvestment"
     />
 
   </div>
@@ -50,19 +54,14 @@
 <script setup lang="ts">
 import PlanManager from "~/models/plan/PlanManager";
 import type {PlanState} from "~/models/plan/PlanState";
-import {defaultDebtFactory} from "~/models/debt/DebtFactories";
-import type {Debt} from "~/models/debt/Debt";
-import type {Expense, ExpenseTemplate} from "~/models/expense/Expense"
+import type {Debt, DebtPartial} from "~/models/debt/Debt";
+import type {Expense, ExpensePartial} from "~/models/expense/Expense"
 import type {Plan} from "~/models/plan/Plan";
-import {defaultCashReserveFactory} from "~/models/cashReserve/CashReserveFactories";
 import type {CashReserve} from "~/models/cashReserve/CashReserve";
-import {defaultBrokerageInvestmentFactory} from "~/models/brokerageInvestment/BrokerageInvestmentFactories";
-import {defaultTaxDeferredInvestmentFactory} from "~/models/taxDeferredInvestment/TaxDeferredInvestmentFactories";
 import type {IraInvestment} from "~/models/iraInvestment/IraInvestment";
-import type {TaxDeferredInvestment} from "~/models/taxDeferredInvestment/TaxDeferredInvestment";
-import {defaultIraInvestmentFactory} from "~/models/iraInvestment/IraInvestmentFactories";
-import type {IncomeTemplate} from "~/models/income/IncomeTemplate";
-import type {Income} from "~/models/income/Income";
+import type {TaxDeferredInvestment, TaxDeferredInvestmentPartial} from "~/models/taxDeferredInvestment/TaxDeferredInvestment";
+import type {Income, IncomePartial} from "~/models/income/Income";
+import type {BrokerageInvestment, BrokerageInvestmentPartial} from "~/models/brokerageInvestment/BrokerageInvestment";
 
 const planService = usePlanService()
 const debtService = useDebtService()
@@ -84,44 +83,52 @@ useHead({
   ],
 })
 
-async function handleCreateDebt() {
-  const debtConfig = defaultDebtFactory();
-  const debt = await debtService.create(debtConfig)
+async function handleCreateDebt(debtPartial: DebtPartial) {
+  const debt = await debtService.create(debtPartial)
   await planService.addRelatedModel(planId, 'debts', debt.id)
   await loadPlan();
 }
 
-async function handleDeleteDebt(index: number) {
-  await debtService.delete(index)
+async function handleDeleteDebt(debt: Debt) {
+  await debtService.delete(debt.id)
   await loadPlan();
 }
 
 async function handleUpdateDebt(debt: Debt) {
-  assertDefined(debt.id, 'debt.id')
   await debtService.update(debt.id, debt)
   await loadPlan();
 }
 
-async function handleCreateCashReserve() {
-  const cashReserveConfig = defaultCashReserveFactory();
-  const cashReserve = await cashReserveService.create(cashReserveConfig)
+async function handleRemoveDebt(debtPartial: DebtPartial) {
+  const debt = await debtService.create(debtPartial)
+  await planService.removeRelatedModel(planId, 'debts', debt.id)
+  await loadPlan();
+}
+
+
+async function handleCreateCashReserve(cashReservePartial: CashReserve) {
+  const cashReserve = await cashReserveService.create(cashReservePartial)
   await planService.addRelatedModel(planId, 'cash_reserves', cashReserve.id)
   await loadPlan();
 }
 
-async function handleDeleteCashReserve(index: number) {
-  console.log(index)
-  await cashReserveService.delete(index)
+async function handleDeleteCashReserve(cashReserve: CashReserve) {
+  await cashReserveService.delete(cashReserve.id)
   await loadPlan();
 }
 
 async function handleUpdateCashReserve(cashReserve: CashReserve) {
-  assertDefined(cashReserve.id, 'cashReserve.id')
   await cashReserveService.update(cashReserve.id, cashReserve)
   await loadPlan();
 }
 
-async function handleCreateIncome(incomeTemplate: IncomeTemplate) {
+async function handleRemoveCashReserve(cashReservePartial: CashReserve) {
+  const cashReserve = await cashReserveService.create(cashReservePartial)
+  await planService.removeRelatedModel(planId, 'cash_reserves', cashReserve.id)
+  await loadPlan();
+}
+
+async function handleCreateIncome(incomeTemplate: IncomePartial) {
   const income = await incomeService.create(incomeTemplate)
   await planService.addRelatedModel(planId, 'incomes', income.id)
   await loadPlan();
@@ -143,8 +150,8 @@ async function handleRemoveIncome(income: Income) {
 }
 
 
-async function handleCreateExpense(expenseTemplate: ExpenseTemplate) {
-  const expense = await expenseService.create(expenseTemplate)
+async function handleCreateExpense(expensePartial: ExpensePartial) {
+  const expense = await expenseService.create(expensePartial)
   await planService.addRelatedModel(planId, 'expenses', expense.id)
   await loadPlan();
 }
@@ -164,23 +171,27 @@ async function handleRemoveExpense(expense: Expense) {
   await loadPlan();
 }
 
-async function handleCreateBrokerageInvestment() {
-  const brokerageInvestmentConfig = defaultBrokerageInvestmentFactory();
-  const brokerageInvestment = await brokerageInvestmentService.create(brokerageInvestmentConfig)
+async function handleCreateBrokerageInvestment(brokerageInvestmentPartial: BrokerageInvestmentPartial) {
+  const brokerageInvestment = await brokerageInvestmentService.create(brokerageInvestmentPartial)
   await planService.addRelatedModel(planId, 'brokerage_investments', brokerageInvestment.id)
   await loadPlan();
 }
 
-async function handleDeleteBrokerageInvestment(index: number) {
-  await brokerageInvestmentService.delete(index)
+async function handleDeleteBrokerageInvestment(brokerageInvestment: BrokerageInvestment) {
+  await brokerageInvestmentService.delete(brokerageInvestment.id)
   await loadPlan();
 }
 
 async function handleUpdateBrokerageInvestment(brokerageInvestment: BrokerageInvestment) {
-  assertDefined(brokerageInvestment.id, 'brokerageInvestment.id')
   await brokerageInvestmentService.update(brokerageInvestment.id, brokerageInvestment)
   await loadPlan();
 }
+
+async function handleRemoveBrokerageInvestment(brokerageInvestment: BrokerageInvestment) {
+  await planService.removeRelatedModel(planId, 'brokerage_investments', brokerageInvestment.id)
+  await loadPlan();
+}
+
 
 async function handleCreateIraInvestment() {
   const iraInvestmentConfig = defaultIraInvestmentFactory();
@@ -199,20 +210,32 @@ async function handleUpdateIraInvestment(iraInvestment: IraInvestment) {
   await loadPlan();
 }
 
-async function handleCreateTaxDeferredInvestment() {
-  const taxDeferredInvestmentConfig = defaultTaxDeferredInvestmentFactory();
-  const taxDeferredInvestment = await taxDeferredInvestmentService.create(taxDeferredInvestmentConfig)
+async function handleRemoveIraInvestment() {
+  const iraInvestmentConfig = defaultIraInvestmentFactory();
+  const iraInvestment = await iraInvestmentService.create(iraInvestmentConfig)
+  await planService.addRemoveModel(planId, 'ira_investments', iraInvestment.id)
+  await loadPlan();
+}
+
+async function handleCreateTaxDeferredInvestment(taxDeferredInvestmentPartial: TaxDeferredInvestmentPartial) {
+  const taxDeferredInvestment = await taxDeferredInvestmentService.create(taxDeferredInvestmentPartial)
   await planService.addRelatedModel(planId, 'tax_deferred_investments', taxDeferredInvestment.id)
   await loadPlan();
 }
 
-async function handleDeleteTaxDeferredInvestment(index: number) {
-  await taxDeferredInvestmentService.delete(index)
+async function handleDeleteTaxDeferredInvestment(taxDeferredInvestment: TaxDeferredInvestment) {
+  await taxDeferredInvestmentService.delete(taxDeferredInvestment.id)
   await loadPlan();
 }
 
 async function handleUpdateTaxDeferredInvestment(taxDeferredInvestment: TaxDeferredInvestment) {
   await taxDeferredInvestmentService.update(taxDeferredInvestment.id, taxDeferredInvestment)
+  await loadPlan();
+}
+
+async function handleRemoveTaxDeferredInvestment(taxDeferredInvestmentPartial: TaxDeferredInvestmentPartial) {
+  const taxDeferredInvestment = await taxDeferredInvestmentService.create(taxDeferredInvestmentPartial)
+  await planService.removeRelatedModel(planId, 'tax_deferred_investments', taxDeferredInvestment.id)
   await loadPlan();
 }
 
