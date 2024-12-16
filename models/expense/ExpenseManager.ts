@@ -4,7 +4,6 @@ import type Command from "~/models/common/Command";
 import type {Expense} from "~/models/expense/Expense";
 import type ExpenseState from "~/models/expense/ExpenseState";
 import type {AllowNegativeDisposableIncome} from "~/models/plan/Plan";
-import {DEFAULT_ALLOW_NEGATIVE_DISPOSABLE_INCOME} from "~/models/plan/PlanConstants";
 
 export default class ExpenseManager extends ManagerBase<Expense, ExpenseState> {
     protected createInitialState(): ExpenseState {
