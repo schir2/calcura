@@ -17,6 +17,8 @@ export const MIN_RETIREMENT_AGE_FOR_WITHDRAWAL = 30;
 export const MAX_RETIREMENT_AGE_FOR_WITHDRAWAL = 100;
 export const MIN_AGE = 1
 export const MAX_AGE = 120
+export const MIN_GROWTH_RATE = 0
+export const MAX_GROWTH_RATE = 200;
 
 export const DEFAULT_AGE: number = 30;
 export const DEFAULT_ALLOW_NEGATIVE_DISPOSABLE_INCOME: AllowNegativeDisposableIncome = 'none'
