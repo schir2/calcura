@@ -1,30 +1,15 @@
 import * as yup from "yup";
-import type {FieldData} from "~/interfaces/FieldData";
-import {
-    DEFAULT_TAX_DEFERRED_GROWTH_RATE,
-    DEFAULT_ELECTIVE_CONTRIBUTION_FIXED_AMOUNT,
-    DEFAULT_ELECTIVE_CONTRIBUTION_PERCENTAGE,
-    DEFAULT_ELECTIVE_CONTRIBUTION_STRATEGY,
-    DEFAULT_EMPLOYER_COMPENSATION_MATCH_PERCENTAGE,
-    DEFAULT_EMPLOYER_CONTRIBUTES,
-    DEFAULT_EMPLOYER_CONTRIBUTION_FIXED_AMOUNT,
-    DEFAULT_EMPLOYER_CONTRIBUTION_STRATEGY,
-    DEFAULT_EMPLOYER_MATCH_PERCENTAGE,
-    DEFAULT_EMPLOYER_MATCH_PERCENTAGE_LIMIT,
-    EmployerContributionOptions,
-    TaxDeferredContributionOptions,
-} from "~/models/taxDeferredInvestment/TaxDeferredInvestmentConstants";
 import type {TaxDeferredInvestment} from "~/models/taxDeferredInvestment/TaxDeferredInvestment";
+import type {FormData} from "~/interfaces/FieldData";
 
-export const taxDeferredInvestmentFields: Record<keyof Partial<Omit<TaxDeferredInvestment, 'id'>>, FieldData> = {
+
+export const taxDeferredInvestmentForm: FormData<TaxDeferredInvestment> = {
     name: {
         name: "name",
         label: "Investment Name",
         placeholder: "Enter the name of the investment",
         helpText: "This is the name of your tax-deferred investment.",
         resourceId: "investment-name",
-        inputType: "text",
-        defaultValue: "",
         rules: yup.string().required("Name is required").min(3, "Name must be at least 3 characters long").max(32, "Name must be at most 32 characters long"),
     },
     growthRate: {
@@ -33,8 +18,6 @@ export const taxDeferredInvestmentFields: Record<keyof Partial<Omit<TaxDeferredI
         placeholder: "Enter expected growth rate",
         helpText: "The annual percentage growth rate of your investment.",
         resourceId: "growth-rate",
-        inputType: "number",
-        defaultValue: DEFAULT_TAX_DEFERRED_GROWTH_RATE,
         rules: yup
             .number()
             .min(0, "Growth rate must be at least 0")
@@ -47,8 +30,6 @@ export const taxDeferredInvestmentFields: Record<keyof Partial<Omit<TaxDeferredI
         placeholder: "Enter your current savings balance",
         helpText: "This is the total amount you have saved so far.",
         resourceId: "current-savings",
-        inputType: "number",
-        defaultValue: 0,
         rules: yup
             .number()
             .min(0, "Balance must be at least 0")
@@ -60,9 +41,13 @@ export const taxDeferredInvestmentFields: Record<keyof Partial<Omit<TaxDeferredI
         placeholder: "Select elective contribution strategy",
         helpText: "Determines how you contribute to your investment.",
         resourceId: "elective-contribution-strategy",
-        inputType: "select",
-        options: TaxDeferredContributionOptions,
-        defaultValue: DEFAULT_ELECTIVE_CONTRIBUTION_STRATEGY,
+        options: [
+            {label: 'None', value: 'none'},
+            {label: 'Contribute Until Company Match Limit is Reached', value: 'until_company_match'},
+            {label: 'Percentage of Income', value: 'percentage_of_income'},
+            {label: 'Fixed', value: 'fixed'},
+            {label: 'Max', value: 'max'}
+        ],
         rules: yup.string().required("Elective contribution strategy is required"),
     },
     electiveContributionPercentage: {
@@ -71,8 +56,6 @@ export const taxDeferredInvestmentFields: Record<keyof Partial<Omit<TaxDeferredI
         placeholder: "Enter elective contribution percentage",
         helpText: "Percentage of your income contributed to the investment.",
         resourceId: "elective-contribution-percentage",
-        inputType: "number",
-        defaultValue: DEFAULT_ELECTIVE_CONTRIBUTION_PERCENTAGE,
         rules: yup
             .number()
             .min(0, "Elective contribution percentage must be at least 0")
@@ -85,8 +68,6 @@ export const taxDeferredInvestmentFields: Record<keyof Partial<Omit<TaxDeferredI
         placeholder: "Enter elective contribution fixed amount",
         helpText: "Fixed amount you contribute to the investment.",
         resourceId: "elective-contribution-fixed-amount",
-        inputType: "number",
-        defaultValue: DEFAULT_ELECTIVE_CONTRIBUTION_FIXED_AMOUNT,
         rules: yup
             .number()
             .min(0, "Elective contribution fixed amount must be at least 0")
@@ -97,8 +78,6 @@ export const taxDeferredInvestmentFields: Record<keyof Partial<Omit<TaxDeferredI
         label: "Does your employer contribute?",
         helpText: "Indicates whether your employer contributes to your investment.",
         resourceId: "employer-contributes",
-        inputType: "checkbox",
-        defaultValue: DEFAULT_EMPLOYER_CONTRIBUTES,
     },
     employerContributionStrategy: {
         name: "employerContributionStrategy",
@@ -106,9 +85,6 @@ export const taxDeferredInvestmentFields: Record<keyof Partial<Omit<TaxDeferredI
         placeholder: "Select employer contribution strategy",
         helpText: "Determines how your employer contributes to your investment.",
         resourceId: "employer-contribution-strategy",
-        inputType: "select",
-        options: EmployerContributionOptions,
-        defaultValue: DEFAULT_EMPLOYER_CONTRIBUTION_STRATEGY,
         rules: yup.string().required("Employer contribution strategy is required"),
     },
     employerCompensationMatchPercentage: {
@@ -117,8 +93,6 @@ export const taxDeferredInvestmentFields: Record<keyof Partial<Omit<TaxDeferredI
         placeholder: "Enter employer compensation match percentage",
         helpText: "Percentage of your compensation that your employer matches.",
         resourceId: "employer-compensation-match-percentage",
-        inputType: "number",
-        defaultValue: DEFAULT_EMPLOYER_COMPENSATION_MATCH_PERCENTAGE,
         rules: yup
             .number()
             .min(0, "Employer compensation match percentage must be at least 0")
@@ -131,8 +105,6 @@ export const taxDeferredInvestmentFields: Record<keyof Partial<Omit<TaxDeferredI
         placeholder: "Enter employer contribution fixed amount",
         helpText: "Fixed amount your employer contributes to your investment.",
         resourceId: "employer-contribution-fixed-amount",
-        inputType: "number",
-        defaultValue: DEFAULT_EMPLOYER_CONTRIBUTION_FIXED_AMOUNT,
         rules: yup
             .number()
             .min(0, "Employer contribution fixed amount must be at least 0")
@@ -144,8 +116,6 @@ export const taxDeferredInvestmentFields: Record<keyof Partial<Omit<TaxDeferredI
         placeholder: "Enter employer match percentage",
         helpText: "Percentage of your contributions that your employer matches.",
         resourceId: "employer-match-percentage",
-        inputType: "number",
-        defaultValue: DEFAULT_EMPLOYER_MATCH_PERCENTAGE,
         rules: yup
             .number()
             .min(0, "Employer match percentage must be at least 0")
@@ -158,8 +128,6 @@ export const taxDeferredInvestmentFields: Record<keyof Partial<Omit<TaxDeferredI
         placeholder: "Enter employer match percentage limit",
         helpText: "Maximum percentage your employer will match.",
         resourceId: "employer-match-percentage-limit",
-        inputType: "number",
-        defaultValue: DEFAULT_EMPLOYER_MATCH_PERCENTAGE_LIMIT,
         rules: yup
             .number()
             .min(0, "Employer match percentage limit must be at least 0")
@@ -167,3 +135,4 @@ export const taxDeferredInvestmentFields: Record<keyof Partial<Omit<TaxDeferredI
             .required("Employer match percentage limit is required"),
     },
 }
+export const taxDeferredInvestmentFormSchema = createSchema(taxDeferredInvestmentForm)

@@ -1,15 +1,13 @@
 import * as yup from "yup";
-import type {BrokerageContributionStrategy, BrokerageInvestmentPartial} from "~/models/brokerageInvestment/BrokerageInvestment";
-import type {FieldData} from "~/interfaces/FieldData";
+import type {BrokerageContributionStrategy, BrokerageInvestment} from "~/models/brokerageInvestment/BrokerageInvestment";
+import type {FormData} from "~/interfaces/FieldData";
 
-export const brokerageInvestmentFields: Record<keyof BrokerageInvestmentPartial, FieldData> = {
+export const brokerageInvestmentForm: FormData<BrokerageInvestment> = {
     name: {
         name: "name",
         label: "Investment Name",
         placeholder: "Enter investment name",
         helpText: "Provide a descriptive name for this investment.",
-        inputType: "text",
-        defaultValue: "Default Investment",
         rules: yup
             .string()
             .required("Investment name is required")
@@ -21,8 +19,6 @@ export const brokerageInvestmentFields: Record<keyof BrokerageInvestmentPartial,
         label: "Growth Rate (%)",
         placeholder: "Enter growth rate",
         helpText: "Specify the annual growth rate as a percentage.",
-        inputType: "number",
-        defaultValue: 5,
         rules: yup
             .number()
             .required("Growth rate is required")
@@ -34,8 +30,6 @@ export const brokerageInvestmentFields: Record<keyof BrokerageInvestmentPartial,
         label: "Initial Balance",
         placeholder: "Enter initial balance",
         helpText: "Set the starting balance for this investment.",
-        inputType: "number",
-        defaultValue: 1000,
         rules: yup
             .number()
             .required("Initial balance is required")
@@ -46,8 +40,6 @@ export const brokerageInvestmentFields: Record<keyof BrokerageInvestmentPartial,
         label: "Contribution Strategy",
         placeholder: "Select contribution strategy",
         helpText: "Choose the strategy for contributions.",
-        inputType: "select",
-        defaultValue: "fixed",
         rules: yup
             .mixed<BrokerageContributionStrategy>()
             .required("Contribution strategy is required"),
@@ -62,8 +54,6 @@ export const brokerageInvestmentFields: Record<keyof BrokerageInvestmentPartial,
         label: "Contribution Percentage (%)",
         placeholder: "Enter percentage",
         helpText: "Set the percentage of income to contribute. Only applicable for 'Percentage of Income' strategy.",
-        inputType: "number",
-        defaultValue: 10,
         rules: yup
             .number()
             .required("Contribution percentage is required")
@@ -75,11 +65,11 @@ export const brokerageInvestmentFields: Record<keyof BrokerageInvestmentPartial,
         label: "Fixed Contribution Amount",
         placeholder: "Enter fixed amount",
         helpText: "Specify the fixed contribution amount. Only applicable for 'Fixed' strategy.",
-        inputType: "number",
-        defaultValue: 500,
         rules: yup
             .number()
             .required("Fixed contribution amount is required")
             .min(0, "Contribution amount cannot be negative."),
     },
 };
+
+export const brokerageInvestmentFormSchema = createSchema(brokerageInvestmentForm)

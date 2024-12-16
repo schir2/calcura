@@ -1,10 +1,10 @@
 import * as yup from "yup";
-import type {Field, NumberField, SelectField} from "~/interfaces/FieldData";
 
-import type {IncomePartial} from "~/models/income/Income";
+import type {Income, IncomePartial} from "~/models/income/Income";
 import {createSchema} from "~/utils/schemaUtils";
+import {FormData} from "~/interfaces/FieldData"
 
-export const incomeFields: Record<keyof IncomePartial, Field | NumberField | SelectField> = {
+export const incomeFields: FormData<Income> = {
     name: {
         name: 'name',
         label: 'Income Name',
@@ -38,7 +38,7 @@ export const incomeFields: Record<keyof IncomePartial, Field | NumberField | Sel
         rules: yup
             .number()
             .required('Gross income is required')
-            .min(MIN_GROSS_INCOME, `Gross income must be at least $${MIN_GROSS_INCOME}.`),
+            .min(0, `Gross income must be at least $${0}.`),
     },
     growthRate: {
         name: 'growthRate',
