@@ -30,7 +30,7 @@
         <n-divider/>
         <li>
           <n-button quaternary><template #icon><Icon name="mdi:sack-outline"/></template>
-            <NuxtLink to="/brokerages">Brokerage Investments</NuxtLink>
+            <NuxtLink to="/brokerageInvestments">Brokerage Investments</NuxtLink>
           </n-button>
         </li>
         <li>

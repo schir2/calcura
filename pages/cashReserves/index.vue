@@ -1,51 +1,46 @@
 <template>
-  <CashReserveList :cashReserves="cashReserveConfigs"
-            @createCashReserve="handleCreateCashReserve"
-            @updateCashReserve="handleUpdateCashReserve"
-            @deleteCashReserve="handleDeleteCashReserve"
+  <CashReserveList :cashReserves="cashReserves"
+               @create="handleCreateCashReserve"
+               @update="handleUpdateCashReserve"
+               @delete="handleDeleteCashReserve"
   ></CashReserveList>
 </template>
 <script setup lang="ts">
-import {defaultCashReserveFactory} from "~/models/cashReserve/CashReserveFactories";
-import type {CashReserve} from "~/models/cashReserve/CashReserve";
+import type {CashReserve, CashReservePartial} from "~/models/cashReserve/CashReserve";
 
 import {useCashReserveService} from "~/composables/api/useCashReserveService";
 
 const cashReserveService = useCashReserveService();
 
 
-async function handleCreateCashReserve() {
-  const cashReserve = defaultCashReserveFactory();
-  await cashReserveService.create(cashReserve)
-  await loadCashes();
+async function handleCreateCashReserve(cashReserveTemplate: CashReservePartial) {
+  const cashReserve = await cashReserveService.create(cashReserveTemplate)
+  await loadCashReserves();
+}
+
+async function handleDeleteCashReserve(cashReserve: CashReserve) {
+  await cashReserveService.delete(cashReserve.id)
+  await loadCashReserves();
 }
 
 async function handleUpdateCashReserve(cashReserve: CashReserve) {
   await cashReserveService.update(cashReserve.id, cashReserve)
-  await loadCashes();
+  await loadCashReserves();
 }
 
-async function handleDeleteCashReserve(index: number) {
-  await cashReserveService.delete(index)
-  await loadCashes();
-}
+const cashReserves = ref<CashReserve[]>([])
+const loading = ref<boolean>(true);
 
-const {$api} = useNuxtApp()
-
-const cashReserveConfigs = ref<CashReserve[]>([])
-
-async function loadCashes() {
-  if (!$api) {
-    console.error('API service not available');
-  }
+async function loadCashReserves() {
   try {
-    cashReserveConfigs.value = await cashReserveService.list();
+    cashReserves.value = await cashReserveService.list();
   } catch (error) {
     console.error('Error loading cashReserves:', error);
   }
+  loading.value = false;
 }
 
 onMounted(async () => {
-  await loadCashes();
+  await loadCashReserves();
 });
 </script>

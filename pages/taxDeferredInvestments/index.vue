@@ -1,27 +1,25 @@
 <template>
   <TaxDeferredInvestmentList :taxDeferredInvestments="taxDeferredInvestments"
-            @createTaxDeferredInvestment="handleCreateTaxDeferredInvestment"
-            @updateTaxDeferredInvestment="handleUpdateTaxDeferredInvestment"
-            @deleteTaxDeferredInvestment="handleDeleteTaxDeferredInvestment"
+               @create="handleCreateTaxDeferredInvestment"
+               @update="handleUpdateTaxDeferredInvestment"
+               @delete="handleDeleteTaxDeferredInvestment"
   ></TaxDeferredInvestmentList>
 </template>
 <script setup lang="ts">
+import type {TaxDeferredInvestment, TaxDeferredInvestmentPartial} from "~/models/taxDeferredInvestment/TaxDeferredInvestment";
 
-
-import {defaultTaxDeferredInvestmentFactory} from "~/models/taxDeferredInvestment/TaxDeferredInvestmentFactories";
-import type {TaxDeferredInvestment} from "~/models/taxDeferredInvestment/TaxDeferredInvestment";
+import {useTaxDeferredInvestmentService} from "~/composables/api/useTaxDeferredInvestmentService";
 
 const taxDeferredInvestmentService = useTaxDeferredInvestmentService();
 
 
-async function handleCreateTaxDeferredInvestment() {
-  const taxDeferredInvestmentConfig = defaultTaxDeferredInvestmentFactory();
-  await taxDeferredInvestmentService.create(taxDeferredInvestmentConfig)
+async function handleCreateTaxDeferredInvestment(taxDeferredInvestmentTemplate: TaxDeferredInvestmentPartial) {
+  const taxDeferredInvestment = await taxDeferredInvestmentService.create(taxDeferredInvestmentTemplate)
   await loadTaxDeferredInvestments();
 }
 
-async function handleDeleteTaxDeferredInvestment(index: number) {
-  await taxDeferredInvestmentService.delete(index)
+async function handleDeleteTaxDeferredInvestment(taxDeferredInvestment: TaxDeferredInvestment) {
+  await taxDeferredInvestmentService.delete(taxDeferredInvestment.id)
   await loadTaxDeferredInvestments();
 }
 
@@ -30,19 +28,16 @@ async function handleUpdateTaxDeferredInvestment(taxDeferredInvestment: TaxDefer
   await loadTaxDeferredInvestments();
 }
 
-const {$api} = useNuxtApp()
-
 const taxDeferredInvestments = ref<TaxDeferredInvestment[]>([])
+const loading = ref<boolean>(true);
 
 async function loadTaxDeferredInvestments() {
-  if (!$api) {
-    console.error('API service not available');
-  }
   try {
     taxDeferredInvestments.value = await taxDeferredInvestmentService.list();
   } catch (error) {
     console.error('Error loading taxDeferredInvestments:', error);
   }
+  loading.value = false;
 }
 
 onMounted(async () => {

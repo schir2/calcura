@@ -1,46 +1,43 @@
 <template>
-  <IraInvestmentList :iraInvestments="iraInvestmentConfigs"
-            @createIraInvestment="handleCreateIraInvestment"
-            @updateIraInvestment="handleUpdateIraInvestment"
-            @deleteIraInvestment="handleDeleteIraInvestment"
+  <IraInvestmentList :iraInvestments="iraInvestments"
+               @create="handleCreateIraInvestment"
+               @update="handleUpdateIraInvestment"
+               @delete="handleDeleteIraInvestment"
   ></IraInvestmentList>
 </template>
 <script setup lang="ts">
-import {defaultIraInvestmentFactory} from "~/models/iraInvestment/IraInvestmentFactories";
-import type {IraInvestment} from "~/models/iraInvestment/IraInvestment";
+import type {IraInvestment, IraInvestmentPartial} from "~/models/iraInvestment/IraInvestment";
+
+import {useIraInvestmentService} from "~/composables/api/useIraInvestmentService";
 
 const iraInvestmentService = useIraInvestmentService();
 
 
-async function handleCreateIraInvestment() {
-  const iraInvestmentConfig = defaultIraInvestmentFactory();
-  await iraInvestmentService.create(iraInvestmentConfig)
+async function handleCreateIraInvestment(iraInvestmentTemplate: IraInvestmentPartial) {
+  const iraInvestment = await iraInvestmentService.create(iraInvestmentTemplate)
   await loadIraInvestments();
 }
 
-async function handleDeleteIraInvestment(index: number) {
-  await iraInvestmentService.delete(index)
+async function handleDeleteIraInvestment(iraInvestment: IraInvestment) {
+  await iraInvestmentService.delete(iraInvestment.id)
   await loadIraInvestments();
 }
 
-async function handleUpdateIraInvestment(iraInvestmentConfig: IraInvestment) {
-  await iraInvestmentService.update(iraInvestmentConfig.id, iraInvestmentConfig)
+async function handleUpdateIraInvestment(iraInvestment: IraInvestment) {
+  await iraInvestmentService.update(iraInvestment.id, iraInvestment)
   await loadIraInvestments();
 }
 
-const {$api} = useNuxtApp()
-
-const iraInvestmentConfigs = ref<IraInvestment[]>([])
+const iraInvestments = ref<IraInvestment[]>([])
+const loading = ref<boolean>(true);
 
 async function loadIraInvestments() {
-  if (!$api) {
-    console.error('API service not available');
-  }
   try {
-    iraInvestmentConfigs.value = await iraInvestmentService.list();
+    iraInvestments.value = await iraInvestmentService.list();
   } catch (error) {
     console.error('Error loading iraInvestments:', error);
   }
+  loading.value = false;
 }
 
 onMounted(async () => {

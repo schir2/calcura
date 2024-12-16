@@ -1,15 +1,18 @@
 <template>
-
-  <h2 class="text-3xl">Debt(s)</h2>
-  <NButton @click="handleCreateDebt()">Add</NButton>
-  <div class="container">
-    <Debt v-for="(debt, index) in debts" :debt="debt" :key="debt.id"
-          @deleteDebt="handleDeleteDebt" @updateDebt="handleUpdateDebt"></Debt>
-  </div>
+  <n-card title="Debt(s)">
+    <template #header-extra>
+      <DebtTemplatePicker @create="handleCreate"/>
+    </template>
+    <n-list>
+      <DebtListItem v-for="(debt, index) in debts" :debt="debt" :key="debt.id"
+                      @delete="handleDelete" @update="handleUpdate" @create="handleCreate"
+                      @remove="handleRemove"></DebtListItem>
+    </n-list>
+  </n-card>
 
 </template>
 <script lang="ts" setup>
-import type {Debt} from "~/models/debt/Debt";
+import type {Debt, DebtTemplate} from "~/models/debt/Debt";
 
 interface Props {
   debts: Debt[]
@@ -17,18 +20,22 @@ interface Props {
 
 const props = defineProps<Props>()
 
-const emit = defineEmits(['deleteDebt', 'updateDebt', 'createDebt']);
+const emit = defineEmits(['delete', 'update', 'create', 'remove']);
 
-function handleDeleteDebt(debtId: number) {
-  emit('deleteDebt', debtId);
+function handleDelete(debt: Debt) {
+  emit('delete', debt);
 }
 
-function handleCreateDebt() {
-  emit('createDebt');
+function handleCreate(debtTemplate: DebtTemplate) {
+  emit('create', debtTemplate);
 }
 
-function handleUpdateDebt(debtConfig: Debt) {
-  emit('updateDebt', debtConfig);
+function handleUpdate(debt: Debt) {
+  emit('update', debt);
+}
+
+function handleRemove(debt: Debt) {
+  emit('remove', debt)
 }
 
 </script>

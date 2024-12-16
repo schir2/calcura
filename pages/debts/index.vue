@@ -1,49 +1,43 @@
 <template>
-  <DebtList v-if="debts" :debts="debts"
-            @createDebt="handleCreateDebt"
-            @updateDebt="handleUpdateDebt"
-            @deleteDebt="handleDeleteDebt"
+  <DebtList :debts="debts"
+               @create="handleCreateDebt"
+               @update="handleUpdateDebt"
+               @delete="handleDeleteDebt"
   ></DebtList>
 </template>
 <script setup lang="ts">
-import {defaultDebtFactory} from "~/models/debt/DebtFactories";
-import type {Debt} from "~/models/debt/Debt";
+import type {Debt, DebtPartial} from "~/models/debt/Debt";
 
 import {useDebtService} from "~/composables/api/useDebtService";
 
 const debtService = useDebtService();
 
 
-async function handleCreateDebt() {
-  const debtConfig = defaultDebtFactory();
-  await debtService.create(debtConfig)
+async function handleCreateDebt(debtTemplate: DebtPartial) {
+  const debt = await debtService.create(debtTemplate)
   await loadDebts();
 }
 
-async function handleDeleteDebt(index: number) {
-  await debtService.delete(index)
+async function handleDeleteDebt(debt: Debt) {
+  await debtService.delete(debt.id)
   await loadDebts();
 }
 
 async function handleUpdateDebt(debt: Debt) {
-  assertDefined(debt.id, 'debt.id');
   await debtService.update(debt.id, debt)
   await loadDebts();
 }
 
-const {$api} = useNuxtApp()
-
 const debts = ref<Debt[]>([])
+const loading = ref<boolean>(true);
 
 async function loadDebts() {
-  if (!$api) {
-    console.error('API service not available');
-  }
   try {
     debts.value = await debtService.list();
   } catch (error) {
     console.error('Error loading debts:', error);
   }
+  loading.value = false;
 }
 
 onMounted(async () => {
