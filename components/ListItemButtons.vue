@@ -6,14 +6,14 @@
       </template>
       Edit
     </n-button>
-    <n-button tertiary round type="error" @click="$emit('delete')">
+    <n-button tertiary round type="error" @click="$emit('remove')">
       <template #icon>
         <Icon name="mdi:remove"/>
       </template>
       Remove
 
     </n-button>
-    <n-button secondary round type="error" @click="$emit('remove')">
+    <n-button secondary round type="error" @click="$emit('delete')">
       <template #icon>
         <Icon name="mdi:delete"/>
       </template>
