@@ -4,7 +4,7 @@ import type {Income, IncomePartial} from "~/models/income/Income";
 import {createSchema} from "~/utils/schemaUtils";
 import type {FormData} from "~/interfaces/FieldData"
 
-export const incomeFields: FormData<Income> = {
+export const incomeForm: FormData<Income> = {
     name: {
         name: 'name',
         label: 'Income Name',
@@ -63,4 +63,4 @@ export const incomeFields: FormData<Income> = {
     }
 }
 
-export const incomeFormSchema = createSchema<IncomePartial>(incomeFields);
+export const incomeFormSchema = createSchema<IncomePartial>(incomeForm);

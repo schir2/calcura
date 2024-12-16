@@ -6,8 +6,8 @@
 
     <template #default>
       <n-form>
-        <n-form-item path="name" label="Name" v-bind="nameProps">
-          <n-input v-model:value="name"/>
+        <n-form-item path="name" v-bind="formFields.name.props">
+          <n-input v-model:value="formFields.name.value"/>
         </n-form-item>
 
       </n-form>
@@ -45,9 +45,10 @@
 </template>
 
 <script lang="ts" setup>
-import {cashReserveFormSchema} from "~/forms/cashReserveForm";
+import {cashReserveForm, cashReserveFormSchema} from "~/forms/cashReserveForm";
 import {useForm} from "vee-validate";
 import type {CashReserve} from "~/models/cashReserve/CashReserve";
+import {useFieldHelpers} from "~/composables/useFieldHelpers";
 
 interface Props {
   cashReservePartial: Partial<CashReserve>;
@@ -62,22 +63,7 @@ const {defineField, values, errors, handleSubmit, meta} = useForm({
   initialValues: props.cashReservePartial,
 });
 
-
-const naiveConfig = (state) => ({
-  props: {
-    validationStatus: state.errors[0] ? "error" : undefined,
-    feedback: state.errors[0],
-  },
-});
-
-
-const [name, nameProps] = defineField("name", naiveConfig);
-const [principal, principalProps] = defineField("principal", naiveConfig);
-const [interestRate, interestRateProps] = defineField("interestRate", naiveConfig);
-const [paymentMinimum, paymentMinimumProps] = defineField("paymentMinimum", naiveConfig);
-const [paymentStrategy, paymentStrategyProps] = defineField("paymentStrategy", naiveConfig);
-const [paymentFixedAmount, paymentFixedAmountProps] = defineField("paymentFixedAmount", naiveConfig);
-const [paymentPercentage, paymentPercentageProps] = defineField("paymentPercentage", naiveConfig);
+const formFields = ref(useFieldHelpers(cashReserveForm, defineField))
 
 
 function handleCreate() {

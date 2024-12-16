@@ -6,28 +6,32 @@
 
     <template #default>
       <n-form>
-        <n-form-item path="name" label="Name" v-bind="nameProps">
-          <n-input v-model:value="name"/>
+        <n-form-item path="name" label="Name" v-bind="formFields.name.props">
+          <n-input v-model:value="formFields.name.value"/>
         </n-form-item>
 
-        <n-form-item path="amount" label="Amount" v-bind="amountProps">
-          <n-input-number v-model:value="amount"/>
+        <n-form-item path="amount" label="Amount" v-bind="formFields.amount.props">
+          <n-input-number v-model:value="formFields.amount.value"/>
         </n-form-item>
 
-        <n-form-item path="expenseType" label="Expense Type" v-bind="expenseTypeProps">
-          <n-select v-model:value="expenseType" :options="expenseFields.expenseType.options"/>
+        <n-form-item path="expenseType" label="Expense Type" v-bind="formFields.expenseType.props">
+          <n-select v-model:value="formFields.expenseType.value" :options="expenseForm.expenseType.options"/>
         </n-form-item>
 
-        <n-form-item path="frequency" label="Frequency" v-bind="frequencyProps">
-          <n-select v-model:value="frequency" :options="expenseFields.frequency.options"/>
+        <n-form-item path="frequency" label="Frequency" v-bind="formFields.frequency.props">
+          <n-select v-model:value="formFields.frequency.value" :options="expenseForm.frequency.options"/>
         </n-form-item>
 
-        <n-form-item path="isEssential" label="Essential?" v-bind="isEssentialProps">
-          <n-switch v-model:value="isEssential"/>
+        <n-form-item path="isEssential" label="Essential?" v-bind="formFields.isEssential.props">
+          <n-switch v-model:value="formFields.isEssential.value"/>
         </n-form-item>
 
-        <n-form-item path="isTaxDeductible" label="Growth Rate" v-bind="isTaxDeductibleProps">
-          <n-switch v-model:value="isTaxDeductible" suffix="%"/>
+        <n-form-item path="isTaxDeductible" :label="expenseForm.isTaxDeductible.label" v-bind="formFields.isTaxDeductible.props">
+          <n-switch v-model:value="formFields.isTaxDeductible.value" suffix="%"/>
+        </n-form-item>
+
+        <n-form-item path="growthRate" :label="expenseForm.growthRate.label" v-bind="formFields.growthRate.props">
+          <n-slider v-model:value="formFields.growthRate.value"/>
         </n-form-item>
       </n-form>
     </template>
@@ -64,9 +68,10 @@
 </template>
 
 <script lang="ts" setup>
-import {expenseFields, expenseFormSchema} from "~/forms/expenseForm";
+import {expenseForm, expenseFormSchema} from "~/forms/expenseForm";
 import {useForm} from "vee-validate";
 import type {Expense} from "~/models/expense/Expense";
+import {useFieldHelpers} from "~/composables/useFieldHelpers";
 
 interface Props {
   expensePartial: Partial<Expense>;
@@ -81,21 +86,7 @@ const {defineField, values, errors, handleSubmit, meta} = useForm({
   initialValues: props.expensePartial,
 });
 
-
-const naiveConfig = (state) => ({
-  props: {
-    validationStatus: state.errors[0] ? "error" : undefined,
-    feedback: state.errors[0],
-  },
-});
-
-
-const [name, nameProps] = defineField("name", naiveConfig);
-const [amount, amountProps] = defineField("amount", naiveConfig);
-const [frequency, frequencyProps] = defineField("frequency", naiveConfig);
-const [expenseType, expenseTypeProps] = defineField("expenseType", naiveConfig);
-const [isEssential, isEssentialProps] = defineField("isEssential", naiveConfig);
-const [isTaxDeductible, isTaxDeductibleProps] = defineField("isTaxDeductible", naiveConfig);
+const formFields = ref(useFieldHelpers(expenseForm, defineField));
 
 
 function handleCreate() {

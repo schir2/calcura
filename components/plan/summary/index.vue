@@ -10,12 +10,6 @@
   <PlanSummaryDebt :debts="plan.debts"/>
   <PlanSummaryExpense :expenses="plan.expenses"/>
   <PlanSummaryCashReserve :cashReserves="plan.cashReserves"/>
-  <section>
-    <h3 class="text-2xl">Expenses</h3>
-  </section>
-  <section>
-    <h3 class="text-2xl">Investments</h3>
-  </section>
 
 </template>
 <script setup lang="ts">

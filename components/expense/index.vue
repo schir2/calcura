@@ -40,7 +40,7 @@
 </template>
 <script setup lang="ts">
 import {useEntityManager} from '~/composables/api/useEntityManager';
-import {expenseFields} from '~/forms/expenseForm';
+import {expenseForm} from '~/forms/expenseForm';
 import type {Expense} from '~/models/expense/Expense';
 import {getAnnualExpenseAmount} from "~/utils/expenseUtils";
 
@@ -50,7 +50,7 @@ interface Props {
 }
 
 const {showAdvancedOptions = false, expense} = defineProps<Props>();
-const fieldMetadata = expenseFields;
+const fieldMetadata = expenseForm;
 
 const emit = defineEmits(['deleteExpense', 'updateExpense']);
 

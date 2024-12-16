@@ -6,24 +6,24 @@
 
     <template #default>
       <n-form>
-        <n-form-item path="name" label="Name" v-bind="nameProps">
-          <n-input v-model:value="name"/>
+        <n-form-item path="name" label="Name" v-bind="formFields.name.props">
+          <n-input v-model:value="formFields.name.value"/>
         </n-form-item>
 
-        <n-form-item path="incomeType" label="Income Type" v-bind="incomeTypeProps">
-          <n-select v-model:value="incomeType" :options="incomeFields.incomeType.options"/>
+        <n-form-item path="incomeType" label="Income Type" v-bind="formFields.incomeType.props">
+          <n-select v-model:value="formFields.incomeType.value" :options="incomeForm.incomeType.options"/>
         </n-form-item>
 
-        <n-form-item path="frequency" label="Frequency" v-bind="frequencyProps">
-          <n-select v-model:value="frequency" :options="incomeFields.frequency.options"/>
+        <n-form-item path="frequency" label="Frequency" v-bind="formFields.frequency.props">
+          <n-select v-model:value="formFields.frequency.value" :options="incomeForm.frequency.options"/>
         </n-form-item>
 
-        <n-form-item path="grossIncome" label="Gross Income" v-bind="grossIncomeProps">
-          <n-input-number v-model:value="grossIncome"/>
+        <n-form-item path="grossIncome" label="Gross Income" v-bind="formFields.grossIncome.props">
+          <n-input-number v-model:value="formFields.grossIncome.value"/>
         </n-form-item>
 
-        <n-form-item path="growthRate" label="Growth Rate" v-bind="growthRateProps">
-          <n-input-number v-model:value="growthRate" suffix="%"/>
+        <n-form-item path="growthRate" label="Growth Rate" v-bind="formFields.growthRate.props">
+          <n-input-number v-model:value="formFields.growthRate.value" suffix="%"/>
         </n-form-item>
       </n-form>
     </template>
@@ -60,9 +60,11 @@
 </template>
 
 <script lang="ts" setup>
-import {incomeFields, incomeFormSchema} from "~/forms/incomeForm";
+import {incomeForm, incomeFormSchema} from "~/forms/incomeForm";
 import {useForm} from "vee-validate";
 import type {Income} from "~/models/income/Income";
+import {useFieldHelpers} from "~/composables/useFieldHelpers";
+import {cashReserveForm} from "~/forms/cashReserveForm";
 
 interface Props {
   incomePartial: Partial<Income>;
@@ -77,21 +79,7 @@ const {defineField, values, errors, handleSubmit, meta} = useForm({
   initialValues: props.incomePartial,
 });
 
-
-const naiveConfig = (state) => ({
-  props: {
-    validationStatus: state.errors[0] ? "error" : undefined,
-    feedback: state.errors[0],
-  },
-});
-
-
-const [name, nameProps] = defineField("name", naiveConfig);
-const [incomeType, incomeTypeProps] = defineField("incomeType", naiveConfig);
-const [frequency, frequencyProps] = defineField("frequency", naiveConfig);
-const [grossIncome, grossIncomeProps] = defineField("grossIncome", naiveConfig);
-const [growthRate, growthRateProps] = defineField("growthRate", naiveConfig);
-
+const formFields = ref(useFieldHelpers(incomeForm, defineField))
 
 function handleCreate() {
   emit('create', values)

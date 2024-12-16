@@ -5,7 +5,7 @@ export function getAnnualExpenseAmount(expense: Expense): number {
     switch (expense.frequency) {
         case ExpenseFrequency.monthly:
             return expense.amount * 12
-        case ExpenseFrequency.annually:
+        case ExpenseFrequency.annual:
             return expense.amount
         case ExpenseFrequency.weekly:
             return expense.amount * 52

@@ -4,9 +4,9 @@ import type {FormData} from "~/interfaces/FieldData";
 import {EXPENSE_NAME_MAX_LENGTH, EXPENSE_NAME_MIN_LENGTH, MAX_EXPENSE_AMOUNT, MIN_EXPENSE_AMOUNT,} from "~/models/expense/ExpenseConstants";
 import {createSchema} from "~/utils/schemaUtils";
 import type {IncomePartial} from "~/models/income/Income";
-import {incomeFields} from "~/forms/incomeForm";
+import {incomeForm} from "~/forms/incomeForm";
 
-export const expenseFields: FormData<Expense> = {
+export const expenseForm: FormData<Expense> = {
     name: {
         name: "name",
         label: "Expense Name",
@@ -54,7 +54,7 @@ export const expenseFields: FormData<Expense> = {
             {label: "Monthly", value: ExpenseFrequency.monthly},
             {label: "Weekly", value: ExpenseFrequency.weekly},
             {label: "Quarterly", value: ExpenseFrequency.quarterly},
-            {label: "Annually", value: ExpenseFrequency.annually},
+            {label: "Annually", value: ExpenseFrequency.annual},
             {label: "One Time", value: ExpenseFrequency.one_time},
         ],
     },
@@ -68,6 +68,12 @@ export const expenseFields: FormData<Expense> = {
         label: "Tax Deductible",
         helpText: "Check this if the expense is tax deductible.",
     },
+
+    growthRate: {
+        name: "growthRate",
+        label: "Growth Rate",
+        helpText: "The Rate at which this expense grows Annually)"
+    }
 };
 
-export const expenseFormSchema = createSchema<IncomePartial>(incomeFields);
+export const expenseFormSchema = createSchema<IncomePartial>(incomeForm);

@@ -6,8 +6,8 @@
 
     <template #default>
       <n-form>
-        <n-form-item path="name" label="Name" v-bind="nameProps">
-          <n-input v-model:value="name"/>
+        <n-form-item path="name" label="Name" v-bind="formFields.name.props">
+          <n-input v-model:value="formFields.name.value"/>
         </n-form-item>
 
       </n-form>
@@ -45,9 +45,10 @@
 </template>
 
 <script lang="ts" setup>
-import {taxDeferredInvestmentFormSchema} from "~/forms/taxDeferredInvestmentForm";
+import {taxDeferredInvestmentForm, taxDeferredInvestmentFormSchema} from "~/forms/taxDeferredInvestmentForm";
 import {useForm} from "vee-validate";
 import type {TaxDeferredInvestment} from "~/models/taxDeferredInvestment/TaxDeferredInvestment";
+import {useFieldHelpers} from "~/composables/useFieldHelpers";
 
 interface Props {
   taxDeferredInvestmentPartial: Partial<TaxDeferredInvestment>;
@@ -62,17 +63,7 @@ const {defineField, values, errors, handleSubmit, meta} = useForm({
   initialValues: props.taxDeferredInvestmentPartial,
 });
 
-
-const naiveConfig = (state) => ({
-  props: {
-    validationStatus: state.errors[0] ? "error" : undefined,
-    feedback: state.errors[0],
-  },
-});
-
-
-const [name, nameProps] = defineField("name", naiveConfig);
-
+const formFields = ref(useFieldHelpers(taxDeferredInvestmentForm, defineField))
 
 
 function handleCreate() {

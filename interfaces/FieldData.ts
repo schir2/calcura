@@ -25,4 +25,6 @@ export interface SelectField extends Field{
     options: Option[];
 }
 
-export type FormData<T> = Record<keyof Partial<Omit<T, 'id'>>, Field | SelectField | NumberField>;
+export type FieldProps = Field | SelectField | NumberField
+
+export type FormData<T> = Record<keyof Partial<Omit<T, 'id'>>, FieldProps>;

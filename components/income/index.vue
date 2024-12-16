@@ -22,7 +22,7 @@
 </template>
 <script setup lang="ts">
 import {useEntityManager} from '~/composables/api/useEntityManager';
-import {incomeFields} from '~/forms/incomeForm';
+import {incomeForm} from '~/forms/incomeForm';
 import type {Income} from '~/models/income/Income';
 
 interface Props {
@@ -31,7 +31,7 @@ interface Props {
 }
 
 const {isEditing = false, income} = defineProps<Props>();
-const fieldMetadata = incomeFields;
+const fieldMetadata = incomeForm;
 
 const emit = defineEmits(['deleteIncome', 'updateIncome']);
 
