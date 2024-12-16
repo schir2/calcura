@@ -1,15 +1,18 @@
 <template>
-
-  <h2 class="text-3xl">Cash Reserve(s)</h2>
-  <NButton @click="handleCreateCashReserve()">Add</NButton>
-  <div class="container">
-    <CashReserve v-for="(cashReserve, index) in cashReserves" :cashReserve="cashReserve" :key="cashReserve.id"
-          @deleteCashReserve="handleDeleteCashReserve" @updateCashReserve="handleUpdateCashReserve"></CashReserve>
-  </div>
+  <n-card title="CashReserve(s)">
+    <template #header-extra>
+      <CashReserveTemplatePicker @create="handleCreate"/>
+    </template>
+    <n-list>
+      <CashReserveListItem v-for="(cashReserve, index) in cashReserves" :cashReserve="cashReserve" :key="cashReserve.id"
+                      @delete="handleDelete" @update="handleUpdate" @create="handleCreate"
+                      @remove="handleRemove"></CashReserveListItem>
+    </n-list>
+  </n-card>
 
 </template>
 <script lang="ts" setup>
-import type {CashReserve} from "~/models/cashReserve/CashReserve";
+import type {CashReserve, CashReserveTemplate} from "~/models/cashReserve/CashReserve";
 
 interface Props {
   cashReserves: CashReserve[]
@@ -17,17 +20,22 @@ interface Props {
 
 const props = defineProps<Props>()
 
-const emit = defineEmits(['deleteCashReserve', 'updateCashReserve', 'createCashReserve']);
-function handleDeleteCashReserve(cashReserveId: number){
-  console.log(cashReserveId);
-  emit('deleteCashReserve',cashReserveId);
-}
-function handleCreateCashReserve(){
-  emit('createCashReserve');
+const emit = defineEmits(['delete', 'update', 'create', 'remove']);
+
+function handleDelete(cashReserve: CashReserve) {
+  emit('delete', cashReserve);
 }
 
-function handleUpdateCashReserve(cashReserve: CashReserve) {
-  emit('updateCashReserve', cashReserve);
+function handleCreate(cashReserveTemplate: CashReserveTemplate) {
+  emit('create', cashReserveTemplate);
+}
+
+function handleUpdate(cashReserve: CashReserve) {
+  emit('update', cashReserve);
+}
+
+function handleRemove(cashReserve: CashReserve) {
+  emit('remove', cashReserve)
 }
 
 </script>

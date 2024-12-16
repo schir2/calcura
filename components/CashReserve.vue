@@ -27,7 +27,7 @@
 </template>
 <script setup lang="ts">
 import {useEntityManager} from '~/composables/api/useEntityManager';
-import {cashReserveFields} from '~/forms/cashReserveForm';
+import {cashReserveForm} from '~/forms/cashReserveForm';
 import type {CashReserve} from '~/models/cashReserve/CashReserve';
 
 interface Props {
@@ -36,7 +36,7 @@ interface Props {
 }
 
 const { showAdvancedOptions = false, cashReserve } = defineProps<Props>();
-const fieldMetadata = cashReserveFields;
+const fieldMetadata = cashReserveForm;
 
 const emit = defineEmits(['deleteCashReserve', 'updateCashReserve']);
 

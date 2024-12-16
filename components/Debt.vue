@@ -25,7 +25,7 @@
 </template>
 <script setup lang="ts">
 import {useEntityManager} from '~/composables/api/useEntityManager';
-import {debtFields} from '~/forms/debtForm';
+import {debtForm} from '~/forms/debtForm';
 import type {Debt} from '~/models/debt/Debt';
 
 interface Props {
@@ -34,7 +34,7 @@ interface Props {
 }
 
 const { showAdvancedOptions = false, debt } = defineProps<Props>();
-const fieldMetadata = debtFields;
+const fieldMetadata = debtForm;
 
 const emit = defineEmits(['deleteDebt', 'updateDebt']);
 
