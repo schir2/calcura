@@ -1,27 +1,25 @@
 <template>
-  <ExpenseList :expenses="expenseConfigs"
-            @createExpense="handleCreateExpense"
-            @updateExpense="handleUpdateExpense"
-            @deleteExpense="handleDeleteExpense"
+  <ExpenseList :expenses="expenses"
+               @create="handleCreateExpense"
+               @update="handleUpdateExpense"
+               @delete="handleDeleteExpense"
   ></ExpenseList>
 </template>
 <script setup lang="ts">
-import {defaultExpenseFactory} from "~/models/expense/ExpenseFactories";
-import type {Expense} from "~/models/expense/Expense";
+import type {Expense, ExpensePartial} from "~/models/expense/Expense";
 
 import {useExpenseService} from "~/composables/api/useExpenseService";
 
 const expenseService = useExpenseService();
 
 
-async function handleCreateExpense() {
-  const expenseConfig = defaultExpenseFactory();
-  await expenseService.create(expenseConfig)
+async function handleCreateExpense(expenseTemplate: ExpensePartial) {
+  const expense = await expenseService.create(expenseTemplate)
   await loadExpenses();
 }
 
-async function handleDeleteExpense(index: number) {
-  await expenseService.delete(index)
+async function handleDeleteExpense(expense: Expense) {
+  await expenseService.delete(expense.id)
   await loadExpenses();
 }
 
@@ -30,19 +28,16 @@ async function handleUpdateExpense(expense: Expense) {
   await loadExpenses();
 }
 
-const {$api} = useNuxtApp()
-
-const expenseConfigs = ref<Expense[]>([])
+const expenses = ref<Expense[]>([])
+const loading = ref<boolean>(true);
 
 async function loadExpenses() {
-  if (!$api) {
-    console.error('API service not available');
-  }
   try {
-    expenseConfigs.value = await expenseService.list();
+    expenses.value = await expenseService.list();
   } catch (error) {
     console.error('Error loading expenses:', error);
   }
+  loading.value = false;
 }
 
 onMounted(async () => {
