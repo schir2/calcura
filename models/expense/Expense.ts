@@ -1,7 +1,5 @@
 import type {Income} from "~/models/income/Income";
 
-export type ExpenseTrackingStrategy = 'simple' | 'itemized'
-
 export enum ExpenseType {
     fixed = 'fixed',
     variable = 'variable',
