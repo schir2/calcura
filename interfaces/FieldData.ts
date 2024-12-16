@@ -22,5 +22,7 @@ export interface NumberField extends Field{
 }
 
 export interface SelectField extends Field{
-    options?: Option[];
+    options: Option[];
 }
+
+export type FormData<T> = Record<keyof Partial<Omit<T, 'id'>>, Field | SelectField | NumberField>;
