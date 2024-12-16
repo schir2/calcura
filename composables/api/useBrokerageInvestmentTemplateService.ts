@@ -7,5 +7,5 @@ export function useBrokerageInvestmentTemplateService() {
         throw new Error('API service is not available');
     }
 
-    return createBaseService<BrokerageInvestmentTemplate>($api, 'brokerage-investments/');
+    return createBaseService<BrokerageInvestmentTemplate>($api, 'brokerage-investment-templates/');
 }
