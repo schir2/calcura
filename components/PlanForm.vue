@@ -23,18 +23,26 @@
 
         <n-divider />
 
-        <n-form-item path="taxRate" label="Tax Rate" v-bind="taxRateProps">
-          <n-slider v-model:value="taxRate" :marks="sliderMarks"></n-slider>
+        <n-form-item path="taxStrategy" label="Tax Strategy" v-bind="taxStrategyProps">
+          <n-radio-group v-model:value="taxStrategy">
+            <n-radio-button v-for="item in planForm.taxStrategy.options" :key="item.value" :value="item.value">
+              {{ item.label}}
+            </n-radio-button>
+          </n-radio-group>
         </n-form-item>
 
-        <n-form-item path="taxStrategy" label="Tax Strategy" v-bind="taxStrategyProps">
-          <n-select v-model:value="taxStrategy" :options="planForm.taxStrategy.options" />
+        <n-form-item path="taxRate" label="Tax Rate" v-bind="taxRateProps">
+          <n-slider v-model:value="taxRate" :marks="sliderMarks"></n-slider>
         </n-form-item>
 
         <n-divider />
 
         <n-form-item path="retirementStrategy" label="Retirement Strategy" v-bind="retirementStrategyProps">
-          <n-select v-model:value="retirementStrategy" :options="planForm.retirementStrategy.options" />
+          <n-radio-group v-model:value="retirementStrategy">
+            <n-radio-button v-for="item in planForm.retirementStrategy.options" :key="item.value" :value="item.value">
+              {{ item.label}}
+            </n-radio-button>
+          </n-radio-group>
         </n-form-item>
 
         <n-form-item
