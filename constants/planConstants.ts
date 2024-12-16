@@ -1,3 +1,5 @@
+import type {AllowNegativeDisposableIncome, GrowthApplicationStrategy} from "~/models/plan/Plan";
+
 export const MIN_TAX_RATE = 0;
 export const MAX_TAX_RATE = 100;
 export const MIN_NAME_LENGTH = 2;
@@ -13,3 +15,7 @@ export const MIN_RETIREMENT_AGE_FOR_WITHDRAWAL = 30;
 export const MAX_RETIREMENT_AGE_FOR_WITHDRAWAL = 100;
 export const MIN_AGE = 1
 export const MAX_AGE = 120
+
+export const DEFAULT_AGE: number = 30;
+export const DEFAULT_ALLOW_NEGATIVE_DISPOSABLE_INCOME: AllowNegativeDisposableIncome = 'none'
+export const DEFAULT_GROWTH_APPLICATION_STRATEGY: GrowthApplicationStrategy = 'start'
