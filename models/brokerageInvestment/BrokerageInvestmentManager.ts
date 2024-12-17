@@ -71,7 +71,7 @@ export default class BrokerageInvestmentManager extends ManagerBase<BrokerageInv
     processImplementation(planState: PlanState): PlanState {
         const currentState = this.getCurrentState()
         const contribution = this.getContribution(planState.taxableIncome, planState.grossIncome, planState.allowNegativeDisposableIncome)
-        const taxableIncome = planState.taxableIncome - contribution
+        const taxedIncome = planState.taxedIncome - contribution
         const balanceEndOfYear = currentState.balanceStartOfYear + this.calculateGrowthAmount(currentState, planState.growthApplicationStrategy)
         this.updateCurrentState(
             {
@@ -82,7 +82,7 @@ export default class BrokerageInvestmentManager extends ManagerBase<BrokerageInv
         )
         return {
             ...planState,
-            taxableIncome: taxableIncome
+            taxedIncome: taxedIncome
         }
     }
 }

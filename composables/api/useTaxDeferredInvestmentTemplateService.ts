@@ -7,5 +7,5 @@ export function useTaxDeferredInvestmentTemplateService() {
         throw new Error('API service is not available');
     }
 
-    return createBaseService<TaxDeferredInvestmentTemplate>($api, 'taxDeferredInvestment-templates/');
+    return createBaseService<TaxDeferredInvestmentTemplate>($api, 'tax-deferred-investment-templates/');
 }

@@ -1,5 +1,5 @@
 <template>
-  <n-card title="Expense(s)">
+  <n-card  title="Expense(s)">
     <template #header-extra>
       <ExpenseTemplatePicker @create="handleCreate"/>
     </template>

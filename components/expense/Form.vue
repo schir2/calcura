@@ -30,8 +30,15 @@
           <n-switch v-model:value="formFields.isTaxDeductible.value" suffix="%"/>
         </n-form-item>
 
+        <n-form-item path="growsWithInflation" :label="expenseForm.growsWithInflation.label" v-bind="formFields.growsWithInflation.props">
+          <n-switch v-model:value="formFields.growsWithInflation.value" suffix="%"/>
+        </n-form-item>
+
         <n-form-item path="growthRate" :label="expenseForm.growthRate.label" v-bind="formFields.growthRate.props">
-          <n-slider v-model:value="formFields.growthRate.value"/>
+          <n-space vertical class="w-full">
+            <n-slider v-model:value="formFields.growthRate.value" :min="0" :max="100"/>
+            <n-input-number v-model:value="formFields.growthRate.value" size="small"/>
+          </n-space>
         </n-form-item>
       </n-form>
     </template>

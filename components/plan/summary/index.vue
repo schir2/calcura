@@ -6,10 +6,10 @@
       <CommonListItem><span>{{ plan.name }}</span></CommonListItem>
     </CommonList>
   </CommonCard>
-  <PlanSummaryIncome :incomes="plan.incomes"/>
-  <PlanSummaryDebt :debts="plan.debts"/>
-  <PlanSummaryExpense :expenses="plan.expenses"/>
-  <PlanSummaryCashReserve :cashReserves="plan.cashReserves"/>
+  <PlanSummaryIncome v-if="plan.incomes.length !== 0" :incomes="plan.incomes"/>
+  <PlanSummaryDebt v-if="plan.debts.length !== 0" :debts="plan.debts"/>
+  <PlanSummaryExpense v-if="plan.expenses.length !== 0" :expenses="plan.expenses"/>
+  <PlanSummaryCashReserve v-if="plan.cashReserves.length !== 0" :cashReserves="plan.cashReserves"/>
 
 </template>
 <script setup lang="ts">

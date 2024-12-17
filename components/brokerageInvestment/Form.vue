@@ -6,10 +6,21 @@
 
     <template #default>
       <n-form>
-        <n-form-item path="name" label="Name" v-bind="formFields.name.props">
+        <n-form-item path="name" :label="brokerageInvestmentForm.name.label" v-bind="formFields.name.props">
           <n-input v-model:value="formFields.name.value"/>
         </n-form-item>
-
+        <n-form-item path="growthRate" :label="brokerageInvestmentForm.growthRate.label" v-bind="formFields.growthRate.props">
+          <n-input-number  v-model:value="formFields.growthRate.value"/>
+        </n-form-item>
+        <n-form-item path="reserveAmount" :label="brokerageInvestmentForm.initialBalance.label" v-bind="formFields.initialBalance.props">
+          <n-input-number v-model:value="formFields.initialBalance.value"/>
+        </n-form-item>
+        <n-form-item path="contributionPercentage" :label="brokerageInvestmentForm.contributionPercentage.label" v-bind="formFields.contributionPercentage.props">
+          <n-input-number v-model:value="formFields.contributionPercentage.value"/>
+        </n-form-item>
+        <n-form-item path="contributionFixedAmount" :label="brokerageInvestmentForm.contributionFixedAmount.label" v-bind="formFields.contributionFixedAmount.props">
+          <n-input-number v-model:value="formFields.contributionFixedAmount.value"/>
+        </n-form-item>
       </n-form>
     </template>
 

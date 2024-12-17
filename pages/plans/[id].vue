@@ -43,10 +43,18 @@
 
 
     <IraInvestmentList v-if="plan.iraInvestments" :iraInvestments="plan.iraInvestments"
-                       @createIraInvestment="handleCreateIraInvestment"
-                       @updateIraInvestment="handleUpdateIraInvestment"
-                       @deleteIraInvestment="handleDeleteIraInvestment"
-                       @removeIraInvestment="handleRemoveIraInvestment"
+                       @create="handleCreateIraInvestment"
+                       @update="handleUpdateIraInvestment"
+                       @delete="handleDeleteIraInvestment"
+                       @remove="handleRemoveIraInvestment"
+    />
+
+
+    <TaxDeferredInvestmentList v-if="plan.taxDeferredInvestments" :taxDeferredInvestments="plan.taxDeferredInvestments"
+                       @create="handleCreateTaxDeferredInvestment"
+                       @update="handleUpdateTaxDeferredInvestment"
+                       @delete="handleDeleteTaxDeferredInvestment"
+                       @remove="handleRemoveTaxDeferredInvestment"
     />
 
   </div>
@@ -218,6 +226,7 @@ async function handleRemoveIraInvestment() {
 }
 
 async function handleCreateTaxDeferredInvestment(taxDeferredInvestmentPartial: TaxDeferredInvestmentPartial) {
+  console.log(taxDeferredInvestmentPartial)
   const taxDeferredInvestment = await taxDeferredInvestmentService.create(taxDeferredInvestmentPartial)
   await planService.addRelatedModel(planId, 'tax_deferred_investments', taxDeferredInvestment.id)
   await loadPlan();

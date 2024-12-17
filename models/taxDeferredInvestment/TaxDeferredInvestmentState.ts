@@ -3,6 +3,6 @@ export default interface TaxDeferredInvestmentState {
     employerContribution?: number;
     growthAmount: number;
     balanceStartOfYear: number;
-    balanceEndOfYear: number;
+    balanceEndOfYear?: number;
     processed: boolean;
 }

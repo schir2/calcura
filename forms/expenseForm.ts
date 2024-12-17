@@ -69,6 +69,12 @@ export const expenseForm: FormData<Expense> = {
         helpText: "Check this if the expense is tax deductible.",
     },
 
+    growsWithInflation: {
+        name: "growsWithInflation",
+        label: "Grows With Inflation",
+        helpText: "Grows With Inflation.",
+    },
+
     growthRate: {
         name: "growthRate",
         label: "Growth Rate",

@@ -6,10 +6,18 @@
 
     <template #default>
       <n-form>
-        <n-form-item path="name" v-bind="formFields.name.props">
+        <n-form-item path="name" :label="cashReserveForm.name.label" v-bind="formFields.name.props">
           <n-input v-model:value="formFields.name.value"/>
         </n-form-item>
-
+        <n-form-item path="initialAmount" :label="cashReserveForm.initialAmount.label" v-bind="formFields.initialAmount.props">
+          <n-input-number  v-model:value="formFields.initialAmount.value"/>
+        </n-form-item>
+        <n-form-item path="reserveAmount" :label="cashReserveForm.reserveAmount.label" v-bind="formFields.reserveAmount.props">
+          <n-input-number v-model:value="formFields.reserveAmount.value"/>
+        </n-form-item>
+        <n-form-item path="reserveMonths" :label="cashReserveForm.reserveMonths.label" v-bind="formFields.reserveMonths.props">
+          <n-input-number v-model:value="formFields.reserveMonths.value"/>
+        </n-form-item>
       </n-form>
     </template>
 

@@ -21,6 +21,7 @@ export interface Expense {
     frequency: ExpenseFrequency,
     isEssential: boolean,
     isTaxDeductible: boolean,
+    growsWithInflation: boolean,
     growthRate: number,
 }
 
@@ -37,5 +38,6 @@ export const expenseDefaults: ExpensePartial = {
     frequency: ExpenseFrequency.annual,
     isEssential: true,
     isTaxDeductible: false,
+    growsWithInflation: false,
     growthRate: 0,
 }
