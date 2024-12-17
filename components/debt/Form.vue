@@ -6,40 +6,26 @@
 
     <template #default>
       <n-form>
-        <n-form-item path="name" label="Name" v-bind="formFields.name.props">
+        <n-form-item path="name" v-bind="formFields.name.props">
           <n-input v-model:value="formFields.name.value"/>
+        </n-form-item>
+        <n-form-item path="principal" v-bind="formFields.principal.props">
+          <n-input-number v-model:value="formFields.principal.value"/>
+        </n-form-item>
+        <n-form-item path="interestRate" v-bind="formFields.interestRate.props">
+          <n-space vertical class="w-full">
+            <n-slider v-model:value="formFields.interestRate.value" :min="0" :max="50" :marks="{5: 'Medium', 15:'High', 30:'Extreme'}"/>
+            <n-input-number v-model:value="formFields.interestRate.value" size="small"/>
+          </n-space>
+        </n-form-item>
+        <n-form-item>
         </n-form-item>
 
       </n-form>
     </template>
 
     <template #action>
-      <n-button-group>
-        <n-button secondary round v-if="mode ==='edit'" type="success" @click="handleUpdate">
-          <template #icon>
-            <Icon name="mdi:content-save"/>
-          </template>
-          <span>Save</span>
-        </n-button>
-        <n-button secondary round v-if="mode==='edit'" type="warning" @click="handleCreate">
-          <template #icon>
-            <Icon name="mdi:content-duplicate"/>
-          </template>
-          <span>Duplicate</span>
-        </n-button>
-        <n-button secondary round v-if="mode==='create'" type="success" @click="handleCreate">
-          <template #icon>
-            <Icon name="mdi:content-save"/>
-          </template>
-          <span>Create</span>
-        </n-button>
-        <n-button secondary round type="error" @click="handleCancel">
-          <template #icon>
-            <Icon name="mdi:close"/>
-          </template>
-          Cancel
-        </n-button>
-      </n-button-group>
+      <FormActionButtons :mode="mode" @update="handleUpdate" @create="handleCreate" @cancel="handleCancel"/>
     </template>
   </n-card>
 </template>

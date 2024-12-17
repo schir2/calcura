@@ -5,80 +5,80 @@
     </template>
     <template #default>
       <n-form>
-        <n-form-item path="name"  v-bind="formFields.name.props">
+        <n-form-item path="name" v-bind="formFields.name.props">
           <n-input v-model:value="formFields.name.value"></n-input>
         </n-form-item>
 
-        <n-form-item path="age"  v-bind="formFields.age.props">
-          <n-input-number v-model:value="formFields.age.value" />
+        <n-form-item path="age" v-bind="formFields.age.props">
+          <n-input-number v-model:value="formFields.age.value"/>
         </n-form-item>
 
-        <n-form-item path="year"  v-bind="formFields.year.props">
-          <n-input-number v-model:value="formFields.year.value" />
+        <n-form-item path="year" v-bind="formFields.year.props">
+          <n-input-number v-model:value="formFields.year.value"/>
         </n-form-item>
 
-        <n-form-item path="lifeExpectancy"  v-bind="formFields.lifeExpectancy.props">
-          <n-input-number v-model:value="formFields.lifeExpectancy.value" />
+        <n-form-item path="lifeExpectancy" v-bind="formFields.lifeExpectancy.props">
+          <n-input-number v-model:value="formFields.lifeExpectancy.value"/>
         </n-form-item>
 
-        <n-divider />
+        <n-divider/>
 
-        <n-form-item path="taxStrategy"  v-bind="formFields.taxStrategy.props">
+        <n-form-item path="taxStrategy" v-bind="formFields.taxStrategy.props">
           <n-radio-group v-model:value="formFields.taxStrategy.value">
             <n-radio-button v-for="item in planForm.taxStrategy.options" :key="item.value" :value="item.value">
-              {{ item.label}}
+              {{ item.label }}
             </n-radio-button>
           </n-radio-group>
         </n-form-item>
 
-        <n-form-item path="taxRate"  v-bind="formFields.taxRate.props">
+        <n-form-item path="taxRate" v-bind="formFields.taxRate.props">
           <n-slider v-model:value="formFields.taxRate.value" :marks="sliderMarks"></n-slider>
         </n-form-item>
 
-        <n-divider />
+        <n-divider/>
 
         <n-form-item path="retirementStrategy" v-bind="formFields.retirementStrategy.props">
           <n-radio-group v-model:value="formFields.retirementStrategy.value">
             <n-radio-button v-for="item in planForm.retirementStrategy.options" :key="item.value" :value="item.value">
-              {{ item.label}}
+              {{ item.label }}
             </n-radio-button>
           </n-radio-group>
         </n-form-item>
 
         <n-form-item
             path="retirementAge"
-            
+
             v-bind="formFields.retirementAge.props"
             v-if="formFields.retirementStrategy.value === 'age'"
         >
-          <n-input-number v-model:value="formFields.retirementAge.value" />
+          <n-input-number v-model:value="formFields.retirementAge.value"/>
         </n-form-item>
 
         <n-form-item
             path="retirementSavingsAmount"
-            
+
             v-bind="formFields.retirementSavingsAmount.props"
             v-if="formFields.retirementStrategy.value === 'target_savings'"
         >
-          <n-input-number v-model:value="formFields.retirementSavingsAmount.value" />
+          <n-input-number v-model:value="formFields.retirementSavingsAmount.value"/>
         </n-form-item>
 
         <n-form-item
             path="retirementWithdrawalRate"
-            
+
             v-bind="formFields.retirementWithdrawalRate.props"
             v-if="formFields.retirementStrategy.value === 'percent_rule'"
         >
-          <n-input-number v-model:value="formFields.retirementWithdrawalRate.value" />
+          <n-input-number v-model:value="formFields.retirementWithdrawalRate.value"/>
         </n-form-item>
 
         <n-form-item
             path="retirementIncomeGoal"
-            
+
             v-bind="formFields.retirementIncomeGoal.props"
             v-if="formFields.retirementStrategy.value === 'percent_rule'"
         >
-          <n-input v-model:value="formFields.retirementIncomeGoal.value" />
+          <n-input v-model:value="formFields.retirementIncomeGoal.value"/>
         </n-form-item>
         <n-button :disabled="!meta.valid">
           Submit
@@ -88,32 +88,7 @@
     </template>
 
     <template #action>
-      <n-button-group>
-        <n-button secondary round v-if="mode ==='edit'" type="success" @click="handleUpdate">
-          <template #icon>
-            <Icon name="mdi:content-save"/>
-          </template>
-          <span>Save</span>
-        </n-button>
-        <n-button secondary round v-if="mode==='edit'" type="warning" @click="handleCreate">
-          <template #icon>
-            <Icon name="mdi:content-duplicate"/>
-          </template>
-          <span>Duplicate</span>
-        </n-button>
-        <n-button secondary round v-if="mode==='create'" type="success" @click="handleCreate">
-          <template #icon>
-            <Icon name="mdi:content-save"/>
-          </template>
-          <span>Create</span>
-        </n-button>
-        <n-button secondary round type="error" @click="handleCancel">
-          <template #icon>
-            <Icon name="mdi:close"/>
-          </template>
-          Cancel
-        </n-button>
-      </n-button-group>
+      <FormActionButtons :mode="mode" @update="handleUpdate" @create="handleCreate" @cancel="handleCancel"/>
     </template>
   </n-card>
 </template>
@@ -160,7 +135,7 @@ function handleUpdate() {
   emit('update', values)
 }
 
-const {defineField, values, errors, handleSubmit, meta } = useForm({
+const {defineField, values, errors, handleSubmit, meta} = useForm({
   validationSchema: planFormSchema,
   initialValues: props.planPartial
 })

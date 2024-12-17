@@ -28,9 +28,9 @@
       <FormSelect :model="currentExpenseConfig" :field="fieldMetadata.frequency"></FormSelect>
       <FormTextInput :modelValue="currentExpenseConfig" :field="fieldMetadata.amount"></FormTextInput>
       <n-number-animation v-if="currentExpenseConfig && prevAmount && currentAmount"
-          :from="prevAmount"
-          :to="currentAmount"
-          :duration="1000"
+                          :from="prevAmount"
+                          :to="currentAmount"
+                          :duration="1000"
       />
       <FormSelect :model="currentExpenseConfig" :field="fieldMetadata.expenseType"></FormSelect>
       <FormToggle :model="currentExpenseConfig" :field="fieldMetadata.isEssential"></FormToggle>
@@ -69,9 +69,9 @@ const currentAmount = computed(() => getAnnualExpenseAmount(currentExpenseConfig
 watch(
     currentExpenseConfig,
     (newConfig: Expense, oldConfig: Expense) => {
-      if (expense){
-      prevAmount.value = getAnnualExpenseAmount(oldConfig);
-    }
+      if (expense) {
+        prevAmount.value = getAnnualExpenseAmount(oldConfig);
       }
+    }
 );
 </script>
