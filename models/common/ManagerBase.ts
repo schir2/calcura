@@ -7,11 +7,14 @@ export default abstract class ManagerBase<TConfig, TState> {
 
     constructor(config: TConfig) {
         this.config = config
+        this.setUp()
         const initialState = this.createInitialState();
         this.states.push(initialState);
     }
 
     protected abstract createInitialState(): TState;
+
+    setUp(): void{}
 
     getInitialState(): TState {
         return this.getState(0)
