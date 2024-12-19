@@ -5,13 +5,11 @@ import BaseManager from "~/models/common/BaseManager";
 import {getIraLimit, getTaxDeferredContributionLimit, getTaxDeferredElectiveContributionLimit} from "~/utils";
 import type Command from "~/models/common/Command";
 import IncomeManager from "~/models/income/IncomeManager";
-import type {IncomeType} from "~/models/income/Income";
 import BrokerageInvestmentManager from "~/models/brokerageInvestment/BrokerageInvestmentManager";
 import ExpenseManager from "~/models/expense/ExpenseManager";
 import IraInvestmentManager from "~/models/iraInvestment/IraInvestmentManager";
 import CashReserveManager from "~/models/cashReserve/CashReserveManager";
 import TaxDeferredInvestmentManager from "~/models/taxDeferredInvestment/TaxDeferredInvestmentManager";
-import type {ExpenseType} from "~/models/expense/Expense";
 import {ContributionType} from "~/models/common";
 import BaseOrchestrator from "~/models/common/BaseOrchestrator";
 
