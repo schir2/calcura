@@ -1,10 +1,10 @@
 import type {IraInvestment} from './IraInvestment';
-import {adjustForAllowNegativeDisposableIncome, assertDefined} from "~/utils";
+import {adjustForInsufficientFunds, assertDefined} from "~/utils";
 import type IraInvestmentState from "~/models/iraInvestment/IraInvestmentState";
 import BaseManager from "~/models/common/BaseManager";
 import type {PlanState} from "~/models/plan/PlanState";
 import type Command from "~/models/common/Command";
-import type {AllowNegativeDisposableIncome} from "~/models/plan/Plan";
+import type {InsufficientFundsStrategy} from "~/models/plan/Plan";
 
 export default class IraInvestmentManager extends BaseManager<IraInvestment, IraInvestmentState> {
 
@@ -12,7 +12,7 @@ export default class IraInvestmentManager extends BaseManager<IraInvestment, Ira
         limit: number,
         disposableIncome: number,
         incomePreTaxed?: number,
-        allowNegativeDisposableIncome: AllowNegativeDisposableIncome = 'none'
+        insufficientFundsStrategy: InsufficientFundsStrategy = 'none'
     ): number {
         let contribution = 0
         switch (this.config.contributionStrategy) {
@@ -27,11 +27,11 @@ export default class IraInvestmentManager extends BaseManager<IraInvestment, Ira
                 contribution = limit
                 break
         }
-        return adjustForAllowNegativeDisposableIncome(
+        return adjustForInsufficientFunds(
             {
                 amount: contribution,
-                disposableIncome: disposableIncome,
-                allowNegativeDisposableIncome: allowNegativeDisposableIncome
+                availableFunds: disposableIncome,
+                insufficientFundsStrategy: InsufficientFundsStrategy
             }
         )
     }
@@ -61,7 +61,7 @@ export default class IraInvestmentManager extends BaseManager<IraInvestment, Ira
 
     processImplementation(planState: PlanState): PlanState {
         const currentState = this.getCurrentState()
-        const contribution = this.getContribution(999999, planState.taxedIncome, planState.taxableIncome, planState.allowNegativeDisposableIncome)
+        const contribution = this.getContribution(999999, planState.taxedIncome, planState.taxableIncome, planState.insufficientFundsStrategy)
         const balanceEndOfYear = currentState.balanceStartOfYear + contribution
         this.updateCurrentState(
             {
