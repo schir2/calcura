@@ -3,9 +3,8 @@ import type {CashReserve} from "~/models/cashReserve/CashReserve";
 import type {PlanState} from "~/models/plan/PlanState";
 import type CashReserveState from "~/models/cashReserve/CashReserveState";
 import type Command from "~/models/common/Command";
-import type DebtState from "~/models/debt/DebtState";
-import type {AllowNegativeDisposableIncome} from "~/models/plan/Plan";
-import {adjustForAllowNegativeDisposableIncome} from "~/utils";
+import type {InsufficientFundsStrategy} from "~/models/plan/Plan";
+import {adjustForInsufficientFunds} from "~/utils";
 
 export default class CashReserveManager extends BaseManager<CashReserve, CashReserveState> {
     protected createInitialState(): CashReserveState {
@@ -27,7 +26,7 @@ export default class CashReserveManager extends BaseManager<CashReserve, CashRes
         return [];
     }
 
-    calculateContribution(state: CashReserveState, disposableIncome: number, allowNegativeDisposableIncome: AllowNegativeDisposableIncome): number {
+    calculateContribution(state: CashReserveState, disposableIncome: number, insufficientFundsStrategy: InsufficientFundsStrategy): number {
         let contribution = 0
         switch (this.config.cashReserveStrategy) {
             case 'fixed':
@@ -38,12 +37,12 @@ export default class CashReserveManager extends BaseManager<CashReserve, CashRes
                 // TODO Implement this
                 break
         }
-        contribution = adjustForAllowNegativeDisposableIncome(
+        contribution = adjustForInsufficientFunds(
             {
-                disposableIncome: disposableIncome,
+                availableFunds: disposableIncome,
                 amount: contribution,
                 minimum: 0,
-                allowNegativeDisposableIncome: allowNegativeDisposableIncome
+                insufficientFundsStrategy: InsufficientFundsStrategy
             }
         )
         return Math.min(contribution, state.cashReserveStartOfYear);
@@ -51,7 +50,7 @@ export default class CashReserveManager extends BaseManager<CashReserve, CashRes
 
     processImplementation(planState: PlanState): PlanState {
         const currentState = this.getCurrentState();
-        const contribution = this.calculateContribution(currentState, planState.taxedIncome, planState.allowNegativeDisposableIncome)
+        const contribution = this.calculateContribution(currentState, planState.taxedIncome, planState.insufficientFundsStrategy)
         const cashReserveEndOfYear = currentState.cashReserveStartOfYear + contribution;
         this.updateCurrentState({
             ...currentState,

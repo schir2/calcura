@@ -1,17 +1,17 @@
 import type {BrokerageInvestment} from './BrokerageInvestment';
-import {adjustForAllowNegativeDisposableIncome, assertDefined, calculateInvestmentGrowthAmount} from "~/utils";
+import {adjustForInsufficientFunds, assertDefined, calculateInvestmentGrowthAmount} from "~/utils";
 import type BrokerageInvestmentState from "~/models/brokerageInvestment/BrokerageInvestmentState";
 import BaseManager from "~/models/common/BaseManager";
 import type {PlanState} from "~/models/plan/PlanState";
 import type Command from "~/models/common/Command";
-import type {AllowNegativeDisposableIncome, GrowthApplicationStrategy} from "~/models/plan/Plan";
+import type {InsufficientFundsStrategy, GrowthApplicationStrategy} from "~/models/plan/Plan";
 
 export default class BrokerageInvestmentManager extends BaseManager<BrokerageInvestment, BrokerageInvestmentState> {
 
     getContribution(
         disposableIncome: number,
         incomePreTaxed?: number,
-        allowNegativeDisposableIncome: AllowNegativeDisposableIncome = 'none'
+        insufficientFundsStrategy: InsufficientFundsStrategy = 'none'
     ): number {
         let contribution = 0
         switch (this.config.contributionStrategy) {
@@ -26,11 +26,11 @@ export default class BrokerageInvestmentManager extends BaseManager<BrokerageInv
                 contribution = disposableIncome
                 break
         }
-        return adjustForAllowNegativeDisposableIncome(
+        return adjustForInsufficientFunds(
             {
                 amount: contribution,
-                disposableIncome: disposableIncome,
-                allowNegativeDisposableIncome: allowNegativeDisposableIncome
+                availableFunds: disposableIncome,
+                insufficientFundsStrategy: InsufficientFundsStrategy
             }
         )
     }
@@ -70,7 +70,7 @@ export default class BrokerageInvestmentManager extends BaseManager<BrokerageInv
 
     processImplementation(planState: PlanState): PlanState {
         const currentState = this.getCurrentState()
-        const contribution = this.getContribution(planState.taxableIncome, planState.grossIncome, planState.allowNegativeDisposableIncome)
+        const contribution = this.getContribution(planState.taxableIncome, planState.grossIncome, planState.insufficientFundsStrategy)
         const taxedIncome = planState.taxedIncome - contribution
         const balanceEndOfYear = currentState.balanceStartOfYear + this.calculateGrowthAmount(currentState, planState.growthApplicationStrategy)
         this.updateCurrentState(

@@ -53,7 +53,7 @@ describe("BrokerageInvestmentManager", () => {
             expect(result).toBe(500); // Replace with expected result
         });
 
-        it("should adjust contribution based on 'allowNegativeDisposableIncome'", () => {
+        it("should adjust contribution based on 'insufficientFundsStrategy'", () => {
             const disposableIncome = 50;
             const contribution = manager.getContribution(disposableIncome, undefined, 'none');
             expect(contribution).toBe(50)
@@ -97,7 +97,7 @@ describe("BrokerageInvestmentManager", () => {
             const planState: Partial<PlanState> = {
                 taxedIncome: 1000,
                 grossIncome: 2000,
-                allowNegativeDisposableIncome: 'none',
+                insufficientFundsStrategy: 'none',
             };
 
             const updatedPlanState = manager.process(planState as PlanState);
