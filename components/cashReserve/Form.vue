@@ -12,6 +12,11 @@
         <n-form-item path="initialAmount" :label="cashReserveForm.initialAmount.label" v-bind="formFields.initialAmount.props">
           <n-input-number  v-model:value="formFields.initialAmount.value"/>
         </n-form-item>
+        <n-form-item path="cashReserveStrategy" :label="cashReserveForm.cashReserveStrategy.label"  v-bind="formFields.cashReserveStrategy.props">
+          <n-radio-group v-model:value="formFields.cashReserveStrategy.value">
+            <n-radio-button v-for="option in cashReserveForm.cashReserveStrategy.options" :key="option.value" :value="option.value" :label="option.label" />
+          </n-radio-group>
+        </n-form-item>
         <n-form-item path="reserveAmount" :label="cashReserveForm.reserveAmount.label" v-bind="formFields.reserveAmount.props">
           <n-input-number v-model:value="formFields.reserveAmount.value"/>
         </n-form-item>

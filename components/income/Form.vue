@@ -11,7 +11,9 @@
         </n-form-item>
 
         <n-form-item path="incomeType" label="Income Type" v-bind="formFields.incomeType.props">
-          <n-select v-model:value="formFields.incomeType.value" :options="incomeForm.incomeType.options"/>
+          <n-radio-group v-model:value="formFields.incomeType.value">
+            <n-radio-button v-for="option in incomeForm.incomeType.options" :key="option.value" :label="option.label" :value="option.value"/>
+          </n-radio-group>
         </n-form-item>
 
         <n-form-item path="frequency" label="Frequency" v-bind="formFields.frequency.props">
@@ -39,7 +41,6 @@ import {incomeForm, incomeFormSchema} from "~/forms/incomeForm";
 import {useForm} from "vee-validate";
 import type {Income} from "~/models/income/Income";
 import {useFieldHelpers} from "~/composables/useFieldHelpers";
-import {cashReserveForm} from "~/forms/cashReserveForm";
 
 interface Props {
   incomePartial: Partial<Income>;
