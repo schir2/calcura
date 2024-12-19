@@ -1,11 +1,13 @@
 import type Command from "~/models/common/Command";
-import type {PlanState} from "~/models/plan/PlanState";
+import type PlanManager from "~/models/plan/PlanManager";
 
 export default abstract class BaseManager<TConfig, TState> {
     protected states: TState[] = [];
     protected readonly config: TConfig;
+    readonly orchestrator: PlanManager;
 
-    constructor(config: TConfig) {
+    constructor(orchestrator: PlanManager, config: TConfig) {
+        this.orchestrator = orchestrator;
         this.config = config
         this.setUp()
         const initialState = this.createInitialState();
@@ -14,7 +16,8 @@ export default abstract class BaseManager<TConfig, TState> {
 
     protected abstract createInitialState(): TState;
 
-    setUp(): void{}
+    setUp(): void {
+    }
 
     getInitialState(): TState {
         return this.getState(0)
@@ -41,16 +44,13 @@ export default abstract class BaseManager<TConfig, TState> {
         this.states[this.states.length - 1] = newState;
     }
 
-    process(planState: PlanState): PlanState{
-        const baseState = this.processImplementation(planState);
+    process(): void {
+        const baseState = this.processImplementation();
         const currentState = {...this.getCurrentState(), processed: true};
         this.updateCurrentState(currentState);
-        return {
-            ...planState,
-        }
     }
 
-    protected abstract processImplementation(planState: PlanState): PlanState;
+    protected abstract processImplementation(): void;
 
     advanceTimePeriod(): TState {
         const previousState = this.getCurrentState();
@@ -70,7 +70,7 @@ export default abstract class BaseManager<TConfig, TState> {
         return this.states;
     }
 
-    protected abstract createNextState(previousState: TState): TState;
+    abstract createNextState(previousState: TState): TState;
 
     abstract getCommands(): Command[];
 }
