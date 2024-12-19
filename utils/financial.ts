@@ -1,4 +1,5 @@
-import type {AllowNegativeDisposableIncome, GrowthApplicationStrategy} from "~/models/plan/Plan";
+import type {GrowthApplicationStrategy} from "~/models/plan/Plan";
+import {InsufficientFundsStrategy} from "~/models/plan/Plan";
 
 export function calculateCompoundInterest(principal: number, interestRate: number, numberOfInterestApplicationsPerPeriod: number = 1, numberOfPeriods: number): number {
     return principal * (1 + (interestRate / numberOfInterestApplicationsPerPeriod)) ** (numberOfInterestApplicationsPerPeriod * numberOfPeriods)
@@ -28,19 +29,18 @@ export function calculateInvestmentGrowthAmount(
 }
 
 
-export function adjustForAllowNegativeDisposableIncome(
-    {disposableIncome, amount, minimum = 0, allowNegativeDisposableIncome}: {
-        disposableIncome: number, amount: number, minimum?: number, allowNegativeDisposableIncome: AllowNegativeDisposableIncome
-    }
+export function adjustForInsufficientFunds(
+    requestedAmount: number,
+    availableFunds: number, insufficientFundsStrategy: InsufficientFundsStrategy, minimum: number = 0,
 ): number {
-    switch (allowNegativeDisposableIncome) {
-        case 'none':
-            return Math.max(Math.min(amount, disposableIncome), minimum);
-        case 'minimum_only':
-            return Math.max(Math.min(amount, disposableIncome), minimum);
-        case 'full':
-            return amount;
+    switch (insufficientFundsStrategy) {
+        case InsufficientFundsStrategy.None:
+            return Math.min(availableFunds, requestedAmount);
+        case InsufficientFundsStrategy.MinimumOnly:
+            return Math.max(Math.min(availableFunds, requestedAmount), minimum);
+        case InsufficientFundsStrategy.Full:
+            return requestedAmount;
         default:
-            throw new Error(`Unknown AllowNegativeDisposableIncome option: ${allowNegativeDisposableIncome}`);
+            throw new Error(`Invalid insufficientFundsStrategy value: ${insufficientFundsStrategy}`);
     }
 }
