@@ -2,7 +2,7 @@ import type {Plan} from "~/models/plan/Plan";
 import type {PlanState} from "~/models/plan/PlanState";
 import DebtManager from "~/models/debt/DebtManager";
 import BaseManager from "~/models/common/BaseManager";
-import {getIraLimit, getTaxDeferredContributionLimit, getTaxDeferredElectiveContributionLimit} from "~/utils";
+import {adjustForInsufficientFunds, getIraLimit, getTaxDeferredContributionLimit, getTaxDeferredElectiveContributionLimit} from "~/utils";
 import type Command from "~/models/common/Command";
 import IncomeManager from "~/models/income/IncomeManager";
 import BrokerageInvestmentManager from "~/models/brokerageInvestment/BrokerageInvestmentManager";
@@ -11,7 +11,7 @@ import IraInvestmentManager from "~/models/iraInvestment/IraInvestmentManager";
 import CashReserveManager from "~/models/cashReserve/CashReserveManager";
 import TaxDeferredInvestmentManager from "~/models/taxDeferredInvestment/TaxDeferredInvestmentManager";
 import {ContributionType} from "~/models/common";
-import BaseOrchestrator from "~/models/common/BaseOrchestrator";
+import {BaseOrchestrator} from "~/models/common/BaseOrchestrator";
 
 export enum FundType {
     Taxable = "taxable",
@@ -19,18 +19,28 @@ export enum FundType {
 
 }
 
+type ManagerMap = {
+    incomeManagers: IncomeManager[];
+    cashReserveManagers: CashReserveManager[];
+    expenseManagers: ExpenseManager[];
+    debtManagers: DebtManager[];
+    brokerageInvestmentManagers: BrokerageInvestmentManager[];
+    iraInvestmentManagers: IraInvestmentManager[];
+    taxDeferredManagers: TaxDeferredInvestmentManager[];
+};
 
-export default class PlanManager extends BaseOrchestrator<Plan, PlanState> {
 
-    createManagers(): Record<string, BaseManager<any, any>[]> {
+export default class PlanManager extends BaseOrchestrator<Plan, PlanState, ManagerMap> {
+
+    createManagers(): ManagerMap {
         return {
-            incomeManagers: this.config.incomes.map((income) => new IncomeManager(income)),
-            cashReserveManagers: this.config.cashReserves.map((cashReserve) => new CashReserveManager(cashReserve)),
-            expenseManagers: this.config.expenses.map((expense) => new ExpenseManager(expense)),
-            debtManagers: this.config.debts.map((debt) => new DebtManager(debt)),
-            brokerageInvestmentManagers: this.config.brokerageInvestments.map((brokerageInvestment) => new BrokerageInvestmentManager(brokerageInvestment)),
-            iraInvestmentManagers: this.config.iraInvestments.map((iraInvestment) => new IraInvestmentManager(iraInvestment)),
-            taxDeferredManagers: this.config.taxDeferredInvestments.map((taxDeferredInvestment) => new TaxDeferredInvestmentManager(taxDeferredInvestment))
+            incomeManagers: this.config.incomes.map((income) => new IncomeManager(this, income)),
+            cashReserveManagers: this.config.cashReserves.map((cashReserve) => new CashReserveManager(this, cashReserve)),
+            expenseManagers: this.config.expenses.map((expense) => new ExpenseManager(this, expense)),
+            debtManagers: this.config.debts.map((debt) => new DebtManager(this, debt)),
+            brokerageInvestmentManagers: this.config.brokerageInvestments.map((brokerageInvestment) => new BrokerageInvestmentManager(this, brokerageInvestment)),
+            iraInvestmentManagers: this.config.iraInvestments.map((iraInvestment) => new IraInvestmentManager(this, iraInvestment)),
+            taxDeferredManagers: this.config.taxDeferredInvestments.map((taxDeferredInvestment) => new TaxDeferredInvestmentManager(this, taxDeferredInvestment))
         }
     }
 
@@ -77,14 +87,21 @@ export default class PlanManager extends BaseOrchestrator<Plan, PlanState> {
         }
     }
 
-    requestFunds(amount: number, fundType: FundType): number {
+    requestFunds(requestedAmount: number, fundType: FundType, minimum?: number): number {
         const currentState = this.getCurrentState()
+        let availableFunds = 0
         switch (fundType) {
             case FundType.Taxable:
-                return Math.min(currentState.taxableCapital, amount)
+                availableFunds = Math.min(currentState.taxableCapital, requestedAmount)
+                break
             case FundType.Taxed:
-                return Math.min(currentState.taxedCapital, amount)
+                availableFunds = Math.min(currentState.taxedCapital, requestedAmount)
+                break
+            default:
+                throw new Error(`Unsupported fund type: ${fundType}`);
         }
+        return adjustForInsufficientFunds(requestedAmount, availableFunds, this.config.insufficientFundsStrategy, minimum)
+
     }
 
 
@@ -220,7 +237,7 @@ export default class PlanManager extends BaseOrchestrator<Plan, PlanState> {
                 })
             }
             allManagers.forEach(manager => {
-                currentState = this.processUnprocessed(manager)
+                this.processUnprocessed(manager)
             })
             this.process(currentState)
             allManagers.forEach((manager) => manager.advanceTimePeriod())
@@ -229,12 +246,11 @@ export default class PlanManager extends BaseOrchestrator<Plan, PlanState> {
         return this.states
     }
 
-    processUnprocessed(manager: BaseManager<any, any>): PlanState {
+    processUnprocessed(manager: BaseManager<any, any>): void {
         let planState = this.getCurrentState()
         const managerState = manager.getCurrentState()
-        if (!managerState.processed) {
-            planState = manager.process(planState)
+        if (!planState.processed) {
+            manager.process()
         }
-        return planState
     }
 }
