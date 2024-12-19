@@ -1,38 +1,29 @@
-import type {BrokerageInvestment} from './BrokerageInvestment';
-import {adjustForInsufficientFunds, assertDefined, calculateInvestmentGrowthAmount} from "~/utils";
+import {BrokerageContributionStrategy, type BrokerageInvestment} from './BrokerageInvestment';
+import {assertDefined, calculateInvestmentGrowthAmount} from "~/utils";
 import type BrokerageInvestmentState from "~/models/brokerageInvestment/BrokerageInvestmentState";
 import BaseManager from "~/models/common/BaseManager";
 import type {PlanState} from "~/models/plan/PlanState";
 import type Command from "~/models/common/Command";
-import type {InsufficientFundsStrategy, GrowthApplicationStrategy} from "~/models/plan/Plan";
+import type {GrowthApplicationStrategy} from "~/models/plan/Plan";
 
 export default class BrokerageInvestmentManager extends BaseManager<BrokerageInvestment, BrokerageInvestmentState> {
 
-    getContribution(
-        disposableIncome: number,
-        incomePreTaxed?: number,
-        insufficientFundsStrategy: InsufficientFundsStrategy = 'none'
+    calculateContribution(state: BrokerageInvestmentState
     ): number {
         let contribution = 0
+        const planState = this.orchestrator.getCurrentState();
         switch (this.config.contributionStrategy) {
-            case 'fixed':
+            case BrokerageContributionStrategy.Fixed:
                 contribution = this.config.contributionFixedAmount
                 break
-            case 'percentage_of_income':
-                assertDefined(incomePreTaxed, 'incomePreTaxed')
-                contribution = incomePreTaxed * (this.config.contributionPercentage / 100)
+            case BrokerageContributionStrategy.PercentageOfIncome:
+                contribution = planState.grossIncome * (this.config.contributionPercentage / 100)
                 break
-            case "max":
-                contribution = disposableIncome
+            case BrokerageContributionStrategy.Max:
+                contribution = planState.taxedCapital
                 break
         }
-        return adjustForInsufficientFunds(
-            {
-                amount: contribution,
-                availableFunds: disposableIncome,
-                insufficientFundsStrategy: InsufficientFundsStrategy
-            }
-        )
+        return contribution
     }
 
     calculateGrowthAmount(state: BrokerageInvestmentState, growthApplicationStrategy: GrowthApplicationStrategy): number {
@@ -70,7 +61,7 @@ export default class BrokerageInvestmentManager extends BaseManager<BrokerageInv
 
     processImplementation(planState: PlanState): PlanState {
         const currentState = this.getCurrentState()
-        const contribution = this.getContribution(planState.taxableIncome, planState.grossIncome, planState.insufficientFundsStrategy)
+        const contribution = this.calculateContribution(planState.taxableIncome, planState.grossIncome, planState.insufficientFundsStrategy)
         const taxedIncome = planState.taxedIncome - contribution
         const balanceEndOfYear = currentState.balanceStartOfYear + this.calculateGrowthAmount(currentState, planState.growthApplicationStrategy)
         this.updateCurrentState(
