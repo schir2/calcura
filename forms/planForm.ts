@@ -30,8 +30,8 @@ export const planForm: FormData<Plan> = {
         helpText: 'The rate at which inflation grows',
         rules: yup.number()
     },
-    allowNegativeDisposableIncome: {
-        name: 'allowNegativeDisposableIncome',
+    insufficientFundsStrategy: {
+        name: 'insufficientFundsStrategy',
         label: 'Allow Negative Disposable Income',
         helpText: 'Choose weather to allow negative disposable income.',
         options: [
