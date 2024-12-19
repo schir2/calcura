@@ -3,7 +3,7 @@ import type {PlanState} from "~/models/plan/PlanState";
 import type Command from "~/models/common/Command";
 import type {Expense} from "~/models/expense/Expense";
 import type ExpenseState from "~/models/expense/ExpenseState";
-import type {AllowNegativeDisposableIncome} from "~/models/plan/Plan";
+import type {InsufficientFundsStrategy} from "~/models/plan/Plan";
 
 export default class ExpenseManager extends BaseManager<Expense, ExpenseState> {
     protected createInitialState(): ExpenseState {
@@ -25,12 +25,12 @@ export default class ExpenseManager extends BaseManager<Expense, ExpenseState> {
         };
     }
 
-    protected getPayment(disposableIncome: number, allowNegativeDisposableIncome?: AllowNegativeDisposableIncome): number {
-        return adjustForAllowNegativeDisposableIncome(
+    protected getPayment(disposableIncome: number, insufficientFundsStrategy?: InsufficientFundsStrategy): number {
+        return adjustForInsufficientFunds(
             {
-                disposableIncome: disposableIncome,
+                availableFunds: disposableIncome,
                 amount: this.getConfig().amount,
-                allowNegativeDisposableIncome: allowNegativeDisposableIncome ?? DEFAULT_ALLOW_NEGATIVE_DISPOSABLE_INCOME
+                insufficientFundsStrategy: InsufficientFundsStrategy ?? DEFAULT_ALLOW_NEGATIVE_DISPOSABLE_INCOME
             })
     }
 
@@ -39,7 +39,7 @@ export default class ExpenseManager extends BaseManager<Expense, ExpenseState> {
     }
 
     processImplementation(planState: PlanState): PlanState {
-        const payment = this.getPayment(planState.taxedIncome, planState.allowNegativeDisposableIncome)
+        const payment = this.getPayment(planState.taxedIncome, planState.insufficientFundsStrategy)
         return {
             ...planState,
             taxedIncome: planState.taxedIncome - payment,
