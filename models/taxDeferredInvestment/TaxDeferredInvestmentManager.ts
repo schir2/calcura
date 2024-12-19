@@ -1,6 +1,6 @@
 import type {TaxDeferredInvestment} from './TaxDeferredInvestment';
-import {adjustForAllowNegativeDisposableIncome, assertDefined, calculateInvestmentGrowthAmount} from "~/utils";
-import type {AllowNegativeDisposableIncome, GrowthApplicationStrategy, IncomeTaxStrategy} from "~/models/plan/Plan";
+import {adjustForInsufficientFunds, assertDefined, calculateInvestmentGrowthAmount} from "~/utils";
+import {type GrowthApplicationStrategy, InsufficientFundsStrategy} from "~/models/plan/Plan";
 import type TaxDeferredInvestmentState from "~/models/taxDeferredInvestment/TaxDeferredInvestmentState";
 import BaseManager from "~/models/common/BaseManager";
 import type {PlanState} from "~/models/plan/PlanState";
@@ -27,8 +27,7 @@ export default class TaxDeferredInvestmentManager extends BaseManager<TaxDeferre
         taxableIncome: number,
         taxedIncome: number,
         employerMatchLimit: number = 0,
-        allowNegativeDisposableIncome: AllowNegativeDisposableIncome = 'none',
-
+        insufficientFundsStrategy: InsufficientFundsStrategy = InsufficientFundsStrategy.None,
     ): number {
         let contribution = 0
         switch (this.config.electiveContributionStrategy) {
@@ -46,12 +45,10 @@ export default class TaxDeferredInvestmentManager extends BaseManager<TaxDeferre
                 contribution = limit
                 break
         }
-        return adjustForAllowNegativeDisposableIncome(
-            {
-                amount: contribution,
-                disposableIncome: taxedIncome,
-                allowNegativeDisposableIncome: allowNegativeDisposableIncome
-            }
+        return adjustForInsufficientFunds(
+            contribution,
+            taxedIncome,
+            insufficientFundsStrategy
         )
     }
 
@@ -60,11 +57,11 @@ export default class TaxDeferredInvestmentManager extends BaseManager<TaxDeferre
         taxableIncome: number,
         taxedIncome: number,
         employerMatchLimit: number = 0,
-        allowNegativeDisposableIncome: AllowNegativeDisposableIncome = 'none'
+        insufficientFundsStrategy: InsufficientFundsStrategy = InsufficientFundsStrategy.None
     ): number {
         let employerContribution = 0
         const electiveContribution = this.calculateElectiveContribution(
-            limit, taxableIncome, taxedIncome, employerMatchLimit, allowNegativeDisposableIncome
+            limit, taxableIncome, taxedIncome, employerMatchLimit, insufficientFundsStrategy
         )
 
         switch (this.config.employerContributionStrategy) {
@@ -88,7 +85,7 @@ export default class TaxDeferredInvestmentManager extends BaseManager<TaxDeferre
 
     }
 
-    calculateGrowthAmount(balanceStartOfYear: number, contribution:number, growthApplicationStrategy: GrowthApplicationStrategy): number {
+    calculateGrowthAmount(balanceStartOfYear: number, contribution: number, growthApplicationStrategy: GrowthApplicationStrategy): number {
         return calculateInvestmentGrowthAmount({
                 principal: balanceStartOfYear,
                 growthRate: this.config.growthRate,
@@ -129,14 +126,14 @@ export default class TaxDeferredInvestmentManager extends BaseManager<TaxDeferre
             planState.taxableIncome,
             planState.taxedIncome,
             employerMatchLimit,
-            planState.allowNegativeDisposableIncome
+            planState.insufficientFundsStrategy
         );
         const employerContribution = this.getEmployerContribution(
             planState.deferredLimit - electiveContribution,
             planState.taxableIncome,
             planState.taxedIncome,
             employerMatchLimit,
-            planState.allowNegativeDisposableIncome)
+            planState.insufficientFundsStrategy)
 
         const growthAmount = this.calculateGrowthAmount(
             currentState.balanceStartOfYear,
@@ -167,7 +164,7 @@ export default class TaxDeferredInvestmentManager extends BaseManager<TaxDeferre
 
 
 function recalculateTaxedIncome(planState: PlanState, amount: number): number {
-    switch (planState.taxStrategy){
+    switch (planState.taxStrategy) {
         case "simple":
             return amount * (1 - planState.taxRate / 100)
     }
