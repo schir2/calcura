@@ -2,21 +2,22 @@ import type Command from "~/models/common/Command";
 import type {PlanState} from "~/models/plan/PlanState";
 import {ContributionType} from "~/models/common/index";
 import {FundType} from "~/models/plan/PlanManager";
-import ManagerBase from "~/models/common/BaseManager";
+import BaseManager from "~/models/common/BaseManager";
 
-export default abstract class BaseOrchestrator<TConfig, TState> {
+
+export abstract class BaseOrchestrator<TConfig, TState, TManagers> {
     protected states: TState[] = [];
     protected readonly config: TConfig;
-    protected managers: Record<string, ManagerBase<any, any>[]>
+    protected managers: TManagers
 
     constructor(config: TConfig) {
         this.config = config
-        this.managers =  this.createManagers()
+        this.managers = this.createManagers()
         const initialState = this.createInitialState();
         this.states.push(initialState);
     }
 
-    protected abstract createManagers(): Record<string, ManagerBase<any, any>[]>
+    protected abstract createManagers(): TManagers
 
     protected abstract createInitialState(): TState;
 
@@ -80,15 +81,15 @@ export default abstract class BaseOrchestrator<TConfig, TState> {
         return this.states;
     }
 
-    getAllManagers(): ManagerBase<any, any>[] {
+    getAllManagers(): BaseManager<any, any>[] {
         const managerValues = Object.values(this.managers);
-        const allManagers: ManagerBase<any, any>[] = [];
+        const allManagers: BaseManager<any, any>[] = [];
 
         managerValues.forEach((managerOrManagers) => {
             if (Array.isArray(managerOrManagers)) {
                 allManagers.push(...managerOrManagers);
             } else {
-                allManagers.push(managerOrManagers as ManagerBase<any, any>);
+                allManagers.push(managerOrManagers as BaseManager<any, any>);
             }
         });
 
