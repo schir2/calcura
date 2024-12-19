@@ -1,4 +1,4 @@
-import ManagerBase from "~/models/common/ManagerBase";
+import BaseManager from "~/models/common/BaseManager";
 import type {CashReserve} from "~/models/cashReserve/CashReserve";
 import type {PlanState} from "~/models/plan/PlanState";
 import type CashReserveState from "~/models/cashReserve/CashReserveState";
@@ -7,7 +7,7 @@ import type DebtState from "~/models/debt/DebtState";
 import type {AllowNegativeDisposableIncome} from "~/models/plan/Plan";
 import {adjustForAllowNegativeDisposableIncome} from "~/utils";
 
-export default class CashReserveManager extends ManagerBase<CashReserve, CashReserveState> {
+export default class CashReserveManager extends BaseManager<CashReserve, CashReserveState> {
     protected createInitialState(): CashReserveState {
         return {
             cashReserveStartOfYear: this.config.initialAmount,

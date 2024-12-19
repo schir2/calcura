@@ -2,12 +2,12 @@ import type {Debt} from "~/models/debt/Debt";
 import type DebtState from "~/models/debt/DebtState";
 import {type AllowNegativeDisposableIncome} from "~/models/plan/Plan";
 import {adjustForAllowNegativeDisposableIncome, assertDefined} from "~/utils";
-import ManagerBase from "~/models/common/ManagerBase";
+import BaseManager from "~/models/common/BaseManager";
 import type {PlanState} from "~/models/plan/PlanState";
 import {ProcessDebtCommand} from "~/models/debt/DebtCommands";
 import type Command from "~/models/common/Command";
 
-export default class DebtManager extends ManagerBase<Debt, DebtState> {
+export default class DebtManager extends BaseManager<Debt, DebtState> {
 
     protected override createInitialState(): DebtState {
         return {
