@@ -1,7 +1,7 @@
 import type {Plan} from "~/models/plan/Plan";
 import type {PlanState} from "~/models/plan/PlanState";
 import DebtManager from "~/models/debt/DebtManager";
-import ManagerBase from "~/models/common/ManagerBase";
+import BaseManager from "~/models/common/BaseManager";
 import {getIraLimit, getTaxDeferredContributionLimit, getTaxDeferredElectiveContributionLimit} from "~/utils";
 import type Command from "~/models/common/Command";
 import IncomeManager from "~/models/income/IncomeManager";
@@ -13,6 +13,7 @@ import CashReserveManager from "~/models/cashReserve/CashReserveManager";
 import TaxDeferredInvestmentManager from "~/models/taxDeferredInvestment/TaxDeferredInvestmentManager";
 import type {ExpenseType} from "~/models/expense/Expense";
 import {ContributionType} from "~/models/common";
+import BaseOrchestrator from "~/models/common/BaseOrchestrator";
 
 export enum FundType {
     Taxable = "taxable",
@@ -21,20 +22,10 @@ export enum FundType {
 }
 
 
-export default class PlanManager extends ManagerBase<Plan, PlanState> {
-    managers: {
-        incomeManagers: IncomeManager[]
-        cashReserveManagers: CashReserveManager[]
-        expenseManagers: ExpenseManager[]
-        debtManagers: DebtManager[]
-        brokerageInvestmentManagers: BrokerageInvestmentManager[]
-        iraInvestmentManagers: IraInvestmentManager[]
-        taxDeferredManagers: TaxDeferredInvestmentManager[]
-    }
+export default class PlanManager extends BaseOrchestrator<Plan, PlanState> {
 
-    override setUp(): void {
-
-        this.managers = {
+    createManagers(): Record<string, BaseManager<any, any>[]> {
+        return {
             incomeManagers: this.config.incomes.map((income) => new IncomeManager(income)),
             cashReserveManagers: this.config.cashReserves.map((cashReserve) => new CashReserveManager(cashReserve)),
             expenseManagers: this.config.expenses.map((expense) => new ExpenseManager(expense)),
@@ -43,7 +34,6 @@ export default class PlanManager extends ManagerBase<Plan, PlanState> {
             iraInvestmentManagers: this.config.iraInvestments.map((iraInvestment) => new IraInvestmentManager(iraInvestment)),
             taxDeferredManagers: this.config.taxDeferredInvestments.map((taxDeferredInvestment) => new TaxDeferredInvestmentManager(taxDeferredInvestment))
         }
-
     }
 
     protected createInitialState(): PlanState {
@@ -173,7 +163,7 @@ export default class PlanManager extends ManagerBase<Plan, PlanState> {
         return this.managers.incomeManagers.reduce((grossIncome, incomeManager) => grossIncome + incomeManager.getCurrentState().grossIncome, 0)
     }
 
-    getInflationRate(): number{
+    getInflationRate(): number {
         return this.config.inflationRate
     }
 
@@ -217,27 +207,6 @@ export default class PlanManager extends ManagerBase<Plan, PlanState> {
         }
     }
 
-    getAllManagers(): ManagerBase<any, any>[] {
-        const managerValues = Object.values(this.managers);
-        const allManagers: ManagerBase<any, any>[] = [];
-
-        managerValues.forEach((managerOrManagers) => {
-            if (Array.isArray(managerOrManagers)) {
-                allManagers.push(...managerOrManagers);
-            } else {
-                allManagers.push(managerOrManagers as ManagerBase<any, any>);
-            }
-        });
-
-        return allManagers;
-    }
-
-    getCommands(): Command[] {
-        const commands: Command[] = []
-        this.getAllManagers().forEach(manager => commands.push(...manager.getCommands()))
-        return commands;
-    }
-
     override processImplementation(planState: PlanState): PlanState {
         return planState
     }
@@ -262,35 +231,12 @@ export default class PlanManager extends ManagerBase<Plan, PlanState> {
         return this.states
     }
 
-    processUnprocessed(manager: ManagerBase<any, any>): PlanState {
+    processUnprocessed(manager: BaseManager<any, any>): PlanState {
         let planState = this.getCurrentState()
         const managerState = manager.getCurrentState()
         if (!managerState.processed) {
             planState = manager.process(planState)
         }
         return planState
-    }
-
-    getIncomeSummary(stateIndex?: number): Record<IncomeType, number> {
-        let incomeTypes: Record<IncomeType, number> = {
-            ordinary: 0
-        }
-        this.managers.incomeManagers.forEach((incomeManager) => {
-            const incomeState = incomeManager.getState(stateIndex ?? 0)
-            incomeTypes[incomeManager.getConfig().incomeType] = incomeState.grossIncome
-        })
-        return incomeTypes
-    }
-
-    getExpenseSummary(): Record<ExpenseType, number> {
-        let expenseTypes: Record<ExpenseType, number> = {
-            fixed: 0,
-            variable: 0,
-        }
-        this.config.expenses.forEach((expense) => {
-            expenseTypes[expense.expenseType] += expense.amount
-        })
-        return expenseTypes
-
     }
 }
