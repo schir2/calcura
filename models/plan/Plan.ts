@@ -7,7 +7,12 @@ import type {IraInvestment} from "~/models/iraInvestment/IraInvestment";
 import type {CashReserve} from "~/models/cashReserve/CashReserve";
 
 
-export type AllowNegativeDisposableIncome = 'none' | 'minimum_only' | 'full'
+export enum InsufficientFundsStrategy {
+    None = 'none',
+    MinimumOnly = 'minimum_only',
+    Full = 'full',
+}
+
 export type RetirementStrategy = 'debt_free' | 'age' | 'percent_rule' | 'target_savings';
 export type GrowthStrategy = 'fixed' | 'percentage_increase';
 export type InflationGrowthStrategy = 'fixed' | 'percentage_increase';
@@ -21,7 +26,7 @@ export interface Plan {
     age: number;
     year: number;
     inflationRate: number;
-    allowNegativeDisposableIncome: AllowNegativeDisposableIncome;
+    insufficientFundsStrategy: InsufficientFundsStrategy;
     growthApplicationStrategy: GrowthApplicationStrategy
     taxStrategy: IncomeTaxStrategy
     taxRate: number
@@ -47,7 +52,7 @@ export const planDefaults: PlanPartial = {
     age: 30,
     year: new Date().getFullYear(),
     inflationRate: 3,
-    allowNegativeDisposableIncome: "none",
+    insufficientFundsStrategy: InsufficientFundsStrategy.None,
     growthApplicationStrategy: "start",
     taxStrategy: "simple",
     taxRate: 2.5,
