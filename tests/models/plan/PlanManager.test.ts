@@ -1,6 +1,6 @@
 import {beforeEach, describe, expect, it} from "vitest";
 import PlanManager, {FundType} from "~/models/plan/PlanManager";
-import type {Plan} from "~/models/plan/Plan";
+import {InsufficientFundsStrategy, type Plan} from "~/models/plan/Plan";
 import {ContributionType} from "~/models/common";
 
 describe("PlanManager", () => {
@@ -14,7 +14,7 @@ describe("PlanManager", () => {
             age: 30,
             year: new Date().getFullYear(),
             inflationRate: 3,
-            allowNegativeDisposableIncome: "none",
+            insufficientFundsStrategy: InsufficientFundsStrategy.None,
             growthApplicationStrategy: "start",
             taxStrategy: "simple",
             taxRate: 30,
@@ -85,18 +85,49 @@ describe("PlanManager", () => {
     describe('requestFunds', () => {
         it("should correctly request funds from taxable capital", () => {
             const currentState = planManager.getCurrentState();
-            currentState.taxableCapital = 50000;
+            currentState.taxableCapital = 50_000;
 
-            expect(planManager.requestFunds(20000, FundType.Taxable)).toBe(20000);
-            expect(planManager.requestFunds(60000, FundType.Taxable)).toBe(50000);
+            expect(planManager.requestFunds(20000, FundType.Taxable)).toBe(20_000);
+            expect(planManager.requestFunds(60000, FundType.Taxable)).toBe(50_000);
         });
 
         it("should correctly request funds from taxed capital", () => {
             const currentState = planManager.getCurrentState();
-            currentState.taxedCapital = 30000;
+            currentState.taxedCapital = 30_000;
 
-            expect(planManager.requestFunds(10000, FundType.Taxed)).toBe(10000);
-            expect(planManager.requestFunds(40000, FundType.Taxed)).toBe(30000);
+            expect(planManager.requestFunds(10_000, FundType.Taxed)).toBe(10_000);
+            expect(planManager.requestFunds(40_000, FundType.Taxed)).toBe(30_000);
+        });
+        it("should allow minimum negative funds for taxable capital", () => {
+            const currentState = planManager.getCurrentState();
+            currentState.taxableCapital = 1_000;
+            planManager.config.insufficientFundsStrategy = InsufficientFundsStrategy.MinimumOnly;
+
+            expect(planManager.requestFunds(2_000, FundType.Taxable, 1_000)).toBe(1_000);
+            expect(planManager.requestFunds(2_000, FundType.Taxable, 2_000)).toBe(2_000);
+        });
+
+        it("should allow full negative funds for taxable capital", () => {
+            const currentState = planManager.getCurrentState();
+            currentState.taxableCapital = 500;
+            planManager.config.insufficientFundsStrategy = InsufficientFundsStrategy.Full;
+
+            expect(planManager.requestFunds(1_000, FundType.Taxable)).toBe(1_000);
+            expect(planManager.requestFunds(2_000, FundType.Taxable)).toBe(2_000);
+        });
+
+        it("should handle minimum parameter correctly with InsufficientFundsStrategy.None", () => {
+            const currentState = planManager.getCurrentState();
+            currentState.taxableCapital = 1000;
+            planManager.config.insufficientFundsStrategy = InsufficientFundsStrategy.None;
+
+            expect(planManager.requestFunds(2000, FundType.Taxable, -500)).toBe(1000); // Minimum ignored
+        });
+
+        it("should handle invalid fund type gracefully", () => {
+            expect(() => planManager.requestFunds(1000, "unsupported" as FundType)).toThrowError(
+                "Unsupported fund type: unsupported"
+            );
         });
     })
     describe('contribute', () => {
