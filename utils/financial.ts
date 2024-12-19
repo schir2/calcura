@@ -5,24 +5,28 @@ export function calculateCompoundInterest(principal: number, interestRate: numbe
     return principal * (1 + (interestRate / numberOfInterestApplicationsPerPeriod)) ** (numberOfInterestApplicationsPerPeriod * numberOfPeriods)
 }
 
+interface InvestmentGrowthAmountResult {
+    contributionGrowth?: number;
+    principalGrowth: number;
+}
+
 export function calculateInvestmentGrowthAmount(
-    {
-        principal,
-        growthRate,
-        growthApplicationStrategy,
-        contribution,
-    }: {
-        principal: number;
-        growthRate: number;
-        growthApplicationStrategy: GrowthApplicationStrategy;
-        contribution?: number;
-    }): number {
+    principal: number,
+    growthRate: number,
+    growthApplicationStrategy: GrowthApplicationStrategy,
+    contribution?: number): InvestmentGrowthAmountResult {
     switch (growthApplicationStrategy) {
         case 'start':
-            return principal * (growthRate / 100);
+            return {
+                contributionGrowth: contribution,
+                principalGrowth: principal * (growthRate / 100)
+            }
         case 'end':
             assertDefined(contribution, 'contribution');
-            return (principal + contribution) * (growthRate / 100);
+            return {
+                contributionGrowth: contribution * growthRate / 100,
+                principalGrowth: (principal + contribution) * (growthRate / 100)
+            }
         default:
             throw new Error(`Invalid growth application strategy: ${growthApplicationStrategy}`);
     }
