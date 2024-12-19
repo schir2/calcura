@@ -1,11 +1,11 @@
 import type {Debt} from "~/models/debt/Debt";
+import {DebtPaymentStrategy} from "~/models/debt/Debt";
 import type DebtState from "~/models/debt/DebtState";
-import {type AllowNegativeDisposableIncome} from "~/models/plan/Plan";
-import {adjustForAllowNegativeDisposableIncome, assertDefined} from "~/utils";
+import {assertDefined} from "~/utils";
 import BaseManager from "~/models/common/BaseManager";
-import type {PlanState} from "~/models/plan/PlanState";
 import {ProcessDebtCommand} from "~/models/debt/DebtCommands";
 import type Command from "~/models/common/Command";
+import {FundType} from "~/models/plan/PlanManager";
 
 export default class DebtManager extends BaseManager<Debt, DebtState> {
 
@@ -21,59 +21,57 @@ export default class DebtManager extends BaseManager<Debt, DebtState> {
         }
     }
 
-    override processImplementation(planState: PlanState): PlanState {
+    override processImplementation(): void {
         const currentState = this.getCurrentState();
         if (currentState.processed) {
             throw new Error("The current state has already been processed.");
         }
-        const payment = this.calculatePayment(currentState, planState.taxedIncome, planState.allowNegativeDisposableIncome)
+        const paymentRequest = this.calculatePayment(currentState)
+        const payment = this.orchestrator.requestFunds(paymentRequest, FundType.Taxed)
+        this.orchestrator.withdraw(payment, FundType.Taxed)
+
         const principalEndOfYear = currentState.principalStartOfYear - payment;
-        const interestAmount = principalEndOfYear * (this.config.interestRate / 100);
+        const interestAmount = this.calculateInterest(principalEndOfYear)
+
         const interestLifetime = currentState.interestLifetime + interestAmount;
-        const paymentLifetime = currentState.paymentLifetime + currentState.payment;
+        const paymentLifetime = currentState.paymentLifetime + payment;
         const updatedPrincipalEndOfYear = principalEndOfYear + interestAmount;
         this.updateCurrentState({
             ...currentState,
-            payment: payment,
+            payment: paymentRequest,
             interestAmount: interestAmount,
             interestLifetime: interestLifetime,
             paymentLifetime: paymentLifetime,
             principalEndOfYear: updatedPrincipalEndOfYear
         })
-        const updatedDisposableIncome = planState.taxedIncome - payment
-        return {
-            ...planState,
-            taxedIncome: updatedDisposableIncome
-        };
+    }
+
+    calculateInterest(principal: number) : number {
+        return principal * (this.config.interestRate / 100);
     }
 
 
-    calculatePayment(state: DebtState, disposableIncome: number, allowNegativeDisposableIncome: AllowNegativeDisposableIncome): number {
+    calculatePayment(state: DebtState): number {
         let payment = 0
         switch (this.config.paymentStrategy) {
-            case 'fixed':
+            case DebtPaymentStrategy.Fixed:
                 payment = this.config.paymentFixedAmount;
                 break
-            case 'percentage_of_debt':
+            case DebtPaymentStrategy.PercentageOfDebt:
                 payment = this.config.principal * (this.config.paymentPercentage / 100);
                 break
-            case 'maximum_payment':
+            case DebtPaymentStrategy.MaximumPayment:
                 payment = state.principalStartOfYear;
                 break
+            case DebtPaymentStrategy.MinimumPayment:
+                payment = this.config.paymentMinimum
+                break
         }
-        payment = adjustForAllowNegativeDisposableIncome(
-            {
-                disposableIncome: disposableIncome,
-                amount: payment,
-                minimum: this.config.paymentMinimum,
-                allowNegativeDisposableIncome: allowNegativeDisposableIncome
-            }
-        )
         return Math.min(payment, state.principalStartOfYear);
 
     }
 
-    protected override createNextState(previousState: DebtState): DebtState {
+    override createNextState(previousState: DebtState): DebtState {
         assertDefined(previousState.principalEndOfYear, 'principalEndOfYear')
         return {
             ...previousState,
