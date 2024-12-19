@@ -44,7 +44,7 @@
           </ul>
         </li>
         <li class="text-end">
-          <n-statistic :value="$humanize.intComma(expense.amount)"/>
+          <n-statistic :value="$humanize.intComma(expense.amount)"><template #prefix>$</template></n-statistic>
         </li>
       </ul>
       <template #header-extra>
