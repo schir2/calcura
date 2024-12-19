@@ -1,4 +1,10 @@
-export type DebtPaymentStrategy = 'fixed' | 'minimum_payment' | 'maximum_payment' | 'percentage_of_debt'
+export enum DebtPaymentStrategy {
+    Fixed = 'fixed',
+    MinimumPayment = 'minimum_payment',
+    MaximumPayment = 'maximum_payment',
+    PercentageOfDebt = 'percentage_of_debt',
+}
+
 
 export interface Debt {
     id: number;
@@ -21,7 +27,7 @@ export const debtDefaults: DebtPartial = {
     principal: 0,
     interestRate: 0,
     paymentMinimum: 0,
-    paymentStrategy: 'fixed',
+    paymentStrategy: DebtPaymentStrategy.Fixed,
     paymentFixedAmount: 0,
     paymentPercentage: 0,
 }
