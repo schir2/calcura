@@ -40,7 +40,6 @@ async function loadPlanTemplates() {
   planTemplates.value = loadedPlanTemplates.map(planTemplate => processTemplate<PlanPartial, PlanTemplate, Plan>(planDefaults, planTemplate));
   planTemplates.value.push(planDefaults)
   planTemplates.value =[planDefaults]
-  console.log(planTemplates)
 }
 
 onMounted(async () => {
