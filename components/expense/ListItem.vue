@@ -22,7 +22,11 @@
                 <Icon name="mdi-calendar"></Icon>
               </template>{{ expense.frequency }}
             </n-tag>
-            <n-tag v-if="expense.growthRate && !expense.growsWithInflation">{{ expense.growthRate }}</n-tag>
+            <n-tag v-if="expense.growthRate && !expense.growsWithInflation">
+              <template #icon>
+                <Icon name="mdi:trending-up"></Icon>
+              </template>
+              {{ expense.growthRate }}%</n-tag>
             <n-tag type="warning" v-if="expense.growsWithInflation">
               <template #icon>
                 <Icon name="mdi:trending-up"/>
