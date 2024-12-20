@@ -44,9 +44,27 @@ export default class PlanManager extends BaseOrchestrator<Plan, PlanState, Manag
         }
     }
 
+    getSavingsTaxableInitial(): number {
+        // TODO Test this function
+        return this.config.brokerageInvestments.reduce((savingsTaxableStartOfYear, brokerageInvestment) => savingsTaxableStartOfYear + brokerageInvestment.initialBalance, 0)
+    }
+
+    getSavingsTaxExemptInitial(): number {
+        // TODO Test this function
+        return this.config.taxDeferredInvestments.reduce((savingsTaxExemptStartOfYear, taxDeferredInvestment) => savingsTaxExemptStartOfYear + taxDeferredInvestment.initialBalance, 0)
+    }
+
+    getSavingsTaxDeferredInitial(): number {
+        // TODO Test this function
+        return this.config.iraInvestments.reduce((savingsTaxDeferredStartOfYear, brokerageInvestment) => savingsTaxDeferredStartOfYear + brokerageInvestment.initialBalance, 0)
+    }
+
     protected createInitialState(): PlanState {
         const grossIncome = this.getGrossIncome()
         const taxedIncome = grossIncome - this.calculateTaxes(grossIncome)
+        const savingsTaxableInitial = this.getSavingsTaxableInitial()
+        const savingsTaxExemptInitial = this.getSavingsTaxExemptInitial()
+        const savingsTaxDeferredInitial = this.getSavingsTaxDeferredInitial()
         return {
             age: this.config.age,
             year: this.config.year,
@@ -68,14 +86,14 @@ export default class PlanManager extends BaseOrchestrator<Plan, PlanState, Manag
             deferredLimit: getTaxDeferredContributionLimit(this.config.year, this.config.age),
             iraLimit: getIraLimit(this.config.year, this.config.age),
 
-            savingsTaxDeferredStartOfYear: 0,
-            savingsTaxDeferredEndOfYear: 0,
+            savingsTaxDeferredStartOfYear: savingsTaxDeferredInitial,
+            savingsTaxDeferredEndOfYear: savingsTaxDeferredInitial,
 
-            savingsTaxExemptStartOfYear: 0,
-            savingsTaxExemptEndOfYear: 0,
+            savingsTaxExemptStartOfYear: savingsTaxExemptInitial,
+            savingsTaxExemptEndOfYear: savingsTaxExemptInitial,
 
-            savingsTaxableStartOfYear: 0,
-            savingsTaxableEndOfYear: 0,
+            savingsTaxableStartOfYear: savingsTaxableInitial,
+            savingsTaxableEndOfYear: savingsTaxableInitial,
 
             savingsStartOfYear: 0,
             savingsEndOfYear: 0,
@@ -233,7 +251,7 @@ export default class PlanManager extends BaseOrchestrator<Plan, PlanState, Manag
             let currentState = this.getCurrentState()
             if (commands) {
                 commands.forEach(command => {
-                    currentState = command.execute(currentState)
+                    command.execute()
                 })
             }
             allManagers.forEach(manager => {
