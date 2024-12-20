@@ -226,7 +226,6 @@ async function handleRemoveIraInvestment() {
 }
 
 async function handleCreateTaxDeferredInvestment(taxDeferredInvestmentPartial: TaxDeferredInvestmentPartial) {
-  console.log(taxDeferredInvestmentPartial)
   const taxDeferredInvestment = await taxDeferredInvestmentService.create(taxDeferredInvestmentPartial)
   await planService.addRelatedModel(planId, 'tax_deferred_investments', taxDeferredInvestment.id)
   await loadPlan();
