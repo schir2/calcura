@@ -2,14 +2,14 @@ import {BrokerageContributionStrategy, type BrokerageInvestment} from './Brokera
 import {assertDefined, calculateInvestmentGrowthAmount} from "~/utils";
 import type BrokerageInvestmentState from "~/models/brokerageInvestment/BrokerageInvestmentState";
 import BaseManager from "~/models/common/BaseManager";
-import type {PlanState} from "~/models/plan/PlanState";
 import type Command from "~/models/common/Command";
-import type {GrowthApplicationStrategy} from "~/models/plan/Plan";
+import {FundType} from "~/models/plan/PlanManager";
+import {ContributionType} from "~/models/common";
+import {ProcessBrokerageInvestmentCommand} from "~/models/brokerageInvestment/BrokerageInvestmentCommand";
 
 export default class BrokerageInvestmentManager extends BaseManager<BrokerageInvestment, BrokerageInvestmentState> {
 
-    calculateContribution(state: BrokerageInvestmentState
-    ): number {
+    calculateContribution(): number {
         let contribution = 0
         const planState = this.orchestrator.getCurrentState();
         switch (this.config.contributionStrategy) {
@@ -26,54 +26,58 @@ export default class BrokerageInvestmentManager extends BaseManager<BrokerageInv
         return contribution
     }
 
-    calculateGrowthAmount(state: BrokerageInvestmentState, growthApplicationStrategy: GrowthApplicationStrategy): number {
-        return calculateInvestmentGrowthAmount({
-                principal: state.balanceStartOfYear,
-                growthRate: this.config.growthRate,
-                growthApplicationStrategy: growthApplicationStrategy,
-                contribution: state.contribution
-            }
-        )
-    }
-
     protected createInitialState(): BrokerageInvestmentState {
         return {
             contribution: 0,
+            contributionLifetime: 0,
             growthAmount: 0,
+            growthLifetime: 0,
             balanceStartOfYear: this.config.initialBalance,
-            balanceEndOfYear: undefined
+            balanceEndOfYear: undefined,
+            processed: false
         }
     }
 
-    protected createNextState(previousState: BrokerageInvestmentState): BrokerageInvestmentState {
+    createNextState(previousState: BrokerageInvestmentState): BrokerageInvestmentState {
         assertDefined(previousState.balanceEndOfYear, 'balanceEndOfYear')
         return {
             contribution: 0,
+            contributionLifetime: previousState.contributionLifetime,
             growthAmount: 0,
+            growthLifetime: previousState.growthLifetime,
             balanceStartOfYear: previousState.balanceEndOfYear,
-            balanceEndOfYear: undefined
+            balanceEndOfYear: undefined,
+            processed: false,
         };
     }
 
-    getCommands(): Command[] {
-        return [];
+    override getCommands(): Command[] {
+        return [new ProcessBrokerageInvestmentCommand(this)];
     }
 
-    processImplementation(planState: PlanState): PlanState {
+    processImplementation() {
         const currentState = this.getCurrentState()
-        const contribution = this.calculateContribution(planState.taxableIncome, planState.grossIncome, planState.insufficientFundsStrategy)
-        const taxedIncome = planState.taxedIncome - contribution
-        const balanceEndOfYear = currentState.balanceStartOfYear + this.calculateGrowthAmount(currentState, planState.growthApplicationStrategy)
+        const contributionRequest = this.calculateContribution()
+        const contribution = this.orchestrator.requestFunds(contributionRequest, FundType.Taxed)
+        this.orchestrator.withdraw(contribution, FundType.Taxed)
+        const growthAmount = calculateInvestmentGrowthAmount(
+            currentState.balanceStartOfYear,
+            this.config.growthRate,
+            this.orchestrator.getConfig().growthApplicationStrategy,
+            contribution
+        )
+        this.orchestrator.contribute(growthAmount + contribution, ContributionType.Taxable)
+        const updatedBalanceEndOfYear = currentState.balanceStartOfYear + growthAmount + contribution
         this.updateCurrentState(
             {
                 ...currentState,
-                balanceEndOfYear: balanceEndOfYear
+                contribution: contribution,
+                contributionLifetime: currentState.contributionLifetime + contribution,
+                balanceEndOfYear: updatedBalanceEndOfYear,
+                growthAmount: growthAmount,
+                growthLifetime: currentState.growthLifetime + growthAmount
 
             }
         )
-        return {
-            ...planState,
-            taxedIncome: taxedIncome
-        }
     }
 }
