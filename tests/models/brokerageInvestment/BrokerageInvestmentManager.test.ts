@@ -1,108 +1,220 @@
 import {beforeEach, describe, expect, it} from "vitest";
 import BrokerageInvestmentManager from "~/models/brokerageInvestment/BrokerageInvestmentManager";
 import type {BrokerageInvestment} from "~/models/brokerageInvestment/BrokerageInvestment";
-import type BrokerageInvestmentState from "~/models/brokerageInvestment/BrokerageInvestmentState";
-import type {PlanState} from "~/models/plan/PlanState";
+import {BrokerageContributionStrategy} from "~/models/brokerageInvestment/BrokerageInvestment";
+import PlanManager from "~/models/plan/PlanManager";
+import {InsufficientFundsStrategy, type Plan} from "~/models/plan/Plan";
+import {ProcessBrokerageInvestmentCommand} from "~/models/brokerageInvestment/BrokerageInvestmentCommand";
+
+const planConfig: Plan = {
+    id: 1,
+    name: "Blank Plan",
+    age: 30,
+    year: new Date().getFullYear(),
+    inflationRate: 3,
+    insufficientFundsStrategy: InsufficientFundsStrategy.None,
+    growthApplicationStrategy: "start",
+    taxStrategy: "simple",
+    taxRate: 30,
+    lifeExpectancy: 85,
+    retirementStrategy: "age",
+    retirementWithdrawalRate: 4,
+    retirementIncomeGoal: 50000,
+    retirementAge: 65,
+    retirementSavingsAmount: 200000,
+    cashReserves: [],
+    incomes: [
+        {
+            id: 1,
+            name: 'Ordinary Income',
+            grossIncome: 100_000,
+            growthRate: 0,
+            incomeType: "ordinary",
+            frequency: 'annual'
+        },
+        {
+            id: 1,
+            name: 'Ordinary Income',
+            grossIncome: 50_000,
+            growthRate: 0,
+            incomeType: "ordinary",
+            frequency: 'annual'
+        }
+    ],
+    expenses: [],
+    debts: [],
+    taxDeferredInvestments: [],
+    brokerageInvestments: [],
+    iraInvestments: [],
+}
+
+const brokerageInvestment: BrokerageInvestment = {
+    id: 1,
+    name: 'Test Brokerage Investment',
+    growthRate: 6,
+    initialBalance: 10_000,
+    contributionStrategy: BrokerageContributionStrategy.Fixed,
+    contributionPercentage: 0,
+    contributionFixedAmount: 0,
+
+};
+
+let planManager: PlanManager;
 
 describe("BrokerageInvestmentManager", () => {
-    let manager: BrokerageInvestmentManager;
-    const config: BrokerageInvestment = {
-        id: 1,
-        name: "Test Brokerage Investment Config",
-        contributionStrategy: 'fixed',
-        contributionFixedAmount: 100,
-        contributionPercentage: 10,
-        initialBalance: 1000,
-        growthRate: 5,
-    };
     beforeEach(() => {
-        manager = new BrokerageInvestmentManager(config);
+        planManager = new PlanManager(planConfig)
     });
 
-    describe("constructor", () => {
-        it("Should create initial manager with ", () => {
-            expect(manager.getConfig() == config)
-        })
+    describe('constructor', () => {
+
+        it("should initialize with correct state", () => {
+            const brokerageInvestmentManager = new BrokerageInvestmentManager(planManager, brokerageInvestment);
+            const state = brokerageInvestmentManager.getCurrentState();
+            expect(state.contribution).toBe(0);
+            expect(state.contributionLifetime).toBe(0);
+            expect(state.growthAmount).toBe(0);
+            expect(state.growthLifetime).toBe(0);
+            expect(state.balanceStartOfYear).toBe(10_000);
+            expect(state.balanceEndOfYear).toBe(undefined);
+            expect(state.processed).toBe(false);
+        });
     })
 
-    describe("getConfig", () => {
-        it("Should create initial manager with ", () => {
-            expect(manager.getConfig() == config)
-        })
+    describe('calculateContribution', () => {
+        it("should calculate fixed contribution correctly", () => {
+            const brokerageInvestmentManager = new BrokerageInvestmentManager(planManager, {
+                ...brokerageInvestment,
+                contributionStrategy: BrokerageContributionStrategy.Fixed,
+                contributionFixedAmount: 100,
+            })
+            const contribution = brokerageInvestmentManager.calculateContribution();
+            expect(contribution).toBe(100);
+        });
+
+        it("should calculate percentage income correctly", () => {
+            const brokerageInvestmentManager = new BrokerageInvestmentManager(planManager, {
+                ...brokerageInvestment,
+                contributionStrategy: BrokerageContributionStrategy.PercentageOfIncome,
+                contributionPercentage: 10,
+            })
+            const contribution = brokerageInvestmentManager.calculateContribution();
+            expect(contribution).toBe(15_000);
+        });
+
+        it("should calculate max contribution correctly", () => {
+            const brokerageInvestmentManager = new BrokerageInvestmentManager(planManager, {
+                ...brokerageInvestment,
+                contributionStrategy: BrokerageContributionStrategy.Max,
+            })
+            const contribution = brokerageInvestmentManager.calculateContribution();
+            expect(contribution).toBe(105_000);
+        });
     })
 
-    describe("getContribution", () => {
-        it("should return the fixed contribution amount when strategy is 'fixed'", () => {
-            const disposableIncome = 500;
-            const result = manager.getContribution(disposableIncome);
-            expect(result).toBe(100); // Replace with the expected result
+    describe('process', () => {
+
+        it("should process brokerageInvestment and update state correctly for start of year application strategy", () => {
+            const brokerageInvestmentConfig = {
+                ...brokerageInvestment,
+                initialBalance: 10_000,
+                contributionFixedAmount: 1_000,
+                growthRate: 10
+            }
+            planManager = new PlanManager({...planConfig, growthApplicationStrategy: 'start', brokerageInvestments: [brokerageInvestmentConfig]})
+            const brokerageInvestmentManager = new BrokerageInvestmentManager(planManager, brokerageInvestmentConfig)
+            brokerageInvestmentManager.process();
+            const planState = brokerageInvestmentManager.orchestrator.getCurrentState();
+            const brokerageInvestmentState = brokerageInvestmentManager.getCurrentState();
+
+            expect(brokerageInvestmentState.contribution).toBe(1_000);
+            expect(brokerageInvestmentState.contributionLifetime).toBe(1_000);
+            expect(brokerageInvestmentState.growthAmount).toBe(1_000);
+            expect(brokerageInvestmentState.growthLifetime).toBe(1_000);
+            expect(brokerageInvestmentState.balanceStartOfYear).toBe(10_000);
+            expect(brokerageInvestmentState.balanceEndOfYear).toBe(12_000);
+            expect(brokerageInvestmentState.processed).toBe(true);
+            expect(planState.taxedIncome).toBe(105_000);
+            expect(planState.taxedCapital).toBe(104_000);
+            expect(planState.savingsTaxableEndOfYear).toBe(12_000);
+            expect(planState.taxedWithdrawals).toBe(1_000);
         });
 
-        it("should calculate percentage of income when strategy is 'percentage_of_income'", () => {
-            manager.getConfig().contributionStrategy = 'percentage_of_income';
-            const disposableIncome = 500;
-            const incomePreTaxed = 1000;
-            const result = manager.getContribution(disposableIncome, incomePreTaxed);
-            expect(result).toBe(100); // Replace with expected percentage calculation
+        it("should process brokerageInvestment and update state correctly for end of of year application strategy", () => {
+            const brokerageInvestmentConfig = {
+                ...brokerageInvestment,
+                initialBalance: 10_000,
+                contributionFixedAmount: 1_000,
+                growthRate: 10
+            }
+            planManager = new PlanManager({...planConfig, growthApplicationStrategy: 'end', brokerageInvestments: [brokerageInvestmentConfig]})
+            const brokerageInvestmentManager = new BrokerageInvestmentManager(planManager, brokerageInvestmentConfig)
+            brokerageInvestmentManager.process();
+            const planState = brokerageInvestmentManager.orchestrator.getCurrentState();
+
+            const brokerageInvestmentState = brokerageInvestmentManager.getCurrentState();
+
+            expect(brokerageInvestmentState.contribution).toBe(1_000);
+            expect(brokerageInvestmentState.contributionLifetime).toBe(1_000);
+            expect(brokerageInvestmentState.growthAmount).toBe(1100);
+            expect(brokerageInvestmentState.growthLifetime).toBe(1100);
+            expect(brokerageInvestmentState.balanceStartOfYear).toBe(10_000);
+            expect(brokerageInvestmentState.balanceEndOfYear).toBe(12_100);
+            expect(brokerageInvestmentState.processed).toBe(true);
+            expect(planState.taxedIncome).toBe(105_000);
+            expect(planState.taxedCapital).toBe(104_000);
+            expect(planState.savingsTaxableEndOfYear).toBe(12_100);
+            expect(planState.taxedWithdrawals).toBe(1_000);
         });
 
-        it("should return the entire disposable income when strategy is 'max'", () => {
-            manager.getConfig().contributionStrategy = 'max';
-            const disposableIncome = 500;
-            const result = manager.getContribution(disposableIncome);
-            expect(result).toBe(500); // Replace with expected result
+        it("should throw error if processing already processed state", () => {
+            const brokerageInvestmentManager = new BrokerageInvestmentManager(planManager, brokerageInvestment)
+            brokerageInvestmentManager.process();
         });
 
-        it("should adjust contribution based on 'insufficientFundsStrategy'", () => {
-            const disposableIncome = 50;
-            const contribution = manager.getContribution(disposableIncome, undefined, 'none');
-            expect(contribution).toBe(50)
+    })
+
+
+    describe('getCommands', () => {
+        it('should return an array with ProcessBrokerageInvestmentCommand', () => {
+            const brokerageInvestmentManager = new BrokerageInvestmentManager(planManager, brokerageInvestment);
+            const commands = brokerageInvestmentManager.getCommands();
+            expect(commands).toHaveLength(1);
+            expect(commands[0]).toBeInstanceOf(ProcessBrokerageInvestmentCommand);
+        });
+
+        it('should execute ProcessBrokerageInvestmentCommand correctly', () => {
+            const brokerageInvestmentManager = new BrokerageInvestmentManager(planManager, brokerageInvestment);
+            const command = new ProcessBrokerageInvestmentCommand(brokerageInvestmentManager);
+            command.execute();
+            expect(brokerageInvestmentManager.getCurrentState().processed).toBe(true);
         });
     });
 
-    describe("calculateGrowthAmount", () => {
-        it("should calculate growth amount correctly", () => {
-            const state: BrokerageInvestmentState = {
-                balanceStartOfYear: 1000,
-                contribution: 100,
-                growthAmount: 0,
-                balanceEndOfYear: undefined,
-            };
-            const result = manager.calculateGrowthAmount(state);
-            expect(result).toBeCloseTo(50, 2); // Replace with expected growth calculation
-        });
-    });
 
-    describe("createInitialState", () => {
-        it("should initialize state correctly", () => {
-            const state = manager.getInitialState();
-            expect(state).toStrictEqual({
-                contribution: 0,
-                growthAmount: 0,
-                balanceStartOfYear: 1000,
-                balanceEndOfYear: undefined,
-            });
-        });
-    });
+    describe('createNextState', () => {
 
-    describe("advanceTimePeriod", () => {
-        it("should create the next state based on the previous state", () => {
-            const nextState = manager.advanceTimePeriod();
-            //TODO Fix this test add error as well as success
-        });
-    });
+        it("should process brokerageInvestment create the next state", () => {
+            const brokerageInvestmentConfig = {
+                ...brokerageInvestment,
+                initialBalance: 10_000,
+                contributionFixedAmount: 1_000,
+                growthRate: 10
+            }
+            planManager = new PlanManager({...planConfig, growthApplicationStrategy: 'start', brokerageInvestments: [brokerageInvestmentConfig]})
+            const brokerageInvestmentManager = new BrokerageInvestmentManager(planManager, brokerageInvestmentConfig)
+            brokerageInvestmentManager.process();
+            const brokerageInvestmentState = brokerageInvestmentManager.getCurrentState();
+            const newState = brokerageInvestmentManager.createNextState(brokerageInvestmentState);
 
-    describe("process", () => {
-        it("should process and update plan state correctly", () => {
-            const planState: Partial<PlanState> = {
-                taxedIncome: 1000,
-                grossIncome: 2000,
-                insufficientFundsStrategy: 'none',
-            };
-
-            const updatedPlanState = manager.process(planState as PlanState);
-            assertDefined(planState.taxedIncome, 'planState.taxedIncome')
-            expect(updatedPlanState.taxedIncome).toBe(planState.taxedIncome - manager.getCurrentState().contribution);
+            expect(newState.contribution).toBe(0);
+            expect(newState.contributionLifetime).toBe(1_000);
+            expect(newState.growthAmount).toBe(0);
+            expect(newState.growthLifetime).toBe(1_000);
+            expect(newState.balanceStartOfYear).toBe(12_000);
+            expect(newState.balanceEndOfYear).toBe(undefined);
+            expect(newState.processed).toBe(false);
         });
-    });
+
+    })
 });
