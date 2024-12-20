@@ -28,62 +28,48 @@ describe('financialUtils', () => {
 
     describe('calculateInvestmentGrowthAmount', () => {
         it('calculates growth correctly with "start" strategy', () => {
-            const result = calculateInvestmentGrowthAmount(
+            const growthAmount = calculateInvestmentGrowthAmount(
                 1000, 5, 'start');
-            expect(result.principalGrowth).toBe(50);
-            expect(result.contributionGrowth).toBe(undefined);
+            expect(growthAmount).toBe(50);
         });
 
         it('calculates growth correctly with "end" strategy', () => {
-            const result = calculateInvestmentGrowthAmount(1000, 5, 'end', 200,);
-            expect(result.principalGrowth).toBe(60);
-            expect(result.contributionGrowth).toBe(10);
-        });
-
-        it('throws an error for "end" strategy without a contribution', () => {
-            expect(() =>
-                calculateInvestmentGrowthAmount(1000, 5, 'end',)
-            ).toThrow('contribution');
+            const growthAmount = calculateInvestmentGrowthAmount(1000, 5, 'end', 200,);
+            expect(growthAmount).toBe(60);
         });
 
         it('handles zero principal with "start" strategy', () => {
-            const result = calculateInvestmentGrowthAmount(0, 5, 'start',);
-            expect(result.principalGrowth).toBe(0);
-            expect(result.contributionGrowth).toBe(undefined);
+            const growthAmount = calculateInvestmentGrowthAmount(0, 5, 'start',);
+            expect(growthAmount).toBe(0);
         });
 
         it('handles zero principal with "end" strategy', () => {
-            const result = calculateInvestmentGrowthAmount(0, 5, 'end', 200,);
+            const growthAmount = calculateInvestmentGrowthAmount(0, 5, 'end', 200,);
 
-            expect(result.principalGrowth).toBe(10);
-            expect(result.contributionGrowth).toBe(10);
+            expect(growthAmount).toBe(10);
         });
 
         it('handles zero growth rate with "start" strategy', () => {
-            const result = calculateInvestmentGrowthAmount(1000, 0, 'start',);
+            const growthAmount = calculateInvestmentGrowthAmount(1000, 0, 'start',);
 
-            expect(result.principalGrowth).toBe(0);
-            expect(result.contributionGrowth).toBe(undefined);
+            expect(growthAmount).toBe(0);
         });
 
         it('handles zero growth rate with "end" strategy', () => {
-            const result = calculateInvestmentGrowthAmount(1000, 0, 'end', 200,);
+            const growthAmount = calculateInvestmentGrowthAmount(1000, 0, 'end', 200,);
 
-            expect(result.principalGrowth).toBe(0);
-            expect(result.contributionGrowth).toBe(0);
+            expect(growthAmount).toBe(0);
         });
 
         it('handles fractional growth rates with "start" strategy', () => {
-            const result = calculateInvestmentGrowthAmount(1000, 3.75, 'start',);
+            const growthAmount = calculateInvestmentGrowthAmount(1000, 3.75, 'start',);
 
-            expect(result.principalGrowth).toBe(37.5);
-            expect(result.contributionGrowth).toBe(undefined);
+            expect(growthAmount).toBe(37.5);
         });
 
         it('handles fractional growth rates with "end" strategy', () => {
-            const result = calculateInvestmentGrowthAmount(1000, 3.75, 'end', 200,);
-            expect(result.principalGrowth).toBe(45);
-            expect(result.contributionGrowth).toBe(7.5);
+            const growthAmount = calculateInvestmentGrowthAmount(1000, 3.75, 'end', 200,);
+            expect(growthAmount).toBe(45);
         });
 
         it('throws an error for invalid growth application strategy', () => {
