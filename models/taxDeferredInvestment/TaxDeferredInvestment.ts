@@ -1,7 +1,19 @@
 import type {Income} from "~/models/income/Income";
 
-export type EmployerContributionStrategy = 'none' | 'percentage_of_contribution' | 'percentage_of_compensation' | 'fixed'
-export type TaxDeferredContributionStrategy = 'none' | 'until_company_match' | 'percentage_of_income' | 'fixed' | 'max'
+export enum EmployerContributionStrategy {
+    None = 'none',
+    PercentageOfContribution = 'percentage_of_contribution',
+    PercentageOfCompensation = 'percentage_of_compensation',
+    Fixed = 'fixed',
+}
+
+export enum TaxDeferredContributionStrategy {
+    None = 'none',
+    UntilCompanyMatch = 'until_company_match',
+    PercentageOfIncome = 'percentage_of_income',
+    Fixed = 'fixed',
+    Max = 'max',
+}
 
 export interface TaxDeferredInvestment {
     id: number;
@@ -15,7 +27,6 @@ export interface TaxDeferredInvestment {
     electiveContributionPercentage: number;
     electiveContributionFixedAmount: number;
 
-    employerContributes: boolean;
     employerContributionStrategy: EmployerContributionStrategy;
     employerCompensationMatchPercentage: number;
     employerContributionFixedAmount: number;
@@ -34,13 +45,12 @@ export const taxDeferredInvestmentDefaults: TaxDeferredInvestmentPartial = {
     name: 'Tax Deferred Investment',
     growthRate: DEFAULT_GROWTH_RATE,
     initialBalance: 0,
-    electiveContributionStrategy: "percentage_of_income",
+    electiveContributionStrategy: TaxDeferredContributionStrategy.PercentageOfIncome,
     electiveContributionPercentage: 0,
     electiveContributionFixedAmount: 0,
     income: undefined,
 
-    employerContributes: false,
-    employerContributionStrategy: "percentage_of_contribution",
+    employerContributionStrategy:EmployerContributionStrategy.PercentageOfContribution,
     employerMatchPercentage: 0,
     employerCompensationMatchPercentage: 100,
     employerContributionFixedAmount: 0,
