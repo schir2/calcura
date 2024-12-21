@@ -1,11 +1,13 @@
 import type {TaxDeferredInvestment} from './TaxDeferredInvestment';
 import {TaxDeferredContributionStrategy} from "./TaxDeferredInvestment";
-import {assertDefined} from "~/utils";
+import {assertDefined, calculateInvestmentGrowthAmount} from "~/utils";
 import type TaxDeferredInvestmentState from "~/models/taxDeferredInvestment/TaxDeferredInvestmentState";
 import BaseManager from "~/models/common/BaseManager";
-import type {PlanState} from "~/models/plan/PlanState";
 import type Command from "~/models/common/Command";
 import type IncomeManager from "~/models/income/IncomeManager";
+import {FundType} from "~/models/plan/PlanManager";
+import {ContributionType} from "~/models/common";
+import {ProcessTaxDeferredInvestmentCommand} from "~/models/taxDeferredInvestment/TaxDeferredInvestmentCommand";
 
 export default class TaxDeferredInvestmentManager extends BaseManager<TaxDeferredInvestment, TaxDeferredInvestmentState> {
 
@@ -60,13 +62,13 @@ export default class TaxDeferredInvestmentManager extends BaseManager<TaxDeferre
                 if (this.incomeManager === undefined) {
                     throw new Error('Cannot perform percentage of income without a lined income manager')
                 }
-                electiveContribution = this.calculateElectiveContribution()
+                electiveContribution = this.orchestrator.requestFunds(this.calculateElectiveContribution(), FundType.Taxable)
                 const employerMatch = electiveContribution * (this.config.employerMatchPercentage / 100);
                 const maxEmployerMatch = this.incomeManager.getCurrentState().grossIncome * this.config.employerMatchPercentageLimit / 100;
                 employerContribution = Math.min(employerMatch, maxEmployerMatch)
                 break
             case "fixed":
-                employerContribution = this.config.employerContributionFixedAmount
+                employerContribution = this.orchestrator.requestFunds(this.config.employerContributionFixedAmount, FundType.Taxable)
                 break
             case "percentage_of_compensation":
                 if (this.incomeManager === undefined) {
@@ -83,11 +85,11 @@ export default class TaxDeferredInvestmentManager extends BaseManager<TaxDeferre
         assertDefined(previousState.balanceEndOfYear, 'previousState.balanceEndOfYear')
         return {
             electiveContribution: undefined,
-            electiveContributionLifetime: previousState.electiveContributionLifetime + previousState.electiveContribution,
+            electiveContributionLifetime: previousState.electiveContributionLifetime,
             employerContribution: undefined,
-            employerContributionLifetime: previousState.employerContributionLifetime + previousState.employerContribution,
+            employerContributionLifetime: previousState.employerContributionLifetime,
             growthAmount: 0,
-            growthLifetime: previousState.growthLifetime + previousState.growthAmount,
+            growthLifetime: previousState.growthLifetime,
             balanceStartOfYear: previousState.balanceEndOfYear,
             balanceEndOfYear: undefined,
             processed: false,
@@ -95,59 +97,36 @@ export default class TaxDeferredInvestmentManager extends BaseManager<TaxDeferre
     }
 
     getCommands(): Command[] {
-        return [];
+        return [new ProcessTaxDeferredInvestmentCommand(this)];
     }
 
 
     processImplementation(): void {
         const currentState = this.getCurrentState()
-        const electiveContribution = this.calculateElectiveContribution();
         const employerContribution = this.getEmployerContribution()
-
-        const growthAmount = calculateGrowthAmount(
+        const electiveContributionRequest = this.calculateElectiveContribution();
+        const electiveContribution = this.orchestrator.requestFunds(electiveContributionRequest, FundType.Taxable)
+        const contribution = electiveContribution + employerContribution
+        const growthAmount = calculateInvestmentGrowthAmount(
             currentState.balanceStartOfYear,
-            employerContribution + electiveContribution,
-            planState.growthApplicationStrategy
+            this.config.growthRate,
+            this.orchestrator.getConfig().growthApplicationStrategy,
+            contribution
         )
-        const balanceEndOfYear = currentState.balanceStartOfYear + growthAmount
+        this.orchestrator.contribute(growthAmount + contribution, ContributionType.TaxDeferred)
+        const balanceEndOfYear = currentState.balanceStartOfYear + growthAmount + contribution
 
         this.updateCurrentState(
             {
                 ...currentState,
                 electiveContribution: electiveContribution,
+                electiveContributionLifetime: currentState.electiveContributionLifetime + electiveContribution,
                 employerContribution: employerContribution,
+                employerContributionLifetime: currentState.employerContributionLifetime + employerContribution,
                 growthAmount: growthAmount,
                 balanceEndOfYear: balanceEndOfYear,
             }
         )
 
-        const taxableIncome = planState.taxableIncome - electiveContribution;
-        return {
-            ...planState,
-            taxableIncome: taxableIncome,
-            taxedIncome: recalculateTaxedIncome(planState, electiveContribution)
-        }
-
     }
-}
-
-
-function recalculateTaxedIncome(planState: PlanState, amount: number): number {
-    switch (planState.taxStrategy) {
-        case "simple":
-            return amount * (1 - planState.taxRate / 100)
-    }
-}
-
-function maxTaxDeferredContribution(
-    taxableIncome: number,
-    taxedIncome: number,
-    taxRate: number
-): number {
-    const numerator = taxableIncome * (1 - taxRate) + taxedIncome;
-    const denominator = (1 - taxRate);
-
-    const maxContribution = numerator / denominator;
-
-    return Math.max(0, maxContribution);
 }
