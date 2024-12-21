@@ -67,13 +67,13 @@ export default class BrokerageInvestmentManager extends BaseManager<BrokerageInv
             contribution
         )
         this.orchestrator.contribute(growthAmount + contribution, ContributionType.Taxable)
-        const updatedBalanceEndOfYear = currentState.balanceStartOfYear + growthAmount + contribution
+        const balanceEndOfYear = currentState.balanceStartOfYear + growthAmount + contribution
         this.updateCurrentState(
             {
                 ...currentState,
                 contribution: contribution,
                 contributionLifetime: currentState.contributionLifetime + contribution,
-                balanceEndOfYear: updatedBalanceEndOfYear,
+                balanceEndOfYear: balanceEndOfYear,
                 growthAmount: growthAmount,
                 growthLifetime: currentState.growthLifetime + growthAmount
 
