@@ -1,6 +1,12 @@
 import {beforeEach, describe, expect, it} from "vitest";
 import PlanManager, {FundType} from "~/models/plan/PlanManager";
-import {InsufficientFundsStrategy, type Plan} from "~/models/plan/Plan";
+import {
+    GrowthApplicationStrategy,
+    IncomeTaxStrategy,
+    InsufficientFundsStrategy,
+    type Plan,
+    RetirementStrategy
+} from "~/models/plan/Plan";
 import {ContributionType} from "~/models/common";
 
 describe("PlanManager", () => {
@@ -15,11 +21,11 @@ describe("PlanManager", () => {
             year: new Date().getFullYear(),
             inflationRate: 3,
             insufficientFundsStrategy: InsufficientFundsStrategy.None,
-            growthApplicationStrategy: "start",
-            taxStrategy: "simple",
+            growthApplicationStrategy: GrowthApplicationStrategy.Start,
+            taxStrategy: IncomeTaxStrategy.Simple,
             taxRate: 30,
             lifeExpectancy: 85,
-            retirementStrategy: "age",
+            retirementStrategy: RetirementStrategy.Age,
             retirementWithdrawalRate: 4,
             retirementIncomeGoal: 50000,
             retirementAge: 65,
@@ -101,7 +107,7 @@ describe("PlanManager", () => {
         it("should allow minimum negative funds for taxable capital", () => {
             const currentState = planManager.getCurrentState();
             currentState.taxableCapital = 1_000;
-            planManager.config.insufficientFundsStrategy = InsufficientFundsStrategy.MinimumOnly;
+            planManager.getConfig().insufficientFundsStrategy = InsufficientFundsStrategy.MinimumOnly;
 
             expect(planManager.requestFunds(2_000, FundType.Taxable, 1_000)).toBe(1_000);
             expect(planManager.requestFunds(2_000, FundType.Taxable, 2_000)).toBe(2_000);
@@ -110,7 +116,7 @@ describe("PlanManager", () => {
         it("should allow full negative funds for taxable capital", () => {
             const currentState = planManager.getCurrentState();
             currentState.taxableCapital = 500;
-            planManager.config.insufficientFundsStrategy = InsufficientFundsStrategy.Full;
+            planManager.getConfig().insufficientFundsStrategy = InsufficientFundsStrategy.Full;
 
             expect(planManager.requestFunds(1_000, FundType.Taxable)).toBe(1_000);
             expect(planManager.requestFunds(2_000, FundType.Taxable)).toBe(2_000);
@@ -119,7 +125,7 @@ describe("PlanManager", () => {
         it("should handle minimum parameter correctly with InsufficientFundsStrategy.None", () => {
             const currentState = planManager.getCurrentState();
             currentState.taxableCapital = 1000;
-            planManager.config.insufficientFundsStrategy = InsufficientFundsStrategy.None;
+            planManager.getConfig().insufficientFundsStrategy = InsufficientFundsStrategy.None;
 
             expect(planManager.requestFunds(2000, FundType.Taxable, -500)).toBe(1000); // Minimum ignored
         });
@@ -275,6 +281,16 @@ describe("PlanManager", () => {
             );
         });
     });
+    describe("getIncomeManagerById", () => {
+        it("should return incomeManager", () =>{
+            expect(planManager.getIncomeManagerById(1)).toBe(planManager.managers.incomeManagers[0])
+        })
+    })
+    describe("getTaxDeferredInvestmentManagerById", () => {
+        it("should return incomeManager", () =>{
+            expect(planManager.getTaxDeferredManagerById(1)).toBe(planManager.managers.taxDeferredManagers[0])
+        })
+    })
     describe("canRetire", () => {
         it.todo("should return true if retirement age is met when using 'age' strategy");
         it.todo("should return true if all debts are cleared when using 'debt_free' strategy");
