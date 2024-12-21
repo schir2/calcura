@@ -3,7 +3,7 @@ export default interface TaxDeferredInvestmentState {
     electiveContributionLifetime: number;
     employerContribution?: number;
     employerContributionLifetime: number;
-    growthAmount: number;
+    growthAmount?: number;
     growthLifetime: number;
     balanceStartOfYear: number;
     balanceEndOfYear?: number;
