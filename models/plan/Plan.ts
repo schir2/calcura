@@ -13,12 +13,21 @@ export enum InsufficientFundsStrategy {
     Full = 'full',
 }
 
-export type RetirementStrategy = 'debt_free' | 'age' | 'percent_rule' | 'target_savings';
-export type GrowthStrategy = 'fixed' | 'percentage_increase';
-export type InflationGrowthStrategy = 'fixed' | 'percentage_increase';
-export type ExpensesGrowthStrategy = 'fixed' | 'percentage_increase';
-export type GrowthApplicationStrategy = 'start' | 'end';
-export type IncomeTaxStrategy = 'simple'
+export enum RetirementStrategy {
+    DebtFree = 'debt_free',
+    Age = 'age',
+    PercentRule = 'percent_rule',
+    TargetSavings = 'target_savings',
+}
+
+export enum GrowthApplicationStrategy {
+    Start = 'start',
+    End = 'end',
+}
+
+export enum IncomeTaxStrategy {
+    Simple = 'simple',
+}
 
 export interface Plan {
     id: number;
@@ -53,11 +62,11 @@ export const planDefaults: PlanPartial = {
     year: new Date().getFullYear(),
     inflationRate: 3,
     insufficientFundsStrategy: InsufficientFundsStrategy.None,
-    growthApplicationStrategy: "start",
-    taxStrategy: "simple",
+    growthApplicationStrategy: GrowthApplicationStrategy.Start,
+    taxStrategy: IncomeTaxStrategy.Simple,
     taxRate: 2.5,
     lifeExpectancy: 85,
-    retirementStrategy: "age",
+    retirementStrategy: RetirementStrategy.Age,
     retirementWithdrawalRate: 4,
     retirementIncomeGoal: 50000,
     retirementAge: 65,
