@@ -8,13 +8,17 @@ import BaseManager from "~/models/common/BaseManager";
 export abstract class BaseOrchestrator<TConfig, TState, TManagers> {
     protected states: TState[] = [];
     protected readonly config: TConfig;
-    protected managers: TManagers
+    protected _managers: TManagers
 
     constructor(config: TConfig) {
         this.config = config
-        this.managers = this.createManagers()
+        this._managers = this.createManagers()
         const initialState = this.createInitialState();
         this.states.push(initialState);
+    }
+
+    get managers(): TManagers {
+        return this._managers;
     }
 
     protected abstract createManagers(): TManagers
