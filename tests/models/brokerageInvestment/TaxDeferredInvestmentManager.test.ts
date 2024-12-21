@@ -1,12 +1,17 @@
 import {beforeEach, describe, expect, it} from "vitest";
 import TaxDeferredInvestmentManager from "~/models/taxDeferredInvestment/TaxDeferredInvestmentManager";
-import type {TaxDeferredInvestment} from "~/models/taxDeferredInvestment/TaxDeferredInvestment";
 import {
     EmployerContributionStrategy,
     TaxDeferredContributionStrategy
 } from "~/models/taxDeferredInvestment/TaxDeferredInvestment";
 import PlanManager from "~/models/plan/PlanManager";
-import {InsufficientFundsStrategy, type Plan} from "~/models/plan/Plan";
+import {
+    GrowthApplicationStrategy,
+    IncomeTaxStrategy,
+    InsufficientFundsStrategy,
+    type Plan,
+    RetirementStrategy
+} from "~/models/plan/Plan";
 import {ProcessTaxDeferredInvestmentCommand} from "~/models/taxDeferredInvestment/TaxDeferredInvestmentCommand";
 
 const planConfig: Plan = {
@@ -16,11 +21,11 @@ const planConfig: Plan = {
     year: new Date().getFullYear(),
     inflationRate: 3,
     insufficientFundsStrategy: InsufficientFundsStrategy.None,
-    growthApplicationStrategy: "start",
-    taxStrategy: "simple",
+    growthApplicationStrategy: GrowthApplicationStrategy.Start,
+    taxStrategy: IncomeTaxStrategy.Simple,
     taxRate: 30,
     lifeExpectancy: 85,
-    retirementStrategy: "age",
+    retirementStrategy: RetirementStrategy.Age,
     retirementWithdrawalRate: 4,
     retirementIncomeGoal: 50000,
     retirementAge: 65,
@@ -47,41 +52,53 @@ const planConfig: Plan = {
     expenses: [],
     debts: [],
     brokerageInvestments: [],
-    taxDeferredInvestments: [],
+    taxDeferredInvestments: [
+        {
+            id: 1,
+            name: 'Test TaxDeferred Investment',
+            growthRate: 6,
+            initialBalance: 10_000,
+            electiveContributionStrategy: TaxDeferredContributionStrategy.PercentageOfIncome,
+            electiveContributionPercentage: 0,
+            electiveContributionFixedAmount: 0,
+            employerContributionStrategy: EmployerContributionStrategy.PercentageOfContribution,
+            employerCompensationMatchPercentage: 100,
+            employerContributionFixedAmount: 0,
+            employerMatchPercentageLimit: 0,
+            employerMatchPercentage: 0,
+            income: {
+                id: 1,
+                name: 'Ordinary Income',
+                grossIncome: 100_000,
+                growthRate: 0,
+                incomeType: "ordinary",
+                frequency: 'annual'
+            }
+
+        }
+    ],
     iraInvestments: [],
 }
 
-const taxDeferredInvestment: TaxDeferredInvestment = {
-    id: 1,
-    name: 'Test TaxDeferred Investment',
-    growthRate: 6,
-    initialBalance: 10_000,
-    electiveContributionStrategy: TaxDeferredContributionStrategy.Fixed,
-    electiveContributionPercentage: 0,
-    electiveContributionFixedAmount: 0,
-    employerContributionStrategy: EmployerContributionStrategy.PercentageOfContribution,
-    employerCompensationMatchPercentage: 100,
-    employerContributionFixedAmount: 0,
-    employerMatchPercentageLimit: 0,
-    employerMatchPercentage: 0
-
-};
 
 let planManager: PlanManager;
+let taxDeferredInvestmentManager: TaxDeferredInvestmentManager;
 
 describe("TaxDeferredInvestmentManager", () => {
     beforeEach(() => {
         planManager = new PlanManager(planConfig)
+        taxDeferredInvestmentManager = planManager.getTaxDeferredManagerById(1)
     });
 
     describe('constructor', () => {
 
         it("should initialize with correct state", () => {
-            const taxDeferredInvestmentManager = new TaxDeferredInvestmentManager(planManager, taxDeferredInvestment);
             const state = taxDeferredInvestmentManager.getCurrentState();
-            expect(state.contribution).toBe(0);
-            expect(state.contributionLifetime).toBe(0);
-            expect(state.growthAmount).toBe(0);
+            expect(state.electiveContribution).toBe(undefined);
+            expect(state.electiveContributionLifetime).toBe(0);
+            expect(state.employerContribution).toBe(undefined);
+            expect(state.employerContributionLifetime).toBe(0);
+            expect(state.growthAmount).toBe(undefined);
             expect(state.growthLifetime).toBe(0);
             expect(state.balanceStartOfYear).toBe(10_000);
             expect(state.balanceEndOfYear).toBe(undefined);
@@ -89,66 +106,234 @@ describe("TaxDeferredInvestmentManager", () => {
         });
     })
 
-    describe('calculateContribution', () => {
+    describe('calculateElectiveContribution', () => {
         it("should calculate fixed contribution correctly", () => {
-            const taxDeferredInvestmentManager = new TaxDeferredInvestmentManager(planManager, {
-                ...taxDeferredInvestment,
-                contributionStrategy: TaxDeferredContributionStrategy.Fixed,
-                contributionFixedAmount: 100,
-            })
-            const contribution = taxDeferredInvestmentManager.calculateContribution();
-            expect(contribution).toBe(100);
+            planManager = new PlanManager(
+                {
+                    ...planConfig,
+                    taxDeferredInvestments: [{
+                        ...planConfig.taxDeferredInvestments[0],
+                        electiveContributionStrategy: TaxDeferredContributionStrategy.Fixed,
+                        electiveContributionFixedAmount: 100,
+
+                    }]
+                }
+            )
+            const taxDeferredInvestmentManager = planManager.getTaxDeferredManagerById(1)
+            const electiveContribution = taxDeferredInvestmentManager.calculateElectiveContribution();
+            expect(electiveContribution).toBe(100);
         });
 
-        it("should calculate percentage income correctly", () => {
-            const taxDeferredInvestmentManager = new TaxDeferredInvestmentManager(planManager, {
-                ...taxDeferredInvestment,
-                contributionStrategy: TaxDeferredContributionStrategy.PercentageOfIncome,
-                contributionPercentage: 10,
-            })
-            const contribution = taxDeferredInvestmentManager.calculateContribution();
-            expect(contribution).toBe(15_000);
+        it("should calculate percentage of income correctly", () => {
+            planManager = new PlanManager(
+                {
+                    ...planConfig,
+                    taxDeferredInvestments: [{
+                        ...planConfig.taxDeferredInvestments[0],
+                        electiveContributionStrategy: TaxDeferredContributionStrategy.PercentageOfIncome,
+                        electiveContributionPercentage: 10,
+
+                    }]
+                }
+            )
+            const taxDeferredInvestmentManager = planManager.getTaxDeferredManagerById(1)
+            const electiveContribution = taxDeferredInvestmentManager.calculateElectiveContribution();
+            expect(electiveContribution).toBe(10_000);
         });
 
-        it("should calculate max contribution correctly", () => {
-            const taxDeferredInvestmentManager = new TaxDeferredInvestmentManager(planManager, {
-                ...taxDeferredInvestment,
-                contributionStrategy: TaxDeferredContributionStrategy.Max,
-            })
-            const contribution = taxDeferredInvestmentManager.calculateContribution();
-            expect(contribution).toBe(105_000);
+        it("should calculate max electiveContribution correctly", () => {
+            planManager = new PlanManager(
+                {
+                    ...planConfig,
+                    taxDeferredInvestments: [{
+                        ...planConfig.taxDeferredInvestments[0],
+                        electiveContributionStrategy: TaxDeferredContributionStrategy.Max,
+                        electiveContributionPercentage: 10,
+
+                    }]
+                }
+            )
+            const taxDeferredInvestmentManager = planManager.getTaxDeferredManagerById(1)
+            const electiveContribution = taxDeferredInvestmentManager.calculateElectiveContribution();
+            expect(electiveContribution).toBe(Infinity);
+        });
+
+        it("should calculate employer_match electiveContribution correctly", () => {
+            planManager = new PlanManager(
+                {
+                    ...planConfig,
+                    taxDeferredInvestments: [{
+                        ...planConfig.taxDeferredInvestments[0],
+                        electiveContributionStrategy: TaxDeferredContributionStrategy.UntilCompanyMatch,
+                        electiveContributionPercentage: 100,
+                        employerContributionStrategy: EmployerContributionStrategy.PercentageOfContribution,
+                        employerCompensationMatchPercentage: 0,
+                        employerMatchPercentage: 100,
+                        employerMatchPercentageLimit: 3,
+
+                    }]
+                }
+            )
+            const taxDeferredInvestmentManager = planManager.getTaxDeferredManagerById(1)
+            const electiveContribution = taxDeferredInvestmentManager.calculateElectiveContribution();
+            console.log(taxDeferredInvestmentManager.getConfig());
+            expect(electiveContribution).toBe(3_000);
+        });
+    })
+
+    describe('calculateEmployerContribution', () => {
+        it("fixed", () => {
+            planManager = new PlanManager(
+                {
+                    ...planConfig,
+                    taxDeferredInvestments: [{
+                        ...planConfig.taxDeferredInvestments[0],
+                        employerContributionStrategy: EmployerContributionStrategy.Fixed,
+                        employerContributionFixedAmount: 10_000,
+                    }]
+                }
+            )
+            const taxDeferredInvestmentManager = planManager.getTaxDeferredManagerById(1)
+            const electiveContribution = taxDeferredInvestmentManager.calculateEmployerContribution();
+            expect(electiveContribution).toBe(10_000);
+        });
+
+        it("percentage of compensation", () => {
+            planManager = new PlanManager(
+                {
+                    ...planConfig,
+                    taxDeferredInvestments: [{
+                        ...planConfig.taxDeferredInvestments[0],
+                        employerContributionStrategy: EmployerContributionStrategy.PercentageOfCompensation,
+                        employerCompensationMatchPercentage: 5,
+                    }]
+                }
+            )
+            const taxDeferredInvestmentManager = planManager.getTaxDeferredManagerById(1)
+            const electiveContribution = taxDeferredInvestmentManager.calculateEmployerContribution();
+            expect(electiveContribution).toBe(5_000);
+        });
+
+        it("none", () => {
+            planManager = new PlanManager(
+                {
+                    ...planConfig,
+                    taxDeferredInvestments: [{
+                        ...planConfig.taxDeferredInvestments[0],
+                        employerContributionStrategy: EmployerContributionStrategy.None,
+                        employerCompensationMatchPercentage: 100,
+                        employerMatchPercentageLimit: 3,
+                        employerMatchPercentage: 50,
+                        employerContributionFixedAmount: 10_000,
+                    }]
+                }
+            )
+            const taxDeferredInvestmentManager = planManager.getTaxDeferredManagerById(1)
+            const electiveContribution = taxDeferredInvestmentManager.calculateEmployerContribution();
+            expect(electiveContribution).toBe(0);
+        });
+
+        it("percentage of contribution", () => {
+            planManager = new PlanManager(
+                {
+                    ...planConfig,
+                    taxDeferredInvestments: [{
+                        ...planConfig.taxDeferredInvestments[0],
+                        employerContributionStrategy: EmployerContributionStrategy.PercentageOfContribution,
+                        electiveContributionStrategy: TaxDeferredContributionStrategy.Fixed,
+                        electiveContributionFixedAmount: 1_500,
+                        employerCompensationMatchPercentage: 100,
+                        employerMatchPercentageLimit: 3,
+                        employerMatchPercentage: 50,
+                        employerContributionFixedAmount: 10_000,
+                    }]
+                }
+            )
+            const taxDeferredInvestmentManager = planManager.getTaxDeferredManagerById(1)
+            const electiveContribution = taxDeferredInvestmentManager.calculateEmployerContribution();
+            expect(electiveContribution).toBe(750);
+        });
+
+        it("percentage of contribution match percentage is 0", () => {
+            planManager = new PlanManager(
+                {
+                    ...planConfig,
+                    taxDeferredInvestments: [{
+                        ...planConfig.taxDeferredInvestments[0],
+                        electiveContributionStrategy: TaxDeferredContributionStrategy.UntilCompanyMatch,
+                        electiveContributionPercentage: 100,
+                        employerContributionStrategy: EmployerContributionStrategy.PercentageOfContribution,
+                        employerCompensationMatchPercentage: 0,
+                        employerMatchPercentage: 0,
+                        employerMatchPercentageLimit: 3,
+
+                    }]
+                }
+            )
+            const taxDeferredInvestmentManager = planManager.getTaxDeferredManagerById(1)
+
+            expect(() => {
+                taxDeferredInvestmentManager.calculateEmployerContribution();
+            }).toThrow('Employer match percentage must be greater than 0');
+        });
+
+        it("percentage of contribution match limit is 0", () => {
+            planManager = new PlanManager(
+                {
+                    ...planConfig,
+                    taxDeferredInvestments: [{
+                        ...planConfig.taxDeferredInvestments[0],
+                        electiveContributionStrategy: TaxDeferredContributionStrategy.UntilCompanyMatch,
+                        electiveContributionPercentage: 100,
+                        employerContributionStrategy: EmployerContributionStrategy.PercentageOfContribution,
+                        employerCompensationMatchPercentage: 0,
+                        employerMatchPercentage: 100,
+                        employerMatchPercentageLimit: 0,
+
+                    }]
+                }
+            )
+            const taxDeferredInvestmentManager = planManager.getTaxDeferredManagerById(1)
+            const electiveContribution = taxDeferredInvestmentManager.calculateEmployerContribution();
+            expect(electiveContribution).toBe(0);
         });
     })
 
     describe('process', () => {
 
         it("should process taxDeferredInvestment and update state correctly for start of year application strategy", () => {
-            const taxDeferredInvestmentConfig = {
-                ...taxDeferredInvestment,
-                initialBalance: 10_000,
-                contributionFixedAmount: 1_000,
-                growthRate: 10
-            }
-            planManager = new PlanManager({
-                ...planConfig,
-                growthApplicationStrategy: 'start',
-                taxDeferredInvestments: [taxDeferredInvestmentConfig]
-            })
-            const taxDeferredInvestmentManager = new TaxDeferredInvestmentManager(planManager, taxDeferredInvestmentConfig)
+
+            planManager = new PlanManager(
+                {
+                    ...planConfig,
+                    taxDeferredInvestments: [{
+                        ...planConfig.taxDeferredInvestments[0],
+                        electiveContributionStrategy: TaxDeferredContributionStrategy.UntilCompanyMatch,
+                        electiveContributionPercentage: 100,
+                        employerContributionStrategy: EmployerContributionStrategy.PercentageOfContribution,
+                        employerMatchPercentage: 50,
+                        employerMatchPercentageLimit: 6,
+
+                    }]
+                }
+            )
+            taxDeferredInvestmentManager = planManager.getTaxDeferredManagerById(1)
             taxDeferredInvestmentManager.process();
             const planState = taxDeferredInvestmentManager.orchestrator.getCurrentState();
             const taxDeferredInvestmentState = taxDeferredInvestmentManager.getCurrentState();
 
-            expect(taxDeferredInvestmentState.contribution).toBe(1_000);
-            expect(taxDeferredInvestmentState.contributionLifetime).toBe(1_000);
-            expect(taxDeferredInvestmentState.growthAmount).toBe(1_000);
-            expect(taxDeferredInvestmentState.growthLifetime).toBe(1_000);
+            expect(taxDeferredInvestmentState.electiveContribution).toBe(12_000);
+            expect(taxDeferredInvestmentState.electiveContributionLifetime).toBe(12_000);
+            expect(taxDeferredInvestmentState.employerContribution).toBe(6_000);
+            expect(taxDeferredInvestmentState.employerContributionLifetime).toBe(6_000);
+            expect(taxDeferredInvestmentState.growthAmount).toBe(600);
+            expect(taxDeferredInvestmentState.growthLifetime).toBe(600);
             expect(taxDeferredInvestmentState.balanceStartOfYear).toBe(10_000);
-            expect(taxDeferredInvestmentState.balanceEndOfYear).toBe(12_000);
+            expect(taxDeferredInvestmentState.balanceEndOfYear).toBe(28_600);
             expect(taxDeferredInvestmentState.processed).toBe(true);
+            expect(planState.savingsTaxDeferredEndOfYear).toBe(28_600);
             expect(planState.taxedIncome).toBe(105_000);
-            expect(planState.taxedCapital).toBe(104_000);
-            expect(planState.savingsTaxableEndOfYear).toBe(12_000);
+            expect(planState.taxedCapital).toBe(98_000);
             expect(planState.taxedWithdrawals).toBe(1_000);
         });
 
@@ -156,7 +341,7 @@ describe("TaxDeferredInvestmentManager", () => {
             const taxDeferredInvestmentConfig = {
                 ...taxDeferredInvestment,
                 initialBalance: 10_000,
-                contributionFixedAmount: 1_000,
+                electiveContributionFixedAmount: 1_000,
                 growthRate: 10
             }
             planManager = new PlanManager({
@@ -170,8 +355,8 @@ describe("TaxDeferredInvestmentManager", () => {
 
             const taxDeferredInvestmentState = taxDeferredInvestmentManager.getCurrentState();
 
-            expect(taxDeferredInvestmentState.contribution).toBe(1_000);
-            expect(taxDeferredInvestmentState.contributionLifetime).toBe(1_000);
+            expect(taxDeferredInvestmentState.electiveContribution).toBe(1_000);
+            expect(taxDeferredInvestmentState.electiveContributionLifetime).toBe(1_000);
             expect(taxDeferredInvestmentState.growthAmount).toBe(1100);
             expect(taxDeferredInvestmentState.growthLifetime).toBe(1100);
             expect(taxDeferredInvestmentState.balanceStartOfYear).toBe(10_000);
@@ -214,7 +399,7 @@ describe("TaxDeferredInvestmentManager", () => {
             const taxDeferredInvestmentConfig = {
                 ...taxDeferredInvestment,
                 initialBalance: 10_000,
-                contributionFixedAmount: 1_000,
+                electiveContributionFixedAmount: 1_000,
                 growthRate: 10
             }
             planManager = new PlanManager({
@@ -227,8 +412,8 @@ describe("TaxDeferredInvestmentManager", () => {
             const taxDeferredInvestmentState = taxDeferredInvestmentManager.getCurrentState();
             const newState = taxDeferredInvestmentManager.createNextState(taxDeferredInvestmentState);
 
-            expect(newState.contribution).toBe(0);
-            expect(newState.contributionLifetime).toBe(1_000);
+            expect(newState.electiveContribution).toBe(0);
+            expect(newState.electiveContributionLifetime).toBe(1_000);
             expect(newState.growthAmount).toBe(0);
             expect(newState.growthLifetime).toBe(1_000);
             expect(newState.balanceStartOfYear).toBe(12_000);
