@@ -1,8 +1,14 @@
 import type {Plan} from "~/models/plan/Plan";
+import {RetirementStrategy} from "~/models/plan/Plan";
 import type {PlanState} from "~/models/plan/PlanState";
 import DebtManager from "~/models/debt/DebtManager";
 import BaseManager from "~/models/common/BaseManager";
-import {adjustForInsufficientFunds, getIraLimit, getTaxDeferredContributionLimit, getTaxDeferredElectiveContributionLimit} from "~/utils";
+import {
+    adjustForInsufficientFunds,
+    getIraLimit,
+    getTaxDeferredContributionLimit,
+    getTaxDeferredElectiveContributionLimit
+} from "~/utils";
 import type Command from "~/models/common/Command";
 import IncomeManager from "~/models/income/IncomeManager";
 import BrokerageInvestmentManager from "~/models/brokerageInvestment/BrokerageInvestmentManager";
@@ -177,23 +183,23 @@ export default class PlanManager extends BaseOrchestrator<Plan, PlanState, Manag
 
     canRetire(): boolean {
         switch (this.config.retirementStrategy) {
-            case "age":
+            case RetirementStrategy.Age:
                 return this.getCurrentState().age === this.config.retirementAge;
-            case "debt_free":
+            case RetirementStrategy.DebtFree:
                 return this.getCurrentDebt() <= 0
-            case "percent_rule":
+            case RetirementStrategy.PercentRule:
                 return this.config.retirementIncomeGoal === this.getCurrentState().retirementIncomeProjected
-            case "target_savings":
+            case RetirementStrategy.TargetSavings:
                 return this.config.retirementSavingsAmount === this.getCurrentState().savingsEndOfYear
         }
     }
 
     getCurrentDebt(): number {
-        return this.managers.debtManagers.reduce((total, debtManager) => total + debtManager.getCurrentState().principalStartOfYear, 0)
+        return this._managers.debtManagers.reduce((total, debtManager) => total + debtManager.getCurrentState().principalStartOfYear, 0)
     }
 
     getGrossIncome() {
-        return this.managers.incomeManagers.reduce((grossIncome, incomeManager) => grossIncome + incomeManager.getCurrentState().grossIncome, 0)
+        return this._managers.incomeManagers.reduce((grossIncome, incomeManager) => grossIncome + incomeManager.getCurrentState().grossIncome, 0)
     }
 
     getInflationRate(): number {
@@ -270,5 +276,21 @@ export default class PlanManager extends BaseOrchestrator<Plan, PlanState, Manag
         if (!planState.processed) {
             manager.process()
         }
+    }
+
+    getIncomeManagerById(id: number): IncomeManager {
+        const incomeManager = this.managers.incomeManagers.find((incomeManager) => incomeManager.getConfig().id === id);
+        if (incomeManager === undefined) {
+            throw new Error(`Missing income manager with id ${id}`);
+        }
+        return incomeManager
+    }
+
+    getTaxDeferredManagerById(id: number): TaxDeferredInvestmentManager {
+        const taxDeferredManager = this.managers.taxDeferredManagers.find((taxDeferredManager) => taxDeferredManager.getConfig().id === id);
+        if (taxDeferredManager === undefined) {
+            throw new Error(`Missing tax deferred investment manager with id ${id}`);
+        }
+        return taxDeferredManager
     }
 }
