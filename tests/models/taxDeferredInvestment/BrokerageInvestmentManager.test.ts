@@ -4,7 +4,7 @@ import type {BrokerageInvestment} from "~/models/brokerageInvestment/BrokerageIn
 import {BrokerageContributionStrategy} from "~/models/brokerageInvestment/BrokerageInvestment";
 import PlanManager from "~/models/plan/PlanManager";
 import {GrowthApplicationStrategy, IncomeTaxStrategy, InsufficientFundsStrategy, type Plan, RetirementStrategy} from "~/models/plan/Plan";
-import {ProcessBrokerageInvestmentCommand} from "~/models/brokerageInvestment/BrokerageInvestmentCommand";
+import {ProcessBrokerageInvestmentCommand} from "~/models/brokerageInvestment/BrokerageInvestmentCommands";
 
 const planConfig: Plan = {
     id: 1,

@@ -5,7 +5,7 @@ import BaseManager from "~/models/common/BaseManager";
 import type Command from "~/models/common/Command";
 import {FundType} from "~/models/plan/PlanManager";
 import {ContributionType} from "~/models/common";
-import {ProcessBrokerageInvestmentCommand} from "~/models/brokerageInvestment/BrokerageInvestmentCommand";
+import {ProcessBrokerageInvestmentCommand} from "~/models/brokerageInvestment/BrokerageInvestmentCommands";
 
 export default class BrokerageInvestmentManager extends BaseManager<BrokerageInvestment, BrokerageInvestmentState> {
 
