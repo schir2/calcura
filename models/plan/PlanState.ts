@@ -1,4 +1,6 @@
-export interface PlanState {
+import type {BaseState} from "~/models/common/BaseState";
+
+export interface PlanState extends BaseState {
     age: number;
     year: number;
 
@@ -7,8 +9,8 @@ export interface PlanState {
     taxedIncome: number;
     AGI: number;
 
-    taxableCapital: number;
-    taxedCapital: number;
+    taxableFunds: number;
+    taxedFunds: number;
     taxedWithdrawals: number;
 
     deductions: number;
