@@ -32,6 +32,7 @@ type ManagerMap = {
     debtManagers: DebtManager[];
     brokerageInvestmentManagers: BrokerageInvestmentManager[];
     iraInvestmentManagers: IraInvestmentManager[];
+    // rothIraInvestmentManagers: RothIraInvestmentManager[];
     taxDeferredManagers: TaxDeferredInvestmentManager[];
 };
 
@@ -57,7 +58,9 @@ export default class PlanManager extends BaseOrchestrator<Plan, PlanState, Manag
 
     getSavingsTaxDeferredInitial(): number {
         // TODO Test this function
-        return this.config.taxDeferredInvestments.reduce((savingsTaxExemptStartOfYear, taxDeferredInvestment) => savingsTaxExemptStartOfYear + taxDeferredInvestment.initialBalance, 0)
+        const taxDeferredInvestments = this.config.taxDeferredInvestments.reduce((total, taxDeferredInvestment) => total + taxDeferredInvestment.initialBalance, 0)
+        const iraInvestments = this.config.iraInvestments.reduce((total, iraInvestment) => total + iraInvestment.initialBalance, 0)
+        return taxDeferredInvestments + iraInvestments
     }
 
     getSavingsTaxExemptInitial(): number {
