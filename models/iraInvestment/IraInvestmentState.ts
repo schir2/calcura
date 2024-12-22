@@ -1,6 +1,4 @@
-export default interface IraInvestmentState {
-    contribution: number;
-    growthAmount: number;
-    balanceStartOfYear: number;
-    balanceEndOfYear?: number;
+import type {InvestmentState} from "~/models/common/InvestmentState";
+
+export default interface IraInvestmentState extends InvestmentState {
 }
