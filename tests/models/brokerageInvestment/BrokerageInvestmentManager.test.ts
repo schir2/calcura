@@ -163,7 +163,9 @@ describe("BrokerageInvestmentManager", () => {
             expect(brokerageInvestmentState.processed).toBe(true);
             expect(planState.taxedIncome).toBe(105_000);
             expect(planState.taxedCapital).toBe(104_000);
+            expect(planState.savingsTaxDeferredEndOfYear).toBe(0);
             expect(planState.savingsTaxableEndOfYear).toBe(12_100);
+            expect(planState.savingsTaxExemptEndOfYear).toBe(0);
             expect(planState.taxedWithdrawals).toBe(1_000);
         });
 
