@@ -141,6 +141,7 @@ export default class TaxDeferredInvestmentManager extends BaseManager<TaxDeferre
         let employerContribution = this.calculateEmployerContribution()
         const electiveContributionRequest = this.calculateElectiveContribution();
         const electiveContribution = this.orchestrator.requestFunds(electiveContributionRequest, FundType.Taxable)
+        this.orchestrator.withdraw(electiveContribution, FundType.Taxable)
         const contribution = electiveContribution + employerContribution
         const growthAmount = calculateInvestmentGrowthAmount(
             currentState.balanceStartOfYear,
@@ -148,7 +149,6 @@ export default class TaxDeferredInvestmentManager extends BaseManager<TaxDeferre
             this.orchestrator.getConfig().growthApplicationStrategy,
             contribution
         )
-        console.log(growthAmount)
         this.orchestrator.contribute(growthAmount + contribution, ContributionType.TaxDeferred)
         const balanceEndOfYear = currentState.balanceStartOfYear + growthAmount + contribution
 
