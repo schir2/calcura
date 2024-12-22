@@ -1,7 +1,9 @@
 import type Command from "~/models/common/Command";
 import type PlanManager from "~/models/plan/PlanManager";
+import {ProcessError} from "~/utils/errors/ProcessError";
+import type {BaseState} from "~/models/common/BaseState";
 
-export default abstract class BaseManager<TConfig, TState> {
+export default abstract class BaseManager<TConfig, TState extends BaseState> {
     protected states: TState[] = [];
     protected readonly config: TConfig;
     readonly orchestrator: PlanManager;
@@ -45,9 +47,15 @@ export default abstract class BaseManager<TConfig, TState> {
     }
 
     process(): void {
-        const baseState = this.processImplementation();
-        const currentState = {...this.getCurrentState(), processed: true};
-        this.updateCurrentState(currentState);
+        const currentState = this.getCurrentState();
+        if (currentState.processed === undefined && null) {
+            throw new ProcessError('State is missing processed property')
+        }
+        if (currentState.processed) {
+            throw new ProcessError(`Failed to process state, it is already processed.`);
+        }
+        this.processImplementation();
+        this.updateCurrentState({...this.getCurrentState(), processed: true});
     }
 
     protected abstract processImplementation(): void;
