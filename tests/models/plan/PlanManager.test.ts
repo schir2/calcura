@@ -1,13 +1,8 @@
 import {beforeEach, describe, expect, it} from "vitest";
 import PlanManager, {FundType} from "~/models/plan/PlanManager";
-import {
-    GrowthApplicationStrategy,
-    IncomeTaxStrategy,
-    InsufficientFundsStrategy,
-    type Plan,
-    RetirementStrategy
-} from "~/models/plan/Plan";
+import {GrowthApplicationStrategy, IncomeTaxStrategy, InsufficientFundsStrategy, type Plan, RetirementStrategy} from "~/models/plan/Plan";
 import {ContributionType} from "~/models/common";
+import {EmployerContributionStrategy, TaxDeferredContributionStrategy} from "~/models/taxDeferredInvestment/TaxDeferredInvestment";
 
 describe("PlanManager", () => {
     let planConfig: Plan;
@@ -51,7 +46,31 @@ describe("PlanManager", () => {
             ],
             expenses: [],
             debts: [],
-            taxDeferredInvestments: [],
+            taxDeferredInvestments: [
+                {
+                    id: 1,
+                    name: 'Test TaxDeferred Investment',
+                    growthRate: 6,
+                    initialBalance: 10_000,
+                    electiveContributionStrategy: TaxDeferredContributionStrategy.PercentageOfIncome,
+                    electiveContributionPercentage: 0,
+                    electiveContributionFixedAmount: 0,
+                    employerContributionStrategy: EmployerContributionStrategy.PercentageOfContribution,
+                    employerCompensationMatchPercentage: 100,
+                    employerContributionFixedAmount: 0,
+                    employerMatchPercentageLimit: 0,
+                    employerMatchPercentage: 0,
+                    income: {
+                        id: 1,
+                        name: 'Ordinary Income',
+                        grossIncome: 100_000,
+                        growthRate: 0,
+                        incomeType: "ordinary",
+                        frequency: 'annual'
+                    }
+
+                }
+            ],
             brokerageInvestments: [],
             iraInvestments: [],
         }
@@ -66,7 +85,7 @@ describe("PlanManager", () => {
             expect(state.taxableIncome).toBe(150_000)
             expect(state.taxedIncome).toBe(105_000)
             expect(state.AGI).toBe(0)
-            expect(state.taxableCapital).toBe(150_000)
+            expect(state.taxableFunds).toBe(150_000)
             expect(state.taxedCapital).toBe(105_000)
             expect(state.taxedWithdrawals).toBe(0)
             expect(state.deductions).toBe(0)
@@ -74,8 +93,8 @@ describe("PlanManager", () => {
             expect(state.deferredLimit).toBe(69_000)
             expect(state.iraLimit).toBe(7_000)
             expect(state.inflationRate).toBe(3)
-            expect(state.savingsTaxDeferredStartOfYear).toBe(0)
-            expect(state.savingsTaxDeferredEndOfYear).toBe(0)
+            expect(state.savingsTaxDeferredStartOfYear).toBe(10_000)
+            expect(state.savingsTaxDeferredEndOfYear).toBe(10_000)
             expect(state.savingsTaxExemptStartOfYear).toBe(0)
             expect(state.savingsTaxExemptEndOfYear).toBe(0)
             expect(state.savingsTaxableStartOfYear).toBe(0)
@@ -91,7 +110,7 @@ describe("PlanManager", () => {
     describe('requestFunds', () => {
         it("should correctly request funds from taxable capital", () => {
             const currentState = planManager.getCurrentState();
-            currentState.taxableCapital = 50_000;
+            currentState.taxableFunds = 50_000;
 
             expect(planManager.requestFunds(20000, FundType.Taxable)).toBe(20_000);
             expect(planManager.requestFunds(60000, FundType.Taxable)).toBe(50_000);
@@ -106,7 +125,7 @@ describe("PlanManager", () => {
         });
         it("should allow minimum negative funds for taxable capital", () => {
             const currentState = planManager.getCurrentState();
-            currentState.taxableCapital = 1_000;
+            currentState.taxableFunds = 1_000;
             planManager.getConfig().insufficientFundsStrategy = InsufficientFundsStrategy.MinimumOnly;
 
             expect(planManager.requestFunds(2_000, FundType.Taxable, 1_000)).toBe(1_000);
@@ -115,7 +134,7 @@ describe("PlanManager", () => {
 
         it("should allow full negative funds for taxable capital", () => {
             const currentState = planManager.getCurrentState();
-            currentState.taxableCapital = 500;
+            currentState.taxableFunds = 500;
             planManager.getConfig().insufficientFundsStrategy = InsufficientFundsStrategy.Full;
 
             expect(planManager.requestFunds(1_000, FundType.Taxable)).toBe(1_000);
@@ -124,7 +143,7 @@ describe("PlanManager", () => {
 
         it("should handle minimum parameter correctly with InsufficientFundsStrategy.None", () => {
             const currentState = planManager.getCurrentState();
-            currentState.taxableCapital = 1000;
+            currentState.taxableFunds = 1000;
             planManager.getConfig().insufficientFundsStrategy = InsufficientFundsStrategy.None;
 
             expect(planManager.requestFunds(2000, FundType.Taxable, -500)).toBe(1000); // Minimum ignored
@@ -231,13 +250,13 @@ describe("PlanManager", () => {
     describe("withdraw", () => {
         it("should correctly withdraw from taxable capital and update state", () => {
             const currentState = planManager.getCurrentState();
-            currentState.taxableCapital = 50000;
+            currentState.taxableFunds = 50000;
             currentState.taxableIncome = 50000;
             currentState.taxedWithdrawals = 10000;
 
             planManager.withdraw(20000, FundType.Taxable);
 
-            expect(currentState.taxableCapital).toBe(30000); // Deducted
+            expect(currentState.taxableFunds).toBe(30000); // Deducted
             expect(currentState.taxableIncome).toBe(30000); // Adjusted
             const agi = planManager.getAGI(currentState);
             expect(agi).toBe(30000);
@@ -248,7 +267,7 @@ describe("PlanManager", () => {
 
         it("should throw an error if taxable withdrawal exceeds available capital", () => {
             const currentState = planManager.getCurrentState();
-            currentState.taxableCapital = 10000;
+            currentState.taxableFunds = 10000;
 
             expect(() => planManager.withdraw(20000, FundType.Taxable)).toThrow(
                 "Insufficient taxable capital for withdrawal"
@@ -282,12 +301,12 @@ describe("PlanManager", () => {
         });
     });
     describe("getIncomeManagerById", () => {
-        it("should return incomeManager", () =>{
+        it("should return incomeManager", () => {
             expect(planManager.getIncomeManagerById(1)).toBe(planManager.managers.incomeManagers[0])
         })
     })
     describe("getTaxDeferredInvestmentManagerById", () => {
-        it("should return incomeManager", () =>{
+        it("should return incomeManager", () => {
             expect(planManager.getTaxDeferredManagerById(1)).toBe(planManager.managers.taxDeferredManagers[0])
         })
     })
