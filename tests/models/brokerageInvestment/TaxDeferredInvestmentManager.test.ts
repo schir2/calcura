@@ -1,18 +1,9 @@
 import {beforeEach, describe, expect, it} from "vitest";
 import TaxDeferredInvestmentManager from "~/models/taxDeferredInvestment/TaxDeferredInvestmentManager";
-import {
-    EmployerContributionStrategy,
-    TaxDeferredContributionStrategy
-} from "~/models/taxDeferredInvestment/TaxDeferredInvestment";
-import PlanManager from "~/models/plan/PlanManager";
-import {
-    GrowthApplicationStrategy,
-    IncomeTaxStrategy,
-    InsufficientFundsStrategy,
-    type Plan,
-    RetirementStrategy
-} from "~/models/plan/Plan";
-import {ProcessTaxDeferredInvestmentCommand} from "~/models/taxDeferredInvestment/TaxDeferredInvestmentCommand";
+import {EmployerContributionStrategy, TaxDeferredContributionStrategy} from "~/models/taxDeferredInvestment/TaxDeferredInvestment";
+import PlanManager, {FundType} from "~/models/plan/PlanManager";
+import {GrowthApplicationStrategy, IncomeTaxStrategy, InsufficientFundsStrategy, type Plan, RetirementStrategy} from "~/models/plan/Plan";
+import {ProcessTaxDeferredInvestmentCommand} from "~/models/taxDeferredInvestment/TaxDeferredInvestmentCommands";
 
 const planConfig: Plan = {
     id: 1,
@@ -59,13 +50,13 @@ const planConfig: Plan = {
             growthRate: 6,
             initialBalance: 10_000,
             electiveContributionStrategy: TaxDeferredContributionStrategy.PercentageOfIncome,
-            electiveContributionPercentage: 0,
+            electiveContributionPercentage: 10,
             electiveContributionFixedAmount: 0,
             employerContributionStrategy: EmployerContributionStrategy.PercentageOfContribution,
             employerCompensationMatchPercentage: 100,
             employerContributionFixedAmount: 0,
-            employerMatchPercentageLimit: 0,
-            employerMatchPercentage: 0,
+            employerMatchPercentageLimit: 5,
+            employerMatchPercentage: 50,
             income: {
                 id: 1,
                 name: 'Ordinary Income',
@@ -176,7 +167,6 @@ describe("TaxDeferredInvestmentManager", () => {
             )
             const taxDeferredInvestmentManager = planManager.getTaxDeferredManagerById(1)
             const electiveContribution = taxDeferredInvestmentManager.calculateElectiveContribution();
-            console.log(taxDeferredInvestmentManager.getConfig());
             expect(electiveContribution).toBe(3_000);
         });
     })
@@ -306,8 +296,10 @@ describe("TaxDeferredInvestmentManager", () => {
             planManager = new PlanManager(
                 {
                     ...planConfig,
+                    growthApplicationStrategy: GrowthApplicationStrategy.Start,
                     taxDeferredInvestments: [{
                         ...planConfig.taxDeferredInvestments[0],
+                        growthRate: 6,
                         electiveContributionStrategy: TaxDeferredContributionStrategy.UntilCompanyMatch,
                         electiveContributionPercentage: 100,
                         employerContributionStrategy: EmployerContributionStrategy.PercentageOfContribution,
@@ -332,45 +324,54 @@ describe("TaxDeferredInvestmentManager", () => {
             expect(taxDeferredInvestmentState.balanceEndOfYear).toBe(28_600);
             expect(taxDeferredInvestmentState.processed).toBe(true);
             expect(planState.savingsTaxDeferredEndOfYear).toBe(28_600);
-            expect(planState.taxedIncome).toBe(105_000);
-            expect(planState.taxedCapital).toBe(98_000);
-            expect(planState.taxedWithdrawals).toBe(1_000);
+            expect(planState.taxedIncome).toBe(96_600);
+            expect(planState.taxedCapital).toBe(96_600);
+            expect(planState.taxedWithdrawals).toBe(0);
         });
 
         it("should process taxDeferredInvestment and update state correctly for end of of year application strategy", () => {
-            const taxDeferredInvestmentConfig = {
-                ...taxDeferredInvestment,
-                initialBalance: 10_000,
-                electiveContributionFixedAmount: 1_000,
-                growthRate: 10
-            }
-            planManager = new PlanManager({
-                ...planConfig,
-                growthApplicationStrategy: 'end',
-                taxDeferredInvestments: [taxDeferredInvestmentConfig]
-            })
-            const taxDeferredInvestmentManager = new TaxDeferredInvestmentManager(planManager, taxDeferredInvestmentConfig)
+            planManager = new PlanManager(
+                {
+                    ...planConfig,
+                    growthApplicationStrategy: GrowthApplicationStrategy.End,
+                    taxDeferredInvestments: [{
+                        ...planConfig.taxDeferredInvestments[0],
+                        growthRate: 6,
+                        electiveContributionStrategy: TaxDeferredContributionStrategy.UntilCompanyMatch,
+                        electiveContributionPercentage: 100,
+                        employerContributionStrategy: EmployerContributionStrategy.PercentageOfContribution,
+                        employerMatchPercentage: 50,
+                        employerMatchPercentageLimit: 6,
+
+                    }]
+                }
+            )
+            taxDeferredInvestmentManager = planManager.getTaxDeferredManagerById(1)
             taxDeferredInvestmentManager.process();
             const planState = taxDeferredInvestmentManager.orchestrator.getCurrentState();
-
             const taxDeferredInvestmentState = taxDeferredInvestmentManager.getCurrentState();
 
-            expect(taxDeferredInvestmentState.electiveContribution).toBe(1_000);
-            expect(taxDeferredInvestmentState.electiveContributionLifetime).toBe(1_000);
-            expect(taxDeferredInvestmentState.growthAmount).toBe(1100);
-            expect(taxDeferredInvestmentState.growthLifetime).toBe(1100);
-            expect(taxDeferredInvestmentState.balanceStartOfYear).toBe(10_000);
-            expect(taxDeferredInvestmentState.balanceEndOfYear).toBe(12_100);
+            expect(taxDeferredInvestmentState.electiveContribution).toBe(12_000);
+            expect(taxDeferredInvestmentState.electiveContributionLifetime).toBe(12_000);
+            expect(taxDeferredInvestmentState.employerContribution).toBe(6_000);
+            expect(taxDeferredInvestmentState.employerContributionLifetime).toBe(6_000);
+            expect(taxDeferredInvestmentState.growthAmount).toBe(1680);
+            expect(taxDeferredInvestmentState.growthLifetime).toBe(1680);
+            expect(taxDeferredInvestmentState.balanceStartOfYear).toBe(10_000);+
+            expect(taxDeferredInvestmentState.balanceEndOfYear).toBe(29_680);
             expect(taxDeferredInvestmentState.processed).toBe(true);
-            expect(planState.taxedIncome).toBe(105_000);
-            expect(planState.taxedCapital).toBe(104_000);
-            expect(planState.savingsTaxableEndOfYear).toBe(12_100);
-            expect(planState.taxedWithdrawals).toBe(1_000);
+            expect(planState.savingsTaxDeferredEndOfYear).toBe(29_680);
+            expect(planState.taxedIncome).toBe(96_600);
+            expect(planState.taxedCapital).toBe(96_600);
+            expect(planState.taxedWithdrawals).toBe(0);
         });
 
         it("should throw error if processing already processed state", () => {
-            const taxDeferredInvestmentManager = new TaxDeferredInvestmentManager(planManager, taxDeferredInvestment)
+            const taxDeferredInvestmentManager =planManager.getTaxDeferredManagerById(1)
             taxDeferredInvestmentManager.process();
+            expect(() => taxDeferredInvestmentManager.process()).toThrow(
+                "Failed to process state, it is already processed."
+            );
         });
 
     })
@@ -378,14 +379,14 @@ describe("TaxDeferredInvestmentManager", () => {
 
     describe('getCommands', () => {
         it('should return an array with ProcessTaxDeferredInvestmentCommand', () => {
-            const taxDeferredInvestmentManager = new TaxDeferredInvestmentManager(planManager, taxDeferredInvestment);
+            const taxDeferredInvestmentManager =planManager.getTaxDeferredManagerById(1)
             const commands = taxDeferredInvestmentManager.getCommands();
             expect(commands).toHaveLength(1);
             expect(commands[0]).toBeInstanceOf(ProcessTaxDeferredInvestmentCommand);
         });
 
         it('should execute ProcessTaxDeferredInvestmentCommand correctly', () => {
-            const taxDeferredInvestmentManager = new TaxDeferredInvestmentManager(planManager, taxDeferredInvestment);
+            const taxDeferredInvestmentManager =planManager.getTaxDeferredManagerById(1)
             const command = new ProcessTaxDeferredInvestmentCommand(taxDeferredInvestmentManager);
             command.execute();
             expect(taxDeferredInvestmentManager.getCurrentState().processed).toBe(true);
@@ -396,27 +397,16 @@ describe("TaxDeferredInvestmentManager", () => {
     describe('createNextState', () => {
 
         it("should process taxDeferredInvestment create the next state", () => {
-            const taxDeferredInvestmentConfig = {
-                ...taxDeferredInvestment,
-                initialBalance: 10_000,
-                electiveContributionFixedAmount: 1_000,
-                growthRate: 10
-            }
-            planManager = new PlanManager({
-                ...planConfig,
-                growthApplicationStrategy: 'start',
-                taxDeferredInvestments: [taxDeferredInvestmentConfig]
-            })
-            const taxDeferredInvestmentManager = new TaxDeferredInvestmentManager(planManager, taxDeferredInvestmentConfig)
             taxDeferredInvestmentManager.process();
             const taxDeferredInvestmentState = taxDeferredInvestmentManager.getCurrentState();
             const newState = taxDeferredInvestmentManager.createNextState(taxDeferredInvestmentState);
-
-            expect(newState.electiveContribution).toBe(0);
-            expect(newState.electiveContributionLifetime).toBe(1_000);
-            expect(newState.growthAmount).toBe(0);
-            expect(newState.growthLifetime).toBe(1_000);
-            expect(newState.balanceStartOfYear).toBe(12_000);
+            expect(newState.electiveContribution).toBe(undefined);
+            expect(newState.electiveContributionLifetime).toBe(10_000);
+            expect(newState.employerContribution).toBe(undefined);
+            expect(newState.employerContributionLifetime).toBe(5_000);
+            expect(newState.growthAmount).toBe(undefined);
+            expect(newState.growthLifetime).toBe(600);
+            expect(newState.balanceStartOfYear).toBe(25_600);
             expect(newState.balanceEndOfYear).toBe(undefined);
             expect(newState.processed).toBe(false);
         });
