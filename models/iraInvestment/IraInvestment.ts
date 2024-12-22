@@ -1,3 +1,5 @@
+import type {Income} from "~/models/income/Income";
+
 export enum IraContributionStrategy {
     Fixed = 'Fixed',
     PercentageOfIncome = 'percentage_of_income',
@@ -7,7 +9,6 @@ export enum IraContributionStrategy {
 export interface IraInvestment {
     id: number;
     name: string;
-    isContributionTaxDeferred: boolean;
 
     growthRate: number;
     initialBalance: number;
@@ -15,6 +16,8 @@ export interface IraInvestment {
     contributionStrategy: IraContributionStrategy;
     contributionPercentage: number;
     contributionFixedAmount: number;
+
+    income?: Income;
 }
 
 export type IraInvestmentPartial = Partial<Omit<IraInvestment, 'id'>>
@@ -24,8 +27,7 @@ export interface IraInvestmentTemplate extends IraInvestment {
 }
 
 export const iraInvestmentDefaults: IraInvestmentPartial = {
-    name: 'Roth IRA',
-    isContributionTaxDeferred: false,
+    name: 'Traditional IRA',
     growthRate: 0,
     initialBalance: 0,
     contributionStrategy: IraContributionStrategy.Fixed,

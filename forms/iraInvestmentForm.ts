@@ -12,7 +12,7 @@ export const iraInvestmentForm: FormData<IraInvestment> = {
         resourceId: "investment-name",
         rules: yup.string().required("Name is required").min(3, "Name must be at least 3 characters long").max(32, "Name must be at most 32 characters long"),
     },
-    isContributionTaxDeferred: {
+    isContribution: {
         name: 'iraType',
         label: 'Is Contribution Tax Deferred?',
         helpText: "Choose between Tax Deferred or Post Tax Contribution",
