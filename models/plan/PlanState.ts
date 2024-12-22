@@ -9,8 +9,8 @@ export interface PlanState extends BaseState {
     taxedIncome: number;
     AGI: number;
 
-    taxableFunds: number;
-    taxedFunds: number;
+    taxableCapital: number;
+    taxedCapital: number;
     taxedWithdrawals: number;
 
     deductions: number;

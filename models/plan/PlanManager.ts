@@ -80,7 +80,7 @@ export default class PlanManager extends BaseOrchestrator<Plan, PlanState, Manag
             taxedIncome: taxedIncome,
             AGI: 0,
 
-            taxableFunds: grossIncome,
+            taxableCapital: grossIncome,
             taxedCapital: taxedIncome,
             taxedWithdrawals: 0,
 
@@ -116,7 +116,7 @@ export default class PlanManager extends BaseOrchestrator<Plan, PlanState, Manag
         let availableFunds = 0
         switch (fundType) {
             case FundType.Taxable:
-                availableFunds = Math.min(currentState.taxableFunds, requestedAmount)
+                availableFunds = Math.min(currentState.taxableCapital, requestedAmount)
                 break
             case FundType.Taxed:
                 availableFunds = Math.min(currentState.taxedCapital, requestedAmount)
@@ -149,10 +149,10 @@ export default class PlanManager extends BaseOrchestrator<Plan, PlanState, Manag
         const currentState = this.getCurrentState();
         switch (fundType) {
             case FundType.Taxable:
-                if (amount > currentState.taxableFunds) {
+                if (amount > currentState.taxableCapital) {
                     throw new Error('Insufficient taxable capital for withdrawal');
                 }
-                currentState.taxableFunds -= amount;
+                currentState.taxableCapital -= amount;
                 currentState.taxableIncome -= amount;
                 const agi = this.getAGI(currentState)
                 currentState.taxedIncome = currentState.taxableIncome - this.calculateTaxes(agi)
@@ -220,7 +220,7 @@ export default class PlanManager extends BaseOrchestrator<Plan, PlanState, Manag
             taxedIncome: 0,
             AGI: 0,
 
-            taxableFunds: 0,
+            taxableCapital: 0,
             taxedCapital: 0,
             taxedWithdrawals: 0,
 
