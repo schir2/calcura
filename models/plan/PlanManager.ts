@@ -33,7 +33,7 @@ type ManagerMap = {
     brokerageInvestmentManagers: BrokerageInvestmentManager[];
     iraInvestmentManagers: IraInvestmentManager[];
     // rothIraInvestmentManagers: RothIraInvestmentManager[];
-    taxDeferredManagers: TaxDeferredInvestmentManager[];
+    taxDeferredInvestmentManagers: TaxDeferredInvestmentManager[];
 };
 
 
@@ -47,7 +47,7 @@ export default class PlanManager extends BaseOrchestrator<Plan, PlanState, Manag
             debtManagers: this.config.debts.map((debt) => new DebtManager(this, debt)),
             brokerageInvestmentManagers: this.config.brokerageInvestments.map((brokerageInvestment) => new BrokerageInvestmentManager(this, brokerageInvestment)),
             iraInvestmentManagers: this.config.iraInvestments.map((iraInvestment) => new IraInvestmentManager(this, iraInvestment)),
-            taxDeferredManagers: this.config.taxDeferredInvestments.map((taxDeferredInvestment) => new TaxDeferredInvestmentManager(this, taxDeferredInvestment))
+            taxDeferredInvestmentManagers: this.config.taxDeferredInvestments.map((taxDeferredInvestment) => new TaxDeferredInvestmentManager(this, taxDeferredInvestment))
         }
     }
 
@@ -65,7 +65,8 @@ export default class PlanManager extends BaseOrchestrator<Plan, PlanState, Manag
 
     getSavingsTaxExemptInitial(): number {
         // TODO Test this function
-        return this.config.iraInvestments.reduce((savingsTaxDeferredStartOfYear, brokerageInvestment) => savingsTaxDeferredStartOfYear + brokerageInvestment.initialBalance, 0)
+        // return this.config.iraInvestments.reduce((savingsTaxDeferredStartOfYear, brokerageInvestment) => savingsTaxDeferredStartOfYear + brokerageInvestment.initialBalance, 0)
+        return 0
     }
 
     protected createInitialState(): PlanState {
@@ -290,10 +291,18 @@ export default class PlanManager extends BaseOrchestrator<Plan, PlanState, Manag
     }
 
     getTaxDeferredManagerById(id: number): TaxDeferredInvestmentManager {
-        const taxDeferredManager = this.managers.taxDeferredManagers.find((taxDeferredManager) => taxDeferredManager.getConfig().id === id);
+        const taxDeferredManager = this.managers.taxDeferredInvestmentManagers.find((taxDeferredManager) => taxDeferredManager.getConfig().id === id);
         if (taxDeferredManager === undefined) {
             throw new Error(`Missing tax deferred investment manager with id ${id}`);
         }
         return taxDeferredManager
+    }
+
+    getIraManagerById(id: number): IraInvestmentManager {
+        const iraManager = this.managers.iraInvestmentManagers.find((iraManager) => iraManager.getConfig().id === id);
+        if (iraManager === undefined) {
+            throw new Error(`Missing tax deferred investment manager with id ${id}`);
+        }
+        return iraManager
     }
 }
