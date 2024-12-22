@@ -1,4 +1,6 @@
-export default interface TaxDeferredInvestmentState {
+import type {BaseState} from "~/models/common/BaseState";
+
+export default interface TaxDeferredInvestmentState extends BaseState {
     electiveContribution?: number;
     electiveContributionLifetime: number;
     employerContribution?: number;
@@ -7,5 +9,4 @@ export default interface TaxDeferredInvestmentState {
     growthLifetime: number;
     balanceStartOfYear: number;
     balanceEndOfYear?: number;
-    processed: boolean;
 }
