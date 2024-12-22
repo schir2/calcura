@@ -3,7 +3,7 @@ import BrokerageInvestmentManager from "~/models/brokerageInvestment/BrokerageIn
 import type {BrokerageInvestment} from "~/models/brokerageInvestment/BrokerageInvestment";
 import {BrokerageContributionStrategy} from "~/models/brokerageInvestment/BrokerageInvestment";
 import PlanManager from "~/models/plan/PlanManager";
-import {InsufficientFundsStrategy, type Plan} from "~/models/plan/Plan";
+import {GrowthApplicationStrategy, IncomeTaxStrategy, InsufficientFundsStrategy, type Plan, RetirementStrategy} from "~/models/plan/Plan";
 import {ProcessBrokerageInvestmentCommand} from "~/models/brokerageInvestment/BrokerageInvestmentCommand";
 
 const planConfig: Plan = {
@@ -13,11 +13,11 @@ const planConfig: Plan = {
     year: new Date().getFullYear(),
     inflationRate: 3,
     insufficientFundsStrategy: InsufficientFundsStrategy.None,
-    growthApplicationStrategy: "start",
-    taxStrategy: "simple",
+    growthApplicationStrategy: GrowthApplicationStrategy.Start,
+    taxStrategy: IncomeTaxStrategy.Simple,
     taxRate: 30,
     lifeExpectancy: 85,
-    retirementStrategy: "age",
+    retirementStrategy: RetirementStrategy.Age,
     retirementWithdrawalRate: 4,
     retirementIncomeGoal: 50000,
     retirementAge: 65,
@@ -121,7 +121,7 @@ describe("BrokerageInvestmentManager", () => {
                 contributionFixedAmount: 1_000,
                 growthRate: 10
             }
-            planManager = new PlanManager({...planConfig, growthApplicationStrategy: 'start', brokerageInvestments: [brokerageInvestmentConfig]})
+            planManager = new PlanManager({...planConfig, growthApplicationStrategy: GrowthApplicationStrategy.Start, brokerageInvestments: [brokerageInvestmentConfig]})
             const brokerageInvestmentManager = new BrokerageInvestmentManager(planManager, brokerageInvestmentConfig)
             brokerageInvestmentManager.process();
             const planState = brokerageInvestmentManager.orchestrator.getCurrentState();
@@ -147,7 +147,7 @@ describe("BrokerageInvestmentManager", () => {
                 contributionFixedAmount: 1_000,
                 growthRate: 10
             }
-            planManager = new PlanManager({...planConfig, growthApplicationStrategy: 'end', brokerageInvestments: [brokerageInvestmentConfig]})
+            planManager = new PlanManager({...planConfig, growthApplicationStrategy: GrowthApplicationStrategy.End, brokerageInvestments: [brokerageInvestmentConfig]})
             const brokerageInvestmentManager = new BrokerageInvestmentManager(planManager, brokerageInvestmentConfig)
             brokerageInvestmentManager.process();
             const planState = brokerageInvestmentManager.orchestrator.getCurrentState();
@@ -170,6 +170,9 @@ describe("BrokerageInvestmentManager", () => {
         it("should throw error if processing already processed state", () => {
             const brokerageInvestmentManager = new BrokerageInvestmentManager(planManager, brokerageInvestment)
             brokerageInvestmentManager.process();
+            expect(()=> brokerageInvestmentManager.process()).toThrow(
+                "Failed to process state, it is already processed."
+            )
         });
 
     })
@@ -201,7 +204,7 @@ describe("BrokerageInvestmentManager", () => {
                 contributionFixedAmount: 1_000,
                 growthRate: 10
             }
-            planManager = new PlanManager({...planConfig, growthApplicationStrategy: 'start', brokerageInvestments: [brokerageInvestmentConfig]})
+            planManager = new PlanManager({...planConfig, growthApplicationStrategy: GrowthApplicationStrategy.Start, brokerageInvestments: [brokerageInvestmentConfig]})
             const brokerageInvestmentManager = new BrokerageInvestmentManager(planManager, brokerageInvestmentConfig)
             brokerageInvestmentManager.process();
             const brokerageInvestmentState = brokerageInvestmentManager.getCurrentState();
