@@ -3,6 +3,7 @@ import PlanManager, {FundType} from "~/models/plan/PlanManager";
 import {GrowthApplicationStrategy, IncomeTaxStrategy, InsufficientFundsStrategy, type Plan, RetirementStrategy} from "~/models/plan/Plan";
 import {ContributionType} from "~/models/common";
 import {EmployerContributionStrategy, TaxDeferredContributionStrategy} from "~/models/taxDeferredInvestment/TaxDeferredInvestment";
+import {IraContributionStrategy} from "~/models/iraInvestment/IraInvestment";
 
 describe("PlanManager", () => {
     let planConfig: Plan;
@@ -36,7 +37,7 @@ describe("PlanManager", () => {
                     frequency: 'annual'
                 },
                 {
-                    id: 1,
+                    id: 2,
                     name: 'Ordinary Income',
                     grossIncome: 50000,
                     growthRate: 0,
@@ -72,7 +73,25 @@ describe("PlanManager", () => {
                 }
             ],
             brokerageInvestments: [],
-            iraInvestments: [],
+            iraInvestments: [
+                {
+                    id: 1,
+                    name: 'Test Brokerage Investment',
+                    growthRate: 6,
+                    initialBalance: 10_000,
+                    contributionStrategy: IraContributionStrategy.Fixed,
+                    contributionPercentage: 0,
+                    contributionFixedAmount: 0,
+                    income:
+                        {
+                            id: 1,
+                            name: 'Ordinary Income',
+                            grossIncome: 100_000,
+                            growthRate: 0,
+                            incomeType: "ordinary",
+                            frequency: 'annual'
+                        },
+                }],
         }
         planManager = new PlanManager(planConfig);
     })
@@ -93,8 +112,8 @@ describe("PlanManager", () => {
             expect(state.deferredLimit).toBe(69_000)
             expect(state.iraLimit).toBe(7_000)
             expect(state.inflationRate).toBe(3)
-            expect(state.savingsTaxDeferredStartOfYear).toBe(10_000)
-            expect(state.savingsTaxDeferredEndOfYear).toBe(10_000)
+            expect(state.savingsTaxDeferredStartOfYear).toBe(20_000)
+            expect(state.savingsTaxDeferredEndOfYear).toBe(20_000)
             expect(state.savingsTaxExemptStartOfYear).toBe(0)
             expect(state.savingsTaxExemptEndOfYear).toBe(0)
             expect(state.savingsTaxableStartOfYear).toBe(0)
@@ -306,8 +325,13 @@ describe("PlanManager", () => {
         })
     })
     describe("getTaxDeferredInvestmentManagerById", () => {
-        it("should return incomeManager", () => {
-            expect(planManager.getTaxDeferredManagerById(1)).toBe(planManager.managers.taxDeferredManagers[0])
+        it("should return taxDeferredInvestmentManager", () => {
+            expect(planManager.getTaxDeferredManagerById(1)).toBe(planManager.managers.taxDeferredInvestmentManagers[0])
+        })
+    })
+    describe("getIraInvestmentManagerById", () => {
+        it("should return iraInvestmentManager", () => {
+            expect(planManager.getIraManagerById(1)).toBe(planManager.managers.iraInvestmentManagers[0])
         })
     })
     describe("canRetire", () => {
