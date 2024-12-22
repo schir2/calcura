@@ -1,9 +1,4 @@
-export default interface BrokerageInvestmentState {
-    contribution: number;
-    contributionLifetime: number;
-    growthAmount: number;
-    growthLifetime: number;
-    balanceStartOfYear: number;
-    balanceEndOfYear?: number;
-    processed: boolean;
+import type {InvestmentState} from "~/models/common/InvestmentState";
+
+export default interface BrokerageInvestmentState extends InvestmentState {
 }

@@ -14,6 +14,8 @@ export default class TaxDeferredInvestmentManager extends BaseManager<TaxDeferre
 
     protected createInitialState(): TaxDeferredInvestmentState {
         return {
+            contribution: undefined,
+            contributionLifetime: 0,
             electiveContribution: undefined,
             electiveContributionLifetime: 0,
             employerContribution: undefined,
@@ -119,6 +121,8 @@ export default class TaxDeferredInvestmentManager extends BaseManager<TaxDeferre
     createNextState(previousState: TaxDeferredInvestmentState): TaxDeferredInvestmentState {
         assertDefined(previousState.balanceEndOfYear, 'previousState.balanceEndOfYear')
         return {
+            contribution: undefined,
+            contributionLifetime: previousState.contributionLifetime,
             electiveContribution: undefined,
             electiveContributionLifetime: previousState.electiveContributionLifetime,
             employerContribution: undefined,
@@ -155,6 +159,8 @@ export default class TaxDeferredInvestmentManager extends BaseManager<TaxDeferre
         this.updateCurrentState(
             {
                 ...currentState,
+                contribution: electiveContribution + employerContribution,
+                contributionLifetime: currentState.contributionLifetime + electiveContribution + employerContribution,
                 electiveContribution: electiveContribution,
                 electiveContributionLifetime: currentState.electiveContributionLifetime + electiveContribution,
                 employerContribution: employerContribution,

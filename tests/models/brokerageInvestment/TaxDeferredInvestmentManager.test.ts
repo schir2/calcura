@@ -85,6 +85,8 @@ describe("TaxDeferredInvestmentManager", () => {
 
         it("should initialize with correct state", () => {
             const state = taxDeferredInvestmentManager.getCurrentState();
+            expect(state.contribution).toBe(undefined);
+            expect(state.contributionLifetime).toBe(0);
             expect(state.electiveContribution).toBe(undefined);
             expect(state.electiveContributionLifetime).toBe(0);
             expect(state.employerContribution).toBe(undefined);
@@ -314,6 +316,8 @@ describe("TaxDeferredInvestmentManager", () => {
             const planState = taxDeferredInvestmentManager.orchestrator.getCurrentState();
             const taxDeferredInvestmentState = taxDeferredInvestmentManager.getCurrentState();
 
+            expect(taxDeferredInvestmentState.contribution).toBe(18_000);
+            expect(taxDeferredInvestmentState.contributionLifetime).toBe(18_000);
             expect(taxDeferredInvestmentState.electiveContribution).toBe(12_000);
             expect(taxDeferredInvestmentState.electiveContributionLifetime).toBe(12_000);
             expect(taxDeferredInvestmentState.employerContribution).toBe(6_000);
