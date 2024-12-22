@@ -1,4 +1,8 @@
-export type IraContributionStrategy = 'fixed' | 'percentage_of_income' | 'max'
+export enum IraContributionStrategy {
+    Fixed = 'Fixed',
+    PercentageOfIncome = 'percentage_of_income',
+    Max = 'Max'
+}
 
 export interface IraInvestment {
     id: number;
@@ -11,8 +15,6 @@ export interface IraInvestment {
     contributionStrategy: IraContributionStrategy;
     contributionPercentage: number;
     contributionFixedAmount: number;
-
-
 }
 
 export type IraInvestmentPartial = Partial<Omit<IraInvestment, 'id'>>
@@ -26,7 +28,7 @@ export const iraInvestmentDefaults: IraInvestmentPartial = {
     isContributionTaxDeferred: false,
     growthRate: 0,
     initialBalance: 0,
-    contributionStrategy: 'fixed',
+    contributionStrategy: IraContributionStrategy.Fixed,
     contributionPercentage: 0,
     contributionFixedAmount: 0,
 }
