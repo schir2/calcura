@@ -13,13 +13,13 @@ describe('debtConfigsService Integration Tests', () => {
     let createdId: number | null = null;
 
     it('should fetch a list of debt configs', async () => {
-        const debtService = useDebtService(); // Initialize inside test
+        const debtService = useDebtService();
         const configs = await debtService.list();
         expect(Array.isArray(configs)).toBe(true);
     });
 
     it('should create a new debt config', async () => {
-        const debtService = useDebtService(); // Initialize inside test
+        const debtService = useDebtService()
         const newConfig = {
             name: `Test Loan ${Date.now()}`,
             principal: 5000,
@@ -37,7 +37,7 @@ describe('debtConfigsService Integration Tests', () => {
     it('should fetch the newly created debt config by id', async () => {
         if (createdId == null) throw new Error('No config created in previous test');
 
-        const debtService = useDebtService(); // Initialize inside test
+        const debtService = useDebtService();
         const fetched = await debtService.get(createdId);
         expect(fetched).toBeDefined();
         expect(fetched.id).toBe(createdId);
@@ -46,14 +46,13 @@ describe('debtConfigsService Integration Tests', () => {
     it('should delete the created debt config', async () => {
         if (createdId == null) throw new Error('No config created in previous test');
 
-        const debtService = useDebtService(); // Initialize inside test
+        const debtService = useDebtService();
         await debtService.delete(createdId);
 
         let errorCaught = false;
         try {
             await debtService.get(createdId);
         } catch (err) {
-            // Expected to fail now that it's deleted
             errorCaught = true;
         }
 

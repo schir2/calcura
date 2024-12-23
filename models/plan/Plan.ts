@@ -29,6 +29,13 @@ export enum IncomeTaxStrategy {
     Simple = 'simple',
 }
 
+export enum ContributionLimitType {
+    Ira = 'ira',
+    Elective = 'elective',
+    Deferred = 'deferred',
+
+}
+
 export interface Plan {
     id: number;
     name: string;

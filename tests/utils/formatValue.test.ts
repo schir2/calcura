@@ -15,7 +15,7 @@ describe('formatValue', () => {
 
     it('formats a number with fixed decimal places', () => {
         const result = formatValue(1234.5678, FormatType.Decimal);
-        expect(result).toBe('1234.57'); // Note: Default precision is 2 if not specified in the test case.
+        expect(result).toBe('1234.57');
     });
 
     it('formats a number in scientific notation', () => {

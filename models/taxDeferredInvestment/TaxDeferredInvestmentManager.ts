@@ -9,6 +9,7 @@ import {FundType} from "~/models/plan/PlanManager";
 import {ContributionType} from "~/models/common";
 import {ProcessTaxDeferredInvestmentCommand} from "~/models/taxDeferredInvestment/TaxDeferredInvestmentCommands";
 import {ValueError} from "~/utils/errors/ValueError";
+import {ContributionLimitType} from "~/models/plan/Plan";
 
 export default class TaxDeferredInvestmentManager extends BaseManager<TaxDeferredInvestment, TaxDeferredInvestmentState> {
 
@@ -137,6 +138,12 @@ export default class TaxDeferredInvestmentManager extends BaseManager<TaxDeferre
 
     getCommands(): Command[] {
         return [new ProcessTaxDeferredInvestmentCommand(this)];
+    }
+
+    getContributionsAdjustedForLimits(electiveContribution: number, employerContribution: number){
+        const electiveContributionLimit = this.orchestrator.getLimitForContributionType(ContributionLimitType.Elective)
+        const deferredContributionLimit = this.orchestrator.getLimitForContributionType(ContributionLimitType.Deferred)
+
     }
 
 

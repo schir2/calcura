@@ -188,7 +188,7 @@ describe("PlanManager", () => {
             const currentState = planManager.getCurrentState();
             currentState.savingsTaxExemptEndOfYear = 0;
 
-            planManager.contribute(3000, ContributionType.TaxExempt);
+            planManager.contribute(3000, ContributionType.RothIra);
 
             expect(currentState.savingsTaxExemptEndOfYear).toBe(3000);
         });
