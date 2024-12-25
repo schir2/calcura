@@ -1,4 +1,4 @@
-import {type IraContributionStrategy} from "~/models/iraInvestment/IraInvestment";
+import {IraContributionStrategy} from "~/models/iraInvestment/IraInvestment";
 
 export const DEFAULT_IRA_BALANCE: number = 0
 export const IRA_DEFAULT_YEAR = 2024
