@@ -51,11 +51,11 @@ export const expenseForm: FormData<Expense> = {
             .mixed<ExpenseFrequency>()
             .required("Frequency is required"),
         options: [
-            {label: "Monthly", value: ExpenseFrequency.monthly},
-            {label: "Weekly", value: ExpenseFrequency.weekly},
-            {label: "Quarterly", value: ExpenseFrequency.quarterly},
-            {label: "Annually", value: ExpenseFrequency.annual},
-            {label: "One Time", value: ExpenseFrequency.one_time},
+            {label: "Monthly", value: ExpenseFrequency.Monthly},
+            {label: "Weekly", value: ExpenseFrequency.Weekly},
+            {label: "Quarterly", value: ExpenseFrequency.Quarterly},
+            {label: "Annually", value: ExpenseFrequency.Annually},
+            {label: "One Time", value: ExpenseFrequency.OneTime},
         ],
     },
     isEssential: {

@@ -3,15 +3,15 @@ import type {Expense} from "~/models/expense/Expense";
 
 export function getAnnualExpenseAmount(expense: Expense): number {
     switch (expense.frequency) {
-        case ExpenseFrequency.monthly:
+        case ExpenseFrequency.Monthly:
             return expense.amount * 12
-        case ExpenseFrequency.annual:
+        case ExpenseFrequency.Annually:
             return expense.amount
-        case ExpenseFrequency.weekly:
+        case ExpenseFrequency.Weekly:
             return expense.amount * 52
-        case ExpenseFrequency.quarterly:
+        case ExpenseFrequency.Quarterly:
             return expense.amount * 4
-        case ExpenseFrequency.one_time:
+        case ExpenseFrequency.OneTime:
             return expense.amount
     }
 }
