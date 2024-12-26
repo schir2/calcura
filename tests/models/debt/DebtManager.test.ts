@@ -3,7 +3,13 @@ import DebtManager from "~/models/debt/DebtManager";
 import type {Debt} from "~/models/debt/Debt";
 import {DebtPaymentStrategy} from "~/models/debt/Debt";
 import PlanManager from "~/models/plan/PlanManager";
-import {InsufficientFundsStrategy, type Plan} from "~/models/plan/Plan";
+import {
+    GrowthApplicationStrategy,
+    IncomeTaxStrategy,
+    InsufficientFundsStrategy,
+    type Plan,
+    RetirementStrategy
+} from "~/models/plan/Plan";
 import {ProcessDebtCommand} from "~/models/debt/DebtCommands";
 
 const planConfig: Plan = {
@@ -13,11 +19,11 @@ const planConfig: Plan = {
     year: new Date().getFullYear(),
     inflationRate: 3,
     insufficientFundsStrategy: InsufficientFundsStrategy.None,
-    growthApplicationStrategy: "start",
-    taxStrategy: "simple",
+    growthApplicationStrategy: GrowthApplicationStrategy.Start,
+    taxStrategy: IncomeTaxStrategy.Simple,
     taxRate: 30,
     lifeExpectancy: 85,
-    retirementStrategy: "age",
+    retirementStrategy: RetirementStrategy.Age,
     retirementWithdrawalRate: 4,
     retirementIncomeGoal: 50000,
     retirementAge: 65,
@@ -46,6 +52,7 @@ const planConfig: Plan = {
     taxDeferredInvestments: [],
     brokerageInvestments: [],
     iraInvestments: [],
+    rothIraInvestments: [],
 }
 
 const debt: Debt = {
