@@ -177,7 +177,6 @@ export default class PlanManager extends BaseOrchestrator<Plan, PlanState, Manag
 
     private adjustContributionLimit(adjustment: number, contributionLimitType: ContributionLimitType) {
         const currentState = this.getCurrentState()
-        console.log(adjustment)
         const newState = this._adjustContributionLimit(currentState, adjustment, contributionLimitType)
         this.updateCurrentState(newState)
     }
