@@ -1,17 +1,17 @@
-import {IraContributionStrategy, type IraInvestment} from './IraInvestment';
+import {RothIraContributionStrategy, type RothIraInvestment} from './RothIraInvestment';
 import {assertDefined, calculateInvestmentGrowthAmount} from "~/utils";
-import type IraInvestmentState from "~/models/iraInvestment/IraInvestmentState";
+import type RothIraInvestmentState from "~/models/rothIraInvestment/RothIraInvestmentState";
 import BaseManager from "~/models/common/BaseManager";
 import type Command from "~/models/common/Command";
 import type IncomeManager from "~/models/income/IncomeManager";
-import {ProcessIraInvestmentCommand} from "~/models/iraInvestment/IraInvestmentCommands";
+import {ProcessRothIraInvestmentCommand} from "~/models/rothIraInvestment/RothIraInvestmentCommands";
 import {FundType} from "~/models/plan/PlanManager";
 import {ContributionType} from "~/models/common";
 
-export default class IraInvestmentManager extends BaseManager<IraInvestment, IraInvestmentState> {
+export class RothIraInvestmentManager extends BaseManager<RothIraInvestment, RothIraInvestmentState> {
 
 
-    protected createInitialState(): IraInvestmentState {
+    protected createInitialState(): RothIraInvestmentState {
         return {
             contribution: undefined,
             contributionLifetime: 0,
@@ -33,23 +33,23 @@ export default class IraInvestmentManager extends BaseManager<IraInvestment, Ira
     calculateContribution(): number {
         let contribution = 0
         switch (this.config.contributionStrategy) {
-            case IraContributionStrategy.Fixed:
+            case RothIraContributionStrategy.Fixed:
                 contribution = this.config.contributionFixedAmount
                 break
-            case IraContributionStrategy.PercentageOfIncome:
+            case RothIraContributionStrategy.PercentageOfIncome:
                 if (this.incomeManager === undefined) {
                     throw new Error('Cannot perform percentage of income without a lined income manager')
                 }
                 contribution = this.incomeManager.getCurrentState().grossIncome * this.config.contributionPercentage / 100
                 break
-            case IraContributionStrategy.Max:
+            case RothIraContributionStrategy.Max:
                 contribution = Infinity
                 break
         }
         return Math.min(contribution, this.orchestrator.getCurrentState().iraLimit)
     }
 
-    createNextState(previousState: IraInvestmentState): IraInvestmentState {
+    createNextState(previousState: RothIraInvestmentState): RothIraInvestmentState {
         assertDefined(previousState.balanceEndOfYear, 'balanceEndOfYear')
         return {
             contribution: undefined,
@@ -64,22 +64,22 @@ export default class IraInvestmentManager extends BaseManager<IraInvestment, Ira
 
 
     getCommands(): Command[] {
-        return [new ProcessIraInvestmentCommand(this)];
+        return [new ProcessRothIraInvestmentCommand(this)];
     }
 
     processImplementation() {
         const currentState = this.getCurrentState()
         const contributionRequest = this.calculateContribution()
-        const contribution = this.orchestrator.requestFunds(contributionRequest, FundType.Taxable)
-        this.orchestrator.withdraw(contribution, FundType.Taxable)
+        const contribution = this.orchestrator.requestFunds(contributionRequest, FundType.Taxed)
+        this.orchestrator.withdraw(contribution, FundType.Taxed)
         const growthAmount = calculateInvestmentGrowthAmount(
             currentState.balanceStartOfYear,
             this.config.growthRate,
             this.orchestrator.getConfig().growthApplicationStrategy,
             contribution
         )
-        this.orchestrator.contribute(contribution, ContributionType.Ira)
-        this.orchestrator.invest(growthAmount + contribution, ContributionType.Ira)
+        this.orchestrator.contribute(contribution, ContributionType.RothIra)
+        this.orchestrator.invest(growthAmount + contribution, ContributionType.RothIra)
         const balanceEndOfYear = currentState.balanceStartOfYear + growthAmount + contribution
         this.updateCurrentState(
             {

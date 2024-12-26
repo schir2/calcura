@@ -21,6 +21,16 @@ export interface PlanState extends BaseState {
 
     inflationRate: number;
 
+    /* Contributions */
+    taxDeferredContributions: number;
+    taxableContributions: number;
+    taxExemptContributions: number;
+
+    taxDeferredContributionsLifetime: number;
+    taxableContributionsLifetime: number;
+    taxExemptContributionsLifetime: number;
+
+
     /* Savings */
     savingsTaxDeferredStartOfYear: number;
     savingsTaxDeferredEndOfYear: number;

@@ -46,6 +46,7 @@ const planConfig: Plan = {
     taxDeferredInvestments: [],
     brokerageInvestments: [],
     iraInvestments: [],
+    rothIraInvestments: [],
 }
 
 const brokerageInvestment: BrokerageInvestment = {
@@ -136,6 +137,8 @@ describe("BrokerageInvestmentManager", () => {
             expect(brokerageInvestmentState.processed).toBe(true);
             expect(planState.taxedIncome).toBe(105_000);
             expect(planState.taxedCapital).toBe(104_000);
+            expect(planState.taxableContributions).toBe(1_000);
+            expect(planState.taxableContributionsLifetime).toBe(1_000);
             expect(planState.savingsTaxableEndOfYear).toBe(12_000);
             expect(planState.taxedWithdrawals).toBe(1_000);
         });

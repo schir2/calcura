@@ -1,8 +1,17 @@
 import {beforeEach, describe, expect, it} from "vitest";
 import TaxDeferredInvestmentManager from "~/models/taxDeferredInvestment/TaxDeferredInvestmentManager";
-import {EmployerContributionStrategy, TaxDeferredContributionStrategy} from "~/models/taxDeferredInvestment/TaxDeferredInvestment";
-import PlanManager, {FundType} from "~/models/plan/PlanManager";
-import {GrowthApplicationStrategy, IncomeTaxStrategy, InsufficientFundsStrategy, type Plan, RetirementStrategy} from "~/models/plan/Plan";
+import {
+    EmployerContributionStrategy,
+    TaxDeferredContributionStrategy
+} from "~/models/taxDeferredInvestment/TaxDeferredInvestment";
+import PlanManager from "~/models/plan/PlanManager";
+import {
+    GrowthApplicationStrategy,
+    IncomeTaxStrategy,
+    InsufficientFundsStrategy,
+    type Plan,
+    RetirementStrategy
+} from "~/models/plan/Plan";
 import {ProcessTaxDeferredInvestmentCommand} from "~/models/taxDeferredInvestment/TaxDeferredInvestmentCommands";
 
 const planConfig: Plan = {
@@ -43,6 +52,7 @@ const planConfig: Plan = {
     expenses: [],
     debts: [],
     brokerageInvestments: [],
+    rothIraInvestments: [],
     taxDeferredInvestments: [
         {
             id: 1,
@@ -361,8 +371,9 @@ describe("TaxDeferredInvestmentManager", () => {
             expect(taxDeferredInvestmentState.employerContributionLifetime).toBe(6_000);
             expect(taxDeferredInvestmentState.growthAmount).toBe(1680);
             expect(taxDeferredInvestmentState.growthLifetime).toBe(1680);
-            expect(taxDeferredInvestmentState.balanceStartOfYear).toBe(10_000);+
-            expect(taxDeferredInvestmentState.balanceEndOfYear).toBe(29_680);
+            expect(taxDeferredInvestmentState.balanceStartOfYear).toBe(10_000);
+            +
+                expect(taxDeferredInvestmentState.balanceEndOfYear).toBe(29_680);
             expect(taxDeferredInvestmentState.processed).toBe(true);
             expect(planState.savingsTaxDeferredEndOfYear).toBe(29_680);
             expect(planState.taxedIncome).toBe(96_600);
@@ -371,7 +382,7 @@ describe("TaxDeferredInvestmentManager", () => {
         });
 
         it("should throw error if processing already processed state", () => {
-            const taxDeferredInvestmentManager =planManager.getTaxDeferredManagerById(1)
+            const taxDeferredInvestmentManager = planManager.getTaxDeferredManagerById(1)
             taxDeferredInvestmentManager.process();
             expect(() => taxDeferredInvestmentManager.process()).toThrow(
                 "Failed to process state, it is already processed."
@@ -383,14 +394,14 @@ describe("TaxDeferredInvestmentManager", () => {
 
     describe('getCommands', () => {
         it('should return an array with ProcessTaxDeferredInvestmentCommand', () => {
-            const taxDeferredInvestmentManager =planManager.getTaxDeferredManagerById(1)
+            const taxDeferredInvestmentManager = planManager.getTaxDeferredManagerById(1)
             const commands = taxDeferredInvestmentManager.getCommands();
             expect(commands).toHaveLength(1);
             expect(commands[0]).toBeInstanceOf(ProcessTaxDeferredInvestmentCommand);
         });
 
         it('should execute ProcessTaxDeferredInvestmentCommand correctly', () => {
-            const taxDeferredInvestmentManager =planManager.getTaxDeferredManagerById(1)
+            const taxDeferredInvestmentManager = planManager.getTaxDeferredManagerById(1)
             const command = new ProcessTaxDeferredInvestmentCommand(taxDeferredInvestmentManager);
             command.execute();
             expect(taxDeferredInvestmentManager.getCurrentState().processed).toBe(true);

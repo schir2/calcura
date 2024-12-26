@@ -3,7 +3,12 @@ import {ContributionLimitType, RetirementStrategy} from "~/models/plan/Plan";
 import type {PlanState} from "~/models/plan/PlanState";
 import DebtManager from "~/models/debt/DebtManager";
 import BaseManager from "~/models/common/BaseManager";
-import {adjustForInsufficientFunds, getIraLimit, getTaxDeferredContributionLimit, getTaxDeferredElectiveContributionLimit} from "~/utils";
+import {
+    adjustForInsufficientFunds,
+    getIraLimit,
+    getTaxDeferredContributionLimit,
+    getTaxDeferredElectiveContributionLimit
+} from "~/utils";
 import type Command from "~/models/common/Command";
 import IncomeManager from "~/models/income/IncomeManager";
 import BrokerageInvestmentManager from "~/models/brokerageInvestment/BrokerageInvestmentManager";
@@ -14,6 +19,7 @@ import TaxDeferredInvestmentManager from "~/models/taxDeferredInvestment/TaxDefe
 import {ContributionType} from "~/models/common";
 import {BaseOrchestrator} from "~/models/common/BaseOrchestrator";
 import {ContributionError} from "~/utils/errors/ContributionError";
+import {RothIraInvestmentManager} from "~/models/rothIraInvestment/RothIraInvestmentManager";
 
 export enum FundType {
     Taxable = "taxable",
@@ -28,7 +34,7 @@ type ManagerMap = {
     debtManagers: DebtManager[];
     brokerageInvestmentManagers: BrokerageInvestmentManager[];
     iraInvestmentManagers: IraInvestmentManager[];
-    // rothIraInvestmentManagers: RothIraInvestmentManager[];
+    rothIraInvestmentManagers: RothIraInvestmentManager[];
     taxDeferredInvestmentManagers: TaxDeferredInvestmentManager[];
 };
 
@@ -43,6 +49,7 @@ export default class PlanManager extends BaseOrchestrator<Plan, PlanState, Manag
             debtManagers: this.config.debts.map((debt) => new DebtManager(this, debt)),
             brokerageInvestmentManagers: this.config.brokerageInvestments.map((brokerageInvestment) => new BrokerageInvestmentManager(this, brokerageInvestment)),
             iraInvestmentManagers: this.config.iraInvestments.map((iraInvestment) => new IraInvestmentManager(this, iraInvestment)),
+            rothIraInvestmentManagers: this.config.rothIraInvestments.map((rothIraInvestment) => new RothIraInvestmentManager(this, rothIraInvestment)),
             taxDeferredInvestmentManagers: this.config.taxDeferredInvestments.map((taxDeferredInvestment) => new TaxDeferredInvestmentManager(this, taxDeferredInvestment))
         }
     }
@@ -61,8 +68,7 @@ export default class PlanManager extends BaseOrchestrator<Plan, PlanState, Manag
 
     getSavingsTaxExemptInitial(): number {
         // TODO Test this function
-        // return this.config.iraInvestments.reduce((savingsTaxDeferredStartOfYear, brokerageInvestment) => savingsTaxDeferredStartOfYear + brokerageInvestment.initialBalance, 0)
-        return 0
+        return this.config.rothIraInvestments.reduce((savingsTaxDeferredStartOfYear, brokerageInvestment) => savingsTaxDeferredStartOfYear + brokerageInvestment.initialBalance, 0)
     }
 
     protected createInitialState(): PlanState {
@@ -91,6 +97,13 @@ export default class PlanManager extends BaseOrchestrator<Plan, PlanState, Manag
             electiveLimit: getTaxDeferredElectiveContributionLimit(this.config.year, this.config.age),
             deferredLimit: getTaxDeferredContributionLimit(this.config.year, this.config.age),
             iraLimit: getIraLimit(this.config.year, this.config.age),
+
+            taxDeferredContributions: 0,
+            taxableContributions: 0,
+            taxExemptContributionsLifetime: 0,
+            taxDeferredContributionsLifetime: 0,
+            taxExemptContributions: 0,
+            taxableContributionsLifetime: 0,
 
             savingsTaxDeferredStartOfYear: savingsTaxDeferredInitial,
             savingsTaxDeferredEndOfYear: savingsTaxDeferredInitial,
@@ -129,15 +142,14 @@ export default class PlanManager extends BaseOrchestrator<Plan, PlanState, Manag
     }
 
 
-
     protected _adjustContributionLimit(currentState: PlanState, adjustment: number, contributionLimitType: ContributionLimitType): PlanState {
-        if (adjustment <= 0) {
+        if (adjustment < 0) {
             throw new ContributionError(`Adjustment must be a positive value. Received: ${adjustment}`);
         }
         const limits: Record<ContributionLimitType, number> = {
-            [ContributionLimitType.Deferred] : currentState.deferredLimit,
+            [ContributionLimitType.Deferred]: currentState.deferredLimit,
             [ContributionLimitType.Elective]: currentState.electiveLimit,
-            [ContributionLimitType.Ira] : currentState.iraLimit,
+            [ContributionLimitType.Ira]: currentState.iraLimit,
         }
 
         if (contributionLimitType === undefined) {
@@ -154,6 +166,7 @@ export default class PlanManager extends BaseOrchestrator<Plan, PlanState, Manag
                 break;
             case ContributionLimitType.Elective:
                 currentState.electiveLimit -= adjustment;
+                currentState.deferredLimit -= adjustment;
                 break;
             case ContributionLimitType.Deferred:
                 currentState.deferredLimit -= adjustment;
@@ -161,10 +174,33 @@ export default class PlanManager extends BaseOrchestrator<Plan, PlanState, Manag
         }
         return currentState
     }
-    private adjustContributionLimit( adjustment: number, contributionLimitType: ContributionLimitType){
+
+    private adjustContributionLimit(adjustment: number, contributionLimitType: ContributionLimitType) {
         const currentState = this.getCurrentState()
+        console.log(adjustment)
         const newState = this._adjustContributionLimit(currentState, adjustment, contributionLimitType)
         this.updateCurrentState(newState)
+    }
+
+    invest(amount: number, contributionType: ContributionType){
+        let currentState = this.getCurrentState();
+        switch (contributionType) {
+            case ContributionType.TaxDeferred:
+                currentState.savingsTaxDeferredEndOfYear += amount;
+                break;
+            case ContributionType.RothIra:
+                currentState.savingsTaxExemptEndOfYear += amount;
+                break;
+            case ContributionType.Taxable:
+                currentState.savingsTaxableEndOfYear += amount;
+                break;
+            case ContributionType.Elective:
+                currentState.savingsTaxDeferredEndOfYear += amount;
+                break;
+            case ContributionType.Ira:
+                currentState.savingsTaxDeferredEndOfYear += amount;
+        }
+        this.updateCurrentState(currentState);
     }
 
 
@@ -173,25 +209,27 @@ export default class PlanManager extends BaseOrchestrator<Plan, PlanState, Manag
         switch (contributionType) {
             case ContributionType.TaxDeferred:
                 this.adjustContributionLimit(contribution, ContributionLimitType.Deferred);
-                currentState.savingsTaxDeferredEndOfYear += contribution;
+                currentState.taxDeferredContributions += contribution;
+                currentState.taxDeferredContributionsLifetime += contribution;
                 break;
             case ContributionType.RothIra:
-                this.adjustContributionLimit(currentState, contribution, ContributionLimitType.Ira);
-                currentState.iraLimit -= contribution
-                currentState.savingsTaxExemptEndOfYear += contribution;
+                this.adjustContributionLimit(contribution, ContributionLimitType.Ira);
+                currentState.taxExemptContributions += contribution;
+                currentState.taxExemptContributionsLifetime += contribution;
                 break;
             case ContributionType.Taxable:
-                currentState.savingsTaxableEndOfYear += contribution;
+                currentState.taxableContributions += contribution;
+                currentState.taxableContributionsLifetime += contribution;
                 break;
             case ContributionType.Elective:
-                currentState.savingsTaxDeferredStartOfYear += contribution;
+                this.adjustContributionLimit(contribution, ContributionLimitType.Elective);
+                currentState.taxDeferredContributions += contribution;
+                currentState.taxDeferredContributionsLifetime += contribution;
                 break;
             case ContributionType.Ira:
-                if (currentState.iraLimit < contribution){
-                    throw new ContributionError('Contribution must be less than iraLimit')
-                }
-                currentState.iraLimit -= contribution
-                currentState.savingsTaxDeferredEndOfYear += contribution;
+                this.adjustContributionLimit(contribution, ContributionLimitType.Ira);
+                currentState.taxDeferredContributions += contribution;
+                currentState.taxDeferredContributionsLifetime += contribution;
         }
         this.updateCurrentState(currentState);
     }
@@ -283,6 +321,15 @@ export default class PlanManager extends BaseOrchestrator<Plan, PlanState, Manag
 
             inflationRate: inflationRate,
 
+            taxableContributions: 0,
+            taxableContributionsLifetime: previousState.taxableContributionsLifetime,
+
+            taxDeferredContributions: 0,
+            taxDeferredContributionsLifetime: previousState.taxDeferredContributionsLifetime,
+
+            taxExemptContributions: 0,
+            taxExemptContributionsLifetime: previousState.taxExemptContributionsLifetime,
+
             savingsTaxDeferredStartOfYear: previousState.savingsTaxDeferredEndOfYear,
             savingsTaxDeferredEndOfYear: 0,
 
@@ -353,7 +400,15 @@ export default class PlanManager extends BaseOrchestrator<Plan, PlanState, Manag
         return iraManager
     }
 
-    getLimitForContributionType(contributionLimitType: ContributionLimitType){
+    getRothIraManagerById(id: number): RothIraInvestmentManager {
+        const rothIraManager = this.managers.rothIraInvestmentManagers.find((rothIraManager) => rothIraManager.getConfig().id === id);
+        if (rothIraManager === undefined) {
+            throw new Error(`Missing tax deferred investment manager with id ${id}`);
+        }
+        return rothIraManager
+    }
+
+    getLimitForContributionType(contributionLimitType: ContributionLimitType) {
         const currentState = this.getCurrentState()
         switch (contributionLimitType) {
             case ContributionLimitType.Ira:

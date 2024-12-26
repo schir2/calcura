@@ -1,9 +1,19 @@
 import {beforeEach, describe, expect, it} from "vitest";
 import PlanManager, {FundType} from "~/models/plan/PlanManager";
-import {GrowthApplicationStrategy, IncomeTaxStrategy, InsufficientFundsStrategy, type Plan, RetirementStrategy} from "~/models/plan/Plan";
+import {
+    GrowthApplicationStrategy,
+    IncomeTaxStrategy,
+    InsufficientFundsStrategy,
+    type Plan,
+    RetirementStrategy
+} from "~/models/plan/Plan";
 import {ContributionType} from "~/models/common";
-import {EmployerContributionStrategy, TaxDeferredContributionStrategy} from "~/models/taxDeferredInvestment/TaxDeferredInvestment";
+import {
+    EmployerContributionStrategy,
+    TaxDeferredContributionStrategy
+} from "~/models/taxDeferredInvestment/TaxDeferredInvestment";
 import {IraContributionStrategy} from "~/models/iraInvestment/IraInvestment";
+import {RothIraContributionStrategy} from "~/models/rothIraInvestment/RothIraInvestment";
 
 describe("PlanManager", () => {
     let planConfig: Plan;
@@ -54,13 +64,13 @@ describe("PlanManager", () => {
                     growthRate: 6,
                     initialBalance: 10_000,
                     electiveContributionStrategy: TaxDeferredContributionStrategy.PercentageOfIncome,
-                    electiveContributionPercentage: 0,
+                    electiveContributionPercentage: 6,
                     electiveContributionFixedAmount: 0,
                     employerContributionStrategy: EmployerContributionStrategy.PercentageOfContribution,
                     employerCompensationMatchPercentage: 100,
                     employerContributionFixedAmount: 0,
-                    employerMatchPercentageLimit: 0,
-                    employerMatchPercentage: 0,
+                    employerMatchPercentageLimit: 3,
+                    employerMatchPercentage: 100,
                     income: {
                         id: 1,
                         name: 'Ordinary Income',
@@ -81,7 +91,26 @@ describe("PlanManager", () => {
                     initialBalance: 10_000,
                     contributionStrategy: IraContributionStrategy.Fixed,
                     contributionPercentage: 0,
-                    contributionFixedAmount: 0,
+                    contributionFixedAmount: 3_500,
+                    income:
+                        {
+                            id: 1,
+                            name: 'Ordinary Income',
+                            grossIncome: 100_000,
+                            growthRate: 0,
+                            incomeType: "ordinary",
+                            frequency: 'annual'
+                        },
+                }],
+            rothIraInvestments: [
+                {
+                    id: 1,
+                    name: 'Test Brokerage Investment',
+                    growthRate: 6,
+                    initialBalance: 10_000,
+                    contributionStrategy: RothIraContributionStrategy.Fixed,
+                    contributionPercentage: 0,
+                    contributionFixedAmount: 3_500,
                     income:
                         {
                             id: 1,
@@ -112,10 +141,16 @@ describe("PlanManager", () => {
             expect(state.deferredLimit).toBe(69_000)
             expect(state.iraLimit).toBe(7_000)
             expect(state.inflationRate).toBe(3)
+            expect(state.taxDeferredContributions).toBe(0)
+            expect(state.taxDeferredContributionsLifetime).toBe(0)
+            expect(state.taxExemptContributions).toBe(0)
+            expect(state.taxExemptContributionsLifetime).toBe(0)
+            expect(state.taxableContributions).toBe(0)
+            expect(state.taxableContributionsLifetime).toBe(0)
             expect(state.savingsTaxDeferredStartOfYear).toBe(20_000)
             expect(state.savingsTaxDeferredEndOfYear).toBe(20_000)
-            expect(state.savingsTaxExemptStartOfYear).toBe(0)
-            expect(state.savingsTaxExemptEndOfYear).toBe(0)
+            expect(state.savingsTaxExemptStartOfYear).toBe(10_000)
+            expect(state.savingsTaxExemptEndOfYear).toBe(10_000)
             expect(state.savingsTaxableStartOfYear).toBe(0)
             expect(state.savingsTaxableEndOfYear).toBe(0)
             expect(state.savingsStartOfYear).toBe(0)
@@ -181,7 +216,8 @@ describe("PlanManager", () => {
 
             planManager.contribute(5000, ContributionType.TaxDeferred);
 
-            expect(currentState.savingsTaxDeferredEndOfYear).toBe(5000);
+            expect(currentState.taxDeferredContributions).toBe(5000);
+            expect(currentState.taxDeferredContributionsLifetime).toBe(5000);
         });
 
         it("should correctly contribute to tax-exempt savings", () => {
@@ -190,7 +226,8 @@ describe("PlanManager", () => {
 
             planManager.contribute(3000, ContributionType.RothIra);
 
-            expect(currentState.savingsTaxExemptEndOfYear).toBe(3000);
+            expect(currentState.taxExemptContributions).toBe(3000);
+            expect(currentState.taxExemptContributionsLifetime).toBe(3000);
         });
 
         it("should correctly contribute to taxable savings", () => {
@@ -199,7 +236,8 @@ describe("PlanManager", () => {
 
             planManager.contribute(7000, ContributionType.Taxable);
 
-            expect(currentState.savingsTaxableEndOfYear).toBe(7000);
+            expect(currentState.taxableContributions).toBe(7000);
+            expect(currentState.taxableContributionsLifetime).toBe(7000);
         });
     })
     describe('calculateTaxes', () => {
@@ -265,6 +303,33 @@ describe("PlanManager", () => {
             expect(agi).toBe(-10000);
         });
     });
+
+    describe("invest", () =>{
+        it("taxDeferred", ()=>{
+            planManager.getCurrentState().savingsTaxDeferredEndOfYear = 0
+            planManager.invest(5_000, ContributionType.TaxDeferred)
+            expect(planManager.getCurrentState().savingsTaxDeferredEndOfYear).toBe(5_000)
+        })
+        it("ira", ()=>{
+            planManager.getCurrentState().savingsTaxDeferredEndOfYear = 0
+            planManager.invest(5_000, ContributionType.Ira)
+            expect(planManager.getCurrentState().savingsTaxDeferredEndOfYear).toBe(5_000)
+        })
+        it("rothIra", ()=>{
+            planManager.getCurrentState().savingsTaxDeferredEndOfYear = 0
+            planManager.invest(5_000, ContributionType.RothIra)
+            expect(planManager.getCurrentState().savingsTaxExemptEndOfYear).toBe(15_000)
+        })
+        it("taxable", ()=>{
+            planManager.getCurrentState().savingsTaxDeferredEndOfYear = 0
+            planManager.invest(5_000, ContributionType.Taxable)
+            expect(planManager.getCurrentState().savingsTaxableEndOfYear).toBe(5_000)
+        })
+        it("elective", ()=>{
+            planManager.getCurrentState().savingsTaxDeferredEndOfYear = 0
+            planManager.invest(5_000, ContributionType.Elective)
+            expect(planManager.getCurrentState().savingsTaxDeferredEndOfYear).toBe(5_000)})
+    })
 
     describe("withdraw", () => {
         it("should correctly withdraw from taxable capital and update state", () => {

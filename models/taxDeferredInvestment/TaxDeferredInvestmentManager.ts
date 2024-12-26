@@ -140,7 +140,7 @@ export default class TaxDeferredInvestmentManager extends BaseManager<TaxDeferre
         return [new ProcessTaxDeferredInvestmentCommand(this)];
     }
 
-    getContributionsAdjustedForLimits(electiveContribution: number, employerContribution: number){
+    getContributionsAdjustedForLimits(electiveContribution: number, employerContribution: number) {
         const electiveContributionLimit = this.orchestrator.getLimitForContributionType(ContributionLimitType.Elective)
         const deferredContributionLimit = this.orchestrator.getLimitForContributionType(ContributionLimitType.Deferred)
 
@@ -160,7 +160,8 @@ export default class TaxDeferredInvestmentManager extends BaseManager<TaxDeferre
             this.orchestrator.getConfig().growthApplicationStrategy,
             contribution
         )
-        this.orchestrator.contribute(growthAmount + contribution, ContributionType.TaxDeferred)
+        this.orchestrator.contribute(contribution, ContributionType.TaxDeferred)
+        this.orchestrator.invest(growthAmount + contribution, ContributionType.TaxDeferred)
         const balanceEndOfYear = currentState.balanceStartOfYear + growthAmount + contribution
 
         this.updateCurrentState(

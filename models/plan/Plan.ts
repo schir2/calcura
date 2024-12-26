@@ -5,6 +5,7 @@ import type {Expense} from "~/models/expense/Expense";
 import type {BrokerageInvestment} from "~/models/brokerageInvestment/BrokerageInvestment";
 import type {IraInvestment} from "~/models/iraInvestment/IraInvestment";
 import type {CashReserve} from "~/models/cashReserve/CashReserve";
+import type {RothIraInvestment} from "~/models/rothIraInvestment/RothIraInvestment";
 
 
 export enum InsufficientFundsStrategy {
@@ -59,6 +60,7 @@ export interface Plan {
     taxDeferredInvestments: TaxDeferredInvestment[];
     brokerageInvestments: BrokerageInvestment[];
     iraInvestments: IraInvestment[];
+    rothIraInvestments: RothIraInvestment[];
 }
 
 export type PlanPartial = Partial<Omit<Plan, 'id'>>
@@ -85,4 +87,5 @@ export const planDefaults: PlanPartial = {
     taxDeferredInvestments: [],
     brokerageInvestments: [],
     iraInvestments: [],
+    rothIraInvestments: [],
 };

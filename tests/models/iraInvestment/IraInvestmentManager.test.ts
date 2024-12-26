@@ -2,7 +2,13 @@ import {beforeEach, describe, expect, it} from "vitest";
 import IraInvestmentManager from "~/models/iraInvestment/IraInvestmentManager";
 import {IraContributionStrategy} from "~/models/iraInvestment/IraInvestment";
 import PlanManager from "~/models/plan/PlanManager";
-import {GrowthApplicationStrategy, IncomeTaxStrategy, InsufficientFundsStrategy, type Plan, RetirementStrategy} from "~/models/plan/Plan";
+import {
+    GrowthApplicationStrategy,
+    IncomeTaxStrategy,
+    InsufficientFundsStrategy,
+    type Plan,
+    RetirementStrategy
+} from "~/models/plan/Plan";
 import {ProcessIraInvestmentCommand} from "~/models/iraInvestment/IraInvestmentCommands";
 
 const planConfig: Plan = {
@@ -65,6 +71,7 @@ const planConfig: Plan = {
         }
     ],
     brokerageInvestments: [],
+    rothIraInvestments: [],
 }
 
 let planManager: PlanManager;
@@ -121,7 +128,7 @@ describe("IraInvestmentManager", () => {
             iraInvestmentManager = planManager.getIraManagerById(1)
 
             const contribution = iraInvestmentManager.calculateContribution();
-            expect(contribution).toBe(10_000);
+            expect(contribution).toBe(7_000);
         });
 
         it("max", () => {
@@ -136,7 +143,7 @@ describe("IraInvestmentManager", () => {
             })
             iraInvestmentManager = planManager.getIraManagerById(1)
             const contribution = iraInvestmentManager.calculateContribution();
-            expect(contribution).toBe(Infinity);
+            expect(contribution).toBe(7_000);
         });
     })
 
@@ -160,19 +167,22 @@ describe("IraInvestmentManager", () => {
             const planState = iraInvestmentManager.orchestrator.getCurrentState();
             const iraInvestmentState = iraInvestmentManager.getCurrentState();
 
-            expect(iraInvestmentState.contribution).toBe(10_000);
-            expect(iraInvestmentState.contributionLifetime).toBe(10_000);
+            expect(iraInvestmentState.contribution).toBe(7_000);
+            expect(iraInvestmentState.contributionLifetime).toBe(7_000);
             expect(iraInvestmentState.growthAmount).toBe(1_000);
             expect(iraInvestmentState.growthLifetime).toBe(1_000);
             expect(iraInvestmentState.balanceStartOfYear).toBe(10_000);
-            expect(iraInvestmentState.balanceEndOfYear).toBe(21_000);
+            expect(iraInvestmentState.balanceEndOfYear).toBe(18_000);
             expect(iraInvestmentState.processed).toBe(true);
-            expect(planState.taxableIncome).toBe(140_000);
-            expect(planState.taxableCapital).toBe(140_000);
-            expect(planState.taxedIncome).toBe(98_000);
-            expect(planState.taxedCapital).toBe(98_000);
+            expect(planState.taxableIncome).toBe(143_000);
+            expect(planState.taxableCapital).toBe(143_000);
+            expect(planState.taxedIncome).toBe(100_100);
+            expect(planState.taxedCapital).toBe(100_100);
+            expect(planState.taxDeferredContributions).toBe(7_000);
+            expect(planState.taxDeferredContributionsLifetime).toBe(7_000);
+            expect(planState.iraLimit).toBe(0);
             expect(planState.savingsTaxableEndOfYear).toBe(0);
-            expect(planState.savingsTaxDeferredEndOfYear).toBe(21_000);
+            expect(planState.savingsTaxDeferredEndOfYear).toBe(18_000);
             expect(planState.savingsTaxExemptEndOfYear).toBe(0);
             expect(planState.taxedWithdrawals).toBe(0);
         });
@@ -207,6 +217,7 @@ describe("IraInvestmentManager", () => {
             expect(planState.taxedIncome).toBe(101_500);
             expect(planState.taxedCapital).toBe(101_500);
             expect(planState.savingsTaxableEndOfYear).toBe(0);
+            expect(planState.iraLimit).toBe(2_000);
             expect(planState.savingsTaxDeferredEndOfYear).toBe(16_500);
             expect(planState.savingsTaxExemptEndOfYear).toBe(0);
             expect(planState.taxedWithdrawals).toBe(0);
