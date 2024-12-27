@@ -55,7 +55,6 @@ export const expenseForm: FormData<Expense> = {
             {label: "Weekly", value: ExpenseFrequency.Weekly},
             {label: "Quarterly", value: ExpenseFrequency.Quarterly},
             {label: "Annually", value: ExpenseFrequency.Annually},
-            {label: "One Time", value: ExpenseFrequency.OneTime},
         ],
     },
     isEssential: {

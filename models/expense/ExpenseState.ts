@@ -1,6 +1,6 @@
 export default interface ExpenseState {
-    payment: number;
-    isPaid: boolean;
-    isActive?: boolean;
+    baseAmount: number;
+    amountRequested: number;
+    amountPaid: number;
     processed: boolean;
 }

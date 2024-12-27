@@ -4,54 +4,71 @@ import type {Expense} from "~/models/expense/Expense";
 import {ExpenseFrequency} from "~/models/expense/Expense";
 import type ExpenseState from "~/models/expense/ExpenseState";
 import {FundType} from "~/models/plan/PlanManager";
+import {ProcessExpenseCommand} from "~/models/expense/ExpenseCommands";
 
-export default class ExpenseManager extends BaseManager<Expense, ExpenseState> {
+export class ExpenseManager extends BaseManager<Expense, ExpenseState> {
     protected createInitialState(): ExpenseState {
         return {
-            payment: 0,
-            isPaid: false,
-            isActive: undefined,
+            baseAmount: this.config.amount,
+            amountRequested: 0,
+            amountPaid: 0,
             processed: false,
         };
     }
 
     createNextState(previousState: ExpenseState): ExpenseState {
         return {
-            payment: 0,
-            isPaid: false,
-            isActive: undefined,
+            baseAmount: 0,
+            amountRequested: 0,
+            amountPaid: 0,
             processed: false,
 
         };
     }
 
-    protected calculatePayment(): number {
-        const currentState = this.getCurrentState()
-        if (currentState.isActive === false){
-            return 0
+    calculateGrowthAmount(amount: number): number {
+        if (this.config.growsWithInflation) {
+            return amount * this.orchestrator.getConfig().inflationRate / 100;
         }
-        switch(this.config.frequency){
+        return amount * this.config.growthRate / 100
+
+    }
+
+    calculatePayment(): number {
+        const currentState = this.getCurrentState()
+        return this._calculatePayment(currentState.baseAmount);
+    }
+
+    private _calculatePayment(baseAmount: number) {
+        switch (this.config.frequency) {
             case ExpenseFrequency.Annually:
-                return currentState.payment
+                return baseAmount
             case ExpenseFrequency.Monthly:
-                return currentState.payment * 12
-            case ExpenseFrequency.OneTime:
-                return currentState.payment
+                return baseAmount * 12
             case ExpenseFrequency.Quarterly:
-                return currentState.payment * 4
+                return baseAmount * 4
             case ExpenseFrequency.Weekly:
-                return currentState.payment * 52
+                return baseAmount * 52
         }
     }
 
     getCommands(): Command[] {
-        return [];
+        return [new ProcessExpenseCommand(this)];
     }
 
     processImplementation(): void {
-        const paymentRequest = this.calculatePayment()
-        const payment = this.orchestrator.requestFunds(paymentRequest, FundType.Taxed)
-        this.orchestrator.withdraw(payment, FundType.Taxed)
+        const currentState = this.getCurrentState()
+        const amountRequested = this.calculatePayment()
+        const amountPaid = this.orchestrator.requestFunds(amountRequested, FundType.Taxed)
+        const baseAmount = currentState.baseAmount + this.calculateGrowthAmount(currentState.baseAmount)
+        this.orchestrator.withdraw(amountPaid, FundType.Taxed)
+        this.updateCurrentState({
+            ...currentState,
+            amountRequested: amountRequested,
+            amountPaid: amountPaid,
+            baseAmount: baseAmount,
+
+        })
     }
 
 }

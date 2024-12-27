@@ -11,7 +11,5 @@ export function getAnnualExpenseAmount(expense: Expense): number {
             return expense.amount * 52
         case ExpenseFrequency.Quarterly:
             return expense.amount * 4
-        case ExpenseFrequency.OneTime:
-            return expense.amount
     }
 }

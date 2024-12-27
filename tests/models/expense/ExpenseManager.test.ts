@@ -1,11 +1,10 @@
 import {beforeEach, describe, expect, it} from "vitest";
-import DebtManager from "~/models/debt/DebtManager";
-import type {Debt} from "~/models/debt/Debt";
-import {DebtPaymentStrategy} from "~/models/debt/Debt";
 import PlanManager from "~/models/plan/PlanManager";
 import {GrowthApplicationStrategy, IncomeTaxStrategy, InsufficientFundsStrategy, type Plan, RetirementStrategy} from "~/models/plan/Plan";
-import {ProcessDebtCommand} from "~/models/debt/DebtCommands";
 import {ExpenseFrequency, ExpenseType} from "~/models/expense/Expense";
+import {ExpenseManager} from "~/models/expense/ExpenseManager"
+import type ExpenseState from "~/models/expense/ExpenseState";
+import {ProcessExpenseCommand} from "~/models/expense/ExpenseCommands";
 
 const planConfig: Plan = {
     id: 1,
@@ -55,217 +54,140 @@ const planConfig: Plan = {
             growsWithInflation: true,
         }
     ],
-    debts: [
-        {
-            name: `Test Loan ${Date.now()}`,
-            principal: 5000,
-            interest_rate: 5.0,
-            payment_minimum: 500,
-            payment_strategy: 'minimum_payment',
-        }],
+    debts: [],
     taxDeferredInvestments: [],
     brokerageInvestments: [],
     iraInvestments: [],
     rothIraInvestments: [],
 }
 
-const debt: Debt = {
-    id: 1,
-    name: "Test Debt",
-    principal: 1000,
-    interestRate: 5,
-    paymentMinimum: 50,
-    paymentStrategy: DebtPaymentStrategy.Fixed,
-    paymentFixedAmount: 100,
-    paymentPercentage: 20,
-
-};
-
 let planManager: PlanManager;
+let expenseManager: ExpenseManager;
 
-describe("DebtManager", () => {
+describe("ExpenseManager", () => {
     beforeEach(() => {
         planManager = new PlanManager(planConfig)
+        expenseManager = planManager.getExpenseManagerById(1)
     });
 
     describe('constructor', () => {
 
         it("should initialize with correct state", () => {
-            const debtManager = new DebtManager(planManager, debt);
-            const state = debtManager.getCurrentState();
-            expect(state.payment).toBe(0);
-            expect(state.paymentLifetime).toBe(0);
-            expect(state.interestLifetime).toBe(0);
-            expect(state.principalStartOfYear).toBe(1_000);
-            expect(state.interestAmount).toBe(undefined);
-            expect(state.principalEndOfYear).toBe(undefined);
+            const state = expenseManager.getCurrentState();
+            expect(state.baseAmount).toBe(1800);
+            expect(state.amountRequested).toBe(0);
+            expect(state.amountPaid).toBe(0);
             expect(state.processed).toBe(false);
         });
     })
 
     describe('calculatePayment', () => {
-        it("should calculate fixed payment correctly", () => {
-            const debtManager = new DebtManager(planManager, {
-                ...debt,
-                paymentStrategy: DebtPaymentStrategy.Fixed,
-                principal: 1000,
-                paymentPercentage: 10,
+        it("annually", () => {
+            planManager = new PlanManager({
+                ...planConfig,
+                expenses: [{
+                    ...planConfig.expenses[0],
+                    amount: 100,
+                    frequency: ExpenseFrequency.Annually
+                }]
             })
-            const debtState = debtManager.getCurrentState();
-            const payment = debtManager.calculatePayment(debtState);
+            expenseManager = planManager.getExpenseManagerById(1)
+            const payment = expenseManager.calculatePayment();
             expect(payment).toBe(100);
         });
-
-        it("should calculate percentage payment correctly", () => {
-            const debtManager = new DebtManager(planManager, {
-                ...debt,
-                paymentStrategy: DebtPaymentStrategy.PercentageOfDebt,
-                principal: 1000,
-                paymentPercentage: 10,
+        it("quarterly", () => {
+            planManager = new PlanManager({
+                ...planConfig,
+                expenses: [{
+                    ...planConfig.expenses[0],
+                    amount: 100,
+                    frequency: ExpenseFrequency.Quarterly
+                }]
             })
-            const debtState = debtManager.getCurrentState();
-            const payment = debtManager.calculatePayment(debtState);
-            expect(payment).toBe(100);
+            expenseManager = planManager.getExpenseManagerById(1)
+            const payment = expenseManager.calculatePayment();
+            expect(payment).toBe(400);
+        });
+        it("monthly", () => {
+            planManager = new PlanManager({
+                ...planConfig,
+                expenses: [{
+                    ...planConfig.expenses[0],
+                    amount: 100,
+                    frequency: ExpenseFrequency.Monthly
+                }]
+            })
+            expenseManager = planManager.getExpenseManagerById(1)
+            const payment = expenseManager.calculatePayment();
+            expect(payment).toBe(1_200);
+        });
+        it("weekly", () => {
+            planManager = new PlanManager({
+                ...planConfig,
+                expenses: [{
+                    ...planConfig.expenses[0],
+                    amount: 100,
+                    frequency: ExpenseFrequency.Weekly
+                }]
+            })
+            expenseManager = planManager.getExpenseManagerById(1)
+            const payment = expenseManager.calculatePayment();
+            expect(payment).toBe(5_200);
         });
 
-        it("should calculate max payment correctly", () => {
-            const debtManager = new DebtManager(planManager, {
-                ...debt,
-                paymentStrategy: DebtPaymentStrategy.MaximumPayment,
-                principal: 1000,
-            })
-            const debtState = debtManager.getCurrentState();
-            const payment = debtManager.calculatePayment(debtState);
-            expect(payment).toBe(1000);
-        });
+    })
 
-        it("should calculate minimum payment correctly", () => {
-            const debtManager = new DebtManager(planManager, {
-                ...debt,
-                paymentStrategy: DebtPaymentStrategy.MinimumPayment,
-                principal: 1000,
-                paymentMinimum: 100,
-            })
-            const debtState = debtManager.getCurrentState();
-            const payment = debtManager.calculatePayment(debtState);
-            expect(payment).toBe(100);
+    describe('process', () => {
+        it('sufficient funds', () => {
+            expenseManager.process()
+            const currentState: ExpenseState = expenseManager.getCurrentState()
+            expect(currentState.baseAmount = 1_800)
+            expect(currentState.amountRequested = 21_600)
+            expect(currentState.amountPaid = 21_600)
+            expect(currentState.processed = true)
         })
-    })
-
-    describe('process', () => {
-
-        it("should process debt and update state correctly", () => {
-            const debtManager = new DebtManager(planManager, {
-                ...debt,
-                principal: 10_000,
-                paymentFixedAmount: 1_000,
-                interestRate: 10,
+        it('insufficient funds', () => {
+            planManager = new PlanManager({
+                ...planConfig,
+                expenses: [{
+                    ...planConfig.expenses[0],
+                    amount: 100_000,
+                    frequency: ExpenseFrequency.Quarterly
+                }]
             })
-            debtManager.process();
-            const planState = debtManager.orchestrator.getCurrentState();
-            const currentState = debtManager.getCurrentState();
+            expenseManager = planManager.getExpenseManagerById(1)
 
-            expect(currentState.payment).toBe(1_000);
-            expect(currentState.paymentLifetime).toBe(1_000);
-            expect(currentState.interestAmount).toBeCloseTo(900);
-            expect(currentState.interestLifetime).toBe(900);
-            expect(currentState.principalEndOfYear).toBeCloseTo(9900);
-            expect(currentState.processed).toBe(true);
-            expect(planState.taxedIncome).toBe(105_000);
-            expect(planState.taxedCapital).toBe(104_000);
-        });
+            expenseManager.process()
+            const currentState: ExpenseState = expenseManager.getCurrentState()
+            expect(currentState.baseAmount = 100_000)
+            expect(currentState.amountRequested = 1_200_000)
+            expect(currentState.amountPaid = 105_000)
+            expect(currentState.processed = true)
+        })
 
-        it("should process debt and update state correctly", () => {
-            const debtManager = new DebtManager(planManager, {
-                ...debt,
-                principal: 10_000,
-                paymentFixedAmount: 1_000,
-                interestRate: 10,
-            })
-            debtManager.process();
-            debtManager.advanceTimePeriod()
-            debtManager.process();
-            const planState = debtManager.orchestrator.getCurrentState();
-            const currentState = debtManager.getCurrentState();
-
-            expect(currentState.payment).toBe(1_000);
-            expect(currentState.paymentLifetime).toBe(2_000);
-            expect(currentState.interestAmount).toBe(890);
-            expect(currentState.interestLifetime).toBe(900 + 890);
-            expect(currentState.principalEndOfYear).toBeCloseTo(9790);
-            expect(currentState.processed).toBe(true);
-            expect(planState.taxedIncome).toBe(105_000);
-            expect(planState.taxedCapital).toBe(103_000);
-        });
-
-        it("should throw error if processing already processed state", () => {
-            const debtManager = new DebtManager(planManager, debt)
-            debtManager.process();
-        });
 
     })
 
-    describe('calculateInterest', () => {
-        it('should return 0 interest for a 0 principal', () => {
-            const debtManager = new DebtManager(planManager, debt);
-            expect(debtManager.calculateInterest(0)).toBe(0);
-        });
+    describe('calculateGrowthAmount', () => {
 
-        it('should calculate interest correctly for non-zero principal', () => {
-            const debtManager = new DebtManager(planManager, {
-                ...debt,
-                interestRate: 5,
-            });
-            expect(debtManager.calculateInterest(1000)).toBeCloseTo(50); // 5% of 1000
-        });
-
-        it('should return 0 interest for a 0 interest rate', () => {
-            const debtManager = new DebtManager(planManager, {
-                ...debt,
-                interestRate: 0,
-            });
-            expect(debtManager.calculateInterest(1000)).toBe(0);
-        });
     });
 
     describe('getCommands', () => {
-        it('should return an array with ProcessDebtCommand', () => {
-            const debtManager = new DebtManager(planManager, debt);
-            const commands = debtManager.getCommands();
+        it('should return an array with ProcessExpenseCommand', () => {
+            const commands = expenseManager.getCommands();
             expect(commands).toHaveLength(1);
-            expect(commands[0]).toBeInstanceOf(ProcessDebtCommand);
+            expect(commands[0]).toBeInstanceOf(ProcessExpenseCommand);
         });
 
-        it('should execute ProcessDebtCommand correctly', () => {
-            const debtManager = new DebtManager(planManager, debt);
-            const command = new ProcessDebtCommand(debtManager);
+        it('should execute ProcessExpenseCommand correctly', () => {
+            const command = new ProcessExpenseCommand(expenseManager);
             command.execute();
-            expect(debtManager.getCurrentState().processed).toBe(true);
+            expect(expenseManager.getCurrentState().processed).toBe(true);
         });
     });
 
 
     describe('createNextState', () => {
-
-        it("should process debt create the next state", () => {
-            const debtManager = new DebtManager(planManager, {
-                ...debt,
-                principal: 10_000,
-                paymentFixedAmount: 1_000,
-                interestRate: 10,
-            })
-            debtManager.process();
-            const debtState = debtManager.getCurrentState();
-            const newState = debtManager.createNextState(debtState);
-
-            expect(newState.payment).toBe(0);
-            expect(newState.paymentLifetime).toBe(1_000);
-            expect(newState.interestAmount).toBe(undefined);
-            expect(newState.interestLifetime).toBe(900);
-            expect(newState.principalStartOfYear).toBe(debtState.principalEndOfYear);
-            expect(newState.principalEndOfYear).toBe(undefined);
-            expect(newState.processed).toBe(false);
-        });
 
     })
 });
