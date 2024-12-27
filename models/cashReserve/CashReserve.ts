@@ -1,4 +1,4 @@
-export type CashReserveStrategy = 'fixed' | 'variable'
+export enum CashReserveStrategy {Fixed = 'Fixed', Variable = 'Variable'}
 
 export interface CashReserve {
     id: number;
@@ -18,7 +18,7 @@ export interface CashReserveTemplate extends CashReserve {
 export const cashReserveDefaults: CashReservePartial = {
     name: 'Blank Reserve',
     initialAmount: 0,
-    cashReserveStrategy: 'fixed',
+    cashReserveStrategy: CashReserveStrategy.Fixed,
     reserveAmount: 0,
     reserveMonths: 0,
 }
