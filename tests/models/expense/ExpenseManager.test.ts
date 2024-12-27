@@ -3,13 +3,7 @@ import DebtManager from "~/models/debt/DebtManager";
 import type {Debt} from "~/models/debt/Debt";
 import {DebtPaymentStrategy} from "~/models/debt/Debt";
 import PlanManager from "~/models/plan/PlanManager";
-import {
-    GrowthApplicationStrategy,
-    IncomeTaxStrategy,
-    InsufficientFundsStrategy,
-    type Plan,
-    RetirementStrategy
-} from "~/models/plan/Plan";
+import {GrowthApplicationStrategy, IncomeTaxStrategy, InsufficientFundsStrategy, type Plan, RetirementStrategy} from "~/models/plan/Plan";
 import {ProcessDebtCommand} from "~/models/debt/DebtCommands";
 import {ExpenseFrequency, ExpenseType} from "~/models/expense/Expense";
 
@@ -61,7 +55,14 @@ const planConfig: Plan = {
             growsWithInflation: true,
         }
     ],
-    debts: [],
+    debts: [
+        {
+            name: `Test Loan ${Date.now()}`,
+            principal: 5000,
+            interest_rate: 5.0,
+            payment_minimum: 500,
+            payment_strategy: 'minimum_payment',
+        }],
     taxDeferredInvestments: [],
     brokerageInvestments: [],
     iraInvestments: [],
@@ -190,7 +191,7 @@ describe("DebtManager", () => {
             expect(currentState.payment).toBe(1_000);
             expect(currentState.paymentLifetime).toBe(2_000);
             expect(currentState.interestAmount).toBe(890);
-            expect(currentState.interestLifetime).toBe(900+890);
+            expect(currentState.interestLifetime).toBe(900 + 890);
             expect(currentState.principalEndOfYear).toBeCloseTo(9790);
             expect(currentState.processed).toBe(true);
             expect(planState.taxedIncome).toBe(105_000);

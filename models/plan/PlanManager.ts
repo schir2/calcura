@@ -407,6 +407,22 @@ export default class PlanManager extends BaseOrchestrator<Plan, PlanState, Manag
         return rothIraManager
     }
 
+    getExpenseManagerById(id: number): ExpenseManager {
+        const expenseManager = this.managers.expenseManagers.find((expenseManager) => expenseManager.getConfig().id === id);
+        if (expenseManager === undefined) {
+            throw new Error(`Missing tax deferred investment manager with id ${id}`);
+        }
+        return expenseManager
+    }
+
+    getDebtManagerById(id: number): DebtManager {
+        const debtManager = this.managers.debtManagers.find((debtManager) => debtManager.getConfig().id === id);
+        if (debtManager === undefined) {
+            throw new Error(`Missing tax deferred investment manager with id ${id}`);
+        }
+        return debtManager
+    }
+
     getLimitForContributionType(contributionLimitType: ContributionLimitType) {
         const currentState = this.getCurrentState()
         switch (contributionLimitType) {

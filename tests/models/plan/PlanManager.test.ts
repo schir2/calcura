@@ -1,19 +1,13 @@
 import {beforeEach, describe, expect, it} from "vitest";
 import PlanManager, {FundType} from "~/models/plan/PlanManager";
-import {
-    GrowthApplicationStrategy,
-    IncomeTaxStrategy,
-    InsufficientFundsStrategy,
-    type Plan,
-    RetirementStrategy
-} from "~/models/plan/Plan";
+import {GrowthApplicationStrategy, IncomeTaxStrategy, InsufficientFundsStrategy, type Plan, RetirementStrategy} from "~/models/plan/Plan";
 import {ContributionType} from "~/models/common";
-import {
-    EmployerContributionStrategy,
-    TaxDeferredContributionStrategy
-} from "~/models/taxDeferredInvestment/TaxDeferredInvestment";
+import {EmployerContributionStrategy, TaxDeferredContributionStrategy} from "~/models/taxDeferredInvestment/TaxDeferredInvestment";
 import {IraContributionStrategy} from "~/models/iraInvestment/IraInvestment";
 import {RothIraContributionStrategy} from "~/models/rothIraInvestment/RothIraInvestment";
+import {BrokerageContributionStrategy} from "~/models/brokerageInvestment/BrokerageInvestment";
+import {ExpenseFrequency, ExpenseType} from "~/models/expense/Expense";
+import {DebtPaymentStrategy} from "~/models/debt/Debt";
 
 describe("PlanManager", () => {
     let planConfig: Plan;
@@ -55,8 +49,30 @@ describe("PlanManager", () => {
                     frequency: 'annual'
                 }
             ],
-            expenses: [],
-            debts: [],
+            expenses: [
+                {
+                    id: 1,
+                    name: 'Rent',
+                    frequency: ExpenseFrequency.Monthly,
+                    amount: 1_800,
+                    expenseType: ExpenseType.fixed,
+                    growthRate: 0,
+                    isEssential: true,
+                    isTaxDeductible: false,
+                    growsWithInflation: true,
+                }],
+            debts: [
+                {
+                    id: 1,
+                    name: 'School Loan',
+                    interestRate: 8,
+                    principal: 100_000,
+                    paymentFixedAmount: 600,
+                    paymentMinimum: 600,
+                    paymentStrategy: DebtPaymentStrategy.MinimumPayment,
+                    paymentPercentage: 0,
+                }
+            ],
             taxDeferredInvestments: [
                 {
                     id: 1,
@@ -82,7 +98,18 @@ describe("PlanManager", () => {
 
                 }
             ],
-            brokerageInvestments: [],
+            brokerageInvestments: [
+                {
+                    id: 1,
+                    name: 'Test Brokerage Investment',
+                    growthRate: 6,
+                    initialBalance: 10_000,
+                    contributionStrategy: BrokerageContributionStrategy.Fixed,
+                    contributionPercentage: 0,
+                    contributionFixedAmount: 0,
+
+                }
+            ],
             iraInvestments: [
                 {
                     id: 1,
@@ -151,8 +178,8 @@ describe("PlanManager", () => {
             expect(state.savingsTaxDeferredEndOfYear).toBe(20_000)
             expect(state.savingsTaxExemptStartOfYear).toBe(10_000)
             expect(state.savingsTaxExemptEndOfYear).toBe(10_000)
-            expect(state.savingsTaxableStartOfYear).toBe(0)
-            expect(state.savingsTaxableEndOfYear).toBe(0)
+            expect(state.savingsTaxableStartOfYear).toBe(10_000)
+            expect(state.savingsTaxableEndOfYear).toBe(10_000)
             expect(state.savingsStartOfYear).toBe(0)
             expect(state.savingsEndOfYear).toBe(0)
             expect(state.retirementIncomeProjected).toBe(0)
@@ -304,31 +331,32 @@ describe("PlanManager", () => {
         });
     });
 
-    describe("invest", () =>{
-        it("taxDeferred", ()=>{
+    describe("invest", () => {
+        it("taxDeferred", () => {
             planManager.getCurrentState().savingsTaxDeferredEndOfYear = 0
             planManager.invest(5_000, ContributionType.TaxDeferred)
             expect(planManager.getCurrentState().savingsTaxDeferredEndOfYear).toBe(5_000)
         })
-        it("ira", ()=>{
+        it("ira", () => {
             planManager.getCurrentState().savingsTaxDeferredEndOfYear = 0
             planManager.invest(5_000, ContributionType.Ira)
             expect(planManager.getCurrentState().savingsTaxDeferredEndOfYear).toBe(5_000)
         })
-        it("rothIra", ()=>{
+        it("rothIra", () => {
             planManager.getCurrentState().savingsTaxDeferredEndOfYear = 0
             planManager.invest(5_000, ContributionType.RothIra)
             expect(planManager.getCurrentState().savingsTaxExemptEndOfYear).toBe(15_000)
         })
-        it("taxable", ()=>{
+        it("taxable", () => {
             planManager.getCurrentState().savingsTaxDeferredEndOfYear = 0
             planManager.invest(5_000, ContributionType.Taxable)
-            expect(planManager.getCurrentState().savingsTaxableEndOfYear).toBe(5_000)
+            expect(planManager.getCurrentState().savingsTaxableEndOfYear).toBe(15_000)
         })
-        it("elective", ()=>{
+        it("elective", () => {
             planManager.getCurrentState().savingsTaxDeferredEndOfYear = 0
             planManager.invest(5_000, ContributionType.Elective)
-            expect(planManager.getCurrentState().savingsTaxDeferredEndOfYear).toBe(5_000)})
+            expect(planManager.getCurrentState().savingsTaxDeferredEndOfYear).toBe(5_000)
+        })
     })
 
     describe("withdraw", () => {
@@ -397,6 +425,21 @@ describe("PlanManager", () => {
     describe("getIraInvestmentManagerById", () => {
         it("should return iraInvestmentManager", () => {
             expect(planManager.getIraManagerById(1)).toBe(planManager.managers.iraInvestmentManagers[0])
+        })
+    })
+    describe("getRothIraInvestmentManagerById", () => {
+        it("should return iraInvestmentManager", () => {
+            expect(planManager.getRothIraManagerById(1)).toBe(planManager.managers.rothIraInvestmentManagers[0])
+        })
+    })
+    describe("getExpenseManagerById", () => {
+        it("should return expenseManager", () => {
+            expect(planManager.getExpenseManagerById(1)).toBe(planManager.managers.expenseManagers[0])
+        })
+    })
+    describe("getDebtManagerById", () => {
+        it("should return debtManager", () => {
+            expect(planManager.getDebtManagerById(1)).toBe(planManager.managers.debtManagers[0])
         })
     })
     describe("canRetire", () => {
