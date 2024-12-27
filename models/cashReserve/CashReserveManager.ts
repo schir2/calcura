@@ -1,24 +1,29 @@
 import BaseManager from "~/models/common/BaseManager";
 import type {CashReserve} from "~/models/cashReserve/CashReserve";
-import type {PlanState} from "~/models/plan/PlanState";
+import {CashReserveStrategy} from "~/models/cashReserve/CashReserve";
 import type CashReserveState from "~/models/cashReserve/CashReserveState";
 import type Command from "~/models/common/Command";
-import type {InsufficientFundsStrategy} from "~/models/plan/Plan";
-import {adjustForInsufficientFunds} from "~/utils";
+import {FundType} from "~/models/plan/PlanManager";
 
-export default class CashReserveManager extends BaseManager<CashReserve, CashReserveState> {
+export class CashReserveManager extends BaseManager<CashReserve, CashReserveState> {
     protected createInitialState(): CashReserveState {
         return {
+            amountRequested: undefined,
+            amountPaid: undefined,
             cashReserveStartOfYear: this.config.initialAmount,
-            cashReserveEndOfYear: undefined
+            cashReserveEndOfYear: undefined,
+            processed: false,
         }
     }
 
-    protected createNextState(previousState: CashReserveState): CashReserveState {
+    createNextState(previousState: CashReserveState): CashReserveState {
         assertDefined(previousState.cashReserveEndOfYear, 'cashReserveEndOfYear')
         return {
+            amountRequested: undefined,
+            amountPaid: undefined,
             cashReserveStartOfYear: previousState.cashReserveEndOfYear,
-            cashReserveEndOfYear: undefined
+            cashReserveEndOfYear: undefined,
+            processed: false,
         }
     }
 
@@ -26,37 +31,33 @@ export default class CashReserveManager extends BaseManager<CashReserve, CashRes
         return [];
     }
 
-    calculateContribution(state: CashReserveState, disposableIncome: number, insufficientFundsStrategy: InsufficientFundsStrategy): number {
+    calculateContribution(): number {
+        const currentState = this.getCurrentState();
         let contribution = 0
         switch (this.config.cashReserveStrategy) {
-            case 'fixed':
-                contribution = Math.max(this.config.reserveAmount - state.cashReserveStartOfYear, 0);
+            case CashReserveStrategy.Fixed:
+                contribution = Math.max(this.config.reserveAmount - currentState.cashReserveStartOfYear, 0);
                 break
-            case 'variable':
-                contribution = Math.max(this.config.reserveAmount - state.cashReserveStartOfYear, 0);
+            case CashReserveStrategy.Variable:
+                contribution = Math.max(this.config.reserveAmount - currentState.cashReserveStartOfYear, 0);
                 // TODO Implement this
                 break
         }
-        contribution = adjustForInsufficientFunds(
-            {
-                availableFunds: disposableIncome,
-                amount: contribution,
-                minimum: 0,
-                insufficientFundsStrategy: InsufficientFundsStrategy
-            }
-        )
-        return Math.min(contribution, state.cashReserveStartOfYear);
+        return contribution
     }
 
-    processImplementation(planState: PlanState): PlanState {
+    processImplementation() {
         const currentState = this.getCurrentState();
-        const contribution = this.calculateContribution(currentState, planState.taxedIncome, planState.insufficientFundsStrategy)
+        const contributionRequested = this.calculateContribution()
+        const contribution = this.orchestrator.requestFunds(contributionRequested, FundType.Taxed)
         const cashReserveEndOfYear = currentState.cashReserveStartOfYear + contribution;
+        this.orchestrator.withdraw(contribution, FundType.Taxed)
         this.updateCurrentState({
             ...currentState,
+            amountPaid: contribution,
+            amountRequested: contributionRequested,
             cashReserveEndOfYear: cashReserveEndOfYear
         });
-        return planState;
     }
 
 }

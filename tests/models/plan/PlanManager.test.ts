@@ -8,6 +8,7 @@ import {RothIraContributionStrategy} from "~/models/rothIraInvestment/RothIraInv
 import {BrokerageContributionStrategy} from "~/models/brokerageInvestment/BrokerageInvestment";
 import {ExpenseFrequency, ExpenseType} from "~/models/expense/Expense";
 import {DebtPaymentStrategy} from "~/models/debt/Debt";
+import {CashReserveStrategy} from "~/models/cashReserve/CashReserve";
 
 describe("PlanManager", () => {
     let planConfig: Plan;
@@ -30,7 +31,16 @@ describe("PlanManager", () => {
             retirementIncomeGoal: 50000,
             retirementAge: 65,
             retirementSavingsAmount: 200000,
-            cashReserves: [],
+            cashReserves: [
+                {
+                    id:  10,
+                    name: 'Cash Reserve',
+                    cashReserveStrategy: CashReserveStrategy.Fixed,
+                    reserveMonths: 0,
+                    reserveAmount: 10_000,
+                    initialAmount: 15_000,
+                }
+            ],
             incomes: [
                 {
                     id: 1,
@@ -440,6 +450,11 @@ describe("PlanManager", () => {
     describe("getDebtManagerById", () => {
         it("should return debtManager", () => {
             expect(planManager.getDebtManagerById(1)).toBe(planManager.managers.debtManagers[0])
+        })
+    })
+    describe("getCashReserveManagerById", () => {
+        it("should return cashReserveManager", () => {
+            expect(planManager.getCashReserveManagerById(10)).toBe(planManager.managers.cashReserveManagers[0])
         })
     })
     describe("canRetire", () => {
