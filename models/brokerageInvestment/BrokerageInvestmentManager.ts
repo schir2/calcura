@@ -7,7 +7,7 @@ import {FundType} from "~/models/plan/PlanManager";
 import {ContributionType} from "~/models/common";
 import {ProcessBrokerageInvestmentCommand} from "~/models/brokerageInvestment/BrokerageInvestmentCommands";
 
-export default class BrokerageInvestmentManager extends BaseManager<BrokerageInvestment, BrokerageInvestmentState> {
+export class BrokerageInvestmentManager extends BaseManager<BrokerageInvestment, BrokerageInvestmentState> {
 
     calculateContribution(): number {
         let contribution = 0

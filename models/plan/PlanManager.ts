@@ -10,12 +10,12 @@ import {
     getTaxDeferredElectiveContributionLimit
 } from "~/utils";
 import type Command from "~/models/common/Command";
-import IncomeManager from "~/models/income/IncomeManager";
-import BrokerageInvestmentManager from "~/models/brokerageInvestment/BrokerageInvestmentManager";
-import ExpenseManager from "~/models/expense/ExpenseManager";
-import IraInvestmentManager from "~/models/iraInvestment/IraInvestmentManager";
-import CashReserveManager from "~/models/cashReserve/CashReserveManager";
-import TaxDeferredInvestmentManager from "~/models/taxDeferredInvestment/TaxDeferredInvestmentManager";
+import {IncomeManager} from "~/models/income/IncomeManager";
+import {BrokerageInvestmentManager} from "~/models/brokerageInvestment/BrokerageInvestmentManager";
+import {ExpenseManager} from "~/models/expense/ExpenseManager";
+import {IraInvestmentManager} from "~/models/iraInvestment/IraInvestmentManager";
+import {CashReserveManager} from "~/models/cashReserve/CashReserveManager";
+import {TaxDeferredInvestmentManager} from "~/models/taxDeferredInvestment/TaxDeferredInvestmentManager";
 import {ContributionType} from "~/models/common";
 import {BaseOrchestrator} from "~/models/common/BaseOrchestrator";
 import {ContributionError} from "~/utils/errors/ContributionError";
@@ -421,6 +421,14 @@ export default class PlanManager extends BaseOrchestrator<Plan, PlanState, Manag
             throw new Error(`Missing tax deferred investment manager with id ${id}`);
         }
         return debtManager
+    }
+
+    getCashReserveManagerById(id: number): CashReserveManager {
+        const cashReserveManager = this.managers.cashReserveManagers.find((cashReserveManager) => cashReserveManager.getConfig().id === id);
+        if (cashReserveManager === undefined) {
+            throw new Error(`Missing tax cash reserve manager with id ${id}`);
+        }
+        return cashReserveManager
     }
 
     getLimitForContributionType(contributionLimitType: ContributionLimitType) {

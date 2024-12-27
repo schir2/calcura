@@ -1,5 +1,5 @@
 import {beforeEach, describe, expect, it} from "vitest";
-import BrokerageInvestmentManager from "~/models/brokerageInvestment/BrokerageInvestmentManager";
+import {BrokerageInvestmentManager} from "~/models/brokerageInvestment/BrokerageInvestmentManager";
 import type {BrokerageInvestment} from "~/models/brokerageInvestment/BrokerageInvestment";
 import {BrokerageContributionStrategy} from "~/models/brokerageInvestment/BrokerageInvestment";
 import PlanManager from "~/models/plan/PlanManager";

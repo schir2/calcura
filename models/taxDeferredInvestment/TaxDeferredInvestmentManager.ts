@@ -4,14 +4,14 @@ import {assertDefined, calculateInvestmentGrowthAmount} from "~/utils";
 import type TaxDeferredInvestmentState from "~/models/taxDeferredInvestment/TaxDeferredInvestmentState";
 import BaseManager from "~/models/common/BaseManager";
 import type Command from "~/models/common/Command";
-import type IncomeManager from "~/models/income/IncomeManager";
+import type {IncomeManager} from "~/models/income/IncomeManager";
 import {FundType} from "~/models/plan/PlanManager";
 import {ContributionType} from "~/models/common";
 import {ProcessTaxDeferredInvestmentCommand} from "~/models/taxDeferredInvestment/TaxDeferredInvestmentCommands";
 import {ValueError} from "~/utils/errors/ValueError";
 import {ContributionLimitType} from "~/models/plan/Plan";
 
-export default class TaxDeferredInvestmentManager extends BaseManager<TaxDeferredInvestment, TaxDeferredInvestmentState> {
+export class TaxDeferredInvestmentManager extends BaseManager<TaxDeferredInvestment, TaxDeferredInvestmentState> {
 
     protected createInitialState(): TaxDeferredInvestmentState {
         return {
