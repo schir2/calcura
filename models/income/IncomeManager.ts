@@ -1,19 +1,20 @@
 import BaseManager from "~/models/common/BaseManager";
 import type IncomeState from "~/models/income/IncomeState";
 import type {Income} from "~/models/income/Income";
-import type {PlanState} from "~/models/plan/PlanState";
 import type Command from "~/models/common/Command";
 
-export default class IncomeManager extends BaseManager<Income, IncomeState> {
+export class IncomeManager extends BaseManager<Income, IncomeState> {
     protected createInitialState(): IncomeState {
         return {
-            grossIncome: this.config.grossIncome
+            grossIncome: this.config.grossIncome,
+            processed: false,
         }
     }
 
-    protected createNextState(previousState: IncomeState): IncomeState {
+    createNextState(previousState: IncomeState): IncomeState {
         return {
-            grossIncome: previousState.grossIncome + this.getGrowthAmount(previousState.grossIncome)
+            grossIncome: previousState.grossIncome + this.getGrowthAmount(previousState.grossIncome),
+            processed: false,
         }
     }
 
@@ -25,10 +26,7 @@ export default class IncomeManager extends BaseManager<Income, IncomeState> {
         return [];
     }
 
-    processImplementation(planState: PlanState): PlanState {
-        return {
-            ...planState,
-        };
+    processImplementation(): void {
     }
 
 }
