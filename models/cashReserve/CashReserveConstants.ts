@@ -1,7 +1,8 @@
 import type {CashReserveStrategy} from "~/models/cashReserve/CashReserve";
+import {CashReserveStrategy} from "~/models/cashReserve/CashReserve";
 
 export const DEFAULT_CASH_MAINTENANCE_NAME = 'Cash Reserve 6 months of Expenses';
-export const DEFAULT_CASH_MAINTENANCE_STRATEGY: CashReserveStrategy = 'variable';
+export const DEFAULT_CASH_MAINTENANCE_STRATEGY: CashReserveStrategy = CashReserveStrategy.Variable;
 export const DEFAULT_CASH_MAINTENANCE_RESERVE_AMOUNT = 0;
 export const DEFAULT_CASH_MAINTENANCE_RESERVE_MONTHS = 6;
 
