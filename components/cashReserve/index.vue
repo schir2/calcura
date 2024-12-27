@@ -14,11 +14,11 @@
           <FormTextInput :field="fieldMetadata.initialAmount" :modelValue="currentCashReserveConfig"></FormTextInput>
           <FormSelect :field="fieldMetadata.cashReserveStrategy" :model="currentCashReserveConfig"></FormSelect>
           <FormTextInput
-              v-if="currentCashReserveConfig.cashReserveStrategy === 'fixed'"
+              v-if="currentCashReserveConfig.cashReserveStrategy === CashReserveStrategy.Fixed"
               :field="fieldMetadata.reserveAmount"
               :modelValue="currentCashReserveConfig"></FormTextInput>
           <FormTextInput
-              v-if="currentCashReserveConfig.cashReserveStrategy === 'variable'"
+              v-if="currentCashReserveConfig.cashReserveStrategy === CashReserveStrategy.Variable"
               :field="fieldMetadata.reserveMonths"
               :modelValue="currentCashReserveConfig"></FormTextInput>
     </Form>
@@ -28,7 +28,7 @@
 <script setup lang="ts">
 import {useEntityManager} from '~/composables/api/useEntityManager';
 import {cashReserveForm} from '~/forms/cashReserveForm';
-import type {CashReserve} from '~/models/cashReserve/CashReserve';
+import {type CashReserve, CashReserveStrategy} from '~/models/cashReserve/CashReserve';
 
 interface Props {
   cashReserve: CashReserve;
