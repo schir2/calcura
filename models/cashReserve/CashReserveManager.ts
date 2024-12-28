@@ -40,8 +40,7 @@ export class CashReserveManager extends BaseManager<CashReserve, CashReserveStat
                 break
             case CashReserveStrategy.Variable:
                 const annualExpenseTotal = this.orchestrator.getAnnualExpenseTotal()
-                contribution = Math.max(this.config.reserveAmount - currentState.cashReserveStartOfYear, 0);
-                // TODO Implement this
+                contribution = Math.max(annualExpenseTotal * (this.config.reserveMonths / 12) - currentState.cashReserveStartOfYear, 0);
                 break
         }
         return contribution
