@@ -68,7 +68,11 @@ export default class PlanManager extends BaseOrchestrator<Plan, PlanState, Manag
 
     getSavingsTaxExemptInitial(): number {
         // TODO Test this function
-        return this.config.rothIraInvestments.reduce((savingsTaxDeferredStartOfYear, brokerageInvestment) => savingsTaxDeferredStartOfYear + brokerageInvestment.initialBalance, 0)
+        return this.config.rothIraInvestments.reduce((total, brokerageInvestment) => total + brokerageInvestment.initialBalance, 0)
+    }
+
+    getAnnualExpenseTotal(): number {
+        return this.managers.expenseManagers.reduce((total, expenseManager) => total + expenseManager.calculatePayment(), 0)
     }
 
     protected createInitialState(): PlanState {

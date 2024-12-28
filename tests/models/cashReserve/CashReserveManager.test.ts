@@ -1,5 +1,10 @@
 import type {Plan} from "~/models/plan/Plan";
-import {GrowthApplicationStrategy, IncomeTaxStrategy, InsufficientFundsStrategy, RetirementStrategy} from "~/models/plan/Plan";
+import {
+    GrowthApplicationStrategy,
+    IncomeTaxStrategy,
+    InsufficientFundsStrategy,
+    RetirementStrategy
+} from "~/models/plan/Plan";
 import {CashReserveStrategy} from "~/models/cashReserve/CashReserve";
 import {beforeEach, describe, expect, it} from "vitest";
 import type {CashReserveManager} from "~/models/cashReserve/CashReserveManager";
@@ -76,6 +81,70 @@ describe("CashManager", () => {
         })
     })
 
+    describe('calculateContribution', () => {
+        it('fixedWithZeroInitial', () => {
+            planManager = new PlanManager({
+                ...planConfig,
+                cashReserves: [
+                    {
+                        ...planConfig.cashReserves[0],
+                        cashReserveStrategy: CashReserveStrategy.Fixed,
+                        initialAmount: 0,
+                        reserveAmount: 20_000,
+                    }
+                ]
+            })
+            cashReserveManager = planManager.getCashReserveManagerById(1)
+            expect(cashReserveManager.calculateContribution()).toBe(20_000)
+        })
+        it('fixedWithInitial', () => {
+            planManager = new PlanManager({
+                ...planConfig,
+                cashReserves: [
+                    {
+                        ...planConfig.cashReserves[0],
+                        cashReserveStrategy: CashReserveStrategy.Fixed,
+                        initialAmount: 10_000,
+                        reserveAmount: 20_000,
+                    }
+                ]
+            })
+            cashReserveManager = planManager.getCashReserveManagerById(1)
+            expect(cashReserveManager.calculateContribution()).toBe(10_000)
+        })
+        it('variableWithInitial', () => {
+            planManager = new PlanManager({
+                ...planConfig,
+                cashReserves: [
+                    {
+                        ...planConfig.cashReserves[0],
+                        cashReserveStrategy: CashReserveStrategy.Variable,
+                        initialAmount: 0,
+                        reserveMonths: 20_000,
+                    }
+                ]
+            })
+            cashReserveManager = planManager.getCashReserveManagerById(1)
+            expect(cashReserveManager.calculateContribution()).toBe(10_000)
+        })
+        it('variableWithInitial', () => {
+            planManager = new PlanManager({
+                ...planConfig,
+                cashReserves: [
+                    {
+                        ...planConfig.cashReserves[0],
+                        cashReserveStrategy: CashReserveStrategy.Variable,
+                        initialAmount: 10_000,
+                        reserveMonths: 20_000,
+                    }
+                ]
+            })
+            cashReserveManager = planManager.getCashReserveManagerById(1)
+            expect(cashReserveManager.calculateContribution()).toBe(10_000)
+        })
+
+    })
+
     describe('process', () => {
         it('sufficient funds', () => {
             cashReserveManager.process()
@@ -89,11 +158,12 @@ describe("CashManager", () => {
             expect(planState.taxedWithdrawals).toBe(20_000)
 
         })
-        it('sufficient funds', () => {
+        it('insufficient funds', () => {
             planManager = new PlanManager({
                 ...planConfig,
                 cashReserves: [
-                    {...planConfig.cashReserves[0],
+                    {
+                        ...planConfig.cashReserves[0],
                         reserveAmount: 500_000,
                     }
                 ]

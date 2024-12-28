@@ -1,8 +1,17 @@
 import {beforeEach, describe, expect, it} from "vitest";
 import PlanManager, {FundType} from "~/models/plan/PlanManager";
-import {GrowthApplicationStrategy, IncomeTaxStrategy, InsufficientFundsStrategy, type Plan, RetirementStrategy} from "~/models/plan/Plan";
+import {
+    GrowthApplicationStrategy,
+    IncomeTaxStrategy,
+    InsufficientFundsStrategy,
+    type Plan,
+    RetirementStrategy
+} from "~/models/plan/Plan";
 import {ContributionType} from "~/models/common";
-import {EmployerContributionStrategy, TaxDeferredContributionStrategy} from "~/models/taxDeferredInvestment/TaxDeferredInvestment";
+import {
+    EmployerContributionStrategy,
+    TaxDeferredContributionStrategy
+} from "~/models/taxDeferredInvestment/TaxDeferredInvestment";
 import {IraContributionStrategy} from "~/models/iraInvestment/IraInvestment";
 import {RothIraContributionStrategy} from "~/models/rothIraInvestment/RothIraInvestment";
 import {BrokerageContributionStrategy} from "~/models/brokerageInvestment/BrokerageInvestment";
@@ -33,7 +42,7 @@ describe("PlanManager", () => {
             retirementSavingsAmount: 200000,
             cashReserves: [
                 {
-                    id:  10,
+                    id: 10,
                     name: 'Cash Reserve',
                     cashReserveStrategy: CashReserveStrategy.Fixed,
                     reserveMonths: 0,
@@ -68,6 +77,28 @@ describe("PlanManager", () => {
                     expenseType: ExpenseType.fixed,
                     growthRate: 0,
                     isEssential: true,
+                    isTaxDeductible: false,
+                    growsWithInflation: true,
+                },
+                {
+                    id: 2,
+                    name: 'Gym',
+                    frequency: ExpenseFrequency.Monthly,
+                    amount: 70,
+                    expenseType: ExpenseType.fixed,
+                    growthRate: 0,
+                    isEssential: false,
+                    isTaxDeductible: false,
+                    growsWithInflation: true,
+                },
+                {
+                    id: 3,
+                    name: 'Climbing',
+                    frequency: ExpenseFrequency.Annually,
+                    amount: 1450,
+                    expenseType: ExpenseType.fixed,
+                    growthRate: 0,
+                    isEssential: false,
                     isTaxDeductible: false,
                     growsWithInflation: true,
                 }],
@@ -457,6 +488,12 @@ describe("PlanManager", () => {
             expect(planManager.getCashReserveManagerById(10)).toBe(planManager.managers.cashReserveManagers[0])
         })
     })
+    describe("getAnnualExpenseTotal", () => {
+        it("should calculate expenses correctly", () => {
+            expect(planManager.getAnnualExpenseTotal()).toBe(1_800*12 + 70 * 12 + 1450)
+        })
+    })
+
     describe("canRetire", () => {
         it.todo("should return true if retirement age is met when using 'age' strategy");
         it.todo("should return true if all debts are cleared when using 'debt_free' strategy");
