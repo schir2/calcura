@@ -1,13 +1,9 @@
 import type {GrowthApplicationStrategy} from "~/models/plan/Plan";
 import {InsufficientFundsStrategy} from "~/models/plan/Plan";
+import {Frequency} from "~/models/expense/Expense";
 
 export function calculateCompoundInterest(principal: number, interestRate: number, numberOfInterestApplicationsPerPeriod: number = 1, numberOfPeriods: number): number {
     return principal * (1 + (interestRate / numberOfInterestApplicationsPerPeriod)) ** (numberOfInterestApplicationsPerPeriod * numberOfPeriods)
-}
-
-interface InvestmentGrowthAmountResult {
-    contributionGrowth?: number;
-    growthAmount: number;
 }
 
 export function calculateInvestmentGrowthAmount(
@@ -20,7 +16,7 @@ export function calculateInvestmentGrowthAmount(
             return principal * (growthRate / 100)
 
         case 'end':
-            return (principal + (contribution?? 0)) * (growthRate / 100)
+            return (principal + (contribution ?? 0)) * (growthRate / 100)
         default:
             throw new Error(`Invalid growth application strategy: ${growthApplicationStrategy}`);
     }
@@ -40,5 +36,20 @@ export function adjustForInsufficientFunds(
             return requestedAmount;
         default:
             throw new Error(`Invalid insufficientFundsStrategy value: ${insufficientFundsStrategy}`);
+    }
+}
+
+export function getAnnualAmount(amount: number, frequency: Frequency): number {
+    switch (frequency) {
+        case Frequency.Monthly:
+            return amount * 12
+        case Frequency.Annually:
+            return amount
+        case Frequency.Weekly:
+            return amount * 52
+        case Frequency.Quarterly:
+            return amount * 4
+        default:
+            throw new Error(`Invalid frequency value: ${frequency}`);
     }
 }
