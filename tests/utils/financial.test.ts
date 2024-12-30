@@ -1,6 +1,7 @@
 import {describe, expect, it} from 'vitest';
-import {adjustForInsufficientFunds, calculateCompoundInterest, calculateInvestmentGrowthAmount} from '@/utils/financial';
-import {InsufficientFundsStrategy} from "~/models/plan/Plan";
+import {adjustForInsufficientFunds, calculateCompoundInterest, calculateInvestmentGrowthAmount, getAnnualAmount} from '@/utils/financial';
+import {GrowthApplicationStrategy, InsufficientFundsStrategy} from "~/models/plan/Plan";
+import {Frequency} from "~/models/expense/Expense";
 
 describe('financialUtils', () => {
 
@@ -29,46 +30,46 @@ describe('financialUtils', () => {
     describe('calculateInvestmentGrowthAmount', () => {
         it('calculates growth correctly with "start" strategy', () => {
             const growthAmount = calculateInvestmentGrowthAmount(
-                1000, 5, 'start');
+                1000, 5, GrowthApplicationStrategy.Start);
             expect(growthAmount).toBe(50);
         });
 
         it('calculates growth correctly with "end" strategy', () => {
-            const growthAmount = calculateInvestmentGrowthAmount(1000, 5, 'end', 200,);
+            const growthAmount = calculateInvestmentGrowthAmount(1000, 5, GrowthApplicationStrategy.End, 200,);
             expect(growthAmount).toBe(60);
         });
 
         it('handles zero principal with "start" strategy', () => {
-            const growthAmount = calculateInvestmentGrowthAmount(0, 5, 'start',);
+            const growthAmount = calculateInvestmentGrowthAmount(0, 5, GrowthApplicationStrategy.Start,);
             expect(growthAmount).toBe(0);
         });
 
         it('handles zero principal with "end" strategy', () => {
-            const growthAmount = calculateInvestmentGrowthAmount(0, 5, 'end', 200,);
+            const growthAmount = calculateInvestmentGrowthAmount(0, 5, GrowthApplicationStrategy.End, 200,);
 
             expect(growthAmount).toBe(10);
         });
 
         it('handles zero growth rate with "start" strategy', () => {
-            const growthAmount = calculateInvestmentGrowthAmount(1000, 0, 'start',);
+            const growthAmount = calculateInvestmentGrowthAmount(1000, 0, GrowthApplicationStrategy.Start,);
 
             expect(growthAmount).toBe(0);
         });
 
         it('handles zero growth rate with "end" strategy', () => {
-            const growthAmount = calculateInvestmentGrowthAmount(1000, 0, 'end', 200,);
+            const growthAmount = calculateInvestmentGrowthAmount(1000, 0, GrowthApplicationStrategy.End, 200,);
 
             expect(growthAmount).toBe(0);
         });
 
         it('handles fractional growth rates with "start" strategy', () => {
-            const growthAmount = calculateInvestmentGrowthAmount(1000, 3.75, 'start',);
+            const growthAmount = calculateInvestmentGrowthAmount(1000, 3.75, GrowthApplicationStrategy.Start,);
 
             expect(growthAmount).toBe(37.5);
         });
 
         it('handles fractional growth rates with "end" strategy', () => {
-            const growthAmount = calculateInvestmentGrowthAmount(1000, 3.75, 'end', 200,);
+            const growthAmount = calculateInvestmentGrowthAmount(1000, 3.75, GrowthApplicationStrategy.End, 200,);
             expect(growthAmount).toBe(45);
         });
 
@@ -117,4 +118,40 @@ describe('financialUtils', () => {
             ).toThrow('Invalid insufficientFundsStrategy value: invalid');
         });
     });
+    describe('getAnnualAmount', () => {
+        it('should calculate annual amount for Monthly frequency', () => {
+            expect(getAnnualAmount(100, Frequency.Monthly)).toBe(1200);
+        });
+
+        it('should calculate annual amount for Annually frequency', () => {
+            expect(getAnnualAmount(500, Frequency.Annually)).toBe(500);
+        });
+
+        it('should calculate annual amount for Weekly frequency', () => {
+            expect(getAnnualAmount(50, Frequency.Weekly)).toBe(2600);
+        });
+
+        it('should calculate annual amount for Quarterly frequency', () => {
+            expect(getAnnualAmount(300, Frequency.Quarterly)).toBe(1200);
+        });
+
+        it('should return 0 for amount of 0, regardless of frequency', () => {
+            expect(getAnnualAmount(0, Frequency.Monthly)).toBe(0);
+            expect(getAnnualAmount(0, Frequency.Annually)).toBe(0);
+            expect(getAnnualAmount(0, Frequency.Weekly)).toBe(0);
+            expect(getAnnualAmount(0, Frequency.Quarterly)).toBe(0);
+        });
+
+        it('should handle negative amounts correctly', () => {
+            expect(getAnnualAmount(-100, Frequency.Monthly)).toBe(-1200);
+            expect(getAnnualAmount(-500, Frequency.Annually)).toBe(-500);
+            expect(getAnnualAmount(-50, Frequency.Weekly)).toBe(-2600);
+            expect(getAnnualAmount(-300, Frequency.Quarterly)).toBe(-1200);
+        });
+
+        it('should throw an error for invalid frequency', () => {
+            expect(() => getAnnualAmount(100, 'InvalidFrequency' as Frequency)).toThrow();
+        });
+    });
+
 })
