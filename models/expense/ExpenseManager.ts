@@ -1,7 +1,7 @@
 import BaseManager from "~/models/common/BaseManager";
 import type Command from "~/models/common/Command";
 import type {Expense} from "~/models/expense/Expense";
-import {ExpenseFrequency} from "~/models/expense/Expense";
+import {Frequency} from "~/models/expense/Expense";
 import type ExpenseState from "~/models/expense/ExpenseState";
 import {FundType} from "~/models/plan/PlanManager";
 import {ProcessExpenseCommand} from "~/models/expense/ExpenseCommands";
@@ -13,15 +13,19 @@ export class ExpenseManager extends BaseManager<Expense, ExpenseState> {
             amountRequested: 0,
             amountPaid: 0,
             processed: false,
+            growthAmount: 0,
         };
     }
 
-    createNextState(previousState: ExpenseState): ExpenseState {
+    createNextState(currentState: ExpenseState): ExpenseState {
+        const growthAmount = this.calculateGrowthAmount(currentState.baseAmount)
+        const baseAmount = currentState.baseAmount + growthAmount
         return {
-            baseAmount: 0,
+            baseAmount: baseAmount,
             amountRequested: 0,
             amountPaid: 0,
             processed: false,
+            growthAmount: growthAmount,
 
         };
     }
@@ -41,13 +45,13 @@ export class ExpenseManager extends BaseManager<Expense, ExpenseState> {
 
     private _calculatePayment(baseAmount: number) {
         switch (this.config.frequency) {
-            case ExpenseFrequency.Annually:
+            case Frequency.Annually:
                 return baseAmount
-            case ExpenseFrequency.Monthly:
+            case Frequency.Monthly:
                 return baseAmount * 12
-            case ExpenseFrequency.Quarterly:
+            case Frequency.Quarterly:
                 return baseAmount * 4
-            case ExpenseFrequency.Weekly:
+            case Frequency.Weekly:
                 return baseAmount * 52
         }
     }
@@ -60,13 +64,11 @@ export class ExpenseManager extends BaseManager<Expense, ExpenseState> {
         const currentState = this.getCurrentState()
         const amountRequested = this.calculatePayment()
         const amountPaid = this.orchestrator.requestFunds(amountRequested, FundType.Taxed)
-        const baseAmount = currentState.baseAmount + this.calculateGrowthAmount(currentState.baseAmount)
         this.orchestrator.withdraw(amountPaid, FundType.Taxed)
         this.updateCurrentState({
             ...currentState,
             amountRequested: amountRequested,
             amountPaid: amountPaid,
-            baseAmount: baseAmount,
 
         })
     }

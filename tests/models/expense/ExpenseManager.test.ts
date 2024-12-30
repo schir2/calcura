@@ -1,7 +1,7 @@
 import {beforeEach, describe, expect, it} from "vitest";
 import PlanManager from "~/models/plan/PlanManager";
 import {GrowthApplicationStrategy, IncomeTaxStrategy, InsufficientFundsStrategy, type Plan, RetirementStrategy} from "~/models/plan/Plan";
-import {ExpenseFrequency, ExpenseType} from "~/models/expense/Expense";
+import {Frequency, ExpenseType} from "~/models/expense/Expense";
 import {ExpenseManager} from "~/models/expense/ExpenseManager"
 import type ExpenseState from "~/models/expense/ExpenseState";
 import {ProcessExpenseCommand} from "~/models/expense/ExpenseCommands";
@@ -45,13 +45,13 @@ const planConfig: Plan = {
         {
             id: 1,
             name: 'Rent',
-            frequency: ExpenseFrequency.Monthly,
+            frequency: Frequency.Monthly,
             amount: 1_800,
             expenseType: ExpenseType.fixed,
             growthRate: 0,
             isEssential: true,
             isTaxDeductible: false,
-            growsWithInflation: true,
+            growsWithInflation: false,
         }
     ],
     debts: [],
@@ -88,7 +88,7 @@ describe("ExpenseManager", () => {
                 expenses: [{
                     ...planConfig.expenses[0],
                     amount: 100,
-                    frequency: ExpenseFrequency.Annually
+                    frequency: Frequency.Annually
                 }]
             })
             expenseManager = planManager.getExpenseManagerById(1)
@@ -101,7 +101,7 @@ describe("ExpenseManager", () => {
                 expenses: [{
                     ...planConfig.expenses[0],
                     amount: 100,
-                    frequency: ExpenseFrequency.Quarterly
+                    frequency: Frequency.Quarterly
                 }]
             })
             expenseManager = planManager.getExpenseManagerById(1)
@@ -114,7 +114,7 @@ describe("ExpenseManager", () => {
                 expenses: [{
                     ...planConfig.expenses[0],
                     amount: 100,
-                    frequency: ExpenseFrequency.Monthly
+                    frequency: Frequency.Monthly
                 }]
             })
             expenseManager = planManager.getExpenseManagerById(1)
@@ -127,7 +127,7 @@ describe("ExpenseManager", () => {
                 expenses: [{
                     ...planConfig.expenses[0],
                     amount: 100,
-                    frequency: ExpenseFrequency.Weekly
+                    frequency: Frequency.Weekly
                 }]
             })
             expenseManager = planManager.getExpenseManagerById(1)
@@ -141,10 +141,10 @@ describe("ExpenseManager", () => {
         it('sufficient funds', () => {
             expenseManager.process()
             const currentState: ExpenseState = expenseManager.getCurrentState()
-            expect(currentState.baseAmount = 1_800)
-            expect(currentState.amountRequested = 21_600)
-            expect(currentState.amountPaid = 21_600)
-            expect(currentState.processed = true)
+            expect(currentState.baseAmount).toBe(1_800)
+            expect(currentState.amountRequested).toBe(21_600)
+            expect(currentState.amountPaid).toBe(21_600)
+            expect(currentState.processed).toBe(true)
         })
         it('insufficient funds', () => {
             planManager = new PlanManager({
@@ -152,17 +152,69 @@ describe("ExpenseManager", () => {
                 expenses: [{
                     ...planConfig.expenses[0],
                     amount: 100_000,
-                    frequency: ExpenseFrequency.Quarterly
+                    frequency: Frequency.Quarterly
                 }]
             })
             expenseManager = planManager.getExpenseManagerById(1)
 
             expenseManager.process()
             const currentState: ExpenseState = expenseManager.getCurrentState()
-            expect(currentState.baseAmount = 100_000)
-            expect(currentState.amountRequested = 1_200_000)
-            expect(currentState.amountPaid = 105_000)
-            expect(currentState.processed = true)
+            expect(currentState.baseAmount).toBe(100_000)
+            expect(currentState.amountRequested).toBe(400_000)
+            expect(currentState.amountPaid).toBe(105_000)
+            expect(currentState.processed).toBe(true)
+        })
+        it('growth at 10%', () => {
+            planManager = new PlanManager({
+                ...planConfig,
+                expenses: [{
+                    ...planConfig.expenses[0],
+                    amount: 100_000,
+                    frequency: Frequency.Annually,
+                    growthRate: 10,
+                }]
+            })
+            expenseManager = planManager.getExpenseManagerById(1)
+
+            expenseManager.process()
+            const currentState: ExpenseState = expenseManager.getCurrentState()
+            expect(currentState.baseAmount).toBe(100_000)
+            expect(currentState.amountRequested).toBe(100_000)
+            expect(currentState.amountPaid).toBe(100_000)
+            expect(currentState.growthAmount).toBe(0)
+            expect(currentState.processed).toBe(true)
+            expenseManager.advanceTimePeriod()
+            const newState = expenseManager.getCurrentState()
+            expect(newState.baseAmount).toBe(110_000)
+            expect(newState.growthAmount).toBe(10_000)
+            expenseManager.process()
+        })
+        it('grows with inflation', () => {
+            planManager = new PlanManager({
+                ...planConfig,
+                inflationRate: 5,
+                expenses: [{
+                    ...planConfig.expenses[0],
+                    amount: 100_000,
+                    frequency: Frequency.Annually,
+                    growthRate: 10,
+                    growsWithInflation: true,
+                }]
+            })
+            expenseManager = planManager.getExpenseManagerById(1)
+
+            expenseManager.process()
+            const currentState: ExpenseState = expenseManager.getCurrentState()
+            expect(currentState.baseAmount).toBe(100_000)
+            expect(currentState.amountRequested).toBe(100_000)
+            expect(currentState.amountPaid).toBe(100_000)
+            expect(currentState.growthAmount).toBe(0)
+            expect(currentState.processed).toBe(true)
+            expenseManager.advanceTimePeriod()
+            const newState = expenseManager.getCurrentState()
+            expect(newState.baseAmount).toBe(105_000)
+            expect(newState.growthAmount).toBe(5_000)
+            expenseManager.process()
         })
 
 
@@ -188,6 +240,5 @@ describe("ExpenseManager", () => {
 
 
     describe('createNextState', () => {
-
     })
 });
