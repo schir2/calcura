@@ -266,7 +266,7 @@ const planStates = ref<PlanState[]>([])
 
 watch(plan, (newState, previousState) => {
   planManager = new PlanManager(newState)
-  planStates.value = planManager.simulate()
+  // planStates.value = planManager.simulate()
 })
 
 const showAdvancedOptions = ref<boolean>(false)

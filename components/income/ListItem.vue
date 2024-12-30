@@ -10,7 +10,7 @@
   <n-list-item>
     <n-thing class="p-2">
       <template #header>
-        <span>{{ income.name }}</span>
+        <span>{{ income.name }}</span> <NuxtLink :to="{name: 'incomes-id', params: {id: income.id}}"><Icon name="mdi:open-in-new"/></NuxtLink>
       </template>
       <template #default>
       <ul class="grid grid-cols-5">

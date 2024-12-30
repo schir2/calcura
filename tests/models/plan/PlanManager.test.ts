@@ -15,7 +15,7 @@ import {
 import {IraContributionStrategy} from "~/models/iraInvestment/IraInvestment";
 import {RothIraContributionStrategy} from "~/models/rothIraInvestment/RothIraInvestment";
 import {BrokerageContributionStrategy} from "~/models/brokerageInvestment/BrokerageInvestment";
-import {ExpenseFrequency, ExpenseType} from "~/models/expense/Expense";
+import {Frequency, ExpenseType} from "~/models/expense/Expense";
 import {DebtPaymentStrategy} from "~/models/debt/Debt";
 import {CashReserveStrategy} from "~/models/cashReserve/CashReserve";
 
@@ -72,7 +72,7 @@ describe("PlanManager", () => {
                 {
                     id: 1,
                     name: 'Rent',
-                    frequency: ExpenseFrequency.Monthly,
+                    frequency: Frequency.Monthly,
                     amount: 1_800,
                     expenseType: ExpenseType.fixed,
                     growthRate: 0,
@@ -83,7 +83,7 @@ describe("PlanManager", () => {
                 {
                     id: 2,
                     name: 'Gym',
-                    frequency: ExpenseFrequency.Monthly,
+                    frequency: Frequency.Monthly,
                     amount: 70,
                     expenseType: ExpenseType.fixed,
                     growthRate: 0,
@@ -94,7 +94,7 @@ describe("PlanManager", () => {
                 {
                     id: 3,
                     name: 'Climbing',
-                    frequency: ExpenseFrequency.Annually,
+                    frequency: Frequency.Annually,
                     amount: 1450,
                     expenseType: ExpenseType.fixed,
                     growthRate: 0,

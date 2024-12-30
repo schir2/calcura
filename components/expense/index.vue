@@ -42,7 +42,8 @@
 import {useEntityManager} from '~/composables/api/useEntityManager';
 import {expenseForm} from '~/forms/expenseForm';
 import type {Expense} from '~/models/expense/Expense';
-import {getAnnualExpenseAmount} from "~/utils/expenseUtils";
+
+import {getAnnualAmount} from "~/utils";
 
 interface Props {
   expense: Expense;
@@ -64,13 +65,13 @@ const {
 
 
 const prevAmount = ref(0);
-const currentAmount = computed(() => getAnnualExpenseAmount(currentExpenseConfig.value));
+const currentAmount = computed(() => getAnnualAmount(currentExpenseConfig.value));
 
 watch(
     currentExpenseConfig,
     (newConfig: Expense, oldConfig: Expense) => {
       if (expense) {
-        prevAmount.value = getAnnualExpenseAmount(oldConfig);
+        prevAmount.value = getAnnualAmount(oldConfig);
       }
     }
 );

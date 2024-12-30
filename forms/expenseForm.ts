@@ -1,5 +1,5 @@
 import * as yup from "yup";
-import {type Expense, ExpenseFrequency, ExpenseType} from "~/models/expense/Expense";
+import {type Expense, Frequency, ExpenseType} from "~/models/expense/Expense";
 import type {FormData} from "~/interfaces/FieldData";
 import {EXPENSE_NAME_MAX_LENGTH, EXPENSE_NAME_MIN_LENGTH, MAX_EXPENSE_AMOUNT, MIN_EXPENSE_AMOUNT,} from "~/models/expense/ExpenseConstants";
 import {createSchema} from "~/utils/schemaUtils";
@@ -48,13 +48,13 @@ export const expenseForm: FormData<Expense> = {
         placeholder: "Select frequency",
         helpText: "Specify how often this expense occurs.",
         rules: yup
-            .mixed<ExpenseFrequency>()
+            .mixed<Frequency>()
             .required("Frequency is required"),
         options: [
-            {label: "Monthly", value: ExpenseFrequency.Monthly},
-            {label: "Weekly", value: ExpenseFrequency.Weekly},
-            {label: "Quarterly", value: ExpenseFrequency.Quarterly},
-            {label: "Annually", value: ExpenseFrequency.Annually},
+            {label: "Monthly", value: Frequency.Monthly},
+            {label: "Weekly", value: Frequency.Weekly},
+            {label: "Quarterly", value: Frequency.Quarterly},
+            {label: "Annually", value: Frequency.Annually},
         ],
     },
     isEssential: {

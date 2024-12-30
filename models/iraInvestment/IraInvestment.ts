@@ -9,10 +9,8 @@ export enum IraContributionStrategy {
 export interface IraInvestment {
     id: number;
     name: string;
-
     growthRate: number;
     initialBalance: number;
-
     contributionStrategy: IraContributionStrategy;
     contributionPercentage: number;
     contributionFixedAmount: number;
