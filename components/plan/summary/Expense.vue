@@ -10,7 +10,7 @@
             <n-tag type="warning">{{ expense.frequency }}</n-tag>
             {{expense.growthRate}}
           </li>
-          <li class="text-end"><span>${{ getAnnualExpenseAmount(expense) }}</span></li>
+          <li class="text-end"><span>${{ getAnnualAmount(expense.amount, expense.frequency) }}</span></li>
         </ul>
       </li>
       <li class="grid grid-cols-2">
@@ -25,7 +25,8 @@
 <script setup lang="ts">
 
 import {type Expense} from "~/models/expense/Expense";
-import {getAnnualExpenseAmount} from "~/utils/expenseUtils";
+
+import {getAnnualAmount} from "~/utils";
 
 interface Props {
   expenses: Expense[]
@@ -33,7 +34,7 @@ interface Props {
 
 const props = defineProps<Props>()
 const totalExpense = computed(() => {
-  return props.expenses.reduce((total, expense) => total + getAnnualExpenseAmount(expense), 0)
+  return props.expenses.reduce((total, expense) => total + getAnnualAmount(expense.amount, expense.frequency), 0)
 })
 
 </script>

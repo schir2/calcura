@@ -5,11 +5,11 @@ export enum ExpenseType {
     variable = 'variable',
 }
 
-export enum ExpenseFrequency {
-    Monthly = 'Monthly',
-    Weekly = 'Weekly',
-    Quarterly = 'Quarterly',
-    Annually = 'Annually',
+export enum Frequency {
+    Monthly = 'monthly',
+    Weekly = 'weekly',
+    Quarterly = 'quarterly',
+    Annually = 'annual',
 }
 
 export interface Expense {
@@ -17,7 +17,7 @@ export interface Expense {
     name: string,
     amount: number,
     expenseType: ExpenseType,
-    frequency: ExpenseFrequency,
+    frequency: Frequency,
     isEssential: boolean,
     isTaxDeductible: boolean,
     growsWithInflation: boolean,
@@ -34,7 +34,7 @@ export const expenseDefaults: ExpensePartial = {
     name: '',
     amount: 0,
     expenseType: ExpenseType.fixed,
-    frequency: ExpenseFrequency.Annually,
+    frequency: Frequency.Annually,
     isEssential: true,
     isTaxDeductible: false,
     growsWithInflation: false,
