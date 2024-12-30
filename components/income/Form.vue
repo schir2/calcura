@@ -27,7 +27,12 @@
         <n-form-item path="growthRate" label="Growth Rate" v-bind="formFields.growthRate.props">
           <n-input-number v-model:value="formFields.growthRate.value" suffix="%"/>
         </n-form-item>
+        {{formFields.grossIncome.value}}
       </n-form>
+      <Bar v-if="data" id="my-chart-id"
+           :options="chartOptions"
+           :data="chartData"
+      ></Bar>
     </template>
 
     <template #action>
@@ -37,10 +42,12 @@
 </template>
 
 <script lang="ts" setup>
+import {Bar} from 'vue-chartjs'
 import {incomeForm, incomeFormSchema} from "~/forms/incomeForm";
 import {useForm} from "vee-validate";
 import type {Income} from "~/models/income/Income";
 import {useFieldHelpers} from "~/composables/useFieldHelpers";
+import {BarElement, CategoryScale, Chart as ChartJS, Legend, LinearScale, Title, Tooltip} from 'chart.js'
 
 interface Props {
   incomePartial: Partial<Income>;
@@ -55,7 +62,39 @@ const {defineField, values, errors, handleSubmit, meta} = useForm({
   initialValues: props.incomePartial,
 });
 
+ChartJS.register(Title, Tooltip, Legend, BarElement, CategoryScale, LinearScale)
+
+
 const formFields = ref(useFieldHelpers(incomeForm, defineField))
+
+
+const data = computed<Array<number>>(() => {
+  const initialValue = formFields.grossIncome ? formFields.grossIncome.value : 0;
+  return Array.from({ length: 20 }).reduce((acc, _, i) => {
+    if (i === 0) {
+      acc.push(initialValue);
+    } else {
+      acc.push(acc[i - 1] * 0.5);
+    }
+    return acc;
+  }, [] as number[]);
+});
+
+const chartOptions = {
+  responsive: true,
+};
+
+const chartData = computed(() => ({
+  labels: Array.from({length: 20}, (_, i) => `Year ${i + 1}`),
+  datasets: [{
+    label: 'Projection',
+    data: data.value,
+  }]
+}));
+
+watch( data, (newData) => {
+  console.log(newData)
+})
 
 function handleCreate() {
   emit('create', values)
