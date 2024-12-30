@@ -27,7 +27,7 @@
         <n-form-item path="growthRate" label="Growth Rate" v-bind="formFields.growthRate.props">
           <n-input-number v-model:value="formFields.growthRate.value" suffix="%"/>
         </n-form-item>
-        {{formFields.grossIncome.value}}
+        {{formFields.data}}
       </n-form>
       <Bar v-if="data" id="my-chart-id"
            :options="chartOptions"
@@ -67,18 +67,7 @@ ChartJS.register(Title, Tooltip, Legend, BarElement, CategoryScale, LinearScale)
 
 const formFields = ref(useFieldHelpers(incomeForm, defineField))
 
-
-const data = computed<Array<number>>(() => {
-  const initialValue = formFields.grossIncome ? formFields.grossIncome.value : 0;
-  return Array.from({ length: 20 }).reduce((acc, _, i) => {
-    if (i === 0) {
-      acc.push(initialValue);
-    } else {
-      acc.push(acc[i - 1] * 0.5);
-    }
-    return acc;
-  }, [] as number[]);
-});
+const data = ref(Array<number>(20).fill(0))
 
 const chartOptions = {
   responsive: true,
@@ -88,13 +77,23 @@ const chartData = computed(() => ({
   labels: Array.from({length: 20}, (_, i) => `Year ${i + 1}`),
   datasets: [{
     label: 'Projection',
-    data: data.value,
+    data: generateGrowthData(formFields.value.grossIncome.value, formFields.value.growthRate.value),
   }]
 }));
 
 watch( data, (newData) => {
   console.log(newData)
 })
+
+function generateGrowthData(principal: number, growthRate: number = 0) {
+  const data = Array(20).fill(0)
+  const growthMultiplier = 1 + growthRate / 100
+  data[0] = principal
+  for (let i=1; i<19; i++) {
+    data[i] = data[i-1] * growthMultiplier
+  }
+  return data
+}
 
 function handleCreate() {
   emit('create', values)
