@@ -1,11 +1,18 @@
 <template>
   <n-card>
-    <h3 class="text-2xl">Expenses</h3>
-    <ul v-if="expenses" class="space-y-1">
-      <li v-for="(expense, index) in expenses" :Key="index" class="flex justify-between">
-        <div class="space-y-1">
-          <p>{{ expense.name }}</p>
-          <p>
+    <template #header>
+      <span class="text-2xl">
+        <Icon name="uil:money-withdraw"/>
+        Expenses
+      </span>
+    </template>
+    <n-list v-if="expenses" class="space-y-1">
+      <n-list-item v-for="(expense, index) in expenses" :Key="index">
+        <div class="flex justify-between">
+          <div class="space-y-1">
+          <span class="text-lg">{{ expense.name }}</span>
+          <div class="flex gap-1 items-end">
+
             <n-tag size="small">
               <template #icon>
                 <Icon v-if="expense.expenseType==='fixed'" name="mdi-lock"/>
@@ -43,13 +50,19 @@
               </template>
               Essential
             </n-tag>
-          </p>
+          </div>
+          </div>
+          <div class="text-end text-lg">${{
+              $humanize.intComma(getAnnualAmount(expense.amount, expense.frequency))
+            }}
+          </div>
         </div>
-        <span class="text-end text-lg">${{ $humanize.intComma(getAnnualAmount(expense.amount, expense.frequency)) }}</span>
-      </li>
-    </ul>
-    <n-divider title-placement="center">Total</n-divider>
-    <n-statistic class="text-end">${{ $humanize.intComma(totalExpense) }}</n-statistic>
+      </n-list-item>
+      <n-list-item>
+
+        <p class="text-end text-2xl">${{ $humanize.intComma(totalExpense) }}</p>
+      </n-list-item>
+    </n-list>
   </n-card>
 
 </template>
