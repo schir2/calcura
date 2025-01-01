@@ -1,18 +1,18 @@
 <template>
   <n-button-group>
-    <n-button secondary round v-if="mode ==='edit'" type="success" @click="emit('update')">
+    <n-button secondary round v-if="mode ==='edit'" type="success" :disabled="hasErrors" @click="emit('update')">
       <template #icon>
         <Icon name="mdi:content-save"/>
       </template>
       <span>Save</span>
     </n-button>
-    <n-button secondary round v-if="mode==='edit'" type="warning" @click="emit('create')">
+    <n-button secondary round v-if="mode==='edit'" type="warning" :disabled="hasErrors" @click="emit('create')">
       <template #icon>
         <Icon name="mdi:content-duplicate"/>
       </template>
       <span>Duplicate</span>
     </n-button>
-    <n-button secondary round v-if="mode==='create'" type="success" @click="emit('create')">
+    <n-button secondary round v-if="mode==='create'" type="success" :disabled="hasErrors" @click="emit('create')">
       <template #icon>
         <Icon name="mdi:content-save"/>
       </template>
@@ -29,8 +29,10 @@
 <script lang="ts" setup>
 interface Props {
   mode: 'edit' | 'create'
+  errors?: Record<string, string>
 }
 
 const props = defineProps<Props>()
 const emit = defineEmits(['update', 'create', 'cancel'])
+const hasErrors = computed(()=> props.errors && Object.keys(props.errors).length > 0)
 </script>

@@ -1,25 +1,29 @@
 <template>
-  <CommonCard>
-    <h3 class="text-2xl">Incomes</h3>
-    <ul v-if="incomes">
-      <li v-for="(income, index) in incomes" :Key="index" class="grid grid-cols-5">
-        <span class="col-span-3">{{ income.name }}</span>
-        <CommonChip class="bg-skin-success">{{ income.incomeType }}</CommonChip>
-        <span class="text-end">{{ income.grossIncome }}</span>
-      </li>
-      <li class="grid grid-cols-2">
+  <n-card>
+    <template #header>
+      <span class="text-2xl">
+        <Icon name="uil:money-insert"/> Incomes</span>
+    </template>
+    <n-list v-if="incomes" class="space-y-2">
+      <n-list-item v-for="(income, index) in incomes" :Key="index" class="flex justify-between">
+        <div class="flex justify-between">
+          <span class="col-span-3">{{ income.name }}</span> <n-tag type="info">{{ income.incomeType }}</n-tag>
+        </div>
+        <span class="text-end">${{ $humanize.intComma(income.grossIncome) }}</span>
+      </n-list-item>
+      <n-hr/>
+      <li class="flex justify-between">
         <span>Total</span>
-        <span class="text-end">{{ totalIncome }}</span>
+        <span class="text-end">${{ $humanize.intComma(totalIncome) }}</span>
       </li>
-    </ul>
-  </CommonCard>
+    </n-list>
+  </n-card>
 
 </template>
 
 <script setup lang="ts">
 
-import type Income from "~/models/income/Income";
-import type {IncomeType} from "~/models/income/Income";
+import type {Income, IncomeType} from "~/models/income/Income";
 
 interface Props {
   incomes: Income[]

@@ -2,7 +2,7 @@ import type {FieldProps, FormData} from "~/interfaces/FieldData";
 
 // TODO Fix Typing
 export function useFieldHelpers<T>(
-    formConfig: FormData<T>, // Ensure type safety with FormData
+    formConfig: FormData<T>,
     defineField: any
 ) {
     const fieldHelpers: Record<string, { value: any; props: FieldProps }> = {};
@@ -20,12 +20,13 @@ export function useFieldHelpers<T>(
         fieldHelpers[fieldName as string] = {
             value: value,
             props: {
-                ...props,
+                ...props.value,
                 label: formConfig[fieldName]?.label,
                 placeholder: formConfig[fieldName]?.placeholder,
                 helpText: formConfig[fieldName]?.helpText,
             }
         };
+        console.log(fieldHelpers)
     });
 
     return fieldHelpers;
