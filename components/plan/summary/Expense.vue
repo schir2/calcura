@@ -1,24 +1,56 @@
 <template>
-  <CommonCard>
+  <n-card>
     <h3 class="text-2xl">Expenses</h3>
-    <ul v-if="expenses">
-      <li v-for="(expense, index) in expenses" :Key="index">
-        <ul class="grid grid-cols-5">
-          <li  class="col-span-2"><span>{{ expense.name }} <Icon v-if="expense.isEssential" class="text-skin-error" name="uil:exclamation-circle"/></span></li>
-          <li class="flex gap-3 col-span-2">
-            <n-tag type="success">{{ expense.expenseType }}</n-tag>
-            <n-tag type="warning">{{ expense.frequency }}</n-tag>
-            {{expense.growthRate}}
-          </li>
-          <li class="text-end"><span>${{ getAnnualAmount(expense.amount, expense.frequency) }}</span></li>
-        </ul>
-      </li>
-      <li class="grid grid-cols-2">
-        <span>Total</span>
-        <span class="text-end">${{ totalExpense }}</span>
+    <ul v-if="expenses" class="space-y-1">
+      <li v-for="(expense, index) in expenses" :Key="index" class="flex justify-between">
+        <div class="space-y-1">
+          <p>{{ expense.name }}</p>
+          <p>
+            <n-tag size="small">
+              <template #icon>
+                <Icon v-if="expense.expenseType==='fixed'" name="mdi-lock"/>
+                <Icon v-else-if="expense.expenseType==='variable'" name="mdi-tune"/>
+              </template>
+              {{ expense.expenseType }}
+            </n-tag>
+            <n-tag size="small" type="info">
+              <template #icon>
+                <Icon name="mdi-calendar"></Icon>
+              </template>
+              {{ expense.frequency }}
+            </n-tag>
+            <n-tag size="small" v-if="expense.growthRate && !expense.growsWithInflation">
+              <template #icon>
+                <Icon name="mdi:trending-up"></Icon>
+              </template>
+              {{ expense.growthRate }}%
+            </n-tag>
+            <n-tag size="small" type="warning" v-if="expense.growsWithInflation">
+              <template #icon>
+                <Icon name="mdi:trending-up"/>
+              </template>
+              Inflation
+            </n-tag>
+            <n-tag size="small" type="success" v-if="expense.isTaxDeductible">
+              <template #icon>
+                <Icon name="mdi:cash"/>
+              </template>
+              Tax Deductible
+            </n-tag>
+            <n-tag size="small" type="error" v-if="expense.isEssential">
+              <template #icon>
+                <Icon name="uil:exclamation-circle"></Icon>
+              </template>
+              Essential
+            </n-tag>
+          </p>
+        </div>
+        <span class="text-end text-lg">${{ $humanize.intComma(getAnnualAmount(expense.amount, expense.frequency)) }}</span>
       </li>
     </ul>
-  </CommonCard>
+    <n-divider title-placement="center">Total</n-divider>
+    <n-statistic class="text-end">${{ $humanize.intComma(totalExpense) }}</n-statistic>
+  </n-card>
 
 </template>
 
