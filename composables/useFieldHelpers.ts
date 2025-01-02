@@ -26,7 +26,6 @@ export function useFieldHelpers<T>(
                 helpText: formConfig[fieldName]?.helpText,
             }
         };
-        console.log(fieldHelpers)
     });
 
     return fieldHelpers;

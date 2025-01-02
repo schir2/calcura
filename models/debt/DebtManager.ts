@@ -52,23 +52,7 @@ export default class DebtManager extends BaseManager<Debt, DebtState> {
 
 
     calculatePayment(state: DebtState): number {
-        let payment = 0
-        switch (this.config.paymentStrategy) {
-            case DebtPaymentStrategy.Fixed:
-                payment = this.config.paymentFixedAmount;
-                break
-            case DebtPaymentStrategy.PercentageOfDebt:
-                payment = this.config.principal * (this.config.paymentPercentage / 100);
-                break
-            case DebtPaymentStrategy.MaximumPayment:
-                payment = state.principalStartOfYear;
-                break
-            case DebtPaymentStrategy.MinimumPayment:
-                payment = this.config.paymentMinimum
-                break
-        }
-        return Math.min(payment, state.principalStartOfYear);
-
+        return calculateDebtPayment(this.config, state.principalStartOfYear)
     }
 
     override createNextState(previousState: DebtState): DebtState {
@@ -86,4 +70,24 @@ export default class DebtManager extends BaseManager<Debt, DebtState> {
     override getCommands(): Command[] {
         return [new ProcessDebtCommand(this)];
     }
+}
+
+export function calculateDebtPayment(debtConfig: Debt, principal: number): number {
+    let payment = 0
+    switch (debtConfig.paymentStrategy) {
+        case DebtPaymentStrategy.Fixed:
+            payment = debtConfig.paymentFixedAmount;
+            break
+        case DebtPaymentStrategy.PercentageOfDebt:
+            payment = debtConfig.principal * (debtConfig.paymentPercentage / 100);
+            break
+        case DebtPaymentStrategy.MaximumPayment:
+            payment = principal;
+            break
+        case DebtPaymentStrategy.MinimumPayment:
+            payment = debtConfig.paymentMinimum
+            break
+    }
+    return Math.min(payment, principal);
+
 }

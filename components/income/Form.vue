@@ -70,14 +70,13 @@ const {defineField, values, errors, handleSubmit, meta} = useForm({
   initialValues: props.incomePartial,
 });
 
-ChartJS.register(Title, Tooltip, Legend, BarElement, CategoryScale, LinearScale)
-
-
 const [name, nameProps] = defineField('name', naiveConfig);
 const [frequency, frequencyProps] = defineField('frequency', naiveConfig);
 const [grossIncome, grossIncomeProps] = defineField('grossIncome', naiveConfig);
 const [growthRate, growthRateProps] = defineField('growthRate', naiveConfig);
 const [incomeType, incomeTypeProps] = defineField('incomeType', naiveConfig);
+
+ChartJS.register(Title, Tooltip, Legend, BarElement, CategoryScale, LinearScale)
 
 const data = ref(Array<number>(20).fill(0))
 
@@ -94,10 +93,6 @@ const chartData = computed(() => ({
     data: generateGrowthData(grossIncome.value ?? 0, growthRate.value),
   }]
 }));
-
-watch(data, (newData) => {
-  console.log(newData)
-})
 
 function generateGrowthData(principal: number, growthRate: number = 0) {
   const data = Array(20).fill(0)

@@ -2,6 +2,7 @@ import * as yup from "yup";
 import type {FormData} from "~/interfaces/FieldData";
 import {MAX_DEBT_NAME_LENGTH, MAX_INTEREST_RATE, MAX_PAYMENT, MIN_DEBT_NAME_LENGTH, MIN_INTEREST_RATE, MIN_PAYMENT,} from "~/models/debt/DebtConstants";
 import type {Debt} from "~/models/debt/Debt";
+import {DebtPaymentStrategy} from "~/models/debt/Debt";
 
 export const debtForm: FormData<Debt> = {
     name: {
@@ -55,9 +56,10 @@ export const debtForm: FormData<Debt> = {
         helpText: "Choose how payments for this debt will be calculated.",
         rules: yup.mixed().required("Payment strategy is required"),
         options: [
-            {label: "Fixed Payment", value: "fixed"},
-            {label: "Percentage of Debt", value: "percentage_of_debt"},
-            {label: "Pay Maximum", value: "max"}],
+            {label: "Fixed Payment", value: DebtPaymentStrategy.Fixed},
+            {label: "Percentage of Debt", value: DebtPaymentStrategy.PercentageOfDebt},
+            {label: "Pay Minimum", value: DebtPaymentStrategy.MinimumPayment},
+            {label: "Pay Maximum", value: DebtPaymentStrategy.MaximumPayment}],
     },
     paymentFixedAmount: {
         name: "paymentFixedAmount",

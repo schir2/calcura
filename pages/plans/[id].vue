@@ -12,8 +12,8 @@
                 @remove="handleRemoveIncome"
     />
     <DebtList v-if="plan.debts" :debts="plan.debts"
-              @creat="handleCreateDebt"
-              @updat="handleUpdateDebt"
+              @create="handleCreateDebt"
+              @update="handleUpdateDebt"
               @delete="handleDeleteDebt"
               @remove="handleRemoveDebt"
     ></DebtList>
