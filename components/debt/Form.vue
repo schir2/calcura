@@ -1,5 +1,5 @@
 <template>
-  <n-card role="dialog" class="max-w-4xl" size="huge" :bordered="true">
+  <n-card role="dialog" class="w-full" size="huge" :bordered="true">
     <template #header>
       <h3 class="text-2xl">Debt: {{ debtPartial.name }}</h3>
     </template>
@@ -41,14 +41,28 @@
           </n-form-item>
         </p>
       </n-form>
-      <Line v-if="data" id="my-chart-id"
+      <section>
+        <ul class="flex gap-3">
+          <li>
+            <n-statistic label="Minimum Payment (Annual)">${{ $humanize.intComma(paymentMinimum * 12) }}</n-statistic>
+          </li>
+        </ul>
+      </section>
+      <section class="grid grid-cols-4 gap-3">
+        <DebtProjectionCard :projection="projections.fixed" title="Fixed Payment"/>
+        <DebtProjectionCard :projection="projections.percentage_of_debt" title="Percentage of Debt"/>
+        <DebtProjectionCard :projection="projections.minimum_payment" title="Minimum Payment"/>
+        <DebtProjectionCard :projection="projections.maximum_payment" title="Maximum Payment"/>
+      </section>
+      <Line v-if="data" id="my-chart-id" class="h-32"
             :options="chartOptions"
             :data="chartData"
       ></Line>
     </template>
 
     <template #action>
-      <FormActionButtons :mode="mode" :errors="errors" @update="handleUpdate" @create="handleCreate" @cancel="handleCancel"/>
+      <FormActionButtons :mode="mode" :errors="errors" @update="handleUpdate" @create="handleCreate"
+                         @cancel="handleCancel"/>
     </template>
   </n-card>
 </template>
@@ -56,7 +70,6 @@
 <script lang="ts" setup>
 import {CategoryScale, Chart as ChartJS, Legend, LinearScale, LineElement, PointElement, Title, Tooltip} from 'chart.js'
 import {Line} from 'vue-chartjs'
-
 import {debtForm, debtFormSchema} from "~/forms/debtForm";
 import {useForm} from "vee-validate";
 import {type Debt, DebtPaymentStrategy} from "~/models/debt/Debt";
@@ -101,96 +114,112 @@ const chartOptions = {
   plugins: {
     legend: {
       labels: {
-        color: "#FFFFFF", // White text for legend labels
+        color: "#FFFFFF",
       },
     },
     tooltip: {
-      backgroundColor: "rgba(0, 0, 0, 0.8)", // Dark background for tooltips
-      titleColor: "#FFFFFF", // White text for tooltip title
-      bodyColor: "#FFFFFF", // White text for tooltip body
+      backgroundColor: "rgba(0, 0, 0, 0.8)",
+      titleColor: "#FFFFFF",
+      bodyColor: "#FFFFFF",
     },
   },
 };
 
-function generateGrowthData(debtConfig: Debt) {
-  if (debtConfig.principal === undefined) {
-    return []
-  }
-  let i = 0
-  const data: number[] = [debtConfig.principal]
-  while (i < 20 && data[i] > 0) {
-    const payment = calculateDebtPayment(debtConfig, data[i]);
-    data.push((data[i] - payment) * (1 + debtConfig.interestRate / 100))
-    i++
-  }
-  return data
+type DebtProjection = {
+  data: number[]
+  totalPaymentsMade: number
+  totalInterestAccrued: number
+  isPaid: boolean
+  remainingDebt: number
 }
 
-const chartData = computed(() => ({
-  labels: Array.from({length: 20}, (_, i) => `Year ${i + 1}`),
-  datasets: [
-    {
-      label: 'Fixed Payment',
-      backgroundColor: "rgba(33, 150, 243, 0.5)",
-      borderColor: "#2196F3",
-      data: generateGrowthData({
-        id: 1,
-        interestRate: interestRate.value,
-        principal: principal.value,
-        name: name.value,
-        paymentFixedAmount: paymentFixedAmount.value,
-        paymentMinimum: paymentMinimum.value,
-        paymentPercentage: paymentPercentage.value,
-        paymentStrategy: DebtPaymentStrategy.Fixed
-      }),
-    },
-    {
-      label: 'Percentage of Debt',
-      backgroundColor: "rgba(76, 175, 80, 0.5)",
-      borderColor: "#4CAF50",
-      data: generateGrowthData({
-        id: 1,
-        interestRate: interestRate.value,
-        principal: principal.value,
-        name: name.value,
-        paymentFixedAmount: paymentFixedAmount.value,
-        paymentMinimum: paymentMinimum.value,
-        paymentPercentage: paymentPercentage.value,
-        paymentStrategy: DebtPaymentStrategy.PercentageOfDebt
-      }),
-    },
-    {
-      label: 'Minimum Payment',
-      backgroundColor: "rgba(255, 193, 7, 0.5)",
-      borderColor: "#FFC107",
-      data: generateGrowthData({
-        id: 1,
-        interestRate: interestRate.value,
-        principal: principal.value,
-        name: name.value,
-        paymentFixedAmount: paymentFixedAmount.value,
-        paymentMinimum: paymentMinimum.value,
-        paymentPercentage: paymentPercentage.value,
-        paymentStrategy: DebtPaymentStrategy.MinimumPayment
-      }),
-    },
-    {
-      label: 'Maximum Payment',
-      backgroundColor: "rgba(244, 67, 54, 0.5)",
-      borderColor: "#F44336",
-      data: generateGrowthData({
-        id: 1,
-        interestRate: interestRate.value,
-        principal: principal.value,
-        name: name.value,
-        paymentFixedAmount: paymentFixedAmount.value,
-        paymentMinimum: paymentMinimum.value,
-        paymentPercentage: paymentPercentage.value,
-        paymentStrategy: DebtPaymentStrategy.MaximumPayment
-      }),
-    },
-  ]
-}));
+
+function generateDebtProjection(debtConfig: Debt, maxIterations: number = 20): DebtProjection {
+  if (debtConfig.principal === undefined) {
+    return {}
+  }
+  let totalPaymentsMade = 0
+  let totalInterestAccrued = 0
+  let i = 0
+  const data: number[] = [debtConfig.principal]
+  while (i < maxIterations && data[i] > 0) {
+    const payment = calculateDebtPayment(debtConfig, data[i]);
+    const interest = (data[i] - payment) * (debtConfig.interestRate / 100)
+    const principal = data[i] - payment + interest
+    totalPaymentsMade += payment
+    totalInterestAccrued += interest
+    data.push(principal)
+    i++
+  }
+  const remainingDebt = data[data.length - 1]
+  const isPaid = remainingDebt === 0
+  return {
+    data: data,
+    totalPaymentsMade: totalPaymentsMade,
+    totalInterestAccrued: totalInterestAccrued,
+    isPaid: isPaid,
+    remainingDebt: remainingDebt
+  }
+}
+
+
+const projections = computed<Record<DebtPaymentStrategy, DebtProjection>>(() => {
+  console.log('wtf')
+  const debtPartial: Partial<Omit<Debt, 'paymentStrategy'>> = {
+    interestRate: interestRate.value,
+    principal: principal.value,
+    name: name.value,
+    paymentFixedAmount: paymentFixedAmount.value,
+    paymentMinimum: paymentMinimum.value,
+    paymentPercentage: paymentPercentage.value,
+  };
+
+  const result = {} as Record<DebtPaymentStrategy, DebtProjection>;
+
+  for (const paymentStrategy of Object.values(DebtPaymentStrategy)) {
+    const debtConfig: Debt = {
+      ...debtPartial,
+      paymentStrategy: paymentStrategy as DebtPaymentStrategy,
+    } as Debt;
+
+    result[paymentStrategy as DebtPaymentStrategy] = generateDebtProjection(debtConfig, 30);
+  }
+  return result;
+});
+
+
+const chartData = computed(() => {
+
+  return ({
+    labels: Array.from({length: 20}, (_, i) => `Year ${i + 1}`),
+    datasets: [
+      {
+        label: 'Fixed Payment',
+        backgroundColor: "rgba(33, 150, 243, 0.5)",
+        borderColor: "#2196F3",
+        data: projections.value.fixed.data,
+      },
+      {
+        label: 'Percentage of Debt',
+        backgroundColor: "rgba(76, 175, 80, 0.5)",
+        borderColor: "#4CAF50",
+        data: projections.value.percentage_of_debt.data,
+      },
+      {
+        label: 'Minimum Payment',
+        backgroundColor: "rgba(255, 193, 7, 0.5)",
+        borderColor: "#FFC107",
+        data: projections.value.minimum_payment.data,
+      },
+      {
+        label: 'Maximum Payment',
+        backgroundColor: "rgba(244, 67, 54, 0.5)",
+        borderColor: "#F44336",
+        data: projections.value.maximum_payment.data,
+      },
+    ]
+  });
+});
 
 
 function handleCreate() {

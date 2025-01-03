@@ -40,8 +40,8 @@ export const debtForm: FormData<Debt> = {
     },
     paymentMinimum: {
         name: "paymentMinimum",
-        label: "Minimum Payment",
-        placeholder: "Enter minimum payment",
+        label: "Minimum Payment (Monthly)",
+        placeholder: "Enter minimum monthly payment",
         helpText: "Specify the minimum monthly payment for this debt.",
         rules: yup
             .number()
