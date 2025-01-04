@@ -129,12 +129,12 @@ describe("DebtManager", () => {
             const debtManager = new DebtManager(planManager, {
                 ...debt,
                 paymentStrategy: DebtPaymentStrategy.MinimumPayment,
-                principal: 1000,
+                principal: 2000,
                 paymentMinimum: 100,
             })
             const debtState = debtManager.getCurrentState();
             const payment = debtManager.calculatePayment(debtState);
-            expect(payment).toBe(100);
+            expect(payment).toBe(1_200);
         })
     })
 

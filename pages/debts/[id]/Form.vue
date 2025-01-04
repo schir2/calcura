@@ -12,5 +12,5 @@ onMounted(async () => {
 })
 </script>
 <template>
-  <DebtForm v-if="debt" :debtPartial="debt"></DebtForm>
+  <DebtForm v-if="debt" mode="view" :debtPartial="debt"></DebtForm>
 </template>

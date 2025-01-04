@@ -1,5 +1,5 @@
 <template>
-  <n-card role="dialog" class="max-w-2xl" :bordered="true">
+  <n-card role="dialog" class="max-w-6xl" :bordered="true">
     <template #header>
       <h3 class="text-2xl">Plan {{ planPartial.id }}: {{ planPartial.name }}</h3>
     </template>

@@ -1,5 +1,5 @@
 <template>
-  <n-card role="dialog" class="w-full" size="huge" :bordered="true">
+  <n-card role="dialog" class="max-w-6xl" :bordered="true">
     <template #header>
       <h3 class="text-2xl">Debt: {{ debtPartial.name }}</h3>
     </template>
@@ -13,55 +13,54 @@
           <n-form-item path="principal" v-bind="principalProps" :label="debtForm.principal.label">
             <n-input-number class="w-full" v-model:value="principal"/>
           </n-form-item>
-          <n-form-item path="paymentMinimum" v-bind="paymentMinimumProps" :label="debtForm.paymentMinimum.label">
-            <n-input-number class="w-full" v-model:value="paymentMinimum"/>
+          <n-form-item path="interestRate" v-bind="interestRateProps" :label="debtForm.interestRate.label">
+            <n-input-number class="w-full" v-model:value="interestRate" size="small"/>
           </n-form-item>
         </section>
-
-        <n-form-item path="interestRate" v-bind="interestRateProps" :label="debtForm.interestRate.label">
-          <n-space vertical class="w-full">
-            <n-slider v-model:value="interestRate" :min="0" :max="50" :marks="{5: 'Medium', 15:'High', 30:'Extreme'}"/>
-            <n-input-number v-model:value="interestRate" size="small"/>
-          </n-space>
-        </n-form-item>
         <n-form-item path="paymentStrategy" v-bind="paymentStrategyProps" :label="debtForm.paymentStrategy.label">
-          <n-radio-group v-model:value="paymentStrategy">
-            <n-radio-button v-for="option in debtForm.paymentStrategy.options" :key="option.value" :value="option.value"
-                            :label="option.label"/>
-          </n-radio-group>
+          <section class="grid grid-cols-4 gap-3">
+            <DebtProjectionCard :projection="projections.fixed" title="Fixed Payment" v-model="paymentStrategy" :value="DebtPaymentStrategy.Fixed">
+              <template #inputs>
+                <n-form-item path="paymentFixedAmount" v-bind="paymentFixedAmountProps"
+                             :label="debtForm.paymentFixedAmount.label">
+                  <n-input-number class="w-full" v-model:value="paymentFixedAmount" :step="100" :precision="2">
+                    <template #prefix>$</template>
+                  </n-input-number>
+                </n-form-item>
+              </template>
+            </DebtProjectionCard>
+            <DebtProjectionCard :projection="projections.percentage_of_debt" title="Percentage of Debt" v-model="paymentStrategy" :value="DebtPaymentStrategy.PercentageOfDebt">
+              <template #inputs>
+                <n-form-item path="paymentPercentage" v-bind="paymentPercentageProps"
+                             :label="debtForm.paymentPercentage.label">
+                  <n-input-number class="w-full" v-model:value="paymentPercentage" :precision="2">
+                    <template #suffix>%</template>
+                  </n-input-number>
+                </n-form-item>
+              </template>
+            </DebtProjectionCard>
+            <DebtProjectionCard :projection="projections.minimum_payment" title="Minimum Payment" v-model="paymentStrategy" :value="DebtPaymentStrategy.MinimumPayment">
+              <template #inputs>
+                <n-form-item path="paymentMinimum" v-bind="paymentMinimumProps" :label="debtForm.paymentMinimum.label">
+                  <n-input-number class="w-full" v-model:value="paymentMinimum" :precision="2">
+                    <template #prefix>$</template>
+                    <template #suffix>per month</template>
+                  </n-input-number>
+                </n-form-item>
+              </template>
+            </DebtProjectionCard>
+            <DebtProjectionCard :projection="projections.maximum_payment" title="Maximum Payment" v-model="paymentStrategy" :value="DebtPaymentStrategy.Maximum"/>
+          </section>
         </n-form-item>
-        <p class="grid grid-cols-2 gap-3">
-          <n-form-item path="paymentFixedAmount" v-bind="paymentFixedAmountProps"
-                       :label="debtForm.paymentFixedAmount.label">
-            <n-input-number class="w-full" v-model:value="paymentFixedAmount"/>
-          </n-form-item>
-          <n-form-item path="paymentPercentage" v-bind="paymentPercentageProps"
-                       :label="debtForm.paymentPercentage.label">
-            <n-input-number class="w-full" v-model:value="paymentPercentage"/>
-          </n-form-item>
-        </p>
+        <Line v-if="data" id="my-chart-id" class="h-32"
+              :options="chartOptions"
+              :data="chartData"
+        ></Line>
       </n-form>
-      <section>
-        <ul class="flex gap-3">
-          <li>
-            <n-statistic label="Minimum Payment (Annual)">${{ $humanize.intComma(paymentMinimum * 12) }}</n-statistic>
-          </li>
-        </ul>
-      </section>
-      <section class="grid grid-cols-4 gap-3">
-        <DebtProjectionCard :projection="projections.fixed" title="Fixed Payment"/>
-        <DebtProjectionCard :projection="projections.percentage_of_debt" title="Percentage of Debt"/>
-        <DebtProjectionCard :projection="projections.minimum_payment" title="Minimum Payment"/>
-        <DebtProjectionCard :projection="projections.maximum_payment" title="Maximum Payment"/>
-      </section>
-      <Line v-if="data" id="my-chart-id" class="h-32"
-            :options="chartOptions"
-            :data="chartData"
-      ></Line>
     </template>
 
     <template #action>
-      <FormActionButtons :mode="mode" :errors="errors" @update="handleUpdate" @create="handleCreate"
+      <FormActionButtons v-if="mode !== 'view'" :mode="mode" :errors="errors" @update="handleUpdate" @create="handleCreate"
                          @cancel="handleCancel"/>
     </template>
   </n-card>
@@ -77,8 +76,8 @@ import {naiveConfig} from "~/utils/schemaUtils";
 import {calculateDebtPayment} from "~/models/debt/DebtManager";
 
 interface Props {
-  debtPartial: Partial<Debt>;
-  mode: 'create' | 'edit'
+  debtPartial: Partial<Debt> | Debt;
+  mode: 'create' | 'edit' | 'view'
 }
 
 const props = defineProps<Props>();
@@ -191,7 +190,7 @@ const projections = computed<Record<DebtPaymentStrategy, DebtProjection>>(() => 
 const chartData = computed(() => {
 
   return ({
-    labels: Array.from({length: 20}, (_, i) => `Year ${i + 1}`),
+    labels: Array.from({length: 30}, (_, i) => `Year ${i + 1}`),
     datasets: [
       {
         label: 'Fixed Payment',
