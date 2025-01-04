@@ -82,3 +82,20 @@ export class BrokerageInvestmentManager extends BaseManager<BrokerageInvestment,
         )
     }
 }
+
+export function calculateContribution(brokerageInvestmentConfig: BrokerageInvestment, balance): number {
+    let contribution = 0
+    const planState = this.orchestrator.getCurrentState();
+    switch (this.config.contributionStrategy) {
+        case BrokerageContributionStrategy.Fixed:
+            contribution = this.config.contributionFixedAmount
+            break
+        case BrokerageContributionStrategy.PercentageOfIncome:
+            contribution = planState.grossIncome * (this.config.contributionPercentage / 100)
+            break
+        case BrokerageContributionStrategy.Max:
+            contribution = planState.taxedCapital
+            break
+    }
+    return contribution
+}

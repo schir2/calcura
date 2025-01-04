@@ -1,6 +1,6 @@
 <template>
   <n-modal v-model:show="showModal">
-    <BrokerageInvestmentForm :brokerageInvestmentPartial="brokerageInvestment" mode="edit"
+    <RothIraInvestmentForm :rothIraInvestmentPartial="rothIraInvestment" mode="edit"
                  @delete="handleDelete"
                  @create="handleCreate"
                  @update="handleUpdate"
@@ -10,7 +10,7 @@
   <n-list-item>
     <n-thing class="p-2">
       <template #header>
-        <span>{{ brokerageInvestment.name }}</span> <NuxtLink :to="{name: 'brokerageInvestments-id-Form', params: {id: brokerageInvestment.id}}">{{brokerageInvestment.id}}</NuxtLink>
+        <span>{{ rothIraInvestment.name }}</span>
       </template>
       <template #default>
         <ul class="grid grid-cols-5">
@@ -25,10 +25,10 @@
 </template>
 <script setup lang="ts">
 
-import type {BrokerageInvestment} from "~/models/brokerageInvestment/BrokerageInvestment";
+import type {RothIraInvestment} from "~/models/rothIraInvestment/RothIraInvestment";
 
 interface Props {
-  brokerageInvestment: BrokerageInvestment
+  rothIraInvestment: RothIraInvestment
 }
 
 const props = defineProps<Props>()
@@ -38,23 +38,23 @@ const showModal = ref<boolean>(false)
 const emit = defineEmits(['delete', 'update', 'create', 'remove']);
 
 function handleDelete() {
-  emit('delete', props.brokerageInvestment);
+  emit('delete', props.rothIraInvestment);
 }
 
-function handleUpdate(brokerageInvestment: Partial<BrokerageInvestment>) {
-  emit('update', brokerageInvestment)
+function handleUpdate(rothIraInvestment: Partial<RothIraInvestment>) {
+  emit('update', rothIraInvestment)
   showModal.value = false;
 }
 
 
-function handleCreate(brokerageInvestmentPartial: Partial<BrokerageInvestment>) {
-  emit('create', brokerageInvestmentPartial)
+function handleCreate(rothIraInvestmentPartial: Partial<RothIraInvestment>) {
+  emit('create', rothIraInvestmentPartial)
   showModal.value = false;
 }
 
 
 function handleRemove() {
-  emit('remove', props.brokerageInvestment);
+  emit('remove', props.rothIraInvestment);
 }
 
 function handleClose() {

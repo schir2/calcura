@@ -1,5 +1,5 @@
 <template>
-  <n-button-group>
+  <n-button-group v-if="mode !== 'view'">
     <n-button secondary round v-if="mode ==='edit'" type="success" :disabled="hasErrors" @click="emit('update')">
       <template #icon>
         <Icon name="mdi:content-save"/>
@@ -28,7 +28,7 @@
 </template>
 <script lang="ts" setup>
 interface Props {
-  mode: 'edit' | 'create'
+  mode: 'edit' | 'create' | 'view'
   errors?: Record<string, string>
 }
 

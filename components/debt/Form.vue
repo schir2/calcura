@@ -49,13 +49,10 @@
                 </n-form-item>
               </template>
             </DebtProjectionCard>
-            <DebtProjectionCard :projection="projections.maximum_payment" title="Maximum Payment" v-model="paymentStrategy" :value="DebtPaymentStrategy.Maximum"/>
+            <DebtProjectionCard :projection="projections.maximum_payment" title="Maximum Payment" v-model="paymentStrategy" :value="DebtPaymentStrategy.MaximumPayment"/>
           </section>
         </n-form-item>
-        <Line v-if="data" id="my-chart-id" class="h-32"
-              :options="chartOptions"
-              :data="chartData"
-        ></Line>
+        <DebtProjectionChart :projections="projections" />
       </n-form>
     </template>
 
@@ -67,8 +64,7 @@
 </template>
 
 <script lang="ts" setup>
-import {CategoryScale, Chart as ChartJS, Legend, LinearScale, LineElement, PointElement, Title, Tooltip} from 'chart.js'
-import {Line} from 'vue-chartjs'
+
 import {debtForm, debtFormSchema} from "~/forms/debtForm";
 import {useForm} from "vee-validate";
 import {type Debt, DebtPaymentStrategy} from "~/models/debt/Debt";
@@ -96,35 +92,7 @@ const [paymentStrategy, paymentStrategyProps] = defineField('paymentStrategy', n
 const [paymentFixedAmount, paymentFixedAmountProps] = defineField('paymentFixedAmount', naiveConfig);
 const [paymentPercentage, paymentPercentageProps] = defineField('paymentPercentage', naiveConfig);
 
-ChartJS.register(
-    CategoryScale,
-    LinearScale,
-    PointElement,
-    LineElement,
-    Title,
-    Tooltip,
-    Legend
-)
-
-const data = ref(Array<number>(20).fill(0))
-
-const chartOptions = {
-  responsive: true,
-  plugins: {
-    legend: {
-      labels: {
-        color: "#FFFFFF",
-      },
-    },
-    tooltip: {
-      backgroundColor: "rgba(0, 0, 0, 0.8)",
-      titleColor: "#FFFFFF",
-      bodyColor: "#FFFFFF",
-    },
-  },
-};
-
-type DebtProjection = {
+export type DebtProjection = {
   data: number[]
   totalPaymentsMade: number
   totalInterestAccrued: number
@@ -134,9 +102,6 @@ type DebtProjection = {
 
 
 function generateDebtProjection(debtConfig: Debt, maxIterations: number = 20): DebtProjection {
-  if (debtConfig.principal === undefined) {
-    return {}
-  }
   let totalPaymentsMade = 0
   let totalInterestAccrued = 0
   let i = 0
@@ -163,7 +128,6 @@ function generateDebtProjection(debtConfig: Debt, maxIterations: number = 20): D
 
 
 const projections = computed<Record<DebtPaymentStrategy, DebtProjection>>(() => {
-  console.log('wtf')
   const debtPartial: Partial<Omit<Debt, 'paymentStrategy'>> = {
     interestRate: interestRate.value,
     principal: principal.value,
@@ -187,38 +151,7 @@ const projections = computed<Record<DebtPaymentStrategy, DebtProjection>>(() => 
 });
 
 
-const chartData = computed(() => {
 
-  return ({
-    labels: Array.from({length: 30}, (_, i) => `Year ${i + 1}`),
-    datasets: [
-      {
-        label: 'Fixed Payment',
-        backgroundColor: "rgba(33, 150, 243, 0.5)",
-        borderColor: "#2196F3",
-        data: projections.value.fixed.data,
-      },
-      {
-        label: 'Percentage of Debt',
-        backgroundColor: "rgba(76, 175, 80, 0.5)",
-        borderColor: "#4CAF50",
-        data: projections.value.percentage_of_debt.data,
-      },
-      {
-        label: 'Minimum Payment',
-        backgroundColor: "rgba(255, 193, 7, 0.5)",
-        borderColor: "#FFC107",
-        data: projections.value.minimum_payment.data,
-      },
-      {
-        label: 'Maximum Payment',
-        backgroundColor: "rgba(244, 67, 54, 0.5)",
-        borderColor: "#F44336",
-        data: projections.value.maximum_payment.data,
-      },
-    ]
-  });
-});
 
 
 function handleCreate() {

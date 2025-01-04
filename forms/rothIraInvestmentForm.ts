@@ -1,9 +1,9 @@
 import * as yup from "yup";
 import type {FormData} from "~/interfaces/FieldData";
-import type {IraInvestment} from "~/models/iraInvestment/IraInvestment";
-import type {IraContributionStrategy} from "~/types";
+import type {RothIraInvestment} from "~/models/rothIraInvestment/RothIraInvestment";
+import {RothIraContributionStrategy} from "~/models/rothIraInvestment/RothIraInvestment";
 
-export const iraInvestmentForm: FormData<IraInvestment> = {
+export const rothIraInvestmentForm: FormData<RothIraInvestment> = {
     name: {
         name: "name",
         label: "Investment Name",
@@ -41,7 +41,7 @@ export const iraInvestmentForm: FormData<IraInvestment> = {
         placeholder: "Select contribution strategy",
         helpText: "Choose the strategy for contributions.",
         rules: yup
-            .mixed<IraContributionStrategy>()
+            .mixed<RothIraContributionStrategy>()
             .required("Contribution strategy is required"),
         options: [
             {label: "Fixed", value: "fixed"},
@@ -74,4 +74,4 @@ export const iraInvestmentForm: FormData<IraInvestment> = {
     },
 }
 
-export const iraInvestmentFormSchema = createSchema(iraInvestmentForm)
+export const rothIraInvestmentFormSchema = createSchema(rothIraInvestmentForm)

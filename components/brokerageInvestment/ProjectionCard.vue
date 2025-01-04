@@ -29,8 +29,8 @@
         </p></li>
       <li>
         <p class="flex justify-between">
-          <span>Remaining Debt</span>
-          <span>${{ $humanize.intComma(projection.remainingDebt) }}</span>
+          <span>Remaining BrokerageInvestment</span>
+          <span>${{ $humanize.intComma(projection.remainingBrokerageInvestment) }}</span>
         </p>
       </li>
     </ul>
@@ -41,7 +41,7 @@ import {darkTheme } from 'naive-ui'
 
 interface Props {
   title: string
-  projection: DebtProjection
+  projection: BrokerageInvestmentProjection
   value: string | number | boolean
 
 }
@@ -53,12 +53,12 @@ const selected = computed(() => {
   return props.value === model.value
 })
 
-type DebtProjection = {
+type BrokerageInvestmentProjection = {
   data: number[]
   totalPaymentsMade: number
   totalInterestAccrued: number
   isPaid: boolean
-  remainingDebt: number
+  remainingBrokerageInvestment: number
 }
 
 const selectedStyles = computed(() => {

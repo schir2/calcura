@@ -50,6 +50,15 @@
     />
 
 
+
+    <RothIraInvestmentList v-if="plan.rothIraInvestments" :rothIraInvestments="plan.rothIraInvestments"
+                       @create="handleCreateRothIraInvestment"
+                       @update="handleUpdateRothIraInvestment"
+                       @delete="handleDeleteRothIraInvestment"
+                       @remove="handleRemoveRothIraInvestment"
+    />
+
+
     <TaxDeferredInvestmentList v-if="plan.taxDeferredInvestments" :taxDeferredInvestments="plan.taxDeferredInvestments"
                        @create="handleCreateTaxDeferredInvestment"
                        @update="handleUpdateTaxDeferredInvestment"
@@ -77,6 +86,7 @@ const cashReserveService = useCashReserveService()
 const expenseService = useExpenseService()
 const incomeService = useIncomeService()
 const iraInvestmentService = useIraInvestmentService()
+const rothIraInvestmentService = useRothIraInvestmentService()
 const brokerageInvestmentService = useBrokerageInvestmentService()
 const taxDeferredInvestmentService = useTaxDeferredInvestmentService()
 const route = useRoute()
