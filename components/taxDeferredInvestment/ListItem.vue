@@ -1,24 +1,31 @@
 <template>
   <n-modal v-model:show="showModal">
     <TaxDeferredInvestmentForm :taxDeferredInvestmentPartial="taxDeferredInvestment" mode="edit"
-                 @delete="handleDelete"
-                 @create="handleCreate"
-                 @update="handleUpdate"
-                 @cancel="handleClose"
+                               @delete="handleDelete"
+                               @create="handleCreate"
+                               @update="handleUpdate"
+                               @cancel="handleClose"
     />
   </n-modal>
-    <n-card size="small">
-      <template #header>
-        <span>{{ taxDeferredInvestment.name }}</span>
-      </template>
-      <template #default>
-        <ul class="grid grid-cols-5">
-        </ul>
-      </template>
-      <template #header-extra>
-        <ListItemButtons size="small" @edit="handleEdit" @remove="handleRemove" @delete="handleDelete"/>
-      </template>
-    </n-card>
+  <n-card size="small">
+    <template #header>
+      <span>{{ taxDeferredInvestment.name }}</span>
+      <NuxtLink :to="{name: 'taxDeferredInvestments-id-Form', params: {id: taxDeferredInvestment.id}}">
+        <n-button circle secondary type="primary" size="small">
+          <template #icon>
+            <Icon name="mdi:open-in-new"/>
+          </template>
+        </n-button>
+      </NuxtLink>
+    </template>
+    <template #default>
+      <ul class="grid grid-cols-5">
+      </ul>
+    </template>
+    <template #header-extra>
+      <ListItemButtons size="small" @edit="handleEdit" @remove="handleRemove" @delete="handleDelete"/>
+    </template>
+  </n-card>
 
 </template>
 <script setup lang="ts">

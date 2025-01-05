@@ -1,5 +1,5 @@
 <template>
-  <aside class="bg-skin-surface pt-32 min-h-screen">
+  <aside class="bg-skin-base pt-32 min-h-screen">
     <nav>
       <ul>
         <li>
@@ -35,6 +35,11 @@
         </li>
         <li>
           <n-button quaternary><template #icon><Icon name="mdi-sack-outline"/></template>
+            <n-button circle secondary type="primary">
+              <template #icon>
+                <Icon name="mdi:open-in-new"/>
+              </template>
+            </n-button>
             <NuxtLink to="/rothIraInvestments">Roth IRA Investments</NuxtLink>
           </n-button>
         </li>

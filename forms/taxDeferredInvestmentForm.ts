@@ -52,7 +52,7 @@ export const taxDeferredInvestmentForm: FormData<TaxDeferredInvestment> = {
     },
     electiveContributionPercentage: {
         name: "electiveContributionPercentage",
-        label: "Elective Contribution Percentage",
+        label: "Contribution Percentage",
         placeholder: "Enter elective contribution percentage",
         helpText: "Percentage of your income contributed to the investment.",
         resourceId: "elective-contribution-percentage",
@@ -64,7 +64,7 @@ export const taxDeferredInvestmentForm: FormData<TaxDeferredInvestment> = {
     },
     electiveContributionFixedAmount: {
         name: "electiveContributionAmount",
-        label: "Elective Contribution Fixed Amount",
+        label: "Annual Contribution",
         placeholder: "Enter elective contribution fixed amount",
         helpText: "Fixed amount you contribute to the investment.",
         resourceId: "elective-contribution-fixed-amount",
@@ -72,12 +72,6 @@ export const taxDeferredInvestmentForm: FormData<TaxDeferredInvestment> = {
             .number()
             .min(0, "Elective contribution fixed amount must be at least 0")
             .required("Elective contribution fixed amount is required"),
-    },
-    employerContributes: {
-        name: "employerContributes",
-        label: "Does your employer contribute?",
-        helpText: "Indicates whether your employer contributes to your investment.",
-        resourceId: "employer-contributes",
     },
     employerContributionStrategy: {
         name: "employerContributionStrategy",
@@ -95,7 +89,7 @@ export const taxDeferredInvestmentForm: FormData<TaxDeferredInvestment> = {
     },
     employerCompensationMatchPercentage: {
         name: "employerCompensationMatchPercentage",
-        label: "Employer Compensation Match Percentage",
+        label: "Compensation Match Percentage",
         placeholder: "Enter employer compensation match percentage",
         helpText: "Percentage of your compensation that your employer matches.",
         resourceId: "employer-compensation-match-percentage",
@@ -107,7 +101,7 @@ export const taxDeferredInvestmentForm: FormData<TaxDeferredInvestment> = {
     },
     employerContributionFixedAmount: {
         name: "employerContributionFixedAmount",
-        label: "Employer Contribution Fixed Amount",
+        label: "Annual Contribution",
         placeholder: "Enter employer contribution fixed amount",
         helpText: "Fixed amount your employer contributes to your investment.",
         resourceId: "employer-contribution-fixed-amount",
@@ -118,7 +112,7 @@ export const taxDeferredInvestmentForm: FormData<TaxDeferredInvestment> = {
     },
     employerMatchPercentage: {
         name: "employerMatchPercentage",
-        label: "Employer Match Percentage",
+        label: "Match Percentage",
         placeholder: "Enter employer match percentage",
         helpText: "Percentage of your contributions that your employer matches.",
         resourceId: "employer-match-percentage",
@@ -130,7 +124,7 @@ export const taxDeferredInvestmentForm: FormData<TaxDeferredInvestment> = {
     },
     employerMatchPercentageLimit: {
         name: "employerMatchPercentageLimit",
-        label: "Employer Match Percentage Limit",
+        label: "Match Percentage Limit",
         placeholder: "Enter employer match percentage limit",
         helpText: "Maximum percentage your employer will match.",
         resourceId: "employer-match-percentage-limit",

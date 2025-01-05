@@ -10,7 +10,13 @@
   <n-card size="small">
     <template #header>
       <span>{{ brokerageInvestment.name }}</span>
-      <NuxtLink :to="{name: 'brokerageInvestments-id-Form', params: {id: brokerageInvestment.id}}">{{ brokerageInvestment.id }}</NuxtLink>
+      <NuxtLink :to="{name: 'brokerageInvestments-id-Form', params: {id: brokerageInvestment.id}}">
+        <n-button circle secondary type="primary" size="small">
+          <template #icon>
+            <Icon name="mdi:open-in-new"/>
+          </template>
+        </n-button>
+      </NuxtLink>
     </template>
     <template #default>
       <ul class="grid grid-cols-5">

@@ -14,7 +14,10 @@
           <section class="grid grid-cols-1 lg:grid-cols-3 gap-4">
             <n-card size="small" class="bg-skin-success/5">
               <template #header>
-                <h4 class="text-lg font-semibold text-skin-success"><Icon name="mdi-thumbs-up"/> Pros</h4>
+                <h4 class="text-lg font-semibold text-skin-success">
+                  <Icon name="mdi-thumbs-up"/>
+                  Pros
+                </h4>
               </template>
               <ul class="list-disc list-inside">
                 <li>Tax-free growth and withdrawals in retirement.</li>
@@ -23,7 +26,10 @@
               </ul>
             </n-card>
             <n-card size="small" class="bg-skin-error/5">
-              <h4 class="text-lg font-semibold text-skin-error"><Icon name="mdi:thumbs-down"/> Cons</h4>
+              <h4 class="text-lg font-semibold text-skin-error">
+                <Icon name="mdi:thumbs-down"/>
+                Cons
+              </h4>
               <ul class="list-disc list-inside">
                 <li>No immediate tax deduction for contributions.</li>
                 <li>Income limits restrict eligibility.</li>
@@ -31,7 +37,10 @@
               </ul>
             </n-card>
             <n-card size="small" class="bg-skin-warning/5">
-              <h4 class="text-lg font-semibold text-skin-warning"><icon name="mdi:warning"/> Things to Note</h4>
+              <h4 class="text-lg font-semibold text-skin-warning">
+                <icon name="mdi:warning"/>
+                Things to Note
+              </h4>
               <ul class="list-disc list-inside">
                 <li>Contribution limits are $7,000 ($8,000 if 50+).</li>
                 <li>Account must be open for 5 years for qualified earnings withdrawals.</li>
@@ -94,7 +103,7 @@
             </CommonRadioCard>
             <CommonRadioCard v-model="contributionStrategy" :value="RothIraContributionStrategy.Max" title="Maximum">
               <section class="p-3">
-<!--                <n-input-number min="0" max="120" v-model:value="age"/>-->
+                <!--                <n-input-number min="0" max="120" v-model:value="age"/>-->
                 <h3 class="text-lg font-semibold">What it means:</h3>
                 <p>
                   You aim to contribute the maximum allowed by the IRS every year.

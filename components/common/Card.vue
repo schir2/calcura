@@ -3,7 +3,7 @@
 </script>
 
 <template>
-  <div class="p-6 rounded-lg shadow-md bg-skin-surface">
+  <div class="p-6 rounded-lg shadow-md bg-skin-base">
     <div v-if="$slots.header">
       <slot name="header"></slot>
     </div>
