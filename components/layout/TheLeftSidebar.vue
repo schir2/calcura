@@ -35,6 +35,11 @@
         </li>
         <li>
           <n-button quaternary><template #icon><Icon name="mdi-sack-outline"/></template>
+            <NuxtLink to="/rothIraInvestments">Roth IRA Investments</NuxtLink>
+          </n-button>
+        </li>
+        <li>
+          <n-button quaternary><template #icon><Icon name="mdi-sack-outline"/></template>
             <NuxtLink to="/iraInvestments">IRA Investments</NuxtLink>
           </n-button>
         </li>

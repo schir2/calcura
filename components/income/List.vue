@@ -1,5 +1,5 @@
 <template>
-  <n-card title="Income(s)">
+  <n-card title="Income(s)" :bordered="false" class="border border-skin-success/50 rounded-md">
     <template #header-extra>
       <IncomeTemplatePicker @create="handleCreate"/>
     </template>

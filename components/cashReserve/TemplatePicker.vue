@@ -6,13 +6,10 @@
                 @cancel="handleClose"
       />
     </n-modal>
-    <template #header>
-      Add Cash Reserve
-    </template>
-    <n-button round v-if="cashReserveTemplates" v-for="(cashReserveTemplate, index) in cashReserveTemplates" :cashReserveTemplate="cashReserveTemplate"
+    <n-button size="small" type="info" round v-if="cashReserveTemplates" v-for="(cashReserveTemplate, index) in cashReserveTemplates" :cashReserveTemplate="cashReserveTemplate"
               @click="handleOpenModal(cashReserveTemplate)"
               :key="cashReserveTemplate.name">
-      <template #icon><Icon name="mdi:cash"></Icon></template>
+      <template #icon><Icon name="mdi:add-circle"></Icon></template>
       {{ cashReserveTemplate.name }}
     </n-button>
   </n-thing>

@@ -11,60 +11,64 @@
                 @delete="handleDeleteIncome"
                 @remove="handleRemoveIncome"
     />
-    <DebtList v-if="plan.debts" :debts="plan.debts"
-              @create="handleCreateDebt"
-              @update="handleUpdateDebt"
-              @delete="handleDeleteDebt"
-              @remove="handleRemoveDebt"
-    ></DebtList>
+    <section class="grid grid-cols-2 gap-3">
+      <section class="space-y-3">
+        <DebtList v-if="plan.debts" :debts="plan.debts"
+                  @create="handleCreateDebt"
+                  @update="handleUpdateDebt"
+                  @delete="handleDeleteDebt"
+                  @remove="handleRemoveDebt"
+        ></DebtList>
 
 
-    <ExpenseList v-if="plan.expenses" :expenses="plan.expenses"
-                 @create="handleCreateExpense"
-                 @update="handleUpdateExpense"
-                 @delete="handleDeleteExpense"
-                 @remove="handleRemoveExpense"
-    />
-
-    <CashReserveList v-if="plan.cashReserves" :cashReserves="plan.cashReserves"
-                     @create="handleCreateCashReserve"
-                     @update="handleUpdateCashReserve"
-                     @delete="handleDeleteCashReserve"
-                     @remove="handleRemoveCashReserve"
-    />
-
-
-    <BrokerageInvestmentList v-if="plan.brokerageInvestments" :brokerageInvestments="plan.brokerageInvestments"
-                             @create="handleCreateBrokerageInvestment"
-                             @update="handleUpdateBrokerageInvestment"
-                             @delete="handleDeleteBrokerageInvestment"
-                             @remove="handleRemoveBrokerageInvestment"
-    />
+        <ExpenseList v-if="plan.expenses" :expenses="plan.expenses"
+                     @create="handleCreateExpense"
+                     @update="handleUpdateExpense"
+                     @delete="handleDeleteExpense"
+                     @remove="handleRemoveExpense"
+        />
+      </section>
+      <section class="space-y-3">
+        <CashReserveList v-if="plan.cashReserves" :cashReserves="plan.cashReserves"
+                         @create="handleCreateCashReserve"
+                         @update="handleUpdateCashReserve"
+                         @delete="handleDeleteCashReserve"
+                         @remove="handleRemoveCashReserve"
+        />
 
 
-    <IraInvestmentList v-if="plan.iraInvestments" :iraInvestments="plan.iraInvestments"
-                       @create="handleCreateIraInvestment"
-                       @update="handleUpdateIraInvestment"
-                       @delete="handleDeleteIraInvestment"
-                       @remove="handleRemoveIraInvestment"
-    />
+        <BrokerageInvestmentList v-if="plan.brokerageInvestments" :brokerageInvestments="plan.brokerageInvestments"
+                                 @create="handleCreateBrokerageInvestment"
+                                 @update="handleUpdateBrokerageInvestment"
+                                 @delete="handleDeleteBrokerageInvestment"
+                                 @remove="handleRemoveBrokerageInvestment"
+        />
 
 
+        <IraInvestmentList v-if="plan.iraInvestments" :iraInvestments="plan.iraInvestments"
+                           @create="handleCreateIraInvestment"
+                           @update="handleUpdateIraInvestment"
+                           @delete="handleDeleteIraInvestment"
+                           @remove="handleRemoveIraInvestment"
+        />
 
-    <RothIraInvestmentList v-if="plan.rothIraInvestments" :rothIraInvestments="plan.rothIraInvestments"
-                       @create="handleCreateRothIraInvestment"
-                       @update="handleUpdateRothIraInvestment"
-                       @delete="handleDeleteRothIraInvestment"
-                       @remove="handleRemoveRothIraInvestment"
-    />
+
+        <RothIraInvestmentList v-if="plan.rothIraInvestments" :rothIraInvestments="plan.rothIraInvestments" :plan="plan"
+                               @create="handleCreateRothIraInvestment"
+                               @update="handleUpdateRothIraInvestment"
+                               @delete="handleDeleteRothIraInvestment"
+                               @remove="handleRemoveRothIraInvestment"
+        />
 
 
-    <TaxDeferredInvestmentList v-if="plan.taxDeferredInvestments" :taxDeferredInvestments="plan.taxDeferredInvestments"
-                       @create="handleCreateTaxDeferredInvestment"
-                       @update="handleUpdateTaxDeferredInvestment"
-                       @delete="handleDeleteTaxDeferredInvestment"
-                       @remove="handleRemoveTaxDeferredInvestment"
-    />
+        <TaxDeferredInvestmentList v-if="plan.taxDeferredInvestments" :taxDeferredInvestments="plan.taxDeferredInvestments"
+                                   @create="handleCreateTaxDeferredInvestment"
+                                   @update="handleUpdateTaxDeferredInvestment"
+                                   @delete="handleDeleteTaxDeferredInvestment"
+                                   @remove="handleRemoveTaxDeferredInvestment"
+        />
+      </section>
+    </section>
 
   </div>
 </template>
@@ -75,10 +79,11 @@ import type {Debt, DebtPartial} from "~/models/debt/Debt";
 import type {Expense, ExpensePartial} from "~/models/expense/Expense"
 import type {Plan} from "~/models/plan/Plan";
 import type {CashReserve} from "~/models/cashReserve/CashReserve";
-import type {IraInvestment} from "~/models/iraInvestment/IraInvestment";
+import type {IraInvestment, IraInvestmentPartial} from "~/models/iraInvestment/IraInvestment";
 import type {TaxDeferredInvestment, TaxDeferredInvestmentPartial} from "~/models/taxDeferredInvestment/TaxDeferredInvestment";
 import type {Income, IncomePartial} from "~/models/income/Income";
 import type {BrokerageInvestment, BrokerageInvestmentPartial} from "~/models/brokerageInvestment/BrokerageInvestment";
+import type {RothIraInvestment, RothIraInvestmentPartial} from "~/models/rothIraInvestment/RothIraInvestment";
 
 const planService = usePlanService()
 const debtService = useDebtService()
@@ -210,16 +215,14 @@ async function handleRemoveBrokerageInvestment(brokerageInvestment: BrokerageInv
   await loadPlan();
 }
 
-
-async function handleCreateIraInvestment() {
-  const iraInvestmentConfig = defaultIraInvestmentFactory();
-  const iraInvestment = await iraInvestmentService.create(iraInvestmentConfig)
+async function handleCreateIraInvestment(iraInvestmentPartial: IraInvestmentPartial) {
+  const iraInvestment = await iraInvestmentService.create(iraInvestmentPartial)
   await planService.addRelatedModel(planId, 'ira_investments', iraInvestment.id)
   await loadPlan();
 }
 
-async function handleDeleteIraInvestment(index: number) {
-  await iraInvestmentService.delete(index)
+async function handleDeleteIraInvestment(iraInvestment: IraInvestment) {
+  await iraInvestmentService.delete(iraInvestment.id)
   await loadPlan();
 }
 
@@ -228,10 +231,29 @@ async function handleUpdateIraInvestment(iraInvestment: IraInvestment) {
   await loadPlan();
 }
 
-async function handleRemoveIraInvestment() {
-  const iraInvestmentConfig = defaultIraInvestmentFactory();
-  const iraInvestment = await iraInvestmentService.create(iraInvestmentConfig)
-  await planService.addRemoveModel(planId, 'ira_investments', iraInvestment.id)
+async function handleRemoveIraInvestment(iraInvestment: IraInvestment) {
+  await planService.removeRelatedModel(planId, 'ira_investments', iraInvestment.id)
+  await loadPlan();
+}
+
+async function handleCreateRothIraInvestment(rothIraInvestmentPartial: RothIraInvestmentPartial) {
+  const rothIraInvestment = await rothIraInvestmentService.create(rothIraInvestmentPartial)
+  await planService.addRelatedModel(planId, 'roth_ira_investments', rothIraInvestment.id)
+  await loadPlan();
+}
+
+async function handleDeleteRothIraInvestment(rothIraInvestment: RothIraInvestment) {
+  await rothIraInvestmentService.delete(rothIraInvestment.id)
+  await loadPlan();
+}
+
+async function handleUpdateRothIraInvestment(rothIraInvestment: RothIraInvestment) {
+  await rothIraInvestmentService.update(rothIraInvestment.id, rothIraInvestment)
+  await loadPlan();
+}
+
+async function handleRemoveRothIraInvestment(rothIraInvestment: RothIraInvestment) {
+  await planService.removeRelatedModel(planId, 'roth_ira_investments', rothIraInvestment.id)
   await loadPlan();
 }
 

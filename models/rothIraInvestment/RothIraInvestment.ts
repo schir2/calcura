@@ -1,9 +1,9 @@
 import type {Income} from "~/models/income/Income";
 
 export enum RothIraContributionStrategy {
-    Fixed = 'Fixed',
+    Fixed = 'fixed',
     PercentageOfIncome = 'percentage_of_income',
-    Max = 'Max'
+    Max = 'max'
 }
 
 export interface RothIraInvestment {

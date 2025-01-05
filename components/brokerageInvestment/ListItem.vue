@@ -1,26 +1,25 @@
 <template>
   <n-modal v-model:show="showModal">
     <BrokerageInvestmentForm :brokerageInvestmentPartial="brokerageInvestment" mode="edit"
-                 @delete="handleDelete"
-                 @create="handleCreate"
-                 @update="handleUpdate"
-                 @cancel="handleClose"
+                             @delete="handleDelete"
+                             @create="handleCreate"
+                             @update="handleUpdate"
+                             @cancel="handleClose"
     />
   </n-modal>
-  <n-list-item>
-    <n-thing class="p-2">
-      <template #header>
-        <span>{{ brokerageInvestment.name }}</span> <NuxtLink :to="{name: 'brokerageInvestments-id-Form', params: {id: brokerageInvestment.id}}">{{brokerageInvestment.id}}</NuxtLink>
-      </template>
-      <template #default>
-        <ul class="grid grid-cols-5">
-        </ul>
-      </template>
-      <template #header-extra>
-        <ListItemButtons @edit="handleEdit" @remove="handleRemove" @delete="handleDelete"/>
-      </template>
-    </n-thing>
-  </n-list-item>
+  <n-card size="small">
+    <template #header>
+      <span>{{ brokerageInvestment.name }}</span>
+      <NuxtLink :to="{name: 'brokerageInvestments-id-Form', params: {id: brokerageInvestment.id}}">{{ brokerageInvestment.id }}</NuxtLink>
+    </template>
+    <template #default>
+      <ul class="grid grid-cols-5">
+      </ul>
+    </template>
+    <template #header-extra>
+      <ListItemButtons size="small" @edit="handleEdit" @remove="handleRemove" @delete="handleDelete"/>
+    </template>
+  </n-card>
 
 </template>
 <script setup lang="ts">

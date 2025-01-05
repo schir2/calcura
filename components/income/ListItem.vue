@@ -23,7 +23,7 @@
       </ul>
       </template>
       <template #header-extra>
-        <ListItemButtons @edit="handleEdit" @remove="handleRemove" @delete="handleDelete"/>
+        <ListItemButtons size="small" @edit="handleEdit" @remove="handleRemove" @delete="handleDelete"/>
       </template>
     </n-thing>
   </n-list-item>

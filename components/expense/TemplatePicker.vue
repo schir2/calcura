@@ -6,9 +6,6 @@
                 @cancel="handleClose"
       />
     </n-modal>
-    <template #header>
-      Add Expense
-    </template>
     <n-button round v-if="expenseTemplates" v-for="(expenseTemplate, index) in expenseTemplates" :expenseTemplate="expenseTemplate"
               @click="handleOpenModal(expenseTemplate)"
               :key="expenseTemplate.name">

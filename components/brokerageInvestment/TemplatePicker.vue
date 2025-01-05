@@ -6,14 +6,11 @@
                                @cancel="handleClose"
       />
     </n-modal>
-    <template #header>
-      Add BrokerageInvestment
-    </template>
-      <n-button round v-if="brokerageInvestmentTemplates" v-for="(brokerageInvestmentTemplate, index) in brokerageInvestmentTemplates" :brokerageInvestmentTemplate="brokerageInvestmentTemplate"
+      <n-button size="small" type="info" round v-if="brokerageInvestmentTemplates" v-for="(brokerageInvestmentTemplate, index) in brokerageInvestmentTemplates" :brokerageInvestmentTemplate="brokerageInvestmentTemplate"
                 @click="handleOpenModal(brokerageInvestmentTemplate)"
                 :key="brokerageInvestmentTemplate.name">
         <template #icon>
-          <Icon name="mdi:cash"></Icon>
+          <Icon name="mdi:add-circle"></Icon>
         </template>
         {{ brokerageInvestmentTemplate.name }}
       </n-button>

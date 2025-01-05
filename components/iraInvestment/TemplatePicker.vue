@@ -6,14 +6,11 @@
                                @cancel="handleClose"
       />
     </n-modal>
-    <template #header>
-      Add IraInvestment
-    </template>
-      <n-button round v-if="iraInvestmentTemplates" v-for="(iraInvestmentTemplate, index) in iraInvestmentTemplates" :iraInvestmentTemplate="iraInvestmentTemplate"
+      <n-button size="small" type="info" round v-if="iraInvestmentTemplates" v-for="(iraInvestmentTemplate, index) in iraInvestmentTemplates" :iraInvestmentTemplate="iraInvestmentTemplate"
                 @click="handleOpenModal(iraInvestmentTemplate)"
                 :key="iraInvestmentTemplate.name">
         <template #icon>
-          <Icon name="mdi:cash"></Icon>
+          <Icon name="mdi:add-circle"></Icon>
         </template>
         {{ iraInvestmentTemplate.name }}
       </n-button>
@@ -38,6 +35,7 @@ function handleOpenModal(iraInvestmentTemplate: Partial<IraInvestment>) {
 async function loadIraInvestmentTemplates() {
   const loadedIraInvestmentTemplates = await iraInvestmentTemplateService.list()
   iraInvestmentTemplates.value = loadedIraInvestmentTemplates.map(iraInvestmentTemplate => processTemplate<IraInvestmentPartial, IraInvestmentTemplate, IraInvestment>(iraInvestmentDefaults, iraInvestmentTemplate));
+  iraInvestmentTemplates.value.push(iraInvestmentDefaults)
 }
 
 onMounted(async () => {

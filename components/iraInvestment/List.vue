@@ -3,11 +3,9 @@
     <template #header-extra>
       <IraInvestmentTemplatePicker @create="handleCreate"/>
     </template>
-    <n-list>
       <IraInvestmentListItem v-for="(iraInvestment, index) in iraInvestments" :iraInvestment="iraInvestment" :key="iraInvestment.id"
                       @delete="handleDelete" @update="handleUpdate" @create="handleCreate"
                       @remove="handleRemove"></IraInvestmentListItem>
-    </n-list>
   </n-card>
 
 </template>

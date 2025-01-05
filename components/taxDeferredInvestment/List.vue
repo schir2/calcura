@@ -1,13 +1,11 @@
 <template>
-  <n-card title="TaxDeferredInvestment(s)">
+  <n-card title="Tax Deferred Investment(s)">
     <template #header-extra>
       <TaxDeferredInvestmentTemplatePicker @create="handleCreate"/>
     </template>
-    <n-list>
       <TaxDeferredInvestmentListItem v-for="(taxDeferredInvestment, index) in taxDeferredInvestments" :taxDeferredInvestment="taxDeferredInvestment" :key="taxDeferredInvestment.id"
                       @delete="handleDelete" @update="handleUpdate" @create="handleCreate"
                       @remove="handleRemove"></TaxDeferredInvestmentListItem>
-    </n-list>
   </n-card>
 
 </template>

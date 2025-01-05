@@ -7,5 +7,5 @@ export function useRothIraInvestmentTemplateService() {
         throw new Error('API service is not available');
     }
 
-    return createBaseService<RothIraInvestmentTemplate>($api, 'rothIra-investment-templates/');
+    return createBaseService<RothIraInvestmentTemplate>($api, 'roth-ira-investment-templates/');
 }

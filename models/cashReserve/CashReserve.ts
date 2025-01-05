@@ -1,4 +1,4 @@
-export enum CashReserveStrategy {Fixed = 'Fixed', Variable = 'Variable'}
+export enum CashReserveStrategy {Fixed = 'fixed', Variable = 'variable'}
 
 export interface CashReserve {
     id: number;

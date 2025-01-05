@@ -6,13 +6,10 @@
                 @cancel="handleClose"
       />
     </n-modal>
-    <template #header>
-      Add Debt
-    </template>
-    <n-button round v-if="debtTemplates" v-for="(debtTemplate, index) in debtTemplates" :debtTemplate="debtTemplate"
+    <n-button size="small" type="error" round v-if="debtTemplates" v-for="(debtTemplate, index) in debtTemplates" :debtTemplate="debtTemplate"
               @click="handleOpenModal(debtTemplate)"
               :key="debtTemplate.name">
-      <template #icon><Icon name="mdi:cash"></Icon></template>
+      <template #icon><Icon name="mdi:add-circle"></Icon></template>
       {{ debtTemplate.name }}
     </n-button>
   </n-thing>

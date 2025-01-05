@@ -6,13 +6,10 @@
                 @cancel="handleClose"
       />
     </n-modal>
-    <template #header>
-      Add Income
-    </template>
-    <n-button round v-if="incomeTemplates" v-for="(incomeTemplate, index) in incomeTemplates" :incomeTemplate="incomeTemplate"
+    <n-button type="success" size="small" round v-if="incomeTemplates" v-for="(incomeTemplate, index) in incomeTemplates" :incomeTemplate="incomeTemplate"
               @click="handleOpenModal(incomeTemplate)"
               :key="incomeTemplate.name">
-      <template #icon><Icon name="mdi:cash"></Icon></template>
+      <template #icon><Icon name="mdi:add-circle"></Icon></template>
       {{ incomeTemplate.name }}
     </n-button>
   </n-thing>

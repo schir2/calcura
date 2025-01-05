@@ -1,13 +1,15 @@
 <template>
-  <n-card title="Debt(s)">
+  <n-card class="rounded-md border border-skin-error/50" :bordered="false">
+    <template #header>
+      <Icon name="game-icons:expense"/> Debt(s)
+    </template>
     <template #header-extra>
       <DebtTemplatePicker @create="handleCreate"/>
     </template>
-    <n-list>
-      <DebtListItem v-for="(debt, index) in debts" :debt="debt" :key="debt.id"
-                      @delete="handleDelete" @update="handleUpdate" @create="handleCreate"
-                      @remove="handleRemove"></DebtListItem>
-    </n-list>
+    <DebtListItem v-for="(debt, index) in debts" :debt="debt" :key="debt.id"
+                  @delete="handleDelete" @update="handleUpdate" @create="handleCreate"
+                  @remove="handleRemove"></DebtListItem>
+
   </n-card>
 
 </template>

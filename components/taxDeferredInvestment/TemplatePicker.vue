@@ -2,21 +2,18 @@
   <n-thing>
     <n-modal v-model:show="showModal">
       <TaxDeferredInvestmentForm :taxDeferredInvestmentPartial="activeTaxDeferredInvestmentPartial" mode="create"
-                               @create="handleCreate"
-                               @cancel="handleClose"
+                                 @create="handleCreate"
+                                 @cancel="handleClose"
       />
     </n-modal>
-    <template #header>
-      Add TaxDeferredInvestment
-    </template>
-      <n-button round v-if="taxDeferredInvestmentTemplates" v-for="(taxDeferredInvestmentTemplate, index) in taxDeferredInvestmentTemplates" :taxDeferredInvestmentTemplate="taxDeferredInvestmentTemplate"
-                @click="handleOpenModal(taxDeferredInvestmentTemplate)"
-                :key="taxDeferredInvestmentTemplate.name">
-        <template #icon>
-          <Icon name="mdi:cash"></Icon>
-        </template>
-        {{ taxDeferredInvestmentTemplate.name }}
-      </n-button>
+    <n-button size="small" type="info" round v-if="taxDeferredInvestmentTemplates" v-for="(taxDeferredInvestmentTemplate, index) in taxDeferredInvestmentTemplates" :taxDeferredInvestmentTemplate="taxDeferredInvestmentTemplate"
+              @click="handleOpenModal(taxDeferredInvestmentTemplate)"
+              :key="taxDeferredInvestmentTemplate.name">
+      <template #icon>
+        <Icon name="mdi:cash"></Icon>
+      </template>
+      {{ taxDeferredInvestmentTemplate.name }}
+    </n-button>
   </n-thing>
 </template>
 <script lang="ts" setup>

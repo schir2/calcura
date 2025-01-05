@@ -7,20 +7,25 @@
                  @cancel="handleClose"
     />
   </n-modal>
-  <n-list-item>
-    <n-thing class="p-2">
+    <n-card size="small">
       <template #header>
         <span>{{ cashReserve.name }}</span>
       </template>
-      <template #default>
-        <ul class="grid grid-cols-5">
-        </ul>
-      </template>
+
+      <ul class="grid grid-cols-2 items-end">
+        <li>
+          <span class="flex">
+            <n-tag>{{ cashReserve.cashReserveStrategy }}</n-tag>
+          </span>
+        </li>
+        <li class="text-end">
+          <span class="text-lg">${{$humanize.intComma(cashReserve.initialAmount)}}</span>
+        </li>
+      </ul>
       <template #header-extra>
-        <ListItemButtons @edit="handleEdit" @remove="handleRemove" @delete="handleDelete"/>
+        <ListItemButtons size="small" @edit="handleEdit" @remove="handleRemove" @delete="handleDelete"/>
       </template>
-    </n-thing>
-  </n-list-item>
+    </n-card>
 
 </template>
 <script setup lang="ts">

@@ -1,5 +1,5 @@
 <template>
-  <n-button-group size="small">
+  <n-button-group :size="size">
     <n-button tertiary round type="warning" @click="$emit('edit')">
       <template #icon>
         <Icon name="mdi:edit"/>
@@ -21,3 +21,9 @@
     </n-button>
   </n-button-group>
 </template>
+<script setup lang="ts">
+interface Props {
+  size: "tiny" | "small" | "medium" | "large"
+}
+const props = defineProps<Props>()
+</script>

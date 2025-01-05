@@ -6,14 +6,11 @@
                                @cancel="handleClose"
       />
     </n-modal>
-    <template #header>
-      Add RothIraInvestment
-    </template>
-      <n-button round v-if="rothIraInvestmentTemplates" v-for="(rothIraInvestmentTemplate, index) in rothIraInvestmentTemplates" :rothIraInvestmentTemplate="rothIraInvestmentTemplate"
+      <n-button size="small" type="info" round v-if="rothIraInvestmentTemplates" v-for="(rothIraInvestmentTemplate, index) in rothIraInvestmentTemplates" :rothIraInvestmentTemplate="rothIraInvestmentTemplate"
                 @click="handleOpenModal(rothIraInvestmentTemplate)"
                 :key="rothIraInvestmentTemplate.name">
         <template #icon>
-          <Icon name="mdi:cash"></Icon>
+          <Icon name="mdi:add-circle"></Icon>
         </template>
         {{ rothIraInvestmentTemplate.name }}
       </n-button>
@@ -36,8 +33,11 @@ function handleOpenModal(rothIraInvestmentTemplate: Partial<RothIraInvestment>) 
 }
 
 async function loadRothIraInvestmentTemplates() {
+  rothIraInvestmentTemplates.value =[rothIraInvestmentDefaults]
   const loadedRothIraInvestmentTemplates = await rothIraInvestmentTemplateService.list()
-  rothIraInvestmentTemplates.value = loadedRothIraInvestmentTemplates.map(rothIraInvestmentTemplate => processTemplate<RothIraInvestmentPartial, RothIraInvestmentTemplate, RothIraInvestment>(rothIraInvestmentDefaults, rothIraInvestmentTemplate));
+  if (loadedRothIraInvestmentTemplates.length > 0) {
+    loadedRothIraInvestmentTemplates.forEach(rothIraInvestmentTemplate => rothIraInvestmentTemplates.value.push(processTemplate<RothIraInvestmentPartial, RothIraInvestmentTemplate, RothIraInvestment>(rothIraInvestmentDefaults, rothIraInvestmentTemplate)));
+  }
 }
 
 onMounted(async () => {

@@ -62,7 +62,7 @@ import {brokerageInvestmentForm, brokerageInvestmentFormSchema} from "~/forms/br
 import {useForm} from "vee-validate";
 import {BrokerageContributionStrategy, type BrokerageInvestment, type BrokerageInvestmentPartial} from "~/models/brokerageInvestment/BrokerageInvestment";
 import {naiveConfig} from "~/utils/schemaUtils";
-import {calculateBrokerageInvestmentPayment} from "~/models/brokerageInvestment/BrokerageInvestmentManager";
+import {calculateBrokerageInvestmentContribution} from "~/models/brokerageInvestment/BrokerageInvestmentManager";
 
 interface Props {
   brokerageInvestmentPartial: Partial<BrokerageInvestment | BrokerageInvestmentPartial>;
@@ -93,52 +93,52 @@ export type BrokerageInvestmentProjection = {
 }
 
 
-function generateBrokerageInvestmentProjection(brokerageInvestmentConfig: BrokerageInvestment, maxIterations: number = 20): BrokerageInvestmentProjection {
-  let totalContributions = 0
-  let totalGrowthAccrued = 0
-  let i = 0
-  const data: number[] = [brokerageInvestmentConfig.initialBalance]
-  while (i < maxIterations && data[i] > 0) {
-    const payment = calculateBrokerageInvestmentPayment(brokerageInvestmentConfig, data[i]);
-    const interest = (data[i] - payment) * (brokerageInvestmentConfig.interestRate / 100)
-    const principal = data[i] - payment + interest
-    totalContributions += payment
-    totalGrowthAccrued += interest
-    data.push(principal)
-    i++
-  }
-  const totalSavings = data[data.length - 1]
-  const isPaid = totalSavings === 0
-  return {
-    data: data,
-    totalContributions: totalContributions,
-    totalGrowthAccrued: totalGrowthAccrued,
-    totalSavings: totalSavings
-  }
-}
-
-
-const projections = computed<Record<BrokerageContributionStrategy, BrokerageInvestmentProjection>>(() => {
-  const brokerageInvestmentPartial: Partial<Omit<BrokerageInvestment, 'contributionStrategy'>> = {
-    name: name.value,
-    growthRate: growthRate.value,
-    initialBalance: initialBalance.value,
-    contributionPercentage: contributionPercentage.value,
-    contributionFixedAmount: contributionFixedAmount.value,
-  };
-
-  const result = {} as Record<BrokerageContributionStrategy, BrokerageInvestmentProjection>;
-
-  for (const contributionStrategy of Object.values(BrokerageContributionStrategy)) {
-    const brokerageInvestment: BrokerageInvestment = {
-      ...brokerageInvestmentPartial,
-      contributionStrategy: contributionStrategy as BrokerageContributionStrategy,
-    } as BrokerageInvestment;
-
-    result[contributionStrategy as BrokerageContributionStrategy] = generateBrokerageInvestmentProjection(brokerageInvestment, 30);
-  }
-  return result;
-});
+// function generateBrokerageInvestmentProjection(brokerageInvestmentConfig: BrokerageInvestment, maxIterations: number = 20): BrokerageInvestmentProjection {
+//   let totalContributions = 0
+//   let totalGrowthAccrued = 0
+//   let i = 0
+//   const data: number[] = [brokerageInvestmentConfig.initialBalance]
+//   while (i < maxIterations && data[i] > 0) {
+//     const payment = calculateBrokerageInvestmentContribution(brokerageInvestmentConfig,);
+//     const interest = (data[i] - payment) * (brokerageInvestmentConfig.interestRate / 100)
+//     const principal = data[i] - payment + interest
+//     totalContributions += payment
+//     totalGrowthAccrued += interest
+//     data.push(principal)
+//     i++
+//   }
+//   const totalSavings = data[data.length - 1]
+//   const isPaid = totalSavings === 0
+//   return {
+//     data: data,
+//     totalContributions: totalContributions,
+//     totalGrowthAccrued: totalGrowthAccrued,
+//     totalSavings: totalSavings
+//   }
+// }
+//
+//
+// const projections = computed<Record<BrokerageContributionStrategy, BrokerageInvestmentProjection>>(() => {
+//   const brokerageInvestmentPartial: Partial<Omit<BrokerageInvestment, 'contributionStrategy'>> = {
+//     name: name.value,
+//     growthRate: growthRate.value,
+//     initialBalance: initialBalance.value,
+//     contributionPercentage: contributionPercentage.value,
+//     contributionFixedAmount: contributionFixedAmount.value,
+//   };
+//
+//   const result = {} as Record<BrokerageContributionStrategy, BrokerageInvestmentProjection>;
+//
+//   for (const contributionStrategy of Object.values(BrokerageContributionStrategy)) {
+//     const brokerageInvestment: BrokerageInvestment = {
+//       ...brokerageInvestmentPartial,
+//       contributionStrategy: contributionStrategy as BrokerageContributionStrategy,
+//     } as BrokerageInvestment;
+//
+//     result[contributionStrategy as BrokerageContributionStrategy] = generateBrokerageInvestmentProjection(brokerageInvestment, 30);
+//   }
+//   return result;
+// });
 
 
 function handleCreate() {

@@ -7,8 +7,7 @@
                  @cancel="handleClose"
     />
   </n-modal>
-  <n-list-item>
-    <n-thing class="p-2">
+    <n-card size="small">
       <template #header>
         <span>{{ iraInvestment.name }}</span>
       </template>
@@ -17,10 +16,9 @@
         </ul>
       </template>
       <template #header-extra>
-        <ListItemButtons @edit="handleEdit" @remove="handleRemove" @delete="handleDelete"/>
+        <ListItemButtons size="small" @edit="handleEdit" @remove="handleRemove" @delete="handleDelete"/>
       </template>
-    </n-thing>
-  </n-list-item>
+    </n-card>
 
 </template>
 <script setup lang="ts">

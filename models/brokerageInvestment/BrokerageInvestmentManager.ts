@@ -6,24 +6,14 @@ import type Command from "~/models/common/Command";
 import {FundType} from "~/models/plan/PlanManager";
 import {ContributionType} from "~/models/common";
 import {ProcessBrokerageInvestmentCommand} from "~/models/brokerageInvestment/BrokerageInvestmentCommands";
+import type {PlanState} from "~/models/plan/PlanState";
 
 export class BrokerageInvestmentManager extends BaseManager<BrokerageInvestment, BrokerageInvestmentState> {
 
     calculateContribution(): number {
-        let contribution = 0
-        const planState = this.orchestrator.getCurrentState();
-        switch (this.config.contributionStrategy) {
-            case BrokerageContributionStrategy.Fixed:
-                contribution = this.config.contributionFixedAmount
-                break
-            case BrokerageContributionStrategy.PercentageOfIncome:
-                contribution = planState.grossIncome * (this.config.contributionPercentage / 100)
-                break
-            case BrokerageContributionStrategy.Max:
-                contribution = planState.taxedCapital
-                break
-        }
-        return contribution
+        return calculateBrokerageInvestmentContribution(
+            this.config,
+            this.orchestrator.getCurrentState())
     }
 
     protected createInitialState(): BrokerageInvestmentState {
@@ -83,15 +73,14 @@ export class BrokerageInvestmentManager extends BaseManager<BrokerageInvestment,
     }
 }
 
-export function calculateContribution(brokerageInvestmentConfig: BrokerageInvestment, balance): number {
+export function calculateBrokerageInvestmentContribution(brokerageInvestmentConfig: BrokerageInvestment, planState: PlanState): number {
     let contribution = 0
-    const planState = this.orchestrator.getCurrentState();
-    switch (this.config.contributionStrategy) {
+    switch (brokerageInvestmentConfig.contributionStrategy) {
         case BrokerageContributionStrategy.Fixed:
-            contribution = this.config.contributionFixedAmount
+            contribution = brokerageInvestmentConfig.contributionFixedAmount
             break
         case BrokerageContributionStrategy.PercentageOfIncome:
-            contribution = planState.grossIncome * (this.config.contributionPercentage / 100)
+            contribution = planState.grossIncome * (brokerageInvestmentConfig.contributionPercentage / 100)
             break
         case BrokerageContributionStrategy.Max:
             contribution = planState.taxedCapital

@@ -50,27 +50,27 @@ export const rothIraInvestmentForm: FormData<RothIraInvestment> = {
         ],
     },
     contributionPercentage: {
-        name: "electiveContributionPercentage",
-        label: "Elective Contribution Percentage",
-        placeholder: "Enter elective contribution percentage",
+        name: "contributionPercentage",
+        label: "Contribution Percentage",
+        placeholder: "Enter contribution percentage",
         helpText: "Percentage of your income contributed to the investment.",
-        resourceId: "elective-contribution-percentage",
+        resourceId: "contribution-percentage",
         rules: yup
             .number()
-            .min(0, "Elective contribution percentage must be at least 0")
-            .max(100, "Elective contribution percentage must be at most 100")
-            .required("Elective contribution percentage is required"),
+            .min(0, "contribution percentage must be at least 0")
+            .max(100, "contribution percentage must be at most 100")
+            .required("contribution percentage is required"),
     },
     contributionFixedAmount: {
-        name: "electiveContributionAmount",
-        label: "Elective Contribution Fixed Amount",
-        placeholder: "Enter elective contribution fixed amount",
+        name: "contributionAmount",
+        label: "Annual Contribution",
+        placeholder: "Enter  contribution fixed amount",
         helpText: "Fixed amount you contribute to the investment.",
-        resourceId: "elective-contribution-fixed-amount",
+        resourceId: "contribution-fixed-amount",
         rules: yup
             .number()
-            .min(0, "Elective contribution fixed amount must be at least 0")
-            .required("Elective contribution fixed amount is required"),
+            .min(0, "contribution fixed amount must be at least 0")
+            .required("contribution fixed amount is required"),
     },
 }
 
