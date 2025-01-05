@@ -35,11 +35,6 @@
         </li>
         <li>
           <n-button quaternary><template #icon><Icon name="mdi-sack-outline"/></template>
-            <n-button circle secondary type="primary">
-              <template #icon>
-                <Icon name="mdi:open-in-new"/>
-              </template>
-            </n-button>
             <NuxtLink to="/rothIraInvestments">Roth IRA Investments</NuxtLink>
           </n-button>
         </li>
