@@ -12,6 +12,7 @@ export class IncomeManager extends BaseManager<Income, IncomeState> {
     }
 
     createNextState(previousState: IncomeState): IncomeState {
+        console.log(previousState)
         return {
             grossIncome: previousState.grossIncome + this.getGrowthAmount(previousState.grossIncome),
             processed: false,

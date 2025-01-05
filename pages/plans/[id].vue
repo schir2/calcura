@@ -1,10 +1,40 @@
 <template>
   <ClientOnly>
     <Teleport to="#right-side-bar">
-      <PlanSummary v-if="plan" :plan="plan"></PlanSummary>
+      <!--      <PlanSummary v-if="plan" :plan="plan"></PlanSummary>-->
     </Teleport>
   </ClientOnly>
   <div v-if="plan" class="col-span-4 space-y-6">
+    <div>
+      <n-table>
+        <thead>
+        <tr>
+          <th>Gross Income</th>
+          <th>Taxable Income</th>
+          <th>Taxed Income</th>
+          <th>Taxed Capital</th>
+          <th>Taxed Withdrawals</th>
+          <th>Tax Deferred Savings</th>
+          <th>Tax Exempt Savings</th>
+          <th>Taxable Savings</th>
+
+        </tr>
+
+        </thead>
+        <tbody>
+        <tr class="space-y-3" v-for="state in planStates">
+          <td>${{ $humanize.intComma(state.grossIncome) }}</td>
+          <td>${{ $humanize.intComma(state.taxableIncome) }}</td>
+          <td>${{ $humanize.intComma(state.taxedIncome) }}</td>
+          <td>${{ $humanize.intComma(state.taxedCapital) }}</td>
+          <td>${{ $humanize.intComma(state.taxedWithdrawals) }}</td>
+          <td>${{ $humanize.intComma(state.savingsTaxDeferredEndOfYear) }}</td>
+          <td>${{ $humanize.intComma(state.savingsTaxExemptEndOfYear) }}</td>
+          <td>${{ $humanize.intComma(state.savingsTaxableEndOfYear) }}</td>
+        </tr>
+        </tbody>
+      </n-table>
+    </div>
     <IncomeList v-if="plan.incomes" :incomes="plan.incomes"
                 @create="handleCreateIncome"
                 @update="handleUpdateIncome"
@@ -296,9 +326,9 @@ onMounted(async () => {
 let planManager: PlanManager | null = null
 const planStates = ref<PlanState[]>([])
 
-watch(plan, (newState, previousState) => {
-  planManager = new PlanManager(newState)
-  // planStates.value = planManager.simulate()
+watch(plan, (currentPlan, previousPlan) => {
+  planManager = new PlanManager(currentPlan)
+  planStates.value = planManager.simulate()
 })
 
 const showAdvancedOptions = ref<boolean>(false)

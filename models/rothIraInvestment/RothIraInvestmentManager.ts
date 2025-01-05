@@ -3,10 +3,11 @@ import {assertDefined, calculateInvestmentGrowthAmount} from "~/utils";
 import type RothIraInvestmentState from "~/models/rothIraInvestment/RothIraInvestmentState";
 import BaseManager from "~/models/common/BaseManager";
 import type Command from "~/models/common/Command";
-import type IncomeManager from "~/models/income/IncomeManager";
+import type {IncomeManager} from "~/models/income/IncomeManager";
 import {ProcessRothIraInvestmentCommand} from "~/models/rothIraInvestment/RothIraInvestmentCommands";
 import {FundType} from "~/models/plan/PlanManager";
 import {ContributionType} from "~/models/common";
+import eventBus from "~/services/eventBus";
 
 export class RothIraInvestmentManager extends BaseManager<RothIraInvestment, RothIraInvestmentState> {
 
@@ -23,11 +24,12 @@ export class RothIraInvestmentManager extends BaseManager<RothIraInvestment, Rot
         }
     }
 
-    get incomeManager(): IncomeManager {
-        if (this.config.income === undefined) {
-            throw new Error("Missing income configuration");
+    get incomeManager(): IncomeManager | undefined {
+        if (this.config.income) {
+            return this.orchestrator.getIncomeManagerById(this.config.income.id)
         }
-        return this.orchestrator.getIncomeManagerById(this.config.income.id)
+        eventBus.emit('warning',{scope: 'rothIraInvestmentManager:missingIncomeManager', message: 'Missing income manager'})
+        return undefined;
     }
 
     calculateContribution(): number {
@@ -38,7 +40,8 @@ export class RothIraInvestmentManager extends BaseManager<RothIraInvestment, Rot
                 break
             case RothIraContributionStrategy.PercentageOfIncome:
                 if (this.incomeManager === undefined) {
-                    throw new Error('Cannot perform percentage of income without a lined income manager')
+                    eventBus.emit('warning',{scope: 'rothIraInvestmentManager:missingIncomeManager', message: 'Cannot perform percentage of income without a lined income manager'})
+                    return 0
                 }
                 contribution = this.incomeManager.getCurrentState().grossIncome * this.config.contributionPercentage / 100
                 break

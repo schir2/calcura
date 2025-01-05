@@ -10,6 +10,7 @@ import {ContributionType} from "~/models/common";
 import {ProcessTaxDeferredInvestmentCommand} from "~/models/taxDeferredInvestment/TaxDeferredInvestmentCommands";
 import {ValueError} from "~/utils/errors/ValueError";
 import {ContributionLimitType} from "~/models/plan/Plan";
+import eventBus from "~/services/eventBus";
 
 export class TaxDeferredInvestmentManager extends BaseManager<TaxDeferredInvestment, TaxDeferredInvestmentState> {
 
@@ -29,11 +30,12 @@ export class TaxDeferredInvestmentManager extends BaseManager<TaxDeferredInvestm
         };
     }
 
-    get incomeManager(): IncomeManager {
-        if (this.config.income === undefined) {
-            throw new Error("Missing income configuration");
-        }
+    get incomeManager(): IncomeManager | undefined {
+        if (this.config.income) {
         return this.orchestrator.getIncomeManagerById(this.config.income.id)
+        }
+        eventBus.emit('warning',{scope: 'taxDeferredInvestmentManager:missingIncomeManager', message: 'Missing income manager'})
+        return undefined;
     }
 
     calculateElectiveContribution(): number {
@@ -44,7 +46,8 @@ export class TaxDeferredInvestmentManager extends BaseManager<TaxDeferredInvestm
                 break
             case TaxDeferredContributionStrategy.PercentageOfIncome:
                 if (this.incomeManager === undefined) {
-                    throw new Error('Cannot perform percentage of income without a lined income manager')
+                    eventBus.emit('error',{scope: 'taxDeferredInvestmentManager:missingIncomeManager', message: 'Cannot perform percentage of income without a lined income manager'})
+                    return 0
                 }
                 contribution = this.incomeManager.getCurrentState().grossIncome * (this.config.electiveContributionPercentage / 100)
                 break
@@ -59,6 +62,7 @@ export class TaxDeferredInvestmentManager extends BaseManager<TaxDeferredInvestm
                 contribution = Infinity
                 break
             default:
+
                 throw new Error(`Invalid elective contribution strategy ${this.config.electiveContributionStrategy || 'blank'}`)
         }
         return contribution
@@ -82,7 +86,8 @@ export class TaxDeferredInvestmentManager extends BaseManager<TaxDeferredInvestm
 
             case EmployerContributionStrategy.PercentageOfContribution:
                 if (this.incomeManager === undefined) {
-                    throw new ValueError('Cannot perform percentage of income without a linked income manager')
+                    eventBus.emit('error',{scope: 'taxDeferredInvestmentManager:missingIncomeManager', message: 'Cannot perform percentage of income without a lined income manager'})
+                    return 0
                 }
                 if (this.getConfig().employerMatchPercentage <= 0) {
                     throw new ValueError('Employer match percentage must be greater than 0')
@@ -103,7 +108,8 @@ export class TaxDeferredInvestmentManager extends BaseManager<TaxDeferredInvestm
 
             case EmployerContributionStrategy.PercentageOfCompensation:
                 if (this.incomeManager === undefined) {
-                    throw new Error('Cannot perform percentage of income without a lined income manager')
+                    eventBus.emit('error',{scope: 'taxDeferredInvestmentManager:missingIncomeManager', message: 'Cannot perform percentage of compensation without a lined income manager'})
+                    return 0
                 }
                 employerContribution = this.incomeManager.getCurrentState().grossIncome * (this.config.employerCompensationMatchPercentage / 100)
                 break
@@ -114,7 +120,8 @@ export class TaxDeferredInvestmentManager extends BaseManager<TaxDeferredInvestm
 
     private getEmployerMatchLimit(): number {
         if (this.incomeManager === undefined) {
-            throw new Error('Cannot perform percentage of income without a lined income manager')
+            eventBus.emit('error',{scope: 'taxDeferredInvestmentManager:missingIncomeManager', message: 'Cannot perform percentage of income without a lined income manager'})
+            return 0
         }
         return this.incomeManager.getCurrentState().grossIncome * this.config.employerMatchPercentageLimit / 100;
     }

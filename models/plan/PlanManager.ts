@@ -123,7 +123,59 @@ export default class PlanManager extends BaseOrchestrator<Plan, PlanState, Manag
 
             retirementIncomeProjected: 0,
             retired: false,
+            processed: false,
+        }
+    }
 
+
+    protected createNextState(previousState: PlanState): PlanState {
+        const age = previousState.age + 1
+        const year = previousState.year + 1
+        const inflationRate = this.getInflationRate()
+        const grossIncome = this.getGrossIncome()
+        const taxedIncome = grossIncome - this.calculateTaxes(grossIncome)
+        return {
+            ...previousState,
+            age: age,
+            year: year,
+
+            grossIncome: grossIncome,
+            taxableIncome: grossIncome,
+            taxedIncome: taxedIncome,
+            AGI: 0,
+
+            taxableCapital: grossIncome,
+            taxedCapital: taxedIncome,
+            taxedWithdrawals: 0,
+
+            deductions: 0,
+
+            electiveLimit: getTaxDeferredElectiveContributionLimit(year, age),
+            deferredLimit: getTaxDeferredContributionLimit(year, age),
+            iraLimit: getIraLimit(year, age),
+
+            inflationRate: inflationRate,
+
+            taxableContributions: 0,
+            taxableContributionsLifetime: previousState.taxableContributionsLifetime,
+
+            taxDeferredContributions: 0,
+            taxDeferredContributionsLifetime: previousState.taxDeferredContributionsLifetime,
+
+            taxExemptContributions: 0,
+            taxExemptContributionsLifetime: previousState.taxExemptContributionsLifetime,
+
+            savingsTaxDeferredStartOfYear: previousState.savingsTaxDeferredEndOfYear,
+            savingsTaxDeferredEndOfYear: 0,
+
+            savingsTaxExemptStartOfYear: previousState.savingsTaxExemptEndOfYear,
+            savingsTaxExemptEndOfYear: 0,
+
+            savingsTaxableStartOfYear: previousState.savingsTaxableEndOfYear,
+            savingsTaxableEndOfYear: 0,
+
+            savingsStartOfYear: previousState.savingsEndOfYear,
+            savingsEndOfYear: 0,
             processed: false,
         }
     }
@@ -298,84 +350,36 @@ export default class PlanManager extends BaseOrchestrator<Plan, PlanState, Manag
         return this.config.inflationRate
     }
 
-    protected createNextState(previousState: PlanState): PlanState {
-        const age = previousState.age + 1
-        const year = previousState.year + 1
-        const inflationRate = this.getInflationRate()
-        return {
-            ...previousState,
-            age: age,
-            year: year,
-
-            grossIncome: 0,
-            taxableIncome: 0,
-            taxedIncome: 0,
-            AGI: 0,
-
-            taxableCapital: 0,
-            taxedCapital: 0,
-            taxedWithdrawals: 0,
-
-            deductions: 0,
-
-            electiveLimit: getTaxDeferredElectiveContributionLimit(year, age),
-            deferredLimit: getTaxDeferredContributionLimit(year, age),
-            iraLimit: getIraLimit(year, age),
-
-            inflationRate: inflationRate,
-
-            taxableContributions: 0,
-            taxableContributionsLifetime: previousState.taxableContributionsLifetime,
-
-            taxDeferredContributions: 0,
-            taxDeferredContributionsLifetime: previousState.taxDeferredContributionsLifetime,
-
-            taxExemptContributions: 0,
-            taxExemptContributionsLifetime: previousState.taxExemptContributionsLifetime,
-
-            savingsTaxDeferredStartOfYear: previousState.savingsTaxDeferredEndOfYear,
-            savingsTaxDeferredEndOfYear: 0,
-
-            savingsTaxExemptStartOfYear: previousState.savingsTaxExemptEndOfYear,
-            savingsTaxExemptEndOfYear: 0,
-
-            savingsTaxableStartOfYear: previousState.savingsTaxableEndOfYear,
-            savingsTaxableEndOfYear: 0,
-
-            savingsStartOfYear: previousState.savingsEndOfYear,
-            savingsEndOfYear: 0,
-        }
-    }
-
-    override processImplementation(planState: PlanState): PlanState {
-        return planState
+    override processImplementation(): void {
+        const currentState = this.getCurrentState()
+        const allManagers = this.getAllManagers()
+        allManagers.forEach(manager => {
+            this.processUnprocessed(manager)
+        })
     }
 
     simulate(commands?: Command[]): PlanState[] {
         const allManagers = this.getAllManagers()
         for (let i = 0; i < 3; i++) {
-
-            let currentState = this.getCurrentState()
             if (commands) {
                 commands.forEach(command => {
                     command.execute()
                 })
             }
-            allManagers.forEach(manager => {
-                this.processUnprocessed(manager)
-            })
-            this.process(currentState)
-            allManagers.forEach((manager) => manager.advanceTimePeriod())
+            this.process()
+            if (i === 2){
+                break
+            }
             this.advanceTimePeriod()
         }
         return this.states
     }
 
     processUnprocessed(manager: BaseManager<any, any>): void {
-        let planState = this.getCurrentState()
         const managerState = manager.getCurrentState()
-        if (!planState.processed) {
+        if (!managerState.processed) {
             manager.process()
+            manager.advanceTimePeriod()
         }
     }
 

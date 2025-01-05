@@ -1,11 +1,12 @@
 import type Command from "~/models/common/Command";
-import type {PlanState} from "~/models/plan/PlanState";
 import {ContributionType} from "~/models/common/index";
 import {FundType} from "~/models/plan/PlanManager";
 import BaseManager from "~/models/common/BaseManager";
+import {ProcessError} from "~/utils/errors/ProcessError";
+import type {BaseState} from "~/models/common/BaseState";
 
 
-export abstract class BaseOrchestrator<TConfig, TState, TManagers> {
+export abstract class BaseOrchestrator<TConfig, TState extends BaseState, TManagers> {
     protected states: TState[] = [];
     protected readonly config: TConfig;
     protected _managers: TManagers
@@ -56,16 +57,20 @@ export abstract class BaseOrchestrator<TConfig, TState, TManagers> {
         this.states[this.states.length - 1] = newState;
     }
 
-    process(planState: PlanState): PlanState {
-        const baseState = this.processImplementation(planState);
-        const currentState = {...this.getCurrentState(), processed: true};
-        this.updateCurrentState(currentState);
-        return {
-            ...planState,
+    process(): void {
+        const currentState = this.getCurrentState();
+        if (currentState.processed === undefined && null) {
+            throw new ProcessError('State is missing processed property')
         }
+        if (currentState.processed) {
+            console.log(currentState)
+            throw new ProcessError(`Failed to process state, it is already processed.`);
+        }
+        this.processImplementation();
+        this.updateCurrentState({...this.getCurrentState(), processed: true});
     }
 
-    protected abstract processImplementation(planState: PlanState): PlanState;
+    protected abstract processImplementation(): void;
 
     advanceTimePeriod(): TState {
         const previousState = this.getCurrentState();

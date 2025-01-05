@@ -7,6 +7,7 @@ import type {IncomeManager} from "~/models/income/IncomeManager";
 import {ProcessIraInvestmentCommand} from "~/models/iraInvestment/IraInvestmentCommands";
 import {FundType} from "~/models/plan/PlanManager";
 import {ContributionType} from "~/models/common";
+import eventBus from "~/services/eventBus";
 
 export class IraInvestmentManager extends BaseManager<IraInvestment, IraInvestmentState> {
 
@@ -23,11 +24,12 @@ export class IraInvestmentManager extends BaseManager<IraInvestment, IraInvestme
         }
     }
 
-    get incomeManager(): IncomeManager {
-        if (this.config.income === undefined) {
-            throw new Error("Missing income configuration");
+    get incomeManager(): IncomeManager | undefined {
+        if (this.config.income) {
+            return this.orchestrator.getIncomeManagerById(this.config.income.id)
         }
-        return this.orchestrator.getIncomeManagerById(this.config.income.id)
+        eventBus.emit('warning',{scope: 'iraInvestmentManager:missingIncomeManager', message: 'Missing income manager'})
+        return undefined;
     }
 
     calculateContribution(): number {
@@ -38,7 +40,9 @@ export class IraInvestmentManager extends BaseManager<IraInvestment, IraInvestme
                 break
             case IraContributionStrategy.PercentageOfIncome:
                 if (this.incomeManager === undefined) {
-                    throw new Error('Cannot perform percentage of income without a lined income manager')
+
+                    eventBus.emit('warning',{scope: 'iraInvestmentManager:missingIncomeManager', message: 'Cannot perform percentage of income without a lined income manager'})
+                    return 0
                 }
                 contribution = this.incomeManager.getCurrentState().grossIncome * this.config.contributionPercentage / 100
                 break
