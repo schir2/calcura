@@ -6,7 +6,9 @@
                                  @cancel="handleClose"
       />
     </n-modal>
-    <n-button size="small" type="info" round v-if="taxDeferredInvestmentTemplates" v-for="(taxDeferredInvestmentTemplate, index) in taxDeferredInvestmentTemplates" :taxDeferredInvestmentTemplate="taxDeferredInvestmentTemplate"
+    <n-button size="small" type="info" round v-if="templates"
+              v-for="(taxDeferredInvestmentTemplate, index) in templates"
+              :taxDeferredInvestmentTemplate="taxDeferredInvestmentTemplate"
               @click="handleOpenModal(taxDeferredInvestmentTemplate)"
               :key="taxDeferredInvestmentTemplate.name">
       <template #icon>
@@ -17,28 +19,35 @@
   </n-thing>
 </template>
 <script lang="ts" setup>
-import type {TaxDeferredInvestmentTemplate} from "~/models/taxDeferredInvestment/TaxDeferredInvestment";
-import {type TaxDeferredInvestment, taxDeferredInvestmentDefaults, type TaxDeferredInvestmentPartial} from "~/models/taxDeferredInvestment/TaxDeferredInvestment";
 import {useTaxDeferredInvestmentTemplateService} from "~/composables/api/useTaxDeferredInvestmentTemplateService";
 import {processTemplate} from "~/utils/templateProcessorUtils";
+import {
+  type TaxDeferredInvestment,
+  taxDeferredInvestmentDefaults,
+  type TaxDeferredInvestmentPartial,
+  type TaxDeferredInvestmentTemplate
+} from "~/models/taxDeferredInvestment/TaxDeferredInvestment";
 
 const showModal = ref(false);
 const activeTaxDeferredInvestmentPartial = ref<TaxDeferredInvestmentPartial | null>()
-const taxDeferredInvestmentTemplateService = useTaxDeferredInvestmentTemplateService()
-const taxDeferredInvestmentTemplates = ref<TaxDeferredInvestmentPartial[]>([])
+const templateService = useTaxDeferredInvestmentTemplateService()
+const templates = ref<TaxDeferredInvestmentPartial[]>([])
 
 function handleOpenModal(taxDeferredInvestmentTemplate: Partial<TaxDeferredInvestment>) {
   activeTaxDeferredInvestmentPartial.value = taxDeferredInvestmentTemplate
   showModal.value = true;
 }
 
-async function loadTaxDeferredInvestmentTemplates() {
-  const loadedTaxDeferredInvestmentTemplates = await taxDeferredInvestmentTemplateService.list()
-  taxDeferredInvestmentTemplates.value = loadedTaxDeferredInvestmentTemplates.map(taxDeferredInvestmentTemplate => processTemplate<TaxDeferredInvestmentPartial, TaxDeferredInvestmentTemplate, TaxDeferredInvestment>(taxDeferredInvestmentDefaults, taxDeferredInvestmentTemplate));
+async function loadTemplates() {
+  templates.value = [taxDeferredInvestmentDefaults]
+  const loadedTemplates = await templateService.list()
+  if (loadedTemplates.length > 0) {
+    loadedTemplates.forEach(taxDeferredInvestmentTemplate => templates.value.push(processTemplate<TaxDeferredInvestmentPartial, TaxDeferredInvestmentTemplate, TaxDeferredInvestment>(taxDeferredInvestmentDefaults, taxDeferredInvestmentTemplate)));
+  }
 }
 
 onMounted(async () => {
-  await loadTaxDeferredInvestmentTemplates()
+  await loadTemplates()
 })
 
 const emit = defineEmits(['create'])

@@ -6,7 +6,7 @@
                                @cancel="handleClose"
       />
     </n-modal>
-      <n-button size="small" type="info" round v-if="iraInvestmentTemplates" v-for="(iraInvestmentTemplate, index) in iraInvestmentTemplates" :iraInvestmentTemplate="iraInvestmentTemplate"
+      <n-button size="small" type="info" round v-if="templates" v-for="(iraInvestmentTemplate, index) in templates" :iraInvestmentTemplate="iraInvestmentTemplate"
                 @click="handleOpenModal(iraInvestmentTemplate)"
                 :key="iraInvestmentTemplate.name">
         <template #icon>
@@ -24,22 +24,22 @@ import {processTemplate} from "~/utils/templateProcessorUtils";
 
 const showModal = ref(false);
 const activeIraInvestmentPartial = ref<IraInvestmentPartial | null>()
-const iraInvestmentTemplateService = useIraInvestmentTemplateService()
-const iraInvestmentTemplates = ref<IraInvestmentPartial[]>([])
+const templateService = useIraInvestmentTemplateService()
+const templates = ref<IraInvestmentPartial[]>([])
+
+async function loadTemplates() {
+  const loadedIraInvestmentTemplates = await templateService.list()
+  templates.value = loadedIraInvestmentTemplates.map(iraInvestmentTemplate => processTemplate<IraInvestmentPartial, IraInvestmentTemplate, IraInvestment>(iraInvestmentDefaults, iraInvestmentTemplate));
+  templates.value.push(iraInvestmentDefaults)
+}
 
 function handleOpenModal(iraInvestmentTemplate: Partial<IraInvestment>) {
   activeIraInvestmentPartial.value = iraInvestmentTemplate
   showModal.value = true;
 }
 
-async function loadIraInvestmentTemplates() {
-  const loadedIraInvestmentTemplates = await iraInvestmentTemplateService.list()
-  iraInvestmentTemplates.value = loadedIraInvestmentTemplates.map(iraInvestmentTemplate => processTemplate<IraInvestmentPartial, IraInvestmentTemplate, IraInvestment>(iraInvestmentDefaults, iraInvestmentTemplate));
-  iraInvestmentTemplates.value.push(iraInvestmentDefaults)
-}
-
 onMounted(async () => {
-  await loadIraInvestmentTemplates()
+  await loadTemplates()
 })
 
 const emit = defineEmits(['create'])

@@ -2,41 +2,47 @@
   <n-thing>
     <n-modal v-model:show="showModal">
       <IncomeForm :incomePartial="activeIncomePartial" mode="create"
-                @create="handleCreate"
-                @cancel="handleClose"
+                  @create="handleCreate"
+                  @cancel="handleClose"
       />
     </n-modal>
-    <n-button type="success" size="small" round v-if="incomeTemplates" v-for="(incomeTemplate, index) in incomeTemplates" :incomeTemplate="incomeTemplate"
+    <n-button type="success" size="small" round v-if="templates" v-for="(incomeTemplate, index) in templates"
+              :incomeTemplate="incomeTemplate"
               @click="handleOpenModal(incomeTemplate)"
               :key="incomeTemplate.name">
-      <template #icon><Icon name="mdi:add-circle"></Icon></template>
+      <template #icon>
+        <Icon name="mdi:add-circle"></Icon>
+      </template>
       {{ incomeTemplate.name }}
     </n-button>
   </n-thing>
 </template>
 <script lang="ts" setup>
+import {processTemplate} from "~/utils/templateProcessorUtils";
+import {useIncomeTemplateService} from "~/composables/api/useIncomeTemplateService";
 import {type Income, incomeDefaults, type IncomePartial} from "~/models/income/Income";
 import type {IncomeTemplate} from "~/models/income/IncomeTemplate";
-import {useIncomeTemplateService} from "~/composables/api/useIncomeTemplateService";
-import {processTemplate} from "~/utils/templateProcessorUtils";
 
 const showModal = ref(false);
 const activeIncomePartial = ref<IncomePartial | null>()
-const incomeTemplateService = useIncomeTemplateService()
-const incomeTemplates = ref<IncomePartial[]>([])
+const templateService = useIncomeTemplateService()
+const templates = ref<IncomePartial[]>([])
 
 function handleOpenModal(incomeTemplate: Partial<Income>) {
   activeIncomePartial.value = incomeTemplate
   showModal.value = true;
 }
 
-async function loadIncomeTemplates() {
-  const loadedIncomeTemplates = await incomeTemplateService.list()
-  incomeTemplates.value = loadedIncomeTemplates.map(incomeTemplate => processTemplate<IncomePartial, IncomeTemplate, Income>(incomeDefaults, incomeTemplate));
+async function loadTemplates() {
+  templates.value = [incomeDefaults]
+  const loadedTemplates = await templateService.list()
+  if (loadedTemplates.length > 0) {
+    loadedTemplates.forEach(incomeTemplate => templates.value.push(processTemplate<IncomePartial, IncomeTemplate, Income>(incomeDefaults, incomeTemplate)));
+  }
 }
 
 onMounted(async () => {
-  await loadIncomeTemplates()
+  await loadTemplates()
 })
 
 const emit = defineEmits(['create'])

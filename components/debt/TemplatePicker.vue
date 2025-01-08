@@ -6,37 +6,43 @@
                 @cancel="handleClose"
       />
     </n-modal>
-    <n-button size="small" type="error" round v-if="debtTemplates" v-for="(debtTemplate, index) in debtTemplates" :debtTemplate="debtTemplate"
+    <n-button size="small" type="error" round v-if="templates" v-for="(debtTemplate, index) in templates"
+              :debtTemplate="debtTemplate"
               @click="handleOpenModal(debtTemplate)"
               :key="debtTemplate.name">
-      <template #icon><Icon name="mdi:add-circle"></Icon></template>
+      <template #icon>
+        <Icon name="mdi:add-circle"></Icon>
+      </template>
       {{ debtTemplate.name }}
     </n-button>
   </n-thing>
 </template>
 <script lang="ts" setup>
-import {type Debt, debtDefaults, type DebtPartial} from "~/models/debt/Debt";
-import type {DebtTemplate} from "~/models/debt/Debt";
+import {type Debt, debtDefaults, type DebtPartial, type DebtTemplate} from "~/models/debt/Debt";
 import {useDebtTemplateService} from "~/composables/api/useDebtTemplateService";
 import {processTemplate} from "~/utils/templateProcessorUtils";
 
+
 const showModal = ref(false);
 const activeDebtPartial = ref<DebtPartial | null>()
-const debtTemplateService = useDebtTemplateService()
-const debtTemplates = ref<DebtPartial[]>([])
+const templateService = useDebtTemplateService()
+const templates = ref<DebtPartial[]>([])
+
+async function loadTemplates() {
+  templates.value = [debtDefaults]
+  const loadedTemplates = await templateService.list()
+  if (loadedTemplates.length > 0) {
+    loadedTemplates.forEach(debtTemplate => templates.value.push(processTemplate<DebtPartial, DebtTemplate, Debt>(debtDefaults, debtTemplate)));
+  }
+}
 
 function handleOpenModal(debtTemplate: Partial<Debt>) {
   activeDebtPartial.value = debtTemplate
   showModal.value = true;
 }
 
-async function loadDebtTemplates() {
-  const loadedDebtTemplates = await debtTemplateService.list()
-  debtTemplates.value = loadedDebtTemplates.map(debtTemplate => processTemplate<DebtPartial, DebtTemplate, Debt>(debtDefaults, debtTemplate));
-}
-
 onMounted(async () => {
-  await loadDebtTemplates()
+  await loadTemplates()
 })
 
 const emit = defineEmits(['create'])

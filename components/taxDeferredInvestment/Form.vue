@@ -69,7 +69,7 @@
           <div class="grid grid-cols-4 gap-3">
             <CommonRadioCard v-model="electiveContributionStrategy" :value="TaxDeferredContributionStrategy.Fixed" title="Fixed Payment">
               <n-form-item path="contributionFixedAmount" :label="taxDeferredInvestmentForm.electiveContributionFixedAmount.label" v-bind="electiveContributionFixedAmountProps">
-                <n-input-number class="w-full" v-model:value="electiveContributionFixedAmount" :precision="2" :min="0" :max="8000">
+                <n-input-number class="w-full" v-model:value="electiveContributionFixedAmount" :precision="2" :min="0" :max="getTaxDeferredElectiveContributionLimit(new Date().getFullYear(), 30)">
                   <template #prefix>$</template>
                   <template #suffix>per year</template>
                 </n-input-number>
@@ -207,8 +207,13 @@
 <script lang="ts" setup>
 import {taxDeferredInvestmentForm, taxDeferredInvestmentFormSchema} from "~/forms/taxDeferredInvestmentForm";
 import {useForm} from "vee-validate";
-import {EmployerContributionStrategy, TaxDeferredContributionStrategy, type TaxDeferredInvestment} from "~/models/taxDeferredInvestment/TaxDeferredInvestment";
+import {
+  EmployerContributionStrategy,
+  TaxDeferredContributionStrategy,
+  type TaxDeferredInvestment
+} from "~/models/taxDeferredInvestment/TaxDeferredInvestment";
 import {naiveConfig} from "~/utils/schemaUtils";
+import {getTaxDeferredContributionLimit, getTaxDeferredElectiveContributionLimit} from "~/utils";
 
 interface Props {
   taxDeferredInvestmentPartial: Partial<TaxDeferredInvestment>;

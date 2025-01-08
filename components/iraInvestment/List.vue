@@ -1,5 +1,5 @@
 <template>
-  <n-card title="IraInvestment(s)">
+  <n-card title="IRA Investment(s)">
     <template #header-extra>
       <IraInvestmentTemplatePicker @create="handleCreate"/>
     </template>

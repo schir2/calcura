@@ -32,9 +32,12 @@ export class TaxDeferredInvestmentManager extends BaseManager<TaxDeferredInvestm
 
     get incomeManager(): IncomeManager | undefined {
         if (this.config.income) {
-        return this.orchestrator.getIncomeManagerById(this.config.income.id)
+            return this.orchestrator.getIncomeManagerById(this.config.income.id)
         }
-        eventBus.emit('warning',{scope: 'taxDeferredInvestmentManager:missingIncomeManager', message: 'Missing income manager'})
+        eventBus.emit('warning', {
+            scope: 'taxDeferredInvestmentManager:missingIncomeManager',
+            message: 'Missing income manager'
+        })
         return undefined;
     }
 
@@ -46,7 +49,10 @@ export class TaxDeferredInvestmentManager extends BaseManager<TaxDeferredInvestm
                 break
             case TaxDeferredContributionStrategy.PercentageOfIncome:
                 if (this.incomeManager === undefined) {
-                    eventBus.emit('error',{scope: 'taxDeferredInvestmentManager:missingIncomeManager', message: 'Cannot perform percentage of income without a lined income manager'})
+                    eventBus.emit('error', {
+                        scope: 'taxDeferredInvestmentManager:missingIncomeManager',
+                        message: 'Cannot perform percentage of income without a lined income manager'
+                    })
                     return 0
                 }
                 contribution = this.incomeManager.getCurrentState().grossIncome * (this.config.electiveContributionPercentage / 100)
@@ -86,7 +92,10 @@ export class TaxDeferredInvestmentManager extends BaseManager<TaxDeferredInvestm
 
             case EmployerContributionStrategy.PercentageOfContribution:
                 if (this.incomeManager === undefined) {
-                    eventBus.emit('error',{scope: 'taxDeferredInvestmentManager:missingIncomeManager', message: 'Cannot perform percentage of income without a lined income manager'})
+                    eventBus.emit('error', {
+                        scope: 'taxDeferredInvestmentManager:missingIncomeManager',
+                        message: 'Cannot perform percentage of income without a lined income manager'
+                    })
                     return 0
                 }
                 if (this.getConfig().employerMatchPercentage <= 0) {
@@ -108,7 +117,10 @@ export class TaxDeferredInvestmentManager extends BaseManager<TaxDeferredInvestm
 
             case EmployerContributionStrategy.PercentageOfCompensation:
                 if (this.incomeManager === undefined) {
-                    eventBus.emit('error',{scope: 'taxDeferredInvestmentManager:missingIncomeManager', message: 'Cannot perform percentage of compensation without a lined income manager'})
+                    eventBus.emit('error', {
+                        scope: 'taxDeferredInvestmentManager:missingIncomeManager',
+                        message: 'Cannot perform percentage of compensation without a lined income manager'
+                    })
                     return 0
                 }
                 employerContribution = this.incomeManager.getCurrentState().grossIncome * (this.config.employerCompensationMatchPercentage / 100)
@@ -120,7 +132,10 @@ export class TaxDeferredInvestmentManager extends BaseManager<TaxDeferredInvestm
 
     private getEmployerMatchLimit(): number {
         if (this.incomeManager === undefined) {
-            eventBus.emit('error',{scope: 'taxDeferredInvestmentManager:missingIncomeManager', message: 'Cannot perform percentage of income without a lined income manager'})
+            eventBus.emit('error', {
+                scope: 'taxDeferredInvestmentManager:missingIncomeManager',
+                message: 'Cannot perform percentage of income without a lined income manager'
+            })
             return 0
         }
         return this.incomeManager.getCurrentState().grossIncome * this.config.employerMatchPercentageLimit / 100;
@@ -147,20 +162,27 @@ export class TaxDeferredInvestmentManager extends BaseManager<TaxDeferredInvestm
         return [new ProcessTaxDeferredInvestmentCommand(this)];
     }
 
-    getContributionsAdjustedForLimits(electiveContribution: number, employerContribution: number) {
-        const electiveContributionLimit = this.orchestrator.getLimitForContributionType(ContributionLimitType.Elective)
-        const deferredContributionLimit = this.orchestrator.getLimitForContributionType(ContributionLimitType.Deferred)
+    getContributionsAdjustedForLimits(electiveContribution: number, employerContribution: number): {
+        electiveContribution: number,
+        employerContribution: number,
+        contribution: number,
 
+    } {
+        const electiveContributionLimit = Math.min(this.orchestrator.getLimitForContributionType(ContributionLimitType.Elective), electiveContribution)
+        const contribution = Math.min(this.orchestrator.getLimitForContributionType(ContributionLimitType.Deferred), employerContribution + electiveContribution)
+        const employerContributionLimit = contribution - electiveContributionLimit
+        return {electiveContribution: electiveContributionLimit, employerContribution: employerContributionLimit, contribution: contribution}
     }
 
 
     processImplementation(): void {
         const currentState = this.getCurrentState()
-        let employerContribution = this.calculateEmployerContribution()
+        const employerContributionRequest = this.calculateEmployerContribution()
         const electiveContributionRequest = this.calculateElectiveContribution();
-        const electiveContribution = this.orchestrator.requestFunds(electiveContributionRequest, FundType.Taxable)
+        const electiveContributionReturned = this.orchestrator.requestFunds(electiveContributionRequest, FundType.Taxable)
+        const {contribution, employerContribution, electiveContribution} = this.getContributionsAdjustedForLimits(electiveContributionReturned, employerContributionRequest)
+
         this.orchestrator.withdraw(electiveContribution, FundType.Taxable)
-        const contribution = electiveContribution + employerContribution
         const growthAmount = calculateInvestmentGrowthAmount(
             currentState.balanceStartOfYear,
             this.config.growthRate,

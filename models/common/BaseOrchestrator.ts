@@ -63,7 +63,6 @@ export abstract class BaseOrchestrator<TConfig, TState extends BaseState, TManag
             throw new ProcessError('State is missing processed property')
         }
         if (currentState.processed) {
-            console.log(currentState)
             throw new ProcessError(`Failed to process state, it is already processed.`);
         }
         this.processImplementation();
@@ -78,6 +77,7 @@ export abstract class BaseOrchestrator<TConfig, TState extends BaseState, TManag
             throw new Error(`The current state has not been processed. ${JSON.stringify(previousState)}`);
         }
         const newState = this.createNextState(previousState);
+        console.log(newState)
         this.states.push(newState);
         return newState;
     }

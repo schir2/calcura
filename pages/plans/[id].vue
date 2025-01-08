@@ -35,12 +35,6 @@
         </tbody>
       </n-table>
     </div>
-    <IncomeList v-if="plan.incomes" :incomes="plan.incomes"
-                @create="handleCreateIncome"
-                @update="handleUpdateIncome"
-                @delete="handleDeleteIncome"
-                @remove="handleRemoveIncome"
-    />
     <section class="grid grid-cols-2 gap-3">
       <section class="space-y-3">
         <DebtList v-if="plan.debts" :debts="plan.debts"
@@ -59,6 +53,13 @@
         />
       </section>
       <section class="space-y-3">
+
+        <IncomeList v-if="plan.incomes" :incomes="plan.incomes"
+                    @create="handleCreateIncome"
+                    @update="handleUpdateIncome"
+                    @delete="handleDeleteIncome"
+                    @remove="handleRemoveIncome"
+        />
         <CashReserveList v-if="plan.cashReserves" :cashReserves="plan.cashReserves"
                          @create="handleCreateCashReserve"
                          @update="handleUpdateCashReserve"
@@ -91,7 +92,8 @@
         />
 
 
-        <TaxDeferredInvestmentList v-if="plan.taxDeferredInvestments" :taxDeferredInvestments="plan.taxDeferredInvestments"
+        <TaxDeferredInvestmentList v-if="plan.taxDeferredInvestments"
+                                   :taxDeferredInvestments="plan.taxDeferredInvestments"
                                    @create="handleCreateTaxDeferredInvestment"
                                    @update="handleUpdateTaxDeferredInvestment"
                                    @delete="handleDeleteTaxDeferredInvestment"
@@ -110,7 +112,10 @@ import type {Expense, ExpensePartial} from "~/models/expense/Expense"
 import type {Plan} from "~/models/plan/Plan";
 import type {CashReserve} from "~/models/cashReserve/CashReserve";
 import type {IraInvestment, IraInvestmentPartial} from "~/models/iraInvestment/IraInvestment";
-import type {TaxDeferredInvestment, TaxDeferredInvestmentPartial} from "~/models/taxDeferredInvestment/TaxDeferredInvestment";
+import type {
+  TaxDeferredInvestment,
+  TaxDeferredInvestmentPartial
+} from "~/models/taxDeferredInvestment/TaxDeferredInvestment";
 import type {Income, IncomePartial} from "~/models/income/Income";
 import type {BrokerageInvestment, BrokerageInvestmentPartial} from "~/models/brokerageInvestment/BrokerageInvestment";
 import type {RothIraInvestment, RothIraInvestmentPartial} from "~/models/rothIraInvestment/RothIraInvestment";

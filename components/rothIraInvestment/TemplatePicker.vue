@@ -6,7 +6,7 @@
                                @cancel="handleClose"
       />
     </n-modal>
-      <n-button size="small" type="info" round v-if="rothIraInvestmentTemplates" v-for="(rothIraInvestmentTemplate, index) in rothIraInvestmentTemplates" :rothIraInvestmentTemplate="rothIraInvestmentTemplate"
+      <n-button size="small" type="info" round v-if="templates" v-for="(rothIraInvestmentTemplate, index) in templates" :rothIraInvestmentTemplate="rothIraInvestmentTemplate"
                 @click="handleOpenModal(rothIraInvestmentTemplate)"
                 :key="rothIraInvestmentTemplate.name">
         <template #icon>
@@ -24,24 +24,24 @@ import {processTemplate} from "~/utils/templateProcessorUtils";
 
 const showModal = ref(false);
 const activeRothIraInvestmentPartial = ref<RothIraInvestmentPartial | null>()
-const rothIraInvestmentTemplateService = useRothIraInvestmentTemplateService()
-const rothIraInvestmentTemplates = ref<RothIraInvestmentPartial[]>([])
+const templateService = useRothIraInvestmentTemplateService()
+const templates = ref<RothIraInvestmentPartial[]>([])
+
+async function loadTemplates() {
+  templates.value =[rothIraInvestmentDefaults]
+  const loadedTemplates = await templateService.list()
+  if (loadedTemplates.length > 0) {
+    loadedTemplates.forEach(rothIraInvestmentTemplate => templates.value.push(processTemplate<RothIraInvestmentPartial, RothIraInvestmentTemplate, RothIraInvestment>(rothIraInvestmentDefaults, rothIraInvestmentTemplate)));
+  }
+}
 
 function handleOpenModal(rothIraInvestmentTemplate: Partial<RothIraInvestment>) {
   activeRothIraInvestmentPartial.value = rothIraInvestmentTemplate
   showModal.value = true;
 }
 
-async function loadRothIraInvestmentTemplates() {
-  rothIraInvestmentTemplates.value =[rothIraInvestmentDefaults]
-  const loadedRothIraInvestmentTemplates = await rothIraInvestmentTemplateService.list()
-  if (loadedRothIraInvestmentTemplates.length > 0) {
-    loadedRothIraInvestmentTemplates.forEach(rothIraInvestmentTemplate => rothIraInvestmentTemplates.value.push(processTemplate<RothIraInvestmentPartial, RothIraInvestmentTemplate, RothIraInvestment>(rothIraInvestmentDefaults, rothIraInvestmentTemplate)));
-  }
-}
-
 onMounted(async () => {
-  await loadRothIraInvestmentTemplates()
+  await loadTemplates()
 })
 
 const emit = defineEmits(['create'])

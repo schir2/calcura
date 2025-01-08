@@ -134,6 +134,7 @@ export default class PlanManager extends BaseOrchestrator<Plan, PlanState, Manag
         const inflationRate = this.getInflationRate()
         const grossIncome = this.getGrossIncome()
         const taxedIncome = grossIncome - this.calculateTaxes(grossIncome)
+        const taxedCapital = previousState.taxedCapital + taxedIncome
         return {
             ...previousState,
             age: age,
@@ -145,7 +146,7 @@ export default class PlanManager extends BaseOrchestrator<Plan, PlanState, Manag
             AGI: 0,
 
             taxableCapital: grossIncome,
-            taxedCapital: taxedIncome,
+            taxedCapital: taxedCapital,
             taxedWithdrawals: 0,
 
             deductions: 0,
@@ -166,13 +167,13 @@ export default class PlanManager extends BaseOrchestrator<Plan, PlanState, Manag
             taxExemptContributionsLifetime: previousState.taxExemptContributionsLifetime,
 
             savingsTaxDeferredStartOfYear: previousState.savingsTaxDeferredEndOfYear,
-            savingsTaxDeferredEndOfYear: 0,
+            savingsTaxDeferredEndOfYear: previousState.savingsTaxDeferredEndOfYear,
 
             savingsTaxExemptStartOfYear: previousState.savingsTaxExemptEndOfYear,
-            savingsTaxExemptEndOfYear: 0,
+            savingsTaxExemptEndOfYear:  previousState.savingsTaxExemptEndOfYear,
 
             savingsTaxableStartOfYear: previousState.savingsTaxableEndOfYear,
-            savingsTaxableEndOfYear: 0,
+            savingsTaxableEndOfYear: previousState.savingsTaxableEndOfYear,
 
             savingsStartOfYear: previousState.savingsEndOfYear,
             savingsEndOfYear: 0,
@@ -358,16 +359,16 @@ export default class PlanManager extends BaseOrchestrator<Plan, PlanState, Manag
         })
     }
 
-    simulate(commands?: Command[]): PlanState[] {
+    simulate(commands?: Command[], years: number = 5): PlanState[] {
         const allManagers = this.getAllManagers()
-        for (let i = 0; i < 3; i++) {
+        for (let i = 0; i < years; i++) {
             if (commands) {
                 commands.forEach(command => {
                     command.execute()
                 })
             }
             this.process()
-            if (i === 2){
+            if (i === years - 1){
                 break
             }
             this.advanceTimePeriod()
