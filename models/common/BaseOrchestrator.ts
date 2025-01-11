@@ -77,7 +77,6 @@ export abstract class BaseOrchestrator<TConfig, TState extends BaseState, TManag
             throw new Error(`The current state has not been processed. ${JSON.stringify(previousState)}`);
         }
         const newState = this.createNextState(previousState);
-        console.log(newState)
         this.states.push(newState);
         return newState;
     }
@@ -111,5 +110,5 @@ export abstract class BaseOrchestrator<TConfig, TState extends BaseState, TManag
         return commands;
     }
 
-    protected abstract createNextState(previousState: TState): TState;
+    abstract createNextState(previousState: TState): TState;
 }
