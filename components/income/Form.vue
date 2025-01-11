@@ -6,35 +6,34 @@
 
     <template #default>
       <n-form>
-        <n-form-item path="name" v-bind="nameProps" label="Name" required>
-          <n-input v-model:value="name"/>
-        </n-form-item>
+        <section class="grid grid-cols-3 gap-3">
 
-        <n-form-item path="incomeType" v-bind="incomeTypeProps">
+          <n-form-item path="name" v-bind="nameProps" :label="incomeForm.name.label" required>
+            <n-input v-model:value="name"/>
+          </n-form-item>
+          <n-form-item path="grossIncome" :label="incomeForm.grossIncome.label" v-bind="grossIncomeProps">
+            <n-input-number v-model:value="grossIncome"/>
+          </n-form-item>
+          <n-form-item path="growthRate" :label="incomeForm.growthRate.label" v-bind="growthRateProps">
+              <n-input-number v-model:value="growthRate">
+                <template #prefix>
+                  <n-tag size="small">%</n-tag>
+                </template>
+              </n-input-number>
+          </n-form-item>
+        </section>
+
+        <n-form-item path="incomeType" :label="incomeForm.incomeType.label" v-bind="incomeTypeProps">
           <n-radio-group v-model:value="incomeType">
             <n-radio-button v-for="option in incomeForm.incomeType.options" :key="option.value" :label="option.label"
                             :value="option.value"/>
           </n-radio-group>
         </n-form-item>
 
-        <n-form-item path="frequency" v-bind="frequencyProps">
-          <n-select v-model:value="frequency" :options="incomeForm.frequency.options"/>
-        </n-form-item>
-
-        <n-form-item path="grossIncome" v-bind="grossIncomeProps">
-          <n-input-number v-model:value="grossIncome"/>
-        </n-form-item>
-
-        <n-form-item path="growthRate" v-bind="growthRateProps">
-          <div class="flex flex-col w-full gap-3">
-            <n-input-number v-model:value="growthRate">
-
-              <template #prefix>
-                <n-tag size="small">%</n-tag>
-              </template>
-            </n-input-number>
-            <n-slider size="small" v-model:value="growthRate"/>
-          </div>
+        <n-form-item path="frequency" :label="incomeForm.frequency.label" v-bind="frequencyProps">
+          <n-radio-group v-model:value="frequency">
+            <n-radio-button v-for="option in incomeForm.frequency.options" :key="option.value" :label="option.label" :value="option.value"/>
+          </n-radio-group>
         </n-form-item>
       </n-form>
       <Bar v-if="data" id="my-chart-id"
@@ -43,7 +42,8 @@
       ></Bar>
     </template>
     <template #action>
-      <FormActionButtons :mode="mode" :errors="errors" @update="handleUpdate" @create="handleCreate" @cancel="handleCancel"/>
+      <FormActionButtons :mode="mode" :errors="errors" @update="handleUpdate" @create="handleCreate"
+                         @cancel="handleCancel"/>
     </template>
 
   </n-card>
@@ -56,6 +56,8 @@ import {useForm} from "vee-validate";
 import type {Income} from "~/models/income/Income";
 import {BarElement, CategoryScale, Chart as ChartJS, Legend, LinearScale, Title, Tooltip} from 'chart.js'
 import {naiveConfig} from "~/utils/schemaUtils";
+import {getAnnualAmount} from "~/utils";
+import type {Frequency} from "~/models/expense/Expense";
 
 interface Props {
   incomePartial: Partial<Income>;
@@ -90,7 +92,7 @@ const chartData = computed(() => ({
     label: 'Projection',
 
     backgroundColor: "#1355FF",
-    data: generateGrowthData(grossIncome.value ?? 0, growthRate.value),
+    data: generateGrowthData(getAnnualAmount(grossIncome.value ?? 0, frequency.value as Frequency), growthRate.value),
   }]
 }));
 

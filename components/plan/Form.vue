@@ -5,84 +5,68 @@
     </template>
     <template #default>
       <n-form>
-        <n-form-item path="name" v-bind="formFields.name.props">
-          <n-input v-model:value="formFields.name.value"></n-input>
+        <section class="grid grid-cols-4 gap-3">
+
+          <n-form-item path="name" :label="planForm.name.label" v-bind="nameProps">
+            <n-input v-model:value="name"></n-input>
+          </n-form-item>
+
+          <n-form-item path="age" :label="planForm.age.label" v-bind="ageProps">
+            <n-input-number class="w-full" v-model:value="age"/>
+          </n-form-item>
+
+          <n-form-item path="year" :label="planForm.year.label" v-bind="yearProps">
+            <n-input-number class="w-full" v-model:value="year"/>
+          </n-form-item>
+
+          <n-form-item path="lifeExpectancy" :label="planForm.lifeExpectancy.label" v-bind="lifeExpectancyProps">
+            <n-input-number class="w-full" v-model:value="lifeExpectancy"/>
+          </n-form-item>
+
+        </section>
+        <n-form-item path="taxStrategy" :label="planForm.taxStrategy.label" v-bind="taxStrategyProps">
+          <CommonRadioCard v-model="taxStrategy" :value="IncomeTaxStrategy.Simple" title="Simple">
+            <n-form-item path="taxRate" :label="planForm.taxRate.label" v-bind="taxRateProps">
+              <n-slider v-model:value="taxRate" :marks="sliderMarks"></n-slider>
+            </n-form-item>
+          </CommonRadioCard>
         </n-form-item>
+        <n-form-item path="retirementStrategy" :label="planForm.retirementStrategy.label"
+                     v-bind="retirementStrategyProps">
 
-        <n-form-item path="age" v-bind="formFields.age.props">
-          <n-input-number v-model:value="formFields.age.value"/>
+          <div class="grid grid-cols-3 gap-3 w-full">
+
+            <CommonRadioCard v-model="retirementStrategy" :value="RetirementStrategy.Age"
+                             title="Retire by a certain age">
+              <n-form-item
+                  path="retirementAge" :label="planForm.retirementAge.label" v-bind="retirementAgeProps">
+                <n-input-number class="w-full" v-model:value="retirementAge"/>
+              </n-form-item>
+            </CommonRadioCard>
+
+            <CommonRadioCard v-model="retirementStrategy" :value="RetirementStrategy.TargetSavings"
+                             title="Reach a savings goal">
+              <n-form-item path="retirementSavingsAmount" :label="planForm.retirementSavingsAmount.label" v-bind="retirementSavingsAmountProps">
+                <n-input-number class="w-full" v-model:value="retirementSavingsAmount"/>
+              </n-form-item>
+            </CommonRadioCard>
+
+            <CommonRadioCard v-model="retirementStrategy" :value="RetirementStrategy.PercentRule" title="Percent Rule">
+              <n-form-item
+                  path="retirementWithdrawalRate" :label="planForm.retirementWithdrawalRate.label"
+
+                  v-bind="retirementWithdrawalRateProps"
+              >
+                <n-input-number class="w-full" v-model:value="retirementWithdrawalRate"/>
+              </n-form-item>
+
+              <n-form-item path="retirementIncomeGoal" :label="planForm.retirementIncomeGoal.label"
+                           v-bind="retirementIncomeGoalProps">
+                <n-input v-model:value="retirementIncomeGoal"/>
+              </n-form-item>
+            </CommonRadioCard>
+          </div>
         </n-form-item>
-
-        <n-form-item path="year" v-bind="formFields.year.props">
-          <n-input-number v-model:value="formFields.year.value"/>
-        </n-form-item>
-
-        <n-form-item path="lifeExpectancy" v-bind="formFields.lifeExpectancy.props">
-          <n-input-number v-model:value="formFields.lifeExpectancy.value"/>
-        </n-form-item>
-
-        <n-divider/>
-
-        <n-form-item path="taxStrategy" v-bind="formFields.taxStrategy.props">
-          <n-radio-group v-model:value="formFields.taxStrategy.value">
-            <n-radio-button v-for="item in planForm.taxStrategy.options" :key="item.value" :value="item.value">
-              {{ item.label }}
-            </n-radio-button>
-          </n-radio-group>
-        </n-form-item>
-
-        <n-form-item path="taxRate" v-bind="formFields.taxRate.props">
-          <n-slider v-model:value="formFields.taxRate.value" :marks="sliderMarks"></n-slider>
-        </n-form-item>
-
-        <n-divider/>
-
-        <n-form-item path="retirementStrategy" v-bind="formFields.retirementStrategy.props">
-          <n-radio-group v-model:value="formFields.retirementStrategy.value">
-            <n-radio-button v-for="item in planForm.retirementStrategy.options" :key="item.value" :value="item.value">
-              {{ item.label }}
-            </n-radio-button>
-          </n-radio-group>
-        </n-form-item>
-
-        <n-form-item
-            path="retirementAge"
-
-            v-bind="formFields.retirementAge.props"
-            v-if="formFields.retirementStrategy.value === 'age'"
-        >
-          <n-input-number v-model:value="formFields.retirementAge.value"/>
-        </n-form-item>
-
-        <n-form-item
-            path="retirementSavingsAmount"
-
-            v-bind="formFields.retirementSavingsAmount.props"
-            v-if="formFields.retirementStrategy.value === 'target_savings'"
-        >
-          <n-input-number v-model:value="formFields.retirementSavingsAmount.value"/>
-        </n-form-item>
-
-        <n-form-item
-            path="retirementWithdrawalRate"
-
-            v-bind="formFields.retirementWithdrawalRate.props"
-            v-if="formFields.retirementStrategy.value === 'percent_rule'"
-        >
-          <n-input-number v-model:value="formFields.retirementWithdrawalRate.value"/>
-        </n-form-item>
-
-        <n-form-item
-            path="retirementIncomeGoal"
-
-            v-bind="formFields.retirementIncomeGoal.props"
-            v-if="formFields.retirementStrategy.value === 'percent_rule'"
-        >
-          <n-input v-model:value="formFields.retirementIncomeGoal.value"/>
-        </n-form-item>
-        <n-button :disabled="!meta.valid">
-          Submit
-        </n-button>
       </n-form>
 
     </template>
@@ -94,8 +78,9 @@
 </template>
 <script lang="ts" setup>
 import {planForm, planFormSchema} from "~/forms/planForm";
-import type {Plan} from "~/models/plan/Plan";
+import {IncomeTaxStrategy, type Plan, RetirementStrategy} from "~/models/plan/Plan";
 import {useFieldHelpers} from "~/composables/useFieldHelpers";
+import {naiveConfig} from "~/utils/schemaUtils";
 
 interface Props {
   planPartial: Partial<Plan>;
@@ -139,6 +124,21 @@ const {defineField, values, errors, handleSubmit, meta} = useForm({
   validationSchema: planFormSchema,
   initialValues: props.planPartial
 })
+
+const [name, nameProps] = defineField('name', naiveConfig)
+const [age, ageProps] = defineField('age', naiveConfig)
+const [year, yearProps] = defineField('year', naiveConfig)
+const [inflationRate, inflationRateProps] = defineField('inflationRate', naiveConfig)
+const [insufficientFundsStrategy, insufficientFundsStrategyProps] = defineField('insufficientFundsStrategy', naiveConfig)
+const [growthApplicationStrategy, growthApplicationStrategyProps] = defineField('growthApplicationStrategy', naiveConfig)
+const [taxStrategy, taxStrategyProps] = defineField('taxStrategy', naiveConfig)
+const [taxRate, taxRateProps] = defineField('taxRate', naiveConfig)
+const [lifeExpectancy, lifeExpectancyProps] = defineField('lifeExpectancy', naiveConfig)
+const [retirementStrategy, retirementStrategyProps] = defineField('retirementStrategy', naiveConfig)
+const [retirementWithdrawalRate, retirementWithdrawalRateProps] = defineField('retirementWithdrawalRate', naiveConfig)
+const [retirementIncomeGoal, retirementIncomeGoalProps] = defineField('retirementIncomeGoal', naiveConfig)
+const [retirementAge, retirementAgeProps] = defineField('retirementAge', naiveConfig)
+const [retirementSavingsAmount, retirementSavingsAmountProps] = defineField('retirementSavingsAmount', naiveConfig)
 
 const formFields = ref(useFieldHelpers(planForm, defineField))
 
