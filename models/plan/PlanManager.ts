@@ -128,7 +128,7 @@ export default class PlanManager extends BaseOrchestrator<Plan, PlanState, Manag
     }
 
 
-    protected createNextState(previousState: PlanState): PlanState {
+    createNextState(previousState: PlanState): PlanState {
         const age = previousState.age + 1
         const year = previousState.year + 1
         const inflationRate = this.getInflationRate()
@@ -300,8 +300,10 @@ export default class PlanManager extends BaseOrchestrator<Plan, PlanState, Manag
                 currentState.taxableCapital -= amount;
                 currentState.taxableIncome -= amount;
                 const agi = this.getAGI(currentState)
-                currentState.taxedIncome = currentState.taxableIncome - this.calculateTaxes(agi)
-                currentState.taxedCapital = currentState.taxedIncome - currentState.taxedWithdrawals
+                const taxedIncome = currentState.taxableIncome - this.calculateTaxes(agi)
+                const taxedCapital = currentState.taxedCapital - currentState.taxedIncome + taxedIncome
+                currentState.taxedIncome = taxedIncome
+                currentState.taxedCapital = taxedCapital
                 this.updateCurrentState(currentState)
                 return
             case FundType.Taxed:
@@ -351,16 +353,14 @@ export default class PlanManager extends BaseOrchestrator<Plan, PlanState, Manag
         return this.config.inflationRate
     }
 
-    override processImplementation(): void {
-        const currentState = this.getCurrentState()
+    processImplementation(): void {
         const allManagers = this.getAllManagers()
         allManagers.forEach(manager => {
             this.processUnprocessed(manager)
         })
     }
 
-    simulate(commands?: Command[], years: number = 5): PlanState[] {
-        const allManagers = this.getAllManagers()
+    simulate(commands?: Command[], years: number = 30): PlanState[] {
         for (let i = 0; i < years; i++) {
             if (commands) {
                 commands.forEach(command => {
@@ -368,6 +368,9 @@ export default class PlanManager extends BaseOrchestrator<Plan, PlanState, Manag
                 })
             }
             this.process()
+            if (this.canRetire()) {
+                break
+            }
             if (i === years - 1){
                 break
             }
