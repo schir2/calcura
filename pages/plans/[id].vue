@@ -9,6 +9,7 @@
       <n-table>
         <thead>
         <tr>
+          <th>Age</th>
           <th>Gross Income</th>
           <th>Taxable Income</th>
           <th>Taxed Income</th>
@@ -23,6 +24,7 @@
         </thead>
         <tbody>
         <tr class="space-y-3" v-for="state in planStates">
+          <td>{{ state.age }}</td>
           <td>${{ $humanize.intComma(state.grossIncome) }}</td>
           <td>${{ $humanize.intComma(state.taxableIncome) }}</td>
           <td>${{ $humanize.intComma(state.taxedIncome) }}</td>
