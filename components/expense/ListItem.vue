@@ -47,7 +47,7 @@
           </span>
         </li>
         <li class="text-end">
-          <span class="text-lg">${{$humanize.intComma(expense.amount)}}</span>
+          <span class="text-lg">${{$humanize.intComma(getAnnualAmount(expense.amount, expense.frequency))}}/year</span>
         </li>
       </ul>
       <template #header-extra>
@@ -59,6 +59,7 @@
 <script setup lang="ts">
 
 import type {Expense} from "~/models/expense/Expense";
+import {getAnnualAmount} from "~/utils";
 
 interface Props {
   expense: Expense

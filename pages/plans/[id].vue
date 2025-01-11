@@ -1,9 +1,4 @@
 <template>
-  <ClientOnly>
-    <Teleport to="#right-side-bar">
-      <!--      <PlanSummary v-if="plan" :plan="plan"></PlanSummary>-->
-    </Teleport>
-  </ClientOnly>
   <div v-if="plan" class="col-span-4 space-y-6">
     <div>
       <n-table>
@@ -14,10 +9,13 @@
           <th>Taxable Income</th>
           <th>Taxed Income</th>
           <th>Taxed Capital</th>
+          <th>Taxable Capital</th>
           <th>Taxed Withdrawals</th>
           <th>Tax Deferred Savings</th>
           <th>Tax Exempt Savings</th>
           <th>Taxable Savings</th>
+          <th>Debt</th>
+          <th>Debt</th>
 
         </tr>
 
@@ -29,10 +27,15 @@
           <td>${{ $humanize.intComma(state.taxableIncome) }}</td>
           <td>${{ $humanize.intComma(state.taxedIncome) }}</td>
           <td>${{ $humanize.intComma(state.taxedCapital) }}</td>
+          <td>${{ $humanize.intComma(state.taxableCapital) }}</td>
           <td>${{ $humanize.intComma(state.taxedWithdrawals) }}</td>
           <td>${{ $humanize.intComma(state.savingsTaxDeferredEndOfYear) }}</td>
           <td>${{ $humanize.intComma(state.savingsTaxExemptEndOfYear) }}</td>
           <td>${{ $humanize.intComma(state.savingsTaxableEndOfYear) }}</td>
+          <td>${{ $humanize.intComma(state.debtStartOfYear) }}</td>
+          <td>${{ $humanize.intComma(state.debtEndOfYear) }}</td>
+          <td>${{ $humanize.intComma(state.debtPayments) }}</td>
+          <td>${{ $humanize.intComma(state.debtPaymentsLifetime) }}</td>
         </tr>
         </tbody>
       </n-table>
@@ -121,6 +124,7 @@ import type {
 import type {Income, IncomePartial} from "~/models/income/Income";
 import type {BrokerageInvestment, BrokerageInvestmentPartial} from "~/models/brokerageInvestment/BrokerageInvestment";
 import type {RothIraInvestment, RothIraInvestmentPartial} from "~/models/rothIraInvestment/RothIraInvestment";
+import {getAnnualAmount} from "~/utils";
 
 const planService = usePlanService()
 const debtService = useDebtService()

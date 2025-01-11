@@ -5,8 +5,7 @@
     </template>
     <template #default>
       <n-form>
-        <section class="grid grid-cols-4 gap-3">
-
+        <section id="planBasicInfo" class="grid grid-cols-4 gap-3">
           <n-form-item path="name" :label="planForm.name.label" v-bind="nameProps">
             <n-input v-model:value="name"></n-input>
           </n-form-item>
@@ -22,7 +21,21 @@
           <n-form-item path="lifeExpectancy" :label="planForm.lifeExpectancy.label" v-bind="lifeExpectancyProps">
             <n-input-number class="w-full" v-model:value="lifeExpectancy"/>
           </n-form-item>
-
+        </section>
+        <section id="planGrowthAndInflation">
+          <n-form-item path="inflationRate" :label="planForm.inflationRate.label" v-bind="inflationRateProps">
+            <n-input-number class="w-full" v-model:value="inflationRate"/>
+          </n-form-item>
+          <n-form-item path="insufficientFundsStrategy" :label="planForm.insufficientFundsStrategy.label" v-bind="insufficientFundsStrategyProps">
+            <n-radio-group v-model:value="insufficientFundsStrategy">
+              <n-radio-button v-for="option in planForm.insufficientFundsStrategy.options" :key="option.value" :label="option.label" :value="option.value"/>
+            </n-radio-group>
+          </n-form-item>
+          <n-form-item path="growthApplicationStrategy" :label="planForm.growthApplicationStrategy.label" v-bind="growthApplicationStrategyProps">
+            <n-radio-group v-model:value="growthApplicationStrategy">
+              <n-radio-button v-for="option in planForm.growthApplicationStrategy.options" :key="option.value" :label="option.label" :value="option.value"/>
+            </n-radio-group>
+          </n-form-item>
         </section>
         <n-form-item path="taxStrategy" :label="planForm.taxStrategy.label" v-bind="taxStrategyProps">
           <CommonRadioCard v-model="taxStrategy" :value="IncomeTaxStrategy.Simple" title="Simple">
@@ -34,7 +47,7 @@
         <n-form-item path="retirementStrategy" :label="planForm.retirementStrategy.label"
                      v-bind="retirementStrategyProps">
 
-          <div class="grid grid-cols-3 gap-3 w-full">
+          <div class="grid grid-cols-4 gap-3 w-full">
 
             <CommonRadioCard v-model="retirementStrategy" :value="RetirementStrategy.Age"
                              title="Retire by a certain age">
@@ -49,6 +62,10 @@
               <n-form-item path="retirementSavingsAmount" :label="planForm.retirementSavingsAmount.label" v-bind="retirementSavingsAmountProps">
                 <n-input-number class="w-full" v-model:value="retirementSavingsAmount"/>
               </n-form-item>
+            </CommonRadioCard>
+
+            <CommonRadioCard v-model="retirementStrategy" :value="RetirementStrategy.DebtFree"
+                             title="Retire when all debts are paid">
             </CommonRadioCard>
 
             <CommonRadioCard v-model="retirementStrategy" :value="RetirementStrategy.PercentRule" title="Percent Rule">
