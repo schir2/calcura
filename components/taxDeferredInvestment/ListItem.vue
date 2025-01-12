@@ -5,6 +5,7 @@
                                @create="handleCreate"
                                @update="handleUpdate"
                                @cancel="handleClose"
+                               :incomes="incomes"
     />
   </n-modal>
   <n-card size="small">
@@ -31,9 +32,11 @@
 <script setup lang="ts">
 
 import type {TaxDeferredInvestment} from "~/models/taxDeferredInvestment/TaxDeferredInvestment";
+import type {Income} from "~/models/income/Income";
 
 interface Props {
   taxDeferredInvestment: TaxDeferredInvestment
+  incomes: Income[] | undefined
 }
 
 const props = defineProps<Props>()

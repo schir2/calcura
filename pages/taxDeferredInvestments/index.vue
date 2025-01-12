@@ -1,16 +1,22 @@
 <template>
   <TaxDeferredInvestmentList :taxDeferredInvestments="taxDeferredInvestments"
-               @create="handleCreateTaxDeferredInvestment"
-               @update="handleUpdateTaxDeferredInvestment"
-               @delete="handleDeleteTaxDeferredInvestment"
+                             @create="handleCreateTaxDeferredInvestment"
+                             @update="handleUpdateTaxDeferredInvestment"
+                             @delete="handleDeleteTaxDeferredInvestment"
+                             :incomes="incomes"
   ></TaxDeferredInvestmentList>
 </template>
 <script setup lang="ts">
-import type {TaxDeferredInvestment, TaxDeferredInvestmentPartial} from "~/models/taxDeferredInvestment/TaxDeferredInvestment";
+import type {
+  TaxDeferredInvestment,
+  TaxDeferredInvestmentPartial
+} from "~/models/taxDeferredInvestment/TaxDeferredInvestment";
 
 import {useTaxDeferredInvestmentService} from "~/composables/api/useTaxDeferredInvestmentService";
+import type {Income} from "~/models/income/Income";
 
 const taxDeferredInvestmentService = useTaxDeferredInvestmentService();
+const incomeService = useIncomeService()
 
 
 async function handleCreateTaxDeferredInvestment(taxDeferredInvestmentTemplate: TaxDeferredInvestmentPartial) {
@@ -29,6 +35,7 @@ async function handleUpdateTaxDeferredInvestment(taxDeferredInvestment: TaxDefer
 }
 
 const taxDeferredInvestments = ref<TaxDeferredInvestment[]>([])
+const incomes = ref<Income[]>([])
 const loading = ref<boolean>(true);
 
 async function loadTaxDeferredInvestments() {
@@ -40,7 +47,17 @@ async function loadTaxDeferredInvestments() {
   loading.value = false;
 }
 
+async function loadIncomes() {
+  try {
+    incomes.value = await incomeService.list();
+  } catch (error) {
+    console.error('Error loading incomes:', error);
+  }
+  loading.value = false;
+}
+
 onMounted(async () => {
   await loadTaxDeferredInvestments();
+  await loadIncomes()
 });
 </script>

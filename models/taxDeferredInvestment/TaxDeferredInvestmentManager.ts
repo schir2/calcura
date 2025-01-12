@@ -99,7 +99,8 @@ export class TaxDeferredInvestmentManager extends BaseManager<TaxDeferredInvestm
                     return 0
                 }
                 if (this.getConfig().employerMatchPercentage <= 0) {
-                    throw new ValueError('Employer match percentage must be greater than 0')
+
+                    eventBus.emit('warning',{scope: 'calculateEmployerContribution:employerMatchPercentage', message: 'Employer match percentage should be greater than 0'})
                 }
                 const employerMatchLimit = this.getEmployerMatchLimit();
                 if (this.getConfig().electiveContributionStrategy === TaxDeferredContributionStrategy.UntilCompanyMatch) {
@@ -170,8 +171,8 @@ export class TaxDeferredInvestmentManager extends BaseManager<TaxDeferredInvestm
     } {
         const electiveContributionLimit = Math.min(this.orchestrator.getLimitForContributionType(ContributionLimitType.Elective), electiveContribution)
         const contribution = Math.min(this.orchestrator.getLimitForContributionType(ContributionLimitType.Deferred), employerContribution + electiveContribution)
-        const employerContributionLimit = contribution - electiveContributionLimit
-        return {electiveContribution: electiveContributionLimit, employerContribution: employerContributionLimit, contribution: contribution}
+        const employerContributionLimit = Math.min(contribution - electiveContributionLimit, employerContribution)
+        return {electiveContribution: electiveContributionLimit, employerContribution: employerContributionLimit, contribution: employerContributionLimit + electiveContributionLimit}
     }
 
 

@@ -4,6 +4,7 @@
       <TaxDeferredInvestmentForm :taxDeferredInvestmentPartial="activeTaxDeferredInvestmentPartial" mode="create"
                                  @create="handleCreate"
                                  @cancel="handleClose"
+                                 :incomes="incomes"
       />
     </n-modal>
     <n-button size="small" type="info" round v-if="templates"
@@ -27,7 +28,12 @@ import {
   type TaxDeferredInvestmentPartial,
   type TaxDeferredInvestmentTemplate
 } from "~/models/taxDeferredInvestment/TaxDeferredInvestment";
+import type {Income} from "~/models/income/Income";
 
+interface Props {
+  incomes: undefined | Income[]
+}
+const props = defineProps<Props>()
 const showModal = ref(false);
 const activeTaxDeferredInvestmentPartial = ref<TaxDeferredInvestmentPartial | null>()
 const templateService = useTaxDeferredInvestmentTemplateService()

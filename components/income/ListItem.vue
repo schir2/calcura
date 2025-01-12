@@ -7,31 +7,44 @@
                 @cancel="handleClose"
     />
   </n-modal>
-  <n-list-item>
-    <n-thing class="p-2">
-      <template #header>
-        <span>{{ income.name }}</span> <NuxtLink :to="{name: 'incomes-id', params: {id: income.id}}"><Icon name="mdi:open-in-new"/></NuxtLink>
-      </template>
-      <template #default>
-      <ul class="grid grid-cols-5">
-        <li>
-          <n-tag type="info" size="small">{{ income.incomeType }}</n-tag>
-        </li>
-        <li>{{ income.grossIncome }}</li>
-        <li class="text-end col-span-2">
-        </li>
-      </ul>
-      </template>
-      <template #header-extra>
-        <ListItemButtons size="small" @edit="handleEdit" @remove="handleRemove" @delete="handleDelete"/>
-      </template>
-    </n-thing>
-  </n-list-item>
+  <n-card size="small">
+    <template #header>
+      <span>{{income.id}} {{ income.name }}</span>
+    </template>
+    <template #default>
+      <p class="flex justify-between">
+        <span class="flex">
+          <n-tag>
+            {{ income.incomeType }}
+          </n-tag>
+          <n-tag>
+            <template #icon>
+              <Icon name="mdi-calendar"></Icon>
+            </template>
+            {{ income.frequency }}
+          </n-tag>
+          <n-tag v-if="income.growthRate">
+            <template #icon>
+              <Icon name="mdi:trending-up"></Icon>
+            </template>
+            {{ income.growthRate }}%
+          </n-tag>
+        </span>
+          <span class="text-lg">${{
+              $humanize.intComma(getAnnualAmount(income.grossIncome, income.frequency))
+            }}/year</span>
+      </p>
+    </template>
+    <template #header-extra>
+      <ListItemButtons size="small" @edit="handleEdit" @remove="handleRemove" @delete="handleDelete"/>
+    </template>
+  </n-card>
 
 </template>
 <script setup lang="ts">
 
 import type {Income} from "~/models/income/Income";
+import {getAnnualAmount} from "~/utils";
 
 interface Props {
   income: Income

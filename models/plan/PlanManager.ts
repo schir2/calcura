@@ -20,6 +20,7 @@ import {ContributionType} from "~/models/common";
 import {BaseOrchestrator} from "~/models/common/BaseOrchestrator";
 import {ContributionError} from "~/utils/errors/ContributionError";
 import {RothIraInvestmentManager} from "~/models/rothIraInvestment/RothIraInvestmentManager";
+import eventBus from "~/services/eventBus";
 
 export enum FundType {
     Taxable = "taxable",
@@ -414,10 +415,13 @@ export default class PlanManager extends BaseOrchestrator<Plan, PlanState, Manag
         }
     }
 
-    getIncomeManagerById(id: number): IncomeManager {
+    getIncomeManagerById(id: number): IncomeManager | undefined {
         const incomeManager = this.managers.incomeManagers.find((incomeManager) => incomeManager.getConfig().id === id);
         if (incomeManager === undefined) {
-            throw new Error(`Missing income manager with id ${id}`);
+            eventBus.emit('warning', {
+                scope: 'planManager:missingIncomeManager',
+                message: `Missing income manager with ${id}`
+            })
         }
         return incomeManager
     }

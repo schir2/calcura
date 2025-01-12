@@ -1,5 +1,17 @@
 <template>
   <div v-if="plan" class="col-span-4 space-y-6">
+    <n-modal v-model:show="showModal">
+      <PlanForm :planPartial="plan" mode="edit"
+                @update="handleUpdate"
+                @cancel="handleClose"
+      />
+    </n-modal>
+    <n-button type="warning" secondary round @click="handleEdit">
+      <template #icon>
+        <Icon name="mdi:edit"/>
+      </template>
+      Edit
+    </n-button>
     <div>
       <n-table>
         <thead>
@@ -14,8 +26,6 @@
           <th>Tax Deferred Savings</th>
           <th>Tax Exempt Savings</th>
           <th>Taxable Savings</th>
-          <th>Debt</th>
-          <th>Debt</th>
 
         </tr>
 
@@ -32,10 +42,6 @@
           <td>${{ $humanize.intComma(state.savingsTaxDeferredEndOfYear) }}</td>
           <td>${{ $humanize.intComma(state.savingsTaxExemptEndOfYear) }}</td>
           <td>${{ $humanize.intComma(state.savingsTaxableEndOfYear) }}</td>
-          <td>${{ $humanize.intComma(state.debtStartOfYear) }}</td>
-          <td>${{ $humanize.intComma(state.debtEndOfYear) }}</td>
-          <td>${{ $humanize.intComma(state.debtPayments) }}</td>
-          <td>${{ $humanize.intComma(state.debtPaymentsLifetime) }}</td>
         </tr>
         </tbody>
       </n-table>
@@ -99,6 +105,7 @@
 
         <TaxDeferredInvestmentList v-if="plan.taxDeferredInvestments"
                                    :taxDeferredInvestments="plan.taxDeferredInvestments"
+                                   :incomes="plan.incomes"
                                    @create="handleCreateTaxDeferredInvestment"
                                    @update="handleUpdateTaxDeferredInvestment"
                                    @delete="handleDeleteTaxDeferredInvestment"
@@ -124,7 +131,7 @@ import type {
 import type {Income, IncomePartial} from "~/models/income/Income";
 import type {BrokerageInvestment, BrokerageInvestmentPartial} from "~/models/brokerageInvestment/BrokerageInvestment";
 import type {RothIraInvestment, RothIraInvestmentPartial} from "~/models/rothIraInvestment/RothIraInvestment";
-import {getAnnualAmount} from "~/utils";
+import eventBus from "~/services/eventBus";
 
 const planService = usePlanService()
 const debtService = useDebtService()
@@ -139,6 +146,11 @@ const route = useRoute()
 const planId = Number(route.params.id)
 const plan = ref<Plan | null>(null)
 const loading = ref<boolean>(false);
+
+eventBus.on("*", (eventName, payload) => {
+  console.log(`[Event Bus]: ${eventName}`, payload);
+});
+
 
 useHead({
   title: 'Calcura Dashboard',
@@ -310,6 +322,7 @@ async function handleDeleteTaxDeferredInvestment(taxDeferredInvestment: TaxDefer
 }
 
 async function handleUpdateTaxDeferredInvestment(taxDeferredInvestment: TaxDeferredInvestment) {
+  console.log(taxDeferredInvestment)
   await taxDeferredInvestmentService.update(taxDeferredInvestment.id, taxDeferredInvestment)
   await loadPlan();
 }
@@ -329,6 +342,21 @@ async function loadPlan() {
   } finally {
     loading.value = false;
   }
+}
+
+const showModal = ref(false);
+
+async function handleUpdate(planData: Plan) {
+  plan.value = await planService.update(planData.id, planData)
+  showModal.value = false;
+}
+
+function handleEdit() {
+  showModal.value = true;
+}
+
+function handleClose() {
+  showModal.value = false;
 }
 
 onMounted(async () => {

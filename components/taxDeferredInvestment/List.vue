@@ -1,19 +1,26 @@
 <template>
   <n-card title="Tax Deferred Investment(s)">
     <template #header-extra>
-      <TaxDeferredInvestmentTemplatePicker @create="handleCreate"/>
+      <TaxDeferredInvestmentTemplatePicker :incomes="incomes" @create="handleCreate"/>
     </template>
-      <TaxDeferredInvestmentListItem v-for="(taxDeferredInvestment, index) in taxDeferredInvestments" :taxDeferredInvestment="taxDeferredInvestment" :key="taxDeferredInvestment.id"
-                      @delete="handleDelete" @update="handleUpdate" @create="handleCreate"
-                      @remove="handleRemove"></TaxDeferredInvestmentListItem>
+    <TaxDeferredInvestmentListItem v-for="(taxDeferredInvestment, index) in taxDeferredInvestments"
+                                   :taxDeferredInvestment="taxDeferredInvestment" :key="taxDeferredInvestment.id"
+                                   :incomes="incomes"
+                                   @delete="handleDelete" @update="handleUpdate" @create="handleCreate"
+                                   @remove="handleRemove"></TaxDeferredInvestmentListItem>
   </n-card>
 
 </template>
 <script lang="ts" setup>
-import type {TaxDeferredInvestment, TaxDeferredInvestmentTemplate} from "~/models/taxDeferredInvestment/TaxDeferredInvestment";
+import type {
+  TaxDeferredInvestment,
+  TaxDeferredInvestmentTemplate
+} from "~/models/taxDeferredInvestment/TaxDeferredInvestment";
+import type {Income} from "~/models/income/Income";
 
 interface Props {
   taxDeferredInvestments: TaxDeferredInvestment[]
+  incomes: Income[] | undefined
 }
 
 const props = defineProps<Props>()
