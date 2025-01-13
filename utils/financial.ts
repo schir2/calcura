@@ -49,6 +49,8 @@ export function getAnnualAmount(amount: number, frequency: Frequency): number {
             return amount * 52
         case Frequency.Quarterly:
             return amount * 4
+        case Frequency.Biweekly:
+            return amount * 26
         default:
             throw new Error(`Invalid frequency value: ${frequency}`);
     }

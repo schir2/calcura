@@ -5,16 +5,15 @@
           <LayoutTheNavbar/>
 
       <div class="grid grid-cols-12 gap-6">
-        <!-- Left Sidebar -->
+
         <LayoutTheLeftSidebar class="col-span-2"/>
 
-        <!-- Main Content -->
-        <main class="flex-grow mx-auto container p-16 bg-skin-base shadow-md rounded-md space-y-12 col-span-10">
+
+        <main class="flex-grow mx-auto container p-16 bg-skin-base shadow-md rounded-md space-y-12 col-span-7">
           <slot/>
         </main>
 
-        <!-- Left Sidebar -->
-<!--        <LayoutTheRightSidebar class="col-span-3"/>-->
+        <LayoutTheRightSidebar class="col-span-3"/>
       </div>
     </div>
   </n-config-provider>

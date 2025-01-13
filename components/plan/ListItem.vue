@@ -8,7 +8,7 @@
               @cancel="handleClose"
     />
   </n-modal>
-  <n-thing>
+  <n-card>
     <template #header>
       <NuxtLink :to="{name: 'plans-id', params: {id: plan.id}}"><h3 class="text-2xl">Plan {{ plan.id }}:
         {{ plan.name }}</h3></NuxtLink>
@@ -38,7 +38,7 @@
       <span>Strategy: {{ plan.retirementStrategy }}</span>
       <span>Retirement Age: {{ plan.retirementAge }}</span>
     </div>
-  </n-thing>
+  </n-card>
 
 </template>
 <script setup lang="ts">

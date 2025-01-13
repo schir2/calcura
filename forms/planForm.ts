@@ -32,7 +32,7 @@ export const planForm: FormData<Plan> = {
     },
     insufficientFundsStrategy: {
         name: 'insufficientFundsStrategy',
-        label: 'Allow Negative Disposable Income',
+        label: 'Allow Negative Funds',
         helpText: 'Choose weather to allow negative disposable income.',
         options: [
             {value: 'none', label: 'No'},
@@ -40,6 +40,13 @@ export const planForm: FormData<Plan> = {
             {value: 'full', label: 'Allow'},
         ]
 
+    },
+    growthRate: {
+        name: 'growthRate',
+        label: 'Growth Rate',
+        placeholder: 'Enter growth Rate',
+        helpText: 'The rate at which growth grows',
+        rules: yup.number()
     },
     growthApplicationStrategy: {
         name: 'growthApplicationStrategy',

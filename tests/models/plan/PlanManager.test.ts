@@ -15,9 +15,10 @@ import {
 import {IraContributionStrategy} from "~/models/iraInvestment/IraInvestment";
 import {RothIraContributionStrategy} from "~/models/rothIraInvestment/RothIraInvestment";
 import {BrokerageContributionStrategy} from "~/models/brokerageInvestment/BrokerageInvestment";
-import {Frequency, ExpenseType} from "~/models/expense/Expense";
+import {ExpenseType, Frequency} from "~/models/expense/Expense";
 import {DebtPaymentStrategy} from "~/models/debt/Debt";
 import {CashReserveStrategy} from "~/models/cashReserve/CashReserve";
+import {IncomeFrequency} from "~/models/income/Income";
 
 describe("PlanManager", () => {
     let planConfig: Plan;
@@ -57,7 +58,7 @@ describe("PlanManager", () => {
                     grossIncome: 100000,
                     growthRate: 0,
                     incomeType: "ordinary",
-                    frequency: 'annual'
+                    frequency: IncomeFrequency.annual
                 },
                 {
                     id: 2,
@@ -65,7 +66,7 @@ describe("PlanManager", () => {
                     grossIncome: 50000,
                     growthRate: 0,
                     incomeType: "ordinary",
-                    frequency: 'annual'
+                    frequency: IncomeFrequency.annual
                 }
             ],
             expenses: [
@@ -134,7 +135,7 @@ describe("PlanManager", () => {
                         grossIncome: 100_000,
                         growthRate: 0,
                         incomeType: "ordinary",
-                        frequency: 'annual'
+                        frequency: IncomeFrequency.annual
                     }
 
                 }
@@ -167,7 +168,7 @@ describe("PlanManager", () => {
                             grossIncome: 100_000,
                             growthRate: 0,
                             incomeType: "ordinary",
-                            frequency: 'annual'
+                            frequency: IncomeFrequency.annual
                         },
                 }],
             rothIraInvestments: [
@@ -186,7 +187,7 @@ describe("PlanManager", () => {
                             grossIncome: 100_000,
                             growthRate: 0,
                             incomeType: "ordinary",
-                            frequency: 'annual'
+                            frequency: IncomeFrequency.annual
                         },
                 }],
         }

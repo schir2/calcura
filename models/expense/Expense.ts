@@ -10,6 +10,7 @@ export enum Frequency {
     Weekly = 'weekly',
     Quarterly = 'quarterly',
     Annually = 'annual',
+    Biweekly = 'biweekly',
 }
 
 export interface Expense {

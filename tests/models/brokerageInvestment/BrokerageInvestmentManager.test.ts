@@ -3,8 +3,15 @@ import {BrokerageInvestmentManager} from "~/models/brokerageInvestment/Brokerage
 import type {BrokerageInvestment} from "~/models/brokerageInvestment/BrokerageInvestment";
 import {BrokerageContributionStrategy} from "~/models/brokerageInvestment/BrokerageInvestment";
 import PlanManager from "~/models/plan/PlanManager";
-import {GrowthApplicationStrategy, IncomeTaxStrategy, InsufficientFundsStrategy, type Plan, RetirementStrategy} from "~/models/plan/Plan";
+import {
+    GrowthApplicationStrategy,
+    IncomeTaxStrategy,
+    InsufficientFundsStrategy,
+    type Plan,
+    RetirementStrategy
+} from "~/models/plan/Plan";
 import {ProcessBrokerageInvestmentCommand} from "~/models/brokerageInvestment/BrokerageInvestmentCommands";
+import {IncomeFrequency} from "~/models/income/Income";
 
 const planConfig: Plan = {
     id: 1,
@@ -30,7 +37,7 @@ const planConfig: Plan = {
             grossIncome: 100_000,
             growthRate: 0,
             incomeType: "ordinary",
-            frequency: 'annual'
+            frequency: IncomeFrequency.annual
         },
         {
             id: 1,
@@ -38,7 +45,7 @@ const planConfig: Plan = {
             grossIncome: 50_000,
             growthRate: 0,
             incomeType: "ordinary",
-            frequency: 'annual'
+            frequency: IncomeFrequency.annual
         }
     ],
     expenses: [],

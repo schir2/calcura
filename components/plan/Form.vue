@@ -31,6 +31,9 @@
               <n-radio-button v-for="option in planForm.insufficientFundsStrategy.options" :key="option.value" :label="option.label" :value="option.value"/>
             </n-radio-group>
           </n-form-item>
+          <n-form-item path="growthRate" :label="planForm.growthRate.label" v-bind="growthRateProps">
+            <n-input-number class="w-full" v-model:value="growthRate"/>
+          </n-form-item>
           <n-form-item path="growthApplicationStrategy" :label="planForm.growthApplicationStrategy.label" v-bind="growthApplicationStrategyProps">
             <n-radio-group v-model:value="growthApplicationStrategy">
               <n-radio-button v-for="option in planForm.growthApplicationStrategy.options" :key="option.value" :label="option.label" :value="option.value"/>
@@ -79,7 +82,7 @@
 
               <n-form-item path="retirementIncomeGoal" :label="planForm.retirementIncomeGoal.label"
                            v-bind="retirementIncomeGoalProps">
-                <n-input v-model:value="retirementIncomeGoal"/>
+                <n-input-number class="w-full" v-model:value="retirementIncomeGoal"/>
               </n-form-item>
             </CommonRadioCard>
           </div>
@@ -146,6 +149,7 @@ const [name, nameProps] = defineField('name', naiveConfig)
 const [age, ageProps] = defineField('age', naiveConfig)
 const [year, yearProps] = defineField('year', naiveConfig)
 const [inflationRate, inflationRateProps] = defineField('inflationRate', naiveConfig)
+const [growthRate, growthRateProps] = defineField('growthRate', naiveConfig)
 const [insufficientFundsStrategy, insufficientFundsStrategyProps] = defineField('insufficientFundsStrategy', naiveConfig)
 const [growthApplicationStrategy, growthApplicationStrategyProps] = defineField('growthApplicationStrategy', naiveConfig)
 const [taxStrategy, taxStrategyProps] = defineField('taxStrategy', naiveConfig)

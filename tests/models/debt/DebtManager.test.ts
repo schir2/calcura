@@ -11,6 +11,7 @@ import {
     RetirementStrategy
 } from "~/models/plan/Plan";
 import {ProcessDebtCommand} from "~/models/debt/DebtCommands";
+import {IncomeFrequency} from "~/models/income/Income";
 
 const planConfig: Plan = {
     id: 1,
@@ -19,6 +20,7 @@ const planConfig: Plan = {
     year: new Date().getFullYear(),
     inflationRate: 3,
     insufficientFundsStrategy: InsufficientFundsStrategy.None,
+    growthRate: 6,
     growthApplicationStrategy: GrowthApplicationStrategy.Start,
     taxStrategy: IncomeTaxStrategy.Simple,
     taxRate: 30,
@@ -36,7 +38,7 @@ const planConfig: Plan = {
             grossIncome: 100_000,
             growthRate: 0,
             incomeType: "ordinary",
-            frequency: 'annual'
+            frequency: IncomeFrequency.Annual
         },
         {
             id: 1,
@@ -44,7 +46,7 @@ const planConfig: Plan = {
             grossIncome: 50_000,
             growthRate: 0,
             incomeType: "ordinary",
-            frequency: 'annual'
+            frequency: IncomeFrequency.Annual
         }
     ],
     expenses: [],

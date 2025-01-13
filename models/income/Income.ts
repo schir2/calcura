@@ -1,5 +1,11 @@
 export type IncomeType = 'ordinary'
-export type IncomeFrequency = 'annual' | 'quarterly' | 'monthly' | 'biweekly' | 'weekly'
+export enum IncomeFrequency {
+    Annual = 'annual',
+    Quarterly = 'quarterly',
+    Monthly = 'monthly',
+    Biweekly = 'biweekly',
+    Weekly = 'weekly'
+}
 
 
 export interface Income {
@@ -15,7 +21,7 @@ export type IncomePartial = Partial<Omit<Income, 'id'>>
 
 export const incomeDefaults: IncomePartial = {
     name: "Income",
-    frequency: "annual",
+    frequency: IncomeFrequency.Annual,
     grossIncome: 0,
     growthRate: 0,
     incomeType: "ordinary",

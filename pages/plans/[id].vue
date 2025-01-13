@@ -1,4 +1,11 @@
 <template>
+  <client-only>
+    <Teleport to="#right-side-bar">
+      <span>Test</span>
+      <PlanChartGrossSavings :states="planStates"></PlanChartGrossSavings>
+      <PlanChartTaxDeferredGrowth :states="planStates"></PlanChartTaxDeferredGrowth>
+    </Teleport>
+  </client-only>
   <div v-if="plan" class="col-span-4 space-y-6">
     <n-modal v-model:show="showModal">
       <PlanForm :planPartial="plan" mode="edit"
@@ -6,46 +13,9 @@
                 @cancel="handleClose"
       />
     </n-modal>
-    <n-button type="warning" secondary round @click="handleEdit">
-      <template #icon>
-        <Icon name="mdi:edit"/>
-      </template>
-      Edit
-    </n-button>
-    <div>
-      <n-table>
-        <thead>
-        <tr>
-          <th>Age</th>
-          <th>Gross Income</th>
-          <th>Taxable Income</th>
-          <th>Taxed Income</th>
-          <th>Taxed Capital</th>
-          <th>Taxable Capital</th>
-          <th>Taxed Withdrawals</th>
-          <th>Tax Deferred Savings</th>
-          <th>Tax Exempt Savings</th>
-          <th>Taxable Savings</th>
-
-        </tr>
-
-        </thead>
-        <tbody>
-        <tr class="space-y-3" v-for="state in planStates">
-          <td>{{ state.age }}</td>
-          <td>${{ $humanize.intComma(state.grossIncome) }}</td>
-          <td>${{ $humanize.intComma(state.taxableIncome) }}</td>
-          <td>${{ $humanize.intComma(state.taxedIncome) }}</td>
-          <td>${{ $humanize.intComma(state.taxedCapital) }}</td>
-          <td>${{ $humanize.intComma(state.taxableCapital) }}</td>
-          <td>${{ $humanize.intComma(state.taxedWithdrawals) }}</td>
-          <td>${{ $humanize.intComma(state.savingsTaxDeferredEndOfYear) }}</td>
-          <td>${{ $humanize.intComma(state.savingsTaxExemptEndOfYear) }}</td>
-          <td>${{ $humanize.intComma(state.savingsTaxableEndOfYear) }}</td>
-        </tr>
-        </tbody>
-      </n-table>
-    </div>
+    <PlanDetailCard :plan="plan" @update="handleUpdate"></PlanDetailCard>
+    <n-card id="charts" v-if="finalPlanState" class="grid grid-cols-4">
+    </n-card>
     <section class="grid grid-cols-2 gap-3">
       <section class="space-y-3">
         <DebtList v-if="plan.debts" :debts="plan.debts"
@@ -113,7 +83,40 @@
         />
       </section>
     </section>
+    <div>
+      <n-table>
+        <thead>
+        <tr>
+          <th>Age</th>
+          <th>Gross Income</th>
+          <th>Taxable Income</th>
+          <th>Taxed Income</th>
+          <th>Taxed Capital</th>
+          <th>Taxable Capital</th>
+          <th>Taxed Withdrawals</th>
+          <th>Tax Deferred Savings</th>
+          <th>Tax Exempt Savings</th>
+          <th>Taxable Savings</th>
 
+        </tr>
+
+        </thead>
+        <tbody>
+        <tr class="space-y-3" v-for="state in planStates">
+          <td>{{ state.age }}</td>
+          <td>${{ $humanize.intComma(state.grossIncome) }}</td>
+          <td>${{ $humanize.intComma(state.taxableIncome) }}</td>
+          <td>${{ $humanize.intComma(state.taxedIncome) }}</td>
+          <td>${{ $humanize.intComma(state.taxedCapital) }}</td>
+          <td>${{ $humanize.intComma(state.taxableCapital) }}</td>
+          <td>${{ $humanize.intComma(state.taxedWithdrawals) }}</td>
+          <td>${{ $humanize.intComma(state.savingsTaxDeferredEndOfYear) }}</td>
+          <td>${{ $humanize.intComma(state.savingsTaxExemptEndOfYear) }}</td>
+          <td>${{ $humanize.intComma(state.savingsTaxableEndOfYear) }}</td>
+        </tr>
+        </tbody>
+      </n-table>
+    </div>
   </div>
 </template>
 <script setup lang="ts">
@@ -338,6 +341,7 @@ async function loadPlan() {
     plan.value = await planService.get(planId)
     planManager = new PlanManager(plan.value);
     planStates.value = planManager.simulate();
+    finalPlanState.value = planStates.value[planStates.value.length - 1];
   } catch (error) {
   } finally {
     loading.value = false;
@@ -364,6 +368,7 @@ onMounted(async () => {
 });
 let planManager: PlanManager | null = null
 const planStates = ref<PlanState[]>([])
+const finalPlanState = ref<PlanState | null>(null)
 
 watch(plan, (currentPlan, previousPlan) => {
   planManager = new PlanManager(currentPlan)

@@ -7,9 +7,7 @@
     <template #default>
       <n-form class="space-y-3">
         <n-card size="small" class="bg-skin-info/5">
-          <n-form-item path="income" id="incomeSelector" label="Income" :bind="incomeProps">
-            <IncomeSelector :incomes="incomes" v-model="income"/>
-          </n-form-item>
+          <IncomeSelector :incomes="incomes" v-model="income"/>
           <section class="grid grid-cols-1 lg:grid-cols-3 gap-4">
             <n-card size="small" class="bg-skin-success/5">
               <template #header>

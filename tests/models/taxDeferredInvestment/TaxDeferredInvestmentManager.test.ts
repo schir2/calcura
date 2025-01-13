@@ -13,6 +13,7 @@ import {
     RetirementStrategy
 } from "~/models/plan/Plan";
 import {ProcessTaxDeferredInvestmentCommand} from "~/models/taxDeferredInvestment/TaxDeferredInvestmentCommands";
+import {IncomeFrequency} from "~/models/income/Income";
 
 const planConfig: Plan = {
     id: 1,
@@ -38,7 +39,7 @@ const planConfig: Plan = {
             grossIncome: 100_000,
             growthRate: 0,
             incomeType: "ordinary",
-            frequency: 'annual'
+            frequency: IncomeFrequency.annual
         },
         {
             id: 1,
@@ -46,7 +47,7 @@ const planConfig: Plan = {
             grossIncome: 50_000,
             growthRate: 0,
             incomeType: "ordinary",
-            frequency: 'annual'
+            frequency: IncomeFrequency.annual
         }
     ],
     expenses: [],
@@ -73,7 +74,7 @@ const planConfig: Plan = {
                 grossIncome: 100_000,
                 growthRate: 0,
                 incomeType: "ordinary",
-                frequency: 'annual'
+                frequency: IncomeFrequency.annual
             }
 
         }
