@@ -4,7 +4,7 @@
       <PlanChartGrowth :states="planStates"></PlanChartGrowth>
       <PlanChartTaxDeferredGrowth :states="planStates"></PlanChartTaxDeferredGrowth>
       <PlanChartTaxExemptGrowth :states="planStates"></PlanChartTaxExemptGrowth>
-            <PlanCommandQueue v-if="planManager" :commands="planManager.getCommands()" @update="handleCommandQueueUpdate"></PlanCommandQueue>
+      <PlanCommandQueue v-if="planManager" :commands="planManager.getCommands()" @update="handleCommandQueueUpdate"></PlanCommandQueue>
     </Teleport>
   </client-only>
   <div v-if="plan" class="col-span-4 space-y-6">
@@ -128,10 +128,7 @@ import type {Expense, ExpensePartial} from "~/models/expense/Expense"
 import type {Plan} from "~/models/plan/Plan";
 import type {CashReserve} from "~/models/cashReserve/CashReserve";
 import type {IraInvestment, IraInvestmentPartial} from "~/models/iraInvestment/IraInvestment";
-import type {
-  TaxDeferredInvestment,
-  TaxDeferredInvestmentPartial
-} from "~/models/taxDeferredInvestment/TaxDeferredInvestment";
+import type {TaxDeferredInvestment, TaxDeferredInvestmentPartial} from "~/models/taxDeferredInvestment/TaxDeferredInvestment";
 import type {Income, IncomePartial} from "~/models/income/Income";
 import type {BrokerageInvestment, BrokerageInvestmentPartial} from "~/models/brokerageInvestment/BrokerageInvestment";
 import type {RothIraInvestment, RothIraInvestmentPartial} from "~/models/rothIraInvestment/RothIraInvestment";
@@ -339,8 +336,10 @@ async function handleRemoveTaxDeferredInvestment(taxDeferredInvestmentPartial: T
   await loadPlan();
 }
 
-async function handleCommandQueueUpdate(commands: Command[]){
+async function handleCommandQueueUpdate(commands: Command[]) {
   orderedCommands.value = commands
+  planManager = new PlanManager(plan.value);
+  planStates.value = planManager.simulate(orderedCommands.value)
 }
 
 async function loadPlan() {
@@ -381,8 +380,6 @@ watch(plan, (currentPlan, previousPlan) => {
   planManager = new PlanManager(currentPlan)
   planStates.value = planManager.simulate(orderedCommands.value)
 })
-
-const showAdvancedOptions = ref<boolean>(false)
 
 onMounted(async () => {
   await loadPlan();

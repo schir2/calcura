@@ -3,12 +3,7 @@ import {ContributionLimitType, RetirementStrategy} from "~/models/plan/Plan";
 import type {PlanState} from "~/models/plan/PlanState";
 import DebtManager from "~/models/debt/DebtManager";
 import BaseManager from "~/models/common/BaseManager";
-import {
-    adjustForInsufficientFunds,
-    getIraLimit,
-    getTaxDeferredContributionLimit,
-    getTaxDeferredElectiveContributionLimit
-} from "~/utils";
+import {adjustForInsufficientFunds, getIraLimit, getTaxDeferredContributionLimit, getTaxDeferredElectiveContributionLimit} from "~/utils";
 import type Command from "~/models/common/Command";
 import {IncomeManager} from "~/models/income/IncomeManager";
 import {BrokerageInvestmentManager} from "~/models/brokerageInvestment/BrokerageInvestmentManager";
@@ -385,6 +380,7 @@ export default class PlanManager extends BaseOrchestrator<Plan, PlanState, Manag
         const previousState = this.getCurrentState()
         const allManagers = this.getAllManagers()
         allManagers.forEach(manager => {
+            console.log(manager)
             this.processUnprocessed(manager)
         })
         this.updateCurrentState({
@@ -395,8 +391,10 @@ export default class PlanManager extends BaseOrchestrator<Plan, PlanState, Manag
 
     simulate(commands?: Command[], maxIterations: number = 60): PlanState[] {
         for (let i = 0; i < maxIterations; i++) {
+            console.log(`Iteration ${i + 1}`)
             if (commands) {
                 commands.forEach(command => {
+                    console.log(command)
                     command.execute()
                 })
             }
@@ -416,8 +414,8 @@ export default class PlanManager extends BaseOrchestrator<Plan, PlanState, Manag
         const managerState = manager.getCurrentState()
         if (!managerState.processed) {
             manager.process()
-            manager.advanceTimePeriod()
         }
+        manager.advanceTimePeriod()
     }
 
     getIncomeManagerById(id: number): IncomeManager | undefined {
