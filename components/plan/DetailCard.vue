@@ -58,11 +58,11 @@
           }}</span></p>
         <p class="flex justify-between px-3">
           <span>RetirementWithdrawalRate </span><span>{{ plan.retirementWithdrawalRate }}</span></p>
-        <p class="flex justify-between px-3"><span>RetirementIncomeGoal </span><span>{{
-            plan.retirementIncomeGoal
+        <p class="flex justify-between px-3"><span>RetirementIncomeGoal </span><span>${{
+            $humanize.intComma(plan.retirementIncomeGoal)
           }}</span></p>
         <p class="flex justify-between px-3">
-          <span>Retirement Savings Amount </span><span>{{ plan.retirementSavingsAmount }}</span></p>
+          <span>Retirement Savings Amount</span><span>${{ $humanize.intComma(plan.retirementSavingsAmount) }}</span></p>
       </n-card>
     </section>
   </n-card>
