@@ -1,7 +1,7 @@
 <template>
   <n-card>
     <template #header>
-      <p v-if="finalPlanState" class="text-xl text-center">Gross Savings at Age {{ finalPlanState.age }}</p>
+      <p v-if="finalPlanState" class="text-xl text-center">Tax Deferred Savings at Age {{ finalPlanState.age }}</p>
     </template>
     <Line v-if="data" :data="data" :options="options"/>
   </n-card>
