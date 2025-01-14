@@ -130,7 +130,7 @@ export default class PlanManager extends BaseOrchestrator<Plan, PlanState, Manag
             debtStartOfYear: debtInitial,
             debtEndOfYear: 0,
 
-            savingsStartOfYear: 0,
+            savingsStartOfYear: savingsTaxDeferredInitial + savingsTaxExemptInitial + savingsTaxableInitial,
             savingsEndOfYear: 0,
 
             retirementIncomeProjected: 0,
@@ -188,8 +188,8 @@ export default class PlanManager extends BaseOrchestrator<Plan, PlanState, Manag
             debtEndOfYear: 0,
 
             savingsStartOfYear: previousState.savingsEndOfYear,
-
             savingsEndOfYear: 0,
+
             processed: false,
         }
     }
@@ -365,7 +365,7 @@ export default class PlanManager extends BaseOrchestrator<Plan, PlanState, Manag
             case RetirementStrategy.PercentRule:
                 return this.config.retirementIncomeGoal === this.getCurrentState().retirementIncomeProjected
             case RetirementStrategy.TargetSavings:
-                return this.config.retirementSavingsAmount === this.getCurrentState().savingsEndOfYear
+                return this.config.retirementSavingsAmount <= this.getCurrentState().savingsEndOfYear
         }
     }
 
@@ -382,14 +382,19 @@ export default class PlanManager extends BaseOrchestrator<Plan, PlanState, Manag
     }
 
     processImplementation(): void {
+        const previousState = this.getCurrentState()
         const allManagers = this.getAllManagers()
         allManagers.forEach(manager => {
             this.processUnprocessed(manager)
         })
+        this.updateCurrentState({
+            ...previousState,
+            savingsEndOfYear: previousState.savingsTaxDeferredEndOfYear + previousState.savingsTaxExemptEndOfYear + previousState.savingsTaxableEndOfYear,
+        })
     }
 
-    simulate(commands?: Command[], years: number = 30): PlanState[] {
-        for (let i = 0; i < years; i++) {
+    simulate(commands?: Command[], maxIterations: number = 60): PlanState[] {
+        for (let i = 0; i < maxIterations; i++) {
             if (commands) {
                 commands.forEach(command => {
                     command.execute()
@@ -397,9 +402,9 @@ export default class PlanManager extends BaseOrchestrator<Plan, PlanState, Manag
             }
             this.process()
             if (this.canRetire()) {
-                break
+                return this.states
             }
-            if (i === years - 1) {
+            if (i === maxIterations - 1) {
                 break
             }
             this.advanceTimePeriod()
