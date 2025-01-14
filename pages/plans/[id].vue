@@ -1,9 +1,10 @@
 <template>
   <client-only>
     <Teleport to="#right-side-bar">
-      <span>Test</span>
-      <PlanChartGrossSavings :states="planStates"></PlanChartGrossSavings>
+      <PlanCommandQueue v-if="planManager" :commands="planManager.getCommands()"></PlanCommandQueue>
+      <PlanChartGrowth :states="planStates"></PlanChartGrowth>
       <PlanChartTaxDeferredGrowth :states="planStates"></PlanChartTaxDeferredGrowth>
+      <PlanChartTaxExemptGrowth :states="planStates"></PlanChartTaxExemptGrowth>
     </Teleport>
   </client-only>
   <div v-if="plan" class="col-span-4 space-y-6">
@@ -14,8 +15,6 @@
       />
     </n-modal>
     <PlanDetailCard :plan="plan" @update="handleUpdate"></PlanDetailCard>
-    <n-card id="charts" v-if="finalPlanState" class="grid grid-cols-4">
-    </n-card>
     <section class="grid grid-cols-2 gap-3">
       <section class="space-y-3">
         <DebtList v-if="plan.debts" :debts="plan.debts"
@@ -97,6 +96,7 @@
           <th>Tax Deferred Savings</th>
           <th>Tax Exempt Savings</th>
           <th>Taxable Savings</th>
+          <th>Gross Savings</th>
 
         </tr>
 
@@ -113,6 +113,7 @@
           <td>${{ $humanize.intComma(state.savingsTaxDeferredEndOfYear) }}</td>
           <td>${{ $humanize.intComma(state.savingsTaxExemptEndOfYear) }}</td>
           <td>${{ $humanize.intComma(state.savingsTaxableEndOfYear) }}</td>
+          <td>${{ $humanize.intComma(state.savingsEndOfYear) }}</td>
         </tr>
         </tbody>
       </n-table>
