@@ -1,5 +1,5 @@
 import type Command from "~/models/common/Command";
-import ExpenseManager from "~/models/expense/ExpenseManager";
+import {ExpenseManager} from "~/models/expense/ExpenseManager";
 
 export class ProcessExpenseCommand implements Command {
     private expenseManager: ExpenseManager;

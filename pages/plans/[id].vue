@@ -1,10 +1,10 @@
 <template>
   <client-only>
     <Teleport to="#right-side-bar">
-      <PlanCommandQueue v-if="planManager" :commands="planManager.getCommands()"></PlanCommandQueue>
       <PlanChartGrowth :states="planStates"></PlanChartGrowth>
       <PlanChartTaxDeferredGrowth :states="planStates"></PlanChartTaxDeferredGrowth>
       <PlanChartTaxExemptGrowth :states="planStates"></PlanChartTaxExemptGrowth>
+            <PlanCommandQueue v-if="planManager" :commands="planManager.getCommands()" @update="handleCommandQueueUpdate"></PlanCommandQueue>
     </Teleport>
   </client-only>
   <div v-if="plan" class="col-span-4 space-y-6">
@@ -136,6 +136,7 @@ import type {Income, IncomePartial} from "~/models/income/Income";
 import type {BrokerageInvestment, BrokerageInvestmentPartial} from "~/models/brokerageInvestment/BrokerageInvestment";
 import type {RothIraInvestment, RothIraInvestmentPartial} from "~/models/rothIraInvestment/RothIraInvestment";
 import eventBus from "~/services/eventBus";
+import type Command from "~/models/common/Command";
 
 const planService = usePlanService()
 const debtService = useDebtService()
@@ -150,6 +151,7 @@ const route = useRoute()
 const planId = Number(route.params.id)
 const plan = ref<Plan | null>(null)
 const loading = ref<boolean>(false);
+const orderedCommands = ref<Command[] | null>(null)
 
 eventBus.on("*", (eventName, payload) => {
   console.log(`[Event Bus]: ${eventName}`, payload);
@@ -337,6 +339,10 @@ async function handleRemoveTaxDeferredInvestment(taxDeferredInvestmentPartial: T
   await loadPlan();
 }
 
+async function handleCommandQueueUpdate(commands: Command[]){
+  orderedCommands.value = commands
+}
+
 async function loadPlan() {
   try {
     plan.value = await planService.get(planId)
@@ -373,7 +379,7 @@ const finalPlanState = ref<PlanState | null>(null)
 
 watch(plan, (currentPlan, previousPlan) => {
   planManager = new PlanManager(currentPlan)
-  planStates.value = planManager.simulate()
+  planStates.value = planManager.simulate(orderedCommands.value)
 })
 
 const showAdvancedOptions = ref<boolean>(false)
