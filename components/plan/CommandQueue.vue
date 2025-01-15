@@ -5,9 +5,10 @@
         <div
             class="list-group-item bg-skin-surface m-1 p-3 rounded-md text-center"
             v-for="element in list"
-            :key="element.getName()"
+            :key="element.name"
         >
-          {{ element.getName() }}
+          {{ element.name }}
+          <n-tag>{{ element.label }}</n-tag>
         </div>
       </VueDraggableNext>
 
@@ -25,7 +26,7 @@ const list = ref(props.commands)
 
 const emits = defineEmits(['update'])
 
-function onChange(event) {
+function onChange() {
   emits('update', list.value)
 }
 </script>

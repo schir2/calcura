@@ -5,7 +5,6 @@ import BaseManager from "~/models/common/BaseManager";
 import type Command from "~/models/common/Command";
 import {FundType} from "~/models/plan/PlanManager";
 import {ContributionType} from "~/models/common";
-import {ProcessBrokerageInvestmentCommand} from "~/models/brokerageInvestment/BrokerageInvestmentCommands";
 import type {PlanState} from "~/models/plan/PlanState";
 
 export class BrokerageInvestmentManager extends BaseManager<BrokerageInvestment, BrokerageInvestmentState> {
@@ -42,7 +41,13 @@ export class BrokerageInvestmentManager extends BaseManager<BrokerageInvestment,
     }
 
     override getCommands(): Command[] {
-        return [new ProcessBrokerageInvestmentCommand(this)];
+        return [{
+            managerName: "brokerageInvestmentManagers",
+            managerId: `${this.config.id}`,
+            label: 'Tax Deferred Investment',
+            name: this.config.name,
+            action: 'process',
+        }];
     }
 
     processImplementation() {

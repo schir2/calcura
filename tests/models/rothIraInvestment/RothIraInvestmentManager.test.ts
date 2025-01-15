@@ -9,7 +9,6 @@ import {
     type Plan,
     RetirementStrategy
 } from "~/models/plan/Plan";
-import {ProcessRothIraInvestmentCommand} from "~/models/rothIraInvestment/RothIraInvestmentCommands";
 import {IncomeFrequency} from "~/models/income/Income";
 
 const planConfig: Plan = {
@@ -18,6 +17,7 @@ const planConfig: Plan = {
     age: 30,
     year: new Date().getFullYear(),
     inflationRate: 3,
+    growthRate: 6,
     insufficientFundsStrategy: InsufficientFundsStrategy.None,
     growthApplicationStrategy: GrowthApplicationStrategy.Start,
     taxStrategy: IncomeTaxStrategy.Simple,
@@ -36,7 +36,7 @@ const planConfig: Plan = {
             grossIncome: 100_000,
             growthRate: 0,
             incomeType: "ordinary",
-            frequency: IncomeFrequency.annual
+            frequency: IncomeFrequency.Annual
         },
         {
             id: 1,
@@ -44,7 +44,7 @@ const planConfig: Plan = {
             grossIncome: 50_000,
             growthRate: 0,
             incomeType: "ordinary",
-            frequency: IncomeFrequency.annual
+            frequency: IncomeFrequency.Annual
         }
     ],
     expenses: [],
@@ -67,7 +67,7 @@ const planConfig: Plan = {
                     grossIncome: 100_000,
                     growthRate: 0,
                     incomeType: "ordinary",
-                    frequency: IncomeFrequency.annual
+                    frequency: IncomeFrequency.Annual
                 },
 
         }
@@ -76,17 +76,19 @@ const planConfig: Plan = {
 }
 
 let planManager: PlanManager;
-let rothIraInvestmentManager: RothIraInvestmentManager;
+let rothIraInvestmentManager: RothIraInvestmentManager | undefined;
 
 describe("RothIraInvestmentManager", () => {
     beforeEach(() => {
         planManager = new PlanManager(planConfig)
-        rothIraInvestmentManager = planManager.getRothIraManagerById(1)
+        rothIraInvestmentManager = planManager.getManagerById<RothIraInvestmentManager>('rothIraInvestmentManagers',1)
+        assertDefined(rothIraInvestmentManager, 'RothIraInvestmentManager')
     });
 
     describe('constructor', () => {
 
         it("should initialize with correct state", () => {
+            assertDefined(rothIraInvestmentManager, 'RothIraInvestmentManager')
             const state = rothIraInvestmentManager.getCurrentState();
             expect(state.contribution).toBe(undefined);
             expect(state.contributionLifetime).toBe(0);
@@ -110,7 +112,9 @@ describe("RothIraInvestmentManager", () => {
                     }
                 ]
             })
-            rothIraInvestmentManager = planManager.getRothIraManagerById(1)
+
+        rothIraInvestmentManager = planManager.getManagerById<RothIraInvestmentManager>('rothIraInvestmentManagers',1)
+        assertDefined(rothIraInvestmentManager, 'RothIraInvestmentManager')
             const contribution = rothIraInvestmentManager.calculateContribution();
             expect(contribution).toBe(100);
         });
@@ -126,7 +130,9 @@ describe("RothIraInvestmentManager", () => {
                     }
                 ]
             })
-            rothIraInvestmentManager = planManager.getRothIraManagerById(1)
+
+        rothIraInvestmentManager = planManager.getManagerById<RothIraInvestmentManager>('rothIraInvestmentManagers',1)
+        assertDefined(rothIraInvestmentManager, 'RothIraInvestmentManager')
 
             const contribution = rothIraInvestmentManager.calculateContribution();
             expect(contribution).toBe(7_000);
@@ -142,7 +148,9 @@ describe("RothIraInvestmentManager", () => {
                     }
                 ]
             })
-            rothIraInvestmentManager = planManager.getRothIraManagerById(1)
+
+        rothIraInvestmentManager = planManager.getManagerById<RothIraInvestmentManager>('rothIraInvestmentManagers',1)
+        assertDefined(rothIraInvestmentManager, 'RothIraInvestmentManager')
             const contribution = rothIraInvestmentManager.calculateContribution();
             expect(contribution).toBe(7_000);
         });
@@ -163,7 +171,9 @@ describe("RothIraInvestmentManager", () => {
                     }
                 ]
             })
-            rothIraInvestmentManager = planManager.getRothIraManagerById(1)
+
+        rothIraInvestmentManager = planManager.getManagerById<RothIraInvestmentManager>('rothIraInvestmentManagers',1)
+        assertDefined(rothIraInvestmentManager, 'RothIraInvestmentManager')
             rothIraInvestmentManager.process();
             const planState = rothIraInvestmentManager.orchestrator.getCurrentState();
             const rothIraInvestmentState = rothIraInvestmentManager.getCurrentState();
@@ -201,7 +211,9 @@ describe("RothIraInvestmentManager", () => {
                     }
                 ]
             })
-            rothIraInvestmentManager = planManager.getRothIraManagerById(1)
+
+        rothIraInvestmentManager = planManager.getManagerById<RothIraInvestmentManager>('rothIraInvestmentManagers',1)
+        assertDefined(rothIraInvestmentManager, 'RothIraInvestmentManager')
 
             rothIraInvestmentManager.process();
             const planState = rothIraInvestmentManager.orchestrator.getCurrentState();
@@ -224,6 +236,7 @@ describe("RothIraInvestmentManager", () => {
         });
 
         it("should throw error if processing already processed state", () => {
+            assertDefined(rothIraInvestmentManager, 'RothIraInvestmentManager')
             rothIraInvestmentManager.process();
             expect(() => rothIraInvestmentManager.process()).toThrow(
                 "Failed to process state, it is already processed."
@@ -231,22 +244,6 @@ describe("RothIraInvestmentManager", () => {
         });
 
     })
-
-
-    describe('getCommands', () => {
-        it('should return an array with ProcessRothIraInvestmentCommand', () => {
-            const commands = rothIraInvestmentManager.getCommands();
-            expect(commands).toHaveLength(1);
-            expect(commands[0]).toBeInstanceOf(ProcessRothIraInvestmentCommand);
-        });
-
-        it('should execute ProcessRothIraInvestmentCommand correctly', () => {
-            const command = new ProcessRothIraInvestmentCommand(rothIraInvestmentManager);
-            command.execute();
-            expect(rothIraInvestmentManager.getCurrentState().processed).toBe(true);
-        });
-    });
-
 
     describe('createNextState', () => {
 
@@ -264,7 +261,9 @@ describe("RothIraInvestmentManager", () => {
                     }
                 ]
             })
-            rothIraInvestmentManager = planManager.getRothIraManagerById(1)
+
+        rothIraInvestmentManager = planManager.getManagerById<RothIraInvestmentManager>('rothIraInvestmentManagers',1)
+        assertDefined(rothIraInvestmentManager, 'RothIraInvestmentManager')
             rothIraInvestmentManager.process();
             const rothIraInvestmentState = rothIraInvestmentManager.getCurrentState();
             const newState = rothIraInvestmentManager.createNextState(rothIraInvestmentState);

@@ -4,7 +4,6 @@ import type {Expense} from "~/models/expense/Expense";
 import {Frequency} from "~/models/expense/Expense";
 import type ExpenseState from "~/models/expense/ExpenseState";
 import {FundType} from "~/models/plan/PlanManager";
-import {ProcessExpenseCommand} from "~/models/expense/ExpenseCommands";
 
 export class ExpenseManager extends BaseManager<Expense, ExpenseState> {
     protected createInitialState(): ExpenseState {
@@ -56,8 +55,14 @@ export class ExpenseManager extends BaseManager<Expense, ExpenseState> {
         }
     }
 
-    getCommands(): Command[] {
-        return [new ProcessExpenseCommand(this)];
+    override getCommands(): Command[] {
+        return [{
+            managerName: "expenseManagers",
+            managerId: `${this.config.id}`,
+            label: 'Expense',
+            name: this.config.name,
+            action: 'process',
+        }];
     }
 
     processImplementation(): void {

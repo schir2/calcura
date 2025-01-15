@@ -23,7 +23,7 @@ export enum FundType {
 
 }
 
-type ManagerMap = {
+export type ManagerMap = {
     incomeManagers: IncomeManager[];
     cashReserveManagers: CashReserveManager[];
     expenseManagers: ExpenseManager[];
@@ -380,7 +380,6 @@ export default class PlanManager extends BaseOrchestrator<Plan, PlanState, Manag
         const previousState = this.getCurrentState()
         const allManagers = this.getAllManagers()
         allManagers.forEach(manager => {
-            console.log(manager)
             this.processUnprocessed(manager)
         })
         this.updateCurrentState({
@@ -391,11 +390,11 @@ export default class PlanManager extends BaseOrchestrator<Plan, PlanState, Manag
 
     simulate(commands?: Command[], maxIterations: number = 60): PlanState[] {
         for (let i = 0; i < maxIterations; i++) {
-            console.log(`Iteration ${i + 1}`)
+            let manager: BaseManager<any, any> | undefined = undefined
             if (commands) {
                 commands.forEach(command => {
-                    console.log(command)
-                    command.execute()
+                    manager = this.getManagerById(command.managerName, Number(command.managerId))
+                    manager.process()
                 })
             }
             this.process()
@@ -418,63 +417,16 @@ export default class PlanManager extends BaseOrchestrator<Plan, PlanState, Manag
         manager.advanceTimePeriod()
     }
 
-    getIncomeManagerById(id: number): IncomeManager | undefined {
-        const incomeManager = this.managers.incomeManagers.find((incomeManager) => incomeManager.getConfig().id === id);
-        if (incomeManager === undefined) {
-            eventBus.emit('warning', {
-                scope: 'planManager:missingIncomeManager',
-                message: `Missing income manager with ${id}`
-            })
+    getManagerById<T extends BaseManager<any, any>>(managerName: keyof PlanManager['managers'], id: number): T | undefined {
+        this.config
+        const manager = this.managers[managerName].find((manager) => manager.getConfig().id === id);
+        if (manager === undefined) {
+            eventBus.emit('error', {
+                scope: 'planManager:missingManager',
+                message: `Missing ${managerName} with ${id}`
+            });
         }
-        return incomeManager
-    }
-
-    getTaxDeferredManagerById(id: number): TaxDeferredInvestmentManager {
-        const taxDeferredManager = this.managers.taxDeferredInvestmentManagers.find((taxDeferredManager) => taxDeferredManager.getConfig().id === id);
-        if (taxDeferredManager === undefined) {
-            throw new Error(`Missing tax deferred investment manager with id ${id}`);
-        }
-        return taxDeferredManager
-    }
-
-    getIraManagerById(id: number): IraInvestmentManager {
-        const iraManager = this.managers.iraInvestmentManagers.find((iraManager) => iraManager.getConfig().id === id);
-        if (iraManager === undefined) {
-            throw new Error(`Missing tax deferred investment manager with id ${id}`);
-        }
-        return iraManager
-    }
-
-    getRothIraManagerById(id: number): RothIraInvestmentManager {
-        const rothIraManager = this.managers.rothIraInvestmentManagers.find((rothIraManager) => rothIraManager.getConfig().id === id);
-        if (rothIraManager === undefined) {
-            throw new Error(`Missing tax deferred investment manager with id ${id}`);
-        }
-        return rothIraManager
-    }
-
-    getExpenseManagerById(id: number): ExpenseManager {
-        const expenseManager = this.managers.expenseManagers.find((expenseManager) => expenseManager.getConfig().id === id);
-        if (expenseManager === undefined) {
-            throw new Error(`Missing tax deferred investment manager with id ${id}`);
-        }
-        return expenseManager
-    }
-
-    getDebtManagerById(id: number): DebtManager {
-        const debtManager = this.managers.debtManagers.find((debtManager) => debtManager.getConfig().id === id);
-        if (debtManager === undefined) {
-            throw new Error(`Missing tax deferred investment manager with id ${id}`);
-        }
-        return debtManager
-    }
-
-    getCashReserveManagerById(id: number): CashReserveManager {
-        const cashReserveManager = this.managers.cashReserveManagers.find((cashReserveManager) => cashReserveManager.getConfig().id === id);
-        if (cashReserveManager === undefined) {
-            throw new Error(`Missing tax cash reserve manager with id ${id}`);
-        }
-        return cashReserveManager
+        return manager as unknown as T;
     }
 
     getLimitForContributionType(contributionLimitType: ContributionLimitType) {

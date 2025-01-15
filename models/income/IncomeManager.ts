@@ -22,8 +22,14 @@ export class IncomeManager extends BaseManager<Income, IncomeState> {
         return grossIncome * this.config.growthRate / 100
     }
 
-    getCommands(): Command[] {
-        return [];
+    override getCommands(): Command[] {
+        return [{
+            managerName: "incomeManagers",
+            managerId: `${this.config.id}`,
+            label: 'Income',
+            name: this.config.name,
+            action: 'process',
+        }];
     }
 
     processImplementation(): void {

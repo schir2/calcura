@@ -325,7 +325,6 @@ async function handleDeleteTaxDeferredInvestment(taxDeferredInvestment: TaxDefer
 }
 
 async function handleUpdateTaxDeferredInvestment(taxDeferredInvestment: TaxDeferredInvestment) {
-  console.log(taxDeferredInvestment)
   await taxDeferredInvestmentService.update(taxDeferredInvestment.id, taxDeferredInvestment)
   await loadPlan();
 }
@@ -378,7 +377,7 @@ const finalPlanState = ref<PlanState | null>(null)
 
 watch(plan, (currentPlan, previousPlan) => {
   planManager = new PlanManager(currentPlan)
-  planStates.value = planManager.simulate(orderedCommands.value)
+  planStates.value = planManager.simulate()
 })
 
 onMounted(async () => {

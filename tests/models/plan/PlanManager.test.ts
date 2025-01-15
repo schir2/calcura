@@ -31,6 +31,7 @@ describe("PlanManager", () => {
             age: 30,
             year: new Date().getFullYear(),
             inflationRate: 3,
+            growthRate: 6,
             insufficientFundsStrategy: InsufficientFundsStrategy.None,
             growthApplicationStrategy: GrowthApplicationStrategy.Start,
             taxStrategy: IncomeTaxStrategy.Simple,
@@ -58,7 +59,7 @@ describe("PlanManager", () => {
                     grossIncome: 100000,
                     growthRate: 0,
                     incomeType: "ordinary",
-                    frequency: IncomeFrequency.annual
+                    frequency: IncomeFrequency.Annual
                 },
                 {
                     id: 2,
@@ -66,7 +67,7 @@ describe("PlanManager", () => {
                     grossIncome: 50000,
                     growthRate: 0,
                     incomeType: "ordinary",
-                    frequency: IncomeFrequency.annual
+                    frequency: IncomeFrequency.Annual
                 }
             ],
             expenses: [
@@ -135,7 +136,7 @@ describe("PlanManager", () => {
                         grossIncome: 100_000,
                         growthRate: 0,
                         incomeType: "ordinary",
-                        frequency: IncomeFrequency.annual
+                        frequency: IncomeFrequency.Annual
                     }
 
                 }
@@ -168,7 +169,7 @@ describe("PlanManager", () => {
                             grossIncome: 100_000,
                             growthRate: 0,
                             incomeType: "ordinary",
-                            frequency: IncomeFrequency.annual
+                            frequency: IncomeFrequency.Annual
                         },
                 }],
             rothIraInvestments: [
@@ -187,7 +188,7 @@ describe("PlanManager", () => {
                             grossIncome: 100_000,
                             growthRate: 0,
                             incomeType: "ordinary",
-                            frequency: IncomeFrequency.annual
+                            frequency: IncomeFrequency.Annual
                         },
                 }],
         }
@@ -454,41 +455,7 @@ describe("PlanManager", () => {
             );
         });
     });
-    describe("getIncomeManagerById", () => {
-        it("should return incomeManager", () => {
-            expect(planManager.getIncomeManagerById(1)).toBe(planManager.managers.incomeManagers[0])
-        })
-    })
-    describe("getTaxDeferredInvestmentManagerById", () => {
-        it("should return taxDeferredInvestmentManager", () => {
-            expect(planManager.getTaxDeferredManagerById(1)).toBe(planManager.managers.taxDeferredInvestmentManagers[0])
-        })
-    })
-    describe("getIraInvestmentManagerById", () => {
-        it("should return iraInvestmentManager", () => {
-            expect(planManager.getIraManagerById(1)).toBe(planManager.managers.iraInvestmentManagers[0])
-        })
-    })
-    describe("getRothIraInvestmentManagerById", () => {
-        it("should return iraInvestmentManager", () => {
-            expect(planManager.getRothIraManagerById(1)).toBe(planManager.managers.rothIraInvestmentManagers[0])
-        })
-    })
-    describe("getExpenseManagerById", () => {
-        it("should return expenseManager", () => {
-            expect(planManager.getExpenseManagerById(1)).toBe(planManager.managers.expenseManagers[0])
-        })
-    })
-    describe("getDebtManagerById", () => {
-        it("should return debtManager", () => {
-            expect(planManager.getDebtManagerById(1)).toBe(planManager.managers.debtManagers[0])
-        })
-    })
-    describe("getCashReserveManagerById", () => {
-        it("should return cashReserveManager", () => {
-            expect(planManager.getCashReserveManagerById(10)).toBe(planManager.managers.cashReserveManagers[0])
-        })
-    })
+
     describe("getAnnualExpenseTotal", () => {
         it("should calculate expenses correctly", () => {
             expect(planManager.getAnnualExpenseTotal()).toBe(1_800*12 + 70 * 12 + 1450)

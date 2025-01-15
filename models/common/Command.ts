@@ -1,6 +1,9 @@
-import type {PlanState} from "~/models/plan/PlanState";
+import type {ManagerMap} from "~/models/plan/PlanManager";
 
 export default interface Command {
-    execute(): void;
-    getName(): string;
+    name: string;
+    label: string;
+    managerName: keyof ManagerMap;
+    managerId: string;
+    action: 'process'
 }

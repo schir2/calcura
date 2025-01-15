@@ -27,10 +27,15 @@ export class CashReserveManager extends BaseManager<CashReserve, CashReserveStat
         }
     }
 
-    getCommands(): Command[] {
-        return [];
+    override getCommands(): Command[] {
+        return [{
+            managerName: "cashReserveManagers",
+            managerId: `${this.config.id}`,
+            label: 'Cash Reserve',
+            name: this.config.name,
+            action: 'process',
+        }];
     }
-
     calculateContribution(): number {
         const currentState = this.getCurrentState();
         let contribution = 0

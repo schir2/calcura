@@ -4,7 +4,6 @@ import type RothIraInvestmentState from "~/models/rothIraInvestment/RothIraInves
 import BaseManager from "~/models/common/BaseManager";
 import type Command from "~/models/common/Command";
 import type {IncomeManager} from "~/models/income/IncomeManager";
-import {ProcessRothIraInvestmentCommand} from "~/models/rothIraInvestment/RothIraInvestmentCommands";
 import {FundType} from "~/models/plan/PlanManager";
 import {ContributionType} from "~/models/common";
 import eventBus from "~/services/eventBus";
@@ -26,9 +25,9 @@ export class RothIraInvestmentManager extends BaseManager<RothIraInvestment, Rot
 
     get incomeManager(): IncomeManager | undefined {
         if (this.config.income) {
-            return this.orchestrator.getIncomeManagerById(this.config.income.id)
+            return this.orchestrator.getManagerById('incomeManagers', this.config.income.id)
         }
-        eventBus.emit('warning',{scope: 'rothIraInvestmentManager:missingIncomeManager', message: 'Missing income manager'})
+        eventBus.emit('warning', {scope: 'rothIraInvestmentManager:missingIncomeManager', message: 'Missing income manager'})
         return undefined;
     }
 
@@ -40,7 +39,7 @@ export class RothIraInvestmentManager extends BaseManager<RothIraInvestment, Rot
                 break
             case RothIraContributionStrategy.PercentageOfIncome:
                 if (this.incomeManager === undefined) {
-                    eventBus.emit('warning',{scope: 'rothIraInvestmentManager:missingIncomeManager', message: 'Cannot perform percentage of income without a lined income manager'})
+                    eventBus.emit('warning', {scope: 'rothIraInvestmentManager:missingIncomeManager', message: 'Cannot perform percentage of income without a lined income manager'})
                     return 0
                 }
                 contribution = this.incomeManager.getCurrentState().grossIncome * this.config.contributionPercentage / 100
@@ -66,8 +65,14 @@ export class RothIraInvestmentManager extends BaseManager<RothIraInvestment, Rot
     }
 
 
-    getCommands(): Command[] {
-        return [new ProcessRothIraInvestmentCommand(this)];
+    override getCommands(): Command[] {
+        return [{
+            managerName: "rothIraInvestmentManagers",
+            managerId: `${this.config.id}`,
+            label: 'Roth IRA',
+            name: this.config.name,
+            action: 'process',
+        }];
     }
 
     processImplementation() {

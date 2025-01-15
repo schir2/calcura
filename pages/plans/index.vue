@@ -27,9 +27,6 @@ async function handleUpdatePlan(plan: Plan) {
   await loadPlans();
 }
 
-async function handleDuplicatePlan(plan: Plan) {
-}
-
 const plans = ref<Plan[]>([])
 
 async function loadPlans() {

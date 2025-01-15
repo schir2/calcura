@@ -81,7 +81,7 @@ let iraInvestmentManager: IraInvestmentManager;
 describe("IraInvestmentManager", () => {
     beforeEach(() => {
         planManager = new PlanManager(planConfig)
-        iraInvestmentManager = planManager.getIraManagerById(1)
+        iraInvestmentManager = planManager.getManagerById(1)
     });
 
     describe('constructor', () => {
@@ -110,7 +110,7 @@ describe("IraInvestmentManager", () => {
                     }
                 ]
             })
-            iraInvestmentManager = planManager.getIraManagerById(1)
+            iraInvestmentManager = planManager.getManagerById(1)
             const contribution = iraInvestmentManager.calculateContribution();
             expect(contribution).toBe(100);
         });
@@ -126,7 +126,7 @@ describe("IraInvestmentManager", () => {
                     }
                 ]
             })
-            iraInvestmentManager = planManager.getIraManagerById(1)
+            iraInvestmentManager = planManager.getManagerById(1)
 
             const contribution = iraInvestmentManager.calculateContribution();
             expect(contribution).toBe(7_000);
@@ -142,7 +142,7 @@ describe("IraInvestmentManager", () => {
                     }
                 ]
             })
-            iraInvestmentManager = planManager.getIraManagerById(1)
+            iraInvestmentManager = planManager.getManagerById(1)
             const contribution = iraInvestmentManager.calculateContribution();
             expect(contribution).toBe(7_000);
         });
@@ -163,7 +163,7 @@ describe("IraInvestmentManager", () => {
                     }
                 ]
             })
-            iraInvestmentManager = planManager.getIraManagerById(1)
+            iraInvestmentManager = planManager.getManagerById(1)
             iraInvestmentManager.process();
             const planState = iraInvestmentManager.orchestrator.getCurrentState();
             const iraInvestmentState = iraInvestmentManager.getCurrentState();
@@ -201,7 +201,7 @@ describe("IraInvestmentManager", () => {
                     }
                 ]
             })
-            iraInvestmentManager = planManager.getIraManagerById(1)
+            iraInvestmentManager = planManager.getManagerById(1)
 
             iraInvestmentManager.process();
             const planState = iraInvestmentManager.orchestrator.getCurrentState();
@@ -265,7 +265,7 @@ describe("IraInvestmentManager", () => {
                     }
                 ]
             })
-            iraInvestmentManager = planManager.getIraManagerById(1)
+            iraInvestmentManager = planManager.getManagerById(1)
             iraInvestmentManager.process();
             const iraInvestmentState = iraInvestmentManager.getCurrentState();
             const newState = iraInvestmentManager.createNextState(iraInvestmentState);

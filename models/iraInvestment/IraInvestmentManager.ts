@@ -4,7 +4,6 @@ import type IraInvestmentState from "~/models/iraInvestment/IraInvestmentState";
 import BaseManager from "~/models/common/BaseManager";
 import type Command from "~/models/common/Command";
 import type {IncomeManager} from "~/models/income/IncomeManager";
-import {ProcessIraInvestmentCommand} from "~/models/iraInvestment/IraInvestmentCommands";
 import {FundType} from "~/models/plan/PlanManager";
 import {ContributionType} from "~/models/common";
 import eventBus from "~/services/eventBus";
@@ -26,9 +25,9 @@ export class IraInvestmentManager extends BaseManager<IraInvestment, IraInvestme
 
     get incomeManager(): IncomeManager | undefined {
         if (this.config.income) {
-            return this.orchestrator.getIncomeManagerById(this.config.income.id)
+            return this.orchestrator.getManagerById('incomeManagers', this.config.income.id)
         }
-        eventBus.emit('warning',{scope: 'iraInvestmentManager:missingIncomeManager', message: 'Missing income manager'})
+        eventBus.emit('warning', {scope: 'iraInvestmentManager:missingIncomeManager', message: 'Missing income manager'})
         return undefined;
     }
 
@@ -41,7 +40,7 @@ export class IraInvestmentManager extends BaseManager<IraInvestment, IraInvestme
             case IraContributionStrategy.PercentageOfIncome:
                 if (this.incomeManager === undefined) {
 
-                    eventBus.emit('warning',{scope: 'iraInvestmentManager:missingIncomeManager', message: 'Cannot perform percentage of income without a lined income manager'})
+                    eventBus.emit('warning', {scope: 'iraInvestmentManager:missingIncomeManager', message: 'Cannot perform percentage of income without a lined income manager'})
                     return 0
                 }
                 contribution = this.incomeManager.getCurrentState().grossIncome * this.config.contributionPercentage / 100
@@ -67,8 +66,14 @@ export class IraInvestmentManager extends BaseManager<IraInvestment, IraInvestme
     }
 
 
-    getCommands(): Command[] {
-        return [new ProcessIraInvestmentCommand(this)];
+    override getCommands(): Command[] {
+        return [{
+            managerName: "iraInvestmentManagers",
+            managerId: `${this.config.id}`,
+            label: 'IRA Investment',
+            name: this.config.name,
+            action: 'process',
+        }];
     }
 
     processImplementation() {

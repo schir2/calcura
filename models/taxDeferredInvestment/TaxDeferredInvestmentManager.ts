@@ -7,8 +7,6 @@ import type Command from "~/models/common/Command";
 import type {IncomeManager} from "~/models/income/IncomeManager";
 import {FundType} from "~/models/plan/PlanManager";
 import {ContributionType} from "~/models/common";
-import {ProcessTaxDeferredInvestmentCommand} from "~/models/taxDeferredInvestment/TaxDeferredInvestmentCommands";
-import {ValueError} from "~/utils/errors/ValueError";
 import {ContributionLimitType} from "~/models/plan/Plan";
 import eventBus from "~/services/eventBus";
 
@@ -32,7 +30,7 @@ export class TaxDeferredInvestmentManager extends BaseManager<TaxDeferredInvestm
 
     get incomeManager(): IncomeManager | undefined {
         if (this.config.income) {
-            return this.orchestrator.getIncomeManagerById(this.config.income.id)
+            return this.orchestrator.getManagerById('incomeManagers', this.config.income.id)
         }
         eventBus.emit('warning', {
             scope: 'taxDeferredInvestmentManager:missingIncomeManager',
@@ -100,7 +98,7 @@ export class TaxDeferredInvestmentManager extends BaseManager<TaxDeferredInvestm
                 }
                 if (this.getConfig().employerMatchPercentage <= 0) {
 
-                    eventBus.emit('warning',{scope: 'calculateEmployerContribution:employerMatchPercentage', message: 'Employer match percentage should be greater than 0'})
+                    eventBus.emit('warning', {scope: 'calculateEmployerContribution:employerMatchPercentage', message: 'Employer match percentage should be greater than 0'})
                 }
                 const employerMatchLimit = this.getEmployerMatchLimit();
                 if (this.getConfig().electiveContributionStrategy === TaxDeferredContributionStrategy.UntilCompanyMatch) {
@@ -159,8 +157,14 @@ export class TaxDeferredInvestmentManager extends BaseManager<TaxDeferredInvestm
         };
     }
 
-    getCommands(): Command[] {
-        return [new ProcessTaxDeferredInvestmentCommand(this)];
+    override getCommands(): Command[] {
+        return [{
+            managerName: "taxDeferredInvestmentManagers",
+            managerId: `${this.config.id}`,
+            label: 'Tax Deferred Investment',
+            name: this.config.name,
+            action: 'process',
+        }];
     }
 
     getContributionsAdjustedForLimits(electiveContribution: number, employerContribution: number): {
