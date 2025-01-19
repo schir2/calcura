@@ -50,6 +50,14 @@ export interface PlanState extends BaseState {
     debtPayments: number;
     debtPaymentsLifetime: number;
 
+    expensesTotal: number;
+    expensesPaid: number;
+    expensesShortfall: number;
+
+    expensesTotalLifetime: number;
+    expensesPaidLifetime: number;
+    expensesShortfallLifetime: number;
+
     retirementIncomeProjected: number;
     retired: boolean;
 
