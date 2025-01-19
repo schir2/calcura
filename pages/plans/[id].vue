@@ -2,8 +2,6 @@
   <client-only>
     <Teleport to="#right-side-bar">
       <PlanChartGrowth :states="planStates"></PlanChartGrowth>
-      <PlanChartTaxDeferredGrowth :states="planStates"></PlanChartTaxDeferredGrowth>
-      <PlanChartTaxExemptGrowth :states="planStates"></PlanChartTaxExemptGrowth>
       <PlanCommandQueue v-if="planManager" :commands="planManager.getCommands()" @update="handleCommandQueueUpdate"></PlanCommandQueue>
     </Teleport>
   </client-only>
@@ -345,7 +343,7 @@ async function loadPlan() {
   try {
     plan.value = await planService.get(planId)
     planManager = new PlanManager(plan.value);
-    planStates.value = planManager.simulate();
+    planStates.value = planManager.simulate(orderedCommands.value);
     finalPlanState.value = planStates.value[planStates.value.length - 1];
   } catch (error) {
   } finally {
@@ -377,7 +375,7 @@ const finalPlanState = ref<PlanState | null>(null)
 
 watch(plan, (currentPlan, previousPlan) => {
   planManager = new PlanManager(currentPlan)
-  planStates.value = planManager.simulate()
+  planStates.value = planManager.simulate(orderedCommands.value)
 })
 
 onMounted(async () => {

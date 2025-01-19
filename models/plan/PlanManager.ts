@@ -24,14 +24,14 @@ export enum FundType {
 }
 
 export type ManagerMap = {
-    incomeManagers: IncomeManager[];
     cashReserveManagers: CashReserveManager[];
-    expenseManagers: ExpenseManager[];
     debtManagers: DebtManager[];
-    brokerageInvestmentManagers: BrokerageInvestmentManager[];
-    iraInvestmentManagers: IraInvestmentManager[];
-    rothIraInvestmentManagers: RothIraInvestmentManager[];
+    expenseManagers: ExpenseManager[];
+    incomeManagers: IncomeManager[];
     taxDeferredInvestmentManagers: TaxDeferredInvestmentManager[];
+    rothIraInvestmentManagers: RothIraInvestmentManager[];
+    iraInvestmentManagers: IraInvestmentManager[];
+    brokerageInvestmentManagers: BrokerageInvestmentManager[];
 };
 
 

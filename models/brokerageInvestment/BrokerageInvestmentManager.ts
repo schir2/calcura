@@ -44,7 +44,7 @@ export class BrokerageInvestmentManager extends BaseManager<BrokerageInvestment,
         return [{
             managerName: "brokerageInvestmentManagers",
             managerId: `${this.config.id}`,
-            label: 'Tax Deferred Investment',
+            label: 'Brokerage Investment',
             name: this.config.name,
             action: 'process',
         }];
