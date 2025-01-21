@@ -128,6 +128,13 @@ export default class PlanManager extends BaseOrchestrator<Plan, PlanState, Manag
             savingsStartOfYear: savingsTaxDeferredInitial + savingsTaxExemptInitial + savingsTaxableInitial,
             savingsEndOfYear: 0,
 
+            expensesPaidLifetime: 0,
+            expensesTotal: 0,
+            expensesPaid: 0,
+            expensesShortfall: 0,
+            expensesShortfallLifetime: 0,
+            expensesTotalLifetime: 0,
+
             retirementIncomeProjected: 0,
             retired: false,
             processed: false,
@@ -181,6 +188,12 @@ export default class PlanManager extends BaseOrchestrator<Plan, PlanState, Manag
 
             debtStartOfYear: previousState.debtEndOfYear,
             debtEndOfYear: 0,
+
+            expensesTotal: 0,
+            expensesPaid: 0,
+            expensesShortfall: 0,
+            expensesPaidLifetime: previousState.expensesPaidLifetime,
+            expensesShortfallLifetime: previousState.expensesShortfallLifetime,
 
             savingsStartOfYear: previousState.savingsEndOfYear,
             savingsEndOfYear: 0,
@@ -244,6 +257,23 @@ export default class PlanManager extends BaseOrchestrator<Plan, PlanState, Manag
         const currentState = this.getCurrentState()
         const newState = this._adjustContributionLimit(currentState, adjustment, contributionLimitType)
         this.updateCurrentState(newState)
+    }
+
+    requestAndPayExpense(amountRequested: number): number{
+        const currentState = this.getCurrentState()
+        const amountPaid = this.requestFunds(amountRequested, FundType.Taxed)
+        const shortfall = amountRequested - amountPaid
+        this.withdraw(amountPaid, FundType.Taxed)
+        this.updateCurrentState({
+            ...currentState,
+            expensesPaid: currentState.expensesPaid + amountPaid,
+            expensesShortfall: currentState.expensesShortfall + shortfall,
+            expensesTotal: currentState.expensesTotal + amountPaid,
+            expensesPaidLifetime: currentState.expensesPaidLifetime + amountPaid,
+            expensesShortfallLifetime: currentState.expensesShortfallLifetime + shortfall,
+        })
+        return amountPaid
+
     }
 
     payDebt(amount: number) {
@@ -377,11 +407,12 @@ export default class PlanManager extends BaseOrchestrator<Plan, PlanState, Manag
     }
 
     processImplementation(): void {
-        const previousState = this.getCurrentState()
         const allManagers = this.getAllManagers()
         allManagers.forEach(manager => {
             this.processUnprocessed(manager)
         })
+        const previousState = this.getCurrentState()
+
         this.updateCurrentState({
             ...previousState,
             savingsEndOfYear: previousState.savingsTaxDeferredEndOfYear + previousState.savingsTaxExemptEndOfYear + previousState.savingsTaxableEndOfYear,
