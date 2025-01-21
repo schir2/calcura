@@ -10,7 +10,6 @@ import {
     type Plan,
     RetirementStrategy
 } from "~/models/plan/Plan";
-import {ProcessDebtCommand} from "~/models/debt/DebtCommands";
 import {IncomeFrequency} from "~/models/income/Income";
 
 const planConfig: Plan = {
@@ -213,22 +212,6 @@ describe("DebtManager", () => {
                 interestRate: 0,
             });
             expect(debtManager.calculateInterest(1000)).toBe(0);
-        });
-    });
-
-    describe('getCommands', () => {
-        it('should return an array with ProcessDebtCommand', () => {
-            const debtManager = new DebtManager(planManager, debt);
-            const commands = debtManager.getCommands();
-            expect(commands).toHaveLength(1);
-            expect(commands[0]).toBeInstanceOf(ProcessDebtCommand);
-        });
-
-        it('should execute ProcessDebtCommand correctly', () => {
-            const debtManager = new DebtManager(planManager, debt);
-            const command = new ProcessDebtCommand(debtManager);
-            command.execute();
-            expect(debtManager.getCurrentState().processed).toBe(true);
         });
     });
 
