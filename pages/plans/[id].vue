@@ -2,7 +2,7 @@
   <client-only>
     <Teleport to="#right-side-bar">
       <PlanChartGrowth :states="planStates"></PlanChartGrowth>
-      <PlanCommandQueue v-if="planManager" :commands="planManager.getCommands()" @update="handleCommandQueueUpdate"></PlanCommandQueue>
+      <PlanCommandQueue v-if="orderedCommands" :commands="orderedCommands" @update="handleCommandQueueUpdate"></PlanCommandQueue>
     </Teleport>
   </client-only>
   <div v-if="plan" class="col-span-4 space-y-6">
@@ -12,6 +12,7 @@
                 @cancel="handleClose"
       />
     </n-modal>
+    <PlanTable :planStates="planStates"/>
     <PlanDetailCard :plan="plan" @update="handleUpdate"></PlanDetailCard>
     <section class="grid grid-cols-2 gap-3">
       <section class="space-y-3">
@@ -80,42 +81,6 @@
         />
       </section>
     </section>
-    <div>
-      <n-table>
-        <thead>
-        <tr>
-          <th>Age</th>
-          <th>Gross Income</th>
-          <th>Taxable Income</th>
-          <th>Taxed Income</th>
-          <th>Taxed Capital</th>
-          <th>Taxable Capital</th>
-          <th>Taxed Withdrawals</th>
-          <th>Tax Deferred Savings</th>
-          <th>Tax Exempt Savings</th>
-          <th>Taxable Savings</th>
-          <th>Gross Savings</th>
-
-        </tr>
-
-        </thead>
-        <tbody>
-        <tr class="space-y-3" v-for="state in planStates">
-          <td>{{ state.age }}</td>
-          <td>${{ $humanize.intComma(state.grossIncome) }}</td>
-          <td>${{ $humanize.intComma(state.taxableIncome) }}</td>
-          <td>${{ $humanize.intComma(state.taxedIncome) }}</td>
-          <td>${{ $humanize.intComma(state.taxedCapital) }}</td>
-          <td>${{ $humanize.intComma(state.taxableCapital) }}</td>
-          <td>${{ $humanize.intComma(state.taxedWithdrawals) }}</td>
-          <td>${{ $humanize.intComma(state.savingsTaxDeferredEndOfYear) }}</td>
-          <td>${{ $humanize.intComma(state.savingsTaxExemptEndOfYear) }}</td>
-          <td>${{ $humanize.intComma(state.savingsTaxableEndOfYear) }}</td>
-          <td>${{ $humanize.intComma(state.savingsEndOfYear) }}</td>
-        </tr>
-        </tbody>
-      </n-table>
-    </div>
   </div>
 </template>
 <script setup lang="ts">
@@ -131,7 +96,7 @@ import type {Income, IncomePartial} from "~/models/income/Income";
 import type {BrokerageInvestment, BrokerageInvestmentPartial} from "~/models/brokerageInvestment/BrokerageInvestment";
 import type {RothIraInvestment, RothIraInvestmentPartial} from "~/models/rothIraInvestment/RothIraInvestment";
 import eventBus from "~/services/eventBus";
-import type Command from "~/models/common/Command";
+import Command, {compareAndSyncCommands} from "~/models/common/Command";
 
 const planService = usePlanService()
 const debtService = useDebtService()
@@ -338,19 +303,6 @@ async function handleCommandQueueUpdate(commands: Command[]) {
   planManager = new PlanManager(plan.value);
   planStates.value = planManager.simulate(orderedCommands.value)
 }
-
-async function loadPlan() {
-  try {
-    plan.value = await planService.get(planId)
-    planManager = new PlanManager(plan.value);
-    planStates.value = planManager.simulate(orderedCommands.value);
-    finalPlanState.value = planStates.value[planStates.value.length - 1];
-  } catch (error) {
-  } finally {
-    loading.value = false;
-  }
-}
-
 const showModal = ref(false);
 
 async function handleUpdate(planData: Plan) {
@@ -366,18 +318,29 @@ function handleClose() {
   showModal.value = false;
 }
 
-onMounted(async () => {
-  await loadPlan();
-});
 let planManager: PlanManager | null = null
 const planStates = ref<PlanState[]>([])
 const finalPlanState = ref<PlanState | null>(null)
 
-watch(plan, (currentPlan, previousPlan) => {
-  planManager = new PlanManager(currentPlan)
-  planStates.value = planManager.simulate(orderedCommands.value)
-})
-
+async function loadPlan() {
+  try {
+    plan.value = await planService.get(planId)
+    planManager = new PlanManager(plan.value);
+    const newCommands: Command[] = planManager.getCommands()
+    if (!orderedCommands.value) {
+      orderedCommands.value = newCommands
+    }
+    else {
+      orderedCommands.value = compareAndSyncCommands(orderedCommands.value, newCommands)
+    }
+    planStates.value = planManager.simulate(orderedCommands.value);
+    finalPlanState.value = planStates.value[planStates.value.length - 1];
+  } catch (error) {
+    console.log('Error loading plan:', error);
+  } finally {
+    loading.value = false;
+  }
+}
 onMounted(async () => {
   await loadPlan();
 })
