@@ -27,6 +27,6 @@ const list = ref(props.commands)
 const emits = defineEmits(['update'])
 
 function onChange() {
-  emits('update', list.value)
+  emits('update', [...list.value])
 }
 </script>

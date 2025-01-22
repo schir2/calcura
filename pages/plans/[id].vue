@@ -12,7 +12,7 @@
                 @cancel="handleClose"
       />
     </n-modal>
-    <PlanTable :planStates="planStates"/>
+    <PlanTable v-if="plan && planStates" :planStates="planStates"/>
     <PlanDetailCard :plan="plan" @update="handleUpdate"></PlanDetailCard>
     <section class="grid grid-cols-2 gap-3">
       <section class="space-y-3">
@@ -306,8 +306,9 @@ async function handleCommandQueueUpdate(commands: Command[]) {
 const showModal = ref(false);
 
 async function handleUpdate(planData: Plan) {
-  plan.value = await planService.update(planData.id, planData)
+  await planService.update(planData.id, planData)
   showModal.value = false;
+  await loadPlan()
 }
 
 function handleEdit() {
@@ -327,13 +328,16 @@ async function loadPlan() {
     plan.value = await planService.get(planId)
     planManager = new PlanManager(plan.value);
     const newCommands: Command[] = planManager.getCommands()
+    console.log('new' , newCommands)
+    console.log('old', orderedCommands.value)
     if (!orderedCommands.value) {
       orderedCommands.value = newCommands
+
     }
     else {
       orderedCommands.value = compareAndSyncCommands(orderedCommands.value, newCommands)
     }
-    planStates.value = planManager.simulate(orderedCommands.value);
+    planStates.value = planManager.simulate();
     finalPlanState.value = planStates.value[planStates.value.length - 1];
   } catch (error) {
     console.log('Error loading plan:', error);
