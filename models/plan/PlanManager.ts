@@ -83,6 +83,7 @@ export default class PlanManager extends BaseOrchestrator<Plan, PlanState, Manag
         const savingsTaxExemptInitial = this.getSavingsTaxExemptInitial()
         const savingsTaxDeferredInitial = this.getSavingsTaxDeferredInitial()
         const debtInitial = this.getDebtInitial()
+        const savingsStartOfYear = savingsTaxDeferredInitial + savingsTaxExemptInitial + savingsTaxableInitial;
         return {
             age: this.config.age,
             year: this.config.year,
@@ -125,7 +126,7 @@ export default class PlanManager extends BaseOrchestrator<Plan, PlanState, Manag
             debtStartOfYear: debtInitial,
             debtEndOfYear: 0,
 
-            savingsStartOfYear: savingsTaxDeferredInitial + savingsTaxExemptInitial + savingsTaxableInitial,
+            savingsStartOfYear: savingsStartOfYear,
             savingsEndOfYear: 0,
 
             expensesPaidLifetime: 0,
@@ -135,7 +136,7 @@ export default class PlanManager extends BaseOrchestrator<Plan, PlanState, Manag
             expensesShortfallLifetime: 0,
             expensesTotalLifetime: 0,
 
-            retirementIncomeProjected: 0,
+            retirementIncomeProjected: savingsStartOfYear * this.config.retirementWithdrawalRate / 100,
             retired: false,
             processed: false,
         }
@@ -197,6 +198,8 @@ export default class PlanManager extends BaseOrchestrator<Plan, PlanState, Manag
 
             savingsStartOfYear: previousState.savingsEndOfYear,
             savingsEndOfYear: 0,
+
+            retirementIncomeProjected: previousState.savingsEndOfYear * this.config.retirementWithdrawalRate / 100,
 
             processed: false,
         }
@@ -388,7 +391,7 @@ export default class PlanManager extends BaseOrchestrator<Plan, PlanState, Manag
             case RetirementStrategy.DebtFree:
                 return this.getCurrentDebt() <= 0
             case RetirementStrategy.PercentRule:
-                return this.config.retirementIncomeGoal === this.getCurrentState().retirementIncomeProjected
+                return this.config.retirementIncomeGoal <= this.getCurrentState().retirementIncomeProjected
             case RetirementStrategy.TargetSavings:
                 return this.config.retirementSavingsAmount <= this.getCurrentState().savingsEndOfYear
         }
@@ -429,6 +432,7 @@ export default class PlanManager extends BaseOrchestrator<Plan, PlanState, Manag
                 })
             }
             this.process()
+            console.log(this.canRetire())
             if (this.canRetire()) {
                 return this.states
             }
