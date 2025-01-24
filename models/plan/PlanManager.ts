@@ -84,6 +84,7 @@ export default class PlanManager extends BaseOrchestrator<Plan, PlanState, Manag
         const savingsTaxDeferredInitial = this.getSavingsTaxDeferredInitial()
         const debtInitial = this.getDebtInitial()
         const savingsStartOfYear = savingsTaxDeferredInitial + savingsTaxExemptInitial + savingsTaxableInitial;
+        const retirementIncomeGoal = this.config.retirementIncomeGoal
         return {
             age: this.config.age,
             year: this.config.year,
@@ -136,7 +137,9 @@ export default class PlanManager extends BaseOrchestrator<Plan, PlanState, Manag
             expensesShortfallLifetime: 0,
             expensesTotalLifetime: 0,
 
-            retirementIncomeProjected: savingsStartOfYear * this.config.retirementWithdrawalRate / 100,
+            retirementIncomeProjected: 0,
+            retirementIncomeGoal: retirementIncomeGoal,
+
             retired: false,
             processed: false,
         }
@@ -150,6 +153,8 @@ export default class PlanManager extends BaseOrchestrator<Plan, PlanState, Manag
         const grossIncome = this.getGrossIncome()
         const taxedIncome = grossIncome - this.calculateTaxes(grossIncome)
         const taxedCapital = previousState.taxedCapital + taxedIncome
+        const retirementIncomeGoal = this.config.retirementIncomeAdjustedForInflation ? previousState.retirementIncomeGoal * (1 + inflationRate / 100) : this.config.retirementIncomeGoal
+
         return {
             ...previousState,
             age: age,
@@ -199,7 +204,8 @@ export default class PlanManager extends BaseOrchestrator<Plan, PlanState, Manag
             savingsStartOfYear: previousState.savingsEndOfYear,
             savingsEndOfYear: 0,
 
-            retirementIncomeProjected: previousState.savingsEndOfYear * this.config.retirementWithdrawalRate / 100,
+            retirementIncomeProjected: 0,
+            retirementIncomeGoal: retirementIncomeGoal,
 
             processed: false,
         }
@@ -385,15 +391,17 @@ export default class PlanManager extends BaseOrchestrator<Plan, PlanState, Manag
     }
 
     canRetire(): boolean {
+        const currentState = this.getCurrentState()
+
         switch (this.config.retirementStrategy) {
             case RetirementStrategy.Age:
                 return this.getCurrentState().age === this.config.retirementAge;
             case RetirementStrategy.DebtFree:
                 return this.getCurrentDebt() <= 0
             case RetirementStrategy.PercentRule:
-                return this.config.retirementIncomeGoal <= this.getCurrentState().retirementIncomeProjected
+                return currentState.retirementIncomeGoal <= currentState.retirementIncomeProjected
             case RetirementStrategy.TargetSavings:
-                return this.config.retirementSavingsAmount <= this.getCurrentState().savingsEndOfYear
+                return this.config.retirementSavingsAmount <= currentState.savingsEndOfYear
         }
     }
 
@@ -416,9 +424,13 @@ export default class PlanManager extends BaseOrchestrator<Plan, PlanState, Manag
         })
         const previousState = this.getCurrentState()
 
+        const savingsEndOfYear = previousState.savingsTaxDeferredEndOfYear + previousState.savingsTaxExemptEndOfYear + previousState.savingsTaxableEndOfYear;
+        const projectedIncome = savingsEndOfYear * (this.config.retirementWithdrawalRate / 100)
+        console.log(savingsEndOfYear, this.config.retirementWithdrawalRate, projectedIncome)
         this.updateCurrentState({
             ...previousState,
-            savingsEndOfYear: previousState.savingsTaxDeferredEndOfYear + previousState.savingsTaxExemptEndOfYear + previousState.savingsTaxableEndOfYear,
+            savingsEndOfYear: savingsEndOfYear,
+            retirementIncomeProjected: projectedIncome,
         })
     }
 
