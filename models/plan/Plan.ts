@@ -54,6 +54,7 @@ export interface Plan {
     retirementIncomeGoal: number;
     retirementAge: number;
     retirementSavingsAmount: number;
+    retirementIncomeAdjustedForInflation: boolean;
     cashReserves: CashReserve[]
     incomes: Income[]
     expenses: Expense[]
