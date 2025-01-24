@@ -140,6 +140,11 @@ export const planForm: FormData<Plan> = {
             .min(0, "Retirement savings must be at least $0.")
             .max(MAX_RETIREMENT_SAVINGS_AMOUNT, `Retirement savings must be at most $${MAX_RETIREMENT_SAVINGS_AMOUNT}.`),
     },
+    retirementIncomeAdjustedForInflation: {
+        name: "retirementIncomeAdjustedForInflation",
+        label: "Retirement Income Goal Adjusted For Inflation",
+        helpText: "Select this if you want your retirement income goal to be adjusted for inflation.",
+    },
     taxStrategy: {
         name: 'taxStrategy',
         label: 'Tax Strategy',
