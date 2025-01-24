@@ -59,6 +59,7 @@ export interface PlanState extends BaseState {
     expensesShortfallLifetime: number;
 
     retirementIncomeProjected: number;
+    retirementIncomeGoal: number;
     retired: boolean;
 
     processed: boolean;
