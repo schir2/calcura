@@ -3,7 +3,7 @@
     <thead>
     <tr>
       <th></th>
-      <th colspan="4">Income</th>
+      <th colspan="5">Income</th>
       <th colspan="2">Capital</th>
       <th colspan="1"></th>
       <th colspan="3">Expenses</th>
@@ -13,8 +13,9 @@
       <th>Age</th>
       <th>Gross</th>
       <th>Taxable</th>
-      <th>Projected</th>
       <th>Taxed</th>
+      <th>Projected</th>
+      <th>Goal</th>
       <th>Taxed</th>
       <th>Taxable</th>
       <th>Withdrawals</th>
@@ -36,6 +37,7 @@
       <td>${{ $humanize.intComma(state.taxableIncome) }}</td>
       <td>${{ $humanize.intComma(state.taxedIncome) }}</td>
       <td>${{ $humanize.intComma(state.retirementIncomeProjected) }}</td>
+      <td>${{ $humanize.intComma(state.retirementIncomeGoal) }}</td>
       <td>${{ $humanize.intComma(state.taxedCapital) }}</td>
       <td>${{ $humanize.intComma(state.taxableCapital) }}</td>
       <td>${{ $humanize.intComma(state.taxedWithdrawals) }}</td>
