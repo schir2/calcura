@@ -84,6 +84,10 @@
                            v-bind="retirementIncomeGoalProps">
                 <n-input-number class="w-full" v-model:value="retirementIncomeGoal"/>
               </n-form-item>
+              <n-form-item path="retirementIncomeAdjustedForInflation" :label="planForm.retirementIncomeAdjustedForInflation.label"
+                           v-bind="retirementIncomeAdjustedForInflationProps">
+                <n-switch class="w-full" v-model:value="retirementIncomeAdjustedForInflation"/>
+              </n-form-item>
             </CommonRadioCard>
           </div>
         </n-form-item>
@@ -158,6 +162,7 @@ const [lifeExpectancy, lifeExpectancyProps] = defineField('lifeExpectancy', naiv
 const [retirementStrategy, retirementStrategyProps] = defineField('retirementStrategy', naiveConfig)
 const [retirementWithdrawalRate, retirementWithdrawalRateProps] = defineField('retirementWithdrawalRate', naiveConfig)
 const [retirementIncomeGoal, retirementIncomeGoalProps] = defineField('retirementIncomeGoal', naiveConfig)
+const [retirementIncomeAdjustedForInflation, retirementIncomeAdjustedForInflationProps] = defineField('retirementIncomeAdjustedForInflation', naiveConfig)
 const [retirementAge, retirementAgeProps] = defineField('retirementAge', naiveConfig)
 const [retirementSavingsAmount, retirementSavingsAmountProps] = defineField('retirementSavingsAmount', naiveConfig)
 
