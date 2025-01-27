@@ -1,53 +1,38 @@
 <template>
   <n-card role="dialog" class="max-w-6xl" :bordered="true">
     <template #header>
-      <h3 class="text-2xl">Brokerage Investment: {{ brokerageInvestmentPartial.name }}</h3>
+      <h3 class="text-2xl">Brokerage Investment: {{ initialValues.name }}</h3>
     </template>
 
     <template #default>
-      <n-form>
-        <n-form-item path="name" :label="brokerageInvestmentForm.name.label" v-bind="nameProps">
-          <n-input v-model:value="name"/>
-        </n-form-item>
-        <n-form-item path="reserveAmount" :label="brokerageInvestmentForm.initialBalance.label" v-bind="initialBalanceProps">
-          <n-input-number class="w-full" v-model:value="initialBalance">
-            <template #prefix>
-              <n-tag size="small">$</n-tag>
-            </template>
-          </n-input-number>
-        </n-form-item>
-        <n-form-item path="growthRate" :label="brokerageInvestmentForm.growthRate.label" v-bind="growthRateProps">
-          <div class="flex flex-col w-full gap-3">
-            <n-slider v-model:value="growthRate"/>
-            <n-input-number size="small" :placeholder="brokerageInvestmentForm.growthRate.placeholder" v-model:value="growthRate">
-              <template #prefix>
-                <n-tag size="small">%</n-tag>
-              </template>
-            </n-input-number>
-          </div>
-        </n-form-item>
-        <n-form-item path="contributionStrategy" :label="brokerageInvestmentForm.contributionStrategy.label" v-bind="contributionStrategyProps">
-          <n-radio-group v-model:value="contributionStrategy">
-            <n-radio-button v-for="option in brokerageInvestmentForm.contributionStrategy.options" :key="option.value" :value="option.value" :label="option.label"/>
-          </n-radio-group>
-        </n-form-item>
-        <n-form-item class="w-full" v-if="contributionStrategy === 'percentage_of_income'" path="contributionPercentage" :label="brokerageInvestmentForm.contributionPercentage.label" v-bind="contributionPercentageProps">
-          <div class="flex flex-col w-full gap-3">
-            <n-slider v-model:value="contributionPercentage"></n-slider>
-            <n-input-number v-model:value="contributionPercentage">
-              <template #prefix>
-                <n-tag size="small">%</n-tag>
-              </template>
-            </n-input-number>
-          </div>
-        </n-form-item>
-        <n-form-item v-if="contributionStrategy === 'fixed'" path="contributionFixedAmount" :label="brokerageInvestmentForm.contributionFixedAmount.label" v-bind="contributionFixedAmountProps">
-          <n-input-number class="w-full" v-model:value="contributionFixedAmount">
-            <template #prefix>
-              <n-tag size="small">$</n-tag>
-            </template>
-          </n-input-number>
-        </n-form-item>
+      <n-form ref="formRef" :model="model" :rules="rules">
+        <section class="grid grid-cols-3 gap-3">
+          <n-form-item label="Name" path="name">
+            <n-input v-model:value="model.name" placeholder="Enter investment name"/>
+          </n-form-item>
+
+          <n-form-item label="Initial Balance" path="initialBalance">
+            <n-input-number class="w-full" v-model:value="model.initialBalance" placeholder="Enter initial balance"/>
+          </n-form-item>
+
+          <n-form-item label="Growth Rate (%)" path="growthRate">
+            <n-input-number class="w-full" v-model:value="model.growthRate" placeholder="Enter growth rate"/>
+          </n-form-item>
+        </section>
+          <n-form-item class="grid grid-cols-3 gap-3" label="Contribution Strategy" path="contributionStrategy">
+            <CommonRadioCard v-model="model.contributionStrategy" :value="BrokerageContributionStrategy.Fixed" title="Fixed">
+              <n-form-item label="Fixed Contribution Amount" path="contributionFixedAmount">
+                <n-input-number v-model:value="model.contributionFixedAmount" placeholder="Enter fixed amount"/>
+              </n-form-item>
+            </CommonRadioCard>
+            <CommonRadioCard v-model="model.contributionStrategy" :value="BrokerageContributionStrategy.PercentageOfIncome" title="Percentage of Income">
+              <n-form-item label="Contribution Percentage (%)" path="contributionPercentage">
+                <n-input-number v-model:value="model.contributionPercentage" placeholder="Enter percentage"/>
+              </n-form-item>
+            </CommonRadioCard>
+            <CommonRadioCard v-model="model.contributionStrategy" :value="BrokerageContributionStrategy.Max" title="Max Out"/>
+          </n-form-item>
+
       </n-form>
     </template>
 
@@ -58,31 +43,67 @@
 </template>
 
 <script lang="ts" setup>
-import {brokerageInvestmentForm, brokerageInvestmentFormSchema} from "~/forms/brokerageInvestmentForm";
-import {useForm} from "vee-validate";
 import {BrokerageContributionStrategy, type BrokerageInvestment, type BrokerageInvestmentPartial} from "~/models/brokerageInvestment/BrokerageInvestment";
-import {naiveConfig} from "~/utils/schemaUtils";
-import {calculateBrokerageInvestmentContribution} from "~/models/brokerageInvestment/BrokerageInvestmentManager";
+import type {FormInst, FormRules} from "naive-ui";
+import {useMessage} from "naive-ui";
+
+const message = useMessage()
 
 interface Props {
-  brokerageInvestmentPartial: Partial<BrokerageInvestment | BrokerageInvestmentPartial>;
+  initialValues: Partial<BrokerageInvestment | BrokerageInvestmentPartial>;
   mode: 'create' | 'edit' | 'view'
 }
 
 const props = defineProps<Props>();
 const emit = defineEmits(["update", "cancel", "create"]);
 
-const {defineField, values, errors, handleSubmit, meta} = useForm({
-  validationSchema: brokerageInvestmentFormSchema,
-  initialValues: props.brokerageInvestmentPartial,
-});
+const model = ref<BrokerageInvestmentPartial>(props.initialValues)
 
-const [name, nameProps] = defineField('name', naiveConfig);
-const [growthRate, growthRateProps] = defineField('growthRate', naiveConfig);
-const [initialBalance, initialBalanceProps] = defineField('initialBalance', naiveConfig);
-const [contributionStrategy, contributionStrategyProps] = defineField('contributionStrategy', naiveConfig);
-const [contributionPercentage, contributionPercentageProps] = defineField('contributionPercentage', naiveConfig);
-const [contributionFixedAmount, contributionFixedAmountProps] = defineField('contributionFixedAmount', naiveConfig);
+const formRef = ref<FormInst | null>(null);
+
+const rules: FormRules = {
+  name: [
+    {min: 3, message: "Investment name must be at least 3 characters long", trigger: ["blur", "change"]},
+    {max: 50, message: "Investment name must be at most 50 characters long", trigger: ["blur", "change"]}
+  ],
+  growthRate: [
+    {required: true, type: 'number', message: "Growth rate is required", trigger: ["blur", "change"]},
+    {type: "number", min: 0, message: "Growth rate cannot be negative", trigger: ["blur", "change"]},
+    {type: "number", max: 100, message: "Growth rate must be less than or equal to 100", trigger: ["blur", "change"]}
+  ],
+  initialBalance: [
+    {required: true, type: 'number', message: "Initial balance is required", trigger: ["blur", "change"]},
+    {type: "number", min: 0, message: "Initial balance cannot be negative", trigger: ["blur", "change"]}
+  ],
+  contributionStrategy: [
+    {required: true, message: "Contribution strategy is required", trigger: ["blur", "change"]}
+  ],
+  contributionPercentage: [
+    {type: "number", min: 0, message: "Contribution percentage cannot be negative", trigger: ["blur", "change"]},
+    {type: "number", max: 100, message: "Contribution percentage must be less than or equal to 100", trigger: ["blur", "change"]}
+  ],
+  contributionFixedAmount: [
+    {type: 'number', message: "Fixed contribution amount is required", trigger: ["blur", "change"]},
+    {type: "number", min: 0, message: "Contribution amount cannot be negative", trigger: ["blur", "change"]}
+  ],
+};
+
+function handleCreate() {
+  emit('create', model.value)
+
+}
+
+function handleCancel() {
+  emit('cancel')
+}
+
+function handleUpdate() {
+  formRef.value?.validate((errors) => {
+    if (!errors) {
+      emit('update', model.value)
+    }
+  })
+}
 
 
 export type BrokerageInvestmentProjection = {
@@ -139,18 +160,4 @@ export type BrokerageInvestmentProjection = {
 //   }
 //   return result;
 // });
-
-
-function handleCreate() {
-  emit('create', values)
-
-}
-
-function handleCancel() {
-  emit('cancel')
-}
-
-function handleUpdate() {
-  emit('update', values)
-}
 </script>
