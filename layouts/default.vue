@@ -1,8 +1,9 @@
 <template>
   <n-config-provider :theme="naiveUiTheme">
+    <n-message-provider>
     <div>
       <!-- Navbar -->
-          <LayoutTheNavbar/>
+      <LayoutTheNavbar/>
 
       <div class="grid grid-cols-12 gap-6">
 
@@ -16,13 +17,16 @@
         <LayoutTheRightSidebar class="col-span-3"/>
       </div>
     </div>
+    </n-message-provider>
   </n-config-provider>
 </template>
 <script setup lang="ts">
 const themeStore = useThemeStore()
-import { darkTheme, lightTheme, NConfigProvider } from 'naive-ui'
-function getNaiveUiTheme(){
+import {darkTheme, lightTheme, NConfigProvider, NMessageProvider} from 'naive-ui'
+
+function getNaiveUiTheme() {
   return themeStore.theme === 'dark' ? darkTheme : lightTheme
 }
+
 const naiveUiTheme = ref(getNaiveUiTheme())
 </script>
