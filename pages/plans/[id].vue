@@ -12,7 +12,6 @@
                 @cancel="handleClose"
       />
     </n-modal>
-    <PlanTable v-if="plan && planStates" :planStates="planStates"/>
     <PlanDetailCard :plan="plan" @update="handleUpdate"></PlanDetailCard>
     <section class="grid grid-cols-2 gap-3">
       <section class="space-y-3">
@@ -81,6 +80,8 @@
         />
       </section>
     </section>
+
+    <PlanTable v-if="plan && planStates" :planStates="planStates"/>
   </div>
 </template>
 <script setup lang="ts">
@@ -303,6 +304,7 @@ async function handleCommandQueueUpdate(commands: Command[]) {
   planManager = new PlanManager(plan.value);
   planStates.value = planManager.simulate(orderedCommands.value)
 }
+
 const showModal = ref(false);
 
 async function handleUpdate(planData: Plan) {
@@ -328,13 +330,10 @@ async function loadPlan() {
     plan.value = await planService.get(planId)
     planManager = new PlanManager(plan.value);
     const newCommands: Command[] = planManager.getCommands()
-    console.log('new' , newCommands)
-    console.log('old', orderedCommands.value)
     if (!orderedCommands.value) {
       orderedCommands.value = newCommands
 
-    }
-    else {
+    } else {
       orderedCommands.value = compareAndSyncCommands(orderedCommands.value, newCommands)
     }
     planStates.value = planManager.simulate();
@@ -345,6 +344,7 @@ async function loadPlan() {
     loading.value = false;
   }
 }
+
 onMounted(async () => {
   await loadPlan();
 })

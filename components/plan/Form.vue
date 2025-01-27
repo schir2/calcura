@@ -4,7 +4,7 @@
       <h3 class="text-2xl">Plan {{ planPartial.id }}: {{ planPartial.name }}</h3>
     </template>
     <template #default>
-      <n-form>
+      <n-form :model="values">
         <section id="planBasicInfo" class="grid grid-cols-4 gap-3">
           <n-form-item path="name" :label="planForm.name.label" v-bind="nameProps">
             <n-input v-model:value="name"></n-input>
@@ -92,11 +92,11 @@
           </div>
         </n-form-item>
       </n-form>
-
+{{ errors}}
     </template>
 
     <template #action>
-      <FormActionButtons :mode="mode" @update="handleUpdate" @create="handleCreate" @cancel="handleCancel"/>
+      <FormActionButtons :mode="mode" @update="handleUpdate" @create="handleCreate" @cancel="handleCancel" :errors="errors"/>
     </template>
   </n-card>
 </template>
@@ -110,6 +110,7 @@ interface Props {
   planPartial: Partial<Plan>;
   mode: 'create' | 'edit'
 }
+
 
 const props = defineProps<Props>();
 

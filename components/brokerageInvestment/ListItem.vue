@@ -1,6 +1,6 @@
 <template>
   <n-modal v-model:show="showModal">
-    <BrokerageInvestmentForm :brokerageInvestmentPartial="brokerageInvestment" mode="edit"
+    <BrokerageInvestmentForm :initialValues="brokerageInvestment" mode="edit"
                              @delete="handleDelete"
                              @create="handleCreate"
                              @update="handleUpdate"

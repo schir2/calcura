@@ -28,7 +28,7 @@ export const planForm: FormData<Plan> = {
         label: 'Inflation Rate',
         placeholder: 'Enter Inflation Rate',
         helpText: 'The rate at which inflation grows',
-        rules: yup.number()
+        rules: yup.number().required('Inflation rate is required')
     },
     insufficientFundsStrategy: {
         name: 'insufficientFundsStrategy',
@@ -46,7 +46,7 @@ export const planForm: FormData<Plan> = {
         label: 'Growth Rate',
         placeholder: 'Enter growth Rate',
         helpText: 'The rate at which growth grows',
-        rules: yup.number()
+        rules: yup.number().required('Growth rate is required')
     },
     growthApplicationStrategy: {
         name: 'growthApplicationStrategy',
@@ -63,7 +63,7 @@ export const planForm: FormData<Plan> = {
         label: 'Year',
         placeholder: 'Enter Starting Year',
         helpText: 'Enter the year in the retirement journey',
-        rules: yup.number().min(2000),
+        rules: yup.number().min(2000).required('Year is required'),
 
     },
     lifeExpectancy: {

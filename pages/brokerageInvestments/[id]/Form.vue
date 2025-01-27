@@ -12,5 +12,5 @@ onMounted(async () => {
 })
 </script>
 <template>
-  <BrokerageInvestmentForm v-if="brokerageInvestment" mode="view" :brokerageInvestmentPartial="brokerageInvestment"></BrokerageInvestmentForm>
+  <BrokerageInvestmentForm v-if="brokerageInvestment" mode="view" :initialValues="brokerageInvestment"></BrokerageInvestmentForm>
 </template>

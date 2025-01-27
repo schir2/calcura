@@ -1,7 +1,7 @@
 <template>
   <n-thing>
     <n-modal v-model:show="showModal">
-      <BrokerageInvestmentForm :brokerageInvestmentPartial="activeBrokerageInvestmentPartial" mode="create"
+      <BrokerageInvestmentForm :initialValues="activeBrokerageInvestmentPartial" mode="create"
                                @create="handleCreate"
                                @cancel="handleClose"
       />

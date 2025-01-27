@@ -426,7 +426,6 @@ export default class PlanManager extends BaseOrchestrator<Plan, PlanState, Manag
 
         const savingsEndOfYear = previousState.savingsTaxDeferredEndOfYear + previousState.savingsTaxExemptEndOfYear + previousState.savingsTaxableEndOfYear;
         const projectedIncome = savingsEndOfYear * (this.config.retirementWithdrawalRate / 100)
-        console.log(savingsEndOfYear, this.config.retirementWithdrawalRate, projectedIncome)
         this.updateCurrentState({
             ...previousState,
             savingsEndOfYear: savingsEndOfYear,
