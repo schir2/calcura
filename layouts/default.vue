@@ -7,10 +7,10 @@
 
       <div class="grid grid-cols-12 gap-6">
 
-        <LayoutTheLeftSidebar class="col-span-2"/>
+        <LayoutTheLeftSidebar class="col-span-1"/>
 
 
-        <main class="flex-grow mx-auto container p-16 bg-skin-base shadow-md rounded-md space-y-12 col-span-7">
+        <main class="flex-grow mx-auto container p-16 bg-skin-base shadow-md rounded-md space-y-12 col-span-8">
           <slot/>
         </main>
 
