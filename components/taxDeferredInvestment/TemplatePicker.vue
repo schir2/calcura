@@ -1,7 +1,7 @@
 <template>
   <n-thing>
     <n-modal v-model:show="showModal">
-      <TaxDeferredInvestmentForm :taxDeferredInvestmentPartial="activeTaxDeferredInvestmentPartial" mode="create"
+      <TaxDeferredInvestmentForm :initialValues="activeTaxDeferredInvestmentPartial" mode="create"
                                  @create="handleCreate"
                                  @cancel="handleClose"
                                  :incomes="incomes"
