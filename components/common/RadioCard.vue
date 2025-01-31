@@ -10,6 +10,9 @@
     <template #default>
       <slot></slot>
     </template>
+    <template #footer>
+      <slot name="footer"></slot>
+    </template>
   </n-card>
 </template>
 <script lang="ts" setup>
