@@ -12,5 +12,5 @@ onMounted(async () => {
 })
 </script>
 <template>
-  <TaxDeferredInvestmentForm v-if="taxDeferredInvestment" mode="view" :taxDeferredInvestmentPartial="taxDeferredInvestment"></TaxDeferredInvestmentForm>
+  <TaxDeferredInvestmentForm v-if="taxDeferredInvestment" mode="view" :initialValues="taxDeferredInvestment"></TaxDeferredInvestmentForm>
 </template>
