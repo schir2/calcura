@@ -268,7 +268,7 @@ export default class PlanManager extends BaseOrchestrator<Plan, PlanState, Manag
         this.updateCurrentState(newState)
     }
 
-    requestAndPayExpense(amountRequested: number): number{
+    requestAndPayExpense(amountRequested: number): number {
         const currentState = this.getCurrentState()
         const amountPaid = this.requestFunds(amountRequested, FundType.Taxed)
         const shortfall = amountRequested - amountPaid
@@ -419,18 +419,37 @@ export default class PlanManager extends BaseOrchestrator<Plan, PlanState, Manag
 
     processImplementation(): void {
         const allManagers = this.getAllManagers()
+        this.managers.debtManagers.forEach((manager) => this.processUnprocessed(manager))
+        this.managers.expenseManagers.forEach((manager) => this.processUnprocessed(manager))
+        this.managers.cashReserveManagers.forEach((manager) => this.processUnprocessed(manager))
+        this.managers.taxDeferredInvestmentManagers.forEach((manager) => this.processUnprocessed(manager))
+        this.managers.rothIraInvestmentManagers.forEach((manager) => this.processUnprocessed(manager))
+        this.managers.iraInvestmentManagers.forEach((manager) => this.processUnprocessed(manager))
+        this.managers.brokerageInvestmentManagers.forEach((manager) => this.processUnprocessed(manager))
         allManagers.forEach(manager => {
             this.processUnprocessed(manager)
         })
         const previousState = this.getCurrentState()
 
-        const savingsEndOfYear = previousState.savingsTaxDeferredEndOfYear + previousState.savingsTaxExemptEndOfYear + previousState.savingsTaxableEndOfYear;
+        const savingsEndOfYear = previousState.savingsTaxDeferredEndOfYear + previousState.savingsTaxExemptEndOfYear + previousState.savingsTaxableEndOfYear + previousState.taxedCapital;
         const projectedIncome = savingsEndOfYear * (this.config.retirementWithdrawalRate / 100)
         this.updateCurrentState({
             ...previousState,
             savingsEndOfYear: savingsEndOfYear,
             retirementIncomeProjected: projectedIncome,
         })
+    }
+
+    override getCommands(): Command[] {
+        const commands: Command[] = []
+        this.managers.debtManagers.forEach((manager) => commands.push(...manager.getCommands()))
+        this.managers.expenseManagers.forEach((manager) => commands.push(...manager.getCommands()))
+        this.managers.cashReserveManagers.forEach((manager) => commands.push(...manager.getCommands()))
+        this.managers.taxDeferredInvestmentManagers.forEach((manager) => commands.push(...manager.getCommands()))
+        this.managers.rothIraInvestmentManagers.forEach((manager) => commands.push(...manager.getCommands()))
+        this.managers.iraInvestmentManagers.forEach((manager) => commands.push(...manager.getCommands()))
+        this.managers.brokerageInvestmentManagers.forEach((manager) => commands.push(...manager.getCommands()))
+        return commands;
     }
 
     simulate(commands?: Command[], maxIterations: number = 60): PlanState[] {
