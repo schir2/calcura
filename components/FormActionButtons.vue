@@ -1,4 +1,5 @@
 <template>
+  {{errors}}
   <n-button-group v-if="mode !== 'view'">
     <n-button secondary round v-if="mode ==='edit'" type="success" :disabled="hasErrors" @click="emit('update')">
       <template #icon>
@@ -27,11 +28,13 @@
   </n-button-group>
 </template>
 <script lang="ts" setup>
+
+import type {FormValidationError} from 'naive-ui'
+
 interface Props {
   mode: 'edit' | 'create' | 'view'
-  errors?: Record<string, string>
+  errors?: FormValidationError[]
 }
-
 const props = defineProps<Props>()
 const emit = defineEmits(['update', 'create', 'cancel'])
 const hasErrors = computed(()=> props.errors && Object.keys(props.errors).length > 0)
