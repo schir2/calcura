@@ -1,37 +1,37 @@
 <template>
   <n-card role="dialog" class="max-w-4xl" :bordered="true">
     <template #header>
-      <h3 class="text-2xl">Brokerage Investment: {{ initialValues.name }}</h3>
+      <h3 class="text-2xl">Brokerage Investment: {{ modelRef.name }}</h3>
     </template>
 
     <template #default>
-      <n-form ref="formRef" :model="model" :rules="rules">
+      <n-form ref="formRef" :model="modelRef" :rules="rules">
         <section class="grid grid-cols-3 gap-3">
           <n-form-item label="Name" path="name">
-            <n-input v-model:value="model.name" placeholder="Enter investment name"/>
+            <n-input v-model:value="modelRef.name" placeholder="Enter investment name"/>
           </n-form-item>
 
           <n-form-item label="Initial Balance" path="initialBalance">
-            <n-input-number class="w-full" v-model:value="model.initialBalance" placeholder="Enter initial balance"/>
+            <n-input-number class="w-full" v-model:value="modelRef.initialBalance" placeholder="Enter initial balance"/>
           </n-form-item>
 
           <n-form-item label="Growth Rate (%)" path="growthRate">
-            <n-input-number class="w-full" v-model:value="model.growthRate" placeholder="Enter growth rate"/>
+            <n-input-number class="w-full" v-model:value="modelRef.growthRate" placeholder="Enter growth rate"/>
           </n-form-item>
         </section>
         <n-form-item label="Contribution Strategy" path="contributionStrategy">
           <div class="grid grid-cols-3 gap-3 w-full">
-            <CommonRadioCard v-model="model.contributionStrategy" :value="BrokerageContributionStrategy.Fixed" title="Fixed">
+            <CommonRadioCard v-model="modelRef.contributionStrategy" :value="BrokerageContributionStrategy.Fixed" title="Fixed">
               <n-form-item label="Fixed Contribution Amount" path="contributionFixedAmount">
-                <n-input-number class="w-full" v-model:value="model.contributionFixedAmount" placeholder="Enter fixed amount"/>
+                <n-input-number class="w-full" v-model:value="modelRef.contributionFixedAmount" placeholder="Enter fixed amount"/>
               </n-form-item>
             </CommonRadioCard>
-            <CommonRadioCard v-model="model.contributionStrategy" :value="BrokerageContributionStrategy.PercentageOfIncome" title="Percentage of Income">
+            <CommonRadioCard v-model="modelRef.contributionStrategy" :value="BrokerageContributionStrategy.PercentageOfIncome" title="Percentage of Income">
               <n-form-item label="Contribution Percentage (%)" path="contributionPercentage">
-                <n-input-number class="w-full" v-model:value="model.contributionPercentage" placeholder="Enter percentage"/>
+                <n-input-number class="w-full" v-model:value="modelRef.contributionPercentage" placeholder="Enter percentage"/>
               </n-form-item>
             </CommonRadioCard>
-            <CommonRadioCard v-model="model.contributionStrategy" :value="BrokerageContributionStrategy.Max" title="Max Out"/>
+            <CommonRadioCard v-model="modelRef.contributionStrategy" :value="BrokerageContributionStrategy.Max" title="Max Out"/>
           </div>
         </n-form-item>
 
@@ -59,13 +59,13 @@ interface Props {
 const props = defineProps<Props>();
 const emit = defineEmits(["update", "cancel", "create"]);
 
-const model = ref<BrokerageInvestmentPartial>(props.initialValues)
+const modelRef = ref<BrokerageInvestmentPartial>(props.initialValues)
 
 const formRef = ref<FormInst | null>(null);
 
 function validateContributionFixedAmount(rule: FormItemRule, value: number | undefined) {
   console.log(value)
-  if (model.value.contributionStrategy === BrokerageContributionStrategy.Fixed) {
+  if (modelRef.value.contributionStrategy === BrokerageContributionStrategy.Fixed) {
     if (value === null || value === undefined) {
       return false
     }
@@ -73,8 +73,8 @@ function validateContributionFixedAmount(rule: FormItemRule, value: number | und
 }
 
 function validateContributionPercentage(rule: FormItemRule, value: number | undefined) {
-  console.log(value, model.value.contributionStrategy)
-  if (model.value.contributionStrategy === BrokerageContributionStrategy.PercentageOfIncome) {
+  console.log(value, modelRef.value.contributionStrategy)
+  if (modelRef.value.contributionStrategy === BrokerageContributionStrategy.PercentageOfIncome) {
     if (value === null || value === undefined) {
       return false
     }
@@ -114,7 +114,7 @@ const rules: FormRules = {
 function handleCreate() {
   formRef.value?.validate((errors) => {
     if (!errors) {
-      emit('create', model.value)
+      emit('create', modelRef.value)
     }
   })
 
@@ -127,7 +127,7 @@ function handleCancel() {
 function handleUpdate() {
   formRef.value?.validate((errors) => {
     if (!errors) {
-      emit('update', model.value)
+      emit('update', modelRef.value)
     }
   })
 }
