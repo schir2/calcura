@@ -1,5 +1,5 @@
 <template>
-  <n-card role="dialog" class="max-w-6xl" :bordered="true">
+  <n-card role="dialog" class="max-w-4xl" :bordered="true">
     <template #header>
       <h3 class="text-2xl">Brokerage Investment: {{ initialValues.name }}</h3>
     </template>
@@ -19,19 +19,21 @@
             <n-input-number class="w-full" v-model:value="model.growthRate" placeholder="Enter growth rate"/>
           </n-form-item>
         </section>
-          <n-form-item class="grid grid-cols-3 gap-3" label="Contribution Strategy" path="contributionStrategy">
+        <n-form-item label="Contribution Strategy" path="contributionStrategy">
+          <div class="grid grid-cols-3 gap-3 w-full">
             <CommonRadioCard v-model="model.contributionStrategy" :value="BrokerageContributionStrategy.Fixed" title="Fixed">
               <n-form-item label="Fixed Contribution Amount" path="contributionFixedAmount">
-                <n-input-number v-model:value="model.contributionFixedAmount" placeholder="Enter fixed amount"/>
+                <n-input-number class="w-full" v-model:value="model.contributionFixedAmount" placeholder="Enter fixed amount"/>
               </n-form-item>
             </CommonRadioCard>
             <CommonRadioCard v-model="model.contributionStrategy" :value="BrokerageContributionStrategy.PercentageOfIncome" title="Percentage of Income">
               <n-form-item label="Contribution Percentage (%)" path="contributionPercentage">
-                <n-input-number v-model:value="model.contributionPercentage" placeholder="Enter percentage"/>
+                <n-input-number class="w-full" v-model:value="model.contributionPercentage" placeholder="Enter percentage"/>
               </n-form-item>
             </CommonRadioCard>
             <CommonRadioCard v-model="model.contributionStrategy" :value="BrokerageContributionStrategy.Max" title="Max Out"/>
-          </n-form-item>
+          </div>
+        </n-form-item>
 
       </n-form>
     </template>
@@ -44,7 +46,7 @@
 
 <script lang="ts" setup>
 import {BrokerageContributionStrategy, type BrokerageInvestment, type BrokerageInvestmentPartial} from "~/models/brokerageInvestment/BrokerageInvestment";
-import type {FormInst, FormRules} from "naive-ui";
+import type {FormInst, FormItemRule, FormRules} from "naive-ui";
 import {useMessage} from "naive-ui";
 
 const message = useMessage()
@@ -61,8 +63,27 @@ const model = ref<BrokerageInvestmentPartial>(props.initialValues)
 
 const formRef = ref<FormInst | null>(null);
 
+function validateContributionFixedAmount(rule: FormItemRule, value: number | undefined) {
+  console.log(value)
+  if (model.value.contributionStrategy === BrokerageContributionStrategy.Fixed) {
+    if (value === null || value === undefined) {
+      return false
+    }
+  }
+}
+
+function validateContributionPercentage(rule: FormItemRule, value: number | undefined) {
+  console.log(value, model.value.contributionStrategy)
+  if (model.value.contributionStrategy === BrokerageContributionStrategy.PercentageOfIncome) {
+    if (value === null || value === undefined) {
+      return false
+    }
+  }
+}
+
 const rules: FormRules = {
   name: [
+    {required: true, message: "Name is required", trigger: ['blur', 'change']},
     {min: 3, message: "Investment name must be at least 3 characters long", trigger: ["blur", "change"]},
     {max: 50, message: "Investment name must be at most 50 characters long", trigger: ["blur", "change"]}
   ],
@@ -79,17 +100,23 @@ const rules: FormRules = {
     {required: true, message: "Contribution strategy is required", trigger: ["blur", "change"]}
   ],
   contributionPercentage: [
+    {validator: validateContributionPercentage, message: 'Contribution Percentage is required when Percentage of Income Contribution strategy is selected', trigger: ['blur', 'change']},
     {type: "number", min: 0, message: "Contribution percentage cannot be negative", trigger: ["blur", "change"]},
     {type: "number", max: 100, message: "Contribution percentage must be less than or equal to 100", trigger: ["blur", "change"]}
   ],
   contributionFixedAmount: [
+    {validator: validateContributionFixedAmount, message: 'Fixed contribution amount is required when Fixed Contribution strategy is selected', trigger: ['blur', 'change']},
     {type: 'number', message: "Fixed contribution amount is required", trigger: ["blur", "change"]},
     {type: "number", min: 0, message: "Contribution amount cannot be negative", trigger: ["blur", "change"]}
   ],
 };
 
 function handleCreate() {
-  emit('create', model.value)
+  formRef.value?.validate((errors) => {
+    if (!errors) {
+      emit('create', model.value)
+    }
+  })
 
 }
 
