@@ -14,7 +14,7 @@
         </li>
         <li>
           <n-button quaternary><template #icon><Icon name="mdi:cash"/></template>
-            <NuxtLink to="/cashReserves">CashReserve</NuxtLink>
+            <NuxtLink to="/cashReserves">Reserves</NuxtLink>
           </n-button>
         </li>
         <li>
@@ -30,22 +30,22 @@
         <n-divider/>
         <li>
           <n-button quaternary><template #icon><Icon name="mdi:sack-outline"/></template>
-            <NuxtLink to="/brokerageInvestments">Brokerage Investments</NuxtLink>
+            <NuxtLink to="/brokerageInvestments">Brokerage</NuxtLink>
           </n-button>
         </li>
         <li>
           <n-button quaternary><template #icon><Icon name="mdi-sack-outline"/></template>
-            <NuxtLink to="/rothIraInvestments">Roth IRA Investments</NuxtLink>
+            <NuxtLink to="/rothIraInvestments">Roth IRA</NuxtLink>
           </n-button>
         </li>
         <li>
           <n-button quaternary><template #icon><Icon name="mdi-sack-outline"/></template>
-            <NuxtLink to="/iraInvestments">IRA Investments</NuxtLink>
+            <NuxtLink to="/iraInvestments">IRA</NuxtLink>
           </n-button>
         </li>
         <li>
           <n-button quaternary><template #icon><Icon name="mdi:sack-outline"/></template>
-            <NuxtLink to="/taxDeferredInvestments">Tax Deferred Investments</NuxtLink>
+            <NuxtLink to="/taxDeferredInvestments">Tax Deferred</NuxtLink>
           </n-button>
         </li>
       </ul>
