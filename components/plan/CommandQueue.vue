@@ -1,16 +1,13 @@
 <template>
 
-  <VueDraggableNext v-if="list"
-                    class="dragArea list-group w-full" :list="list" @change="onChange">
+  <VueDraggableNext v-if="list" class="dragArea list-group w-full" :list="list" @change="onChange">
     <p
         class="list-group-item bg-skin-surface m-1 p-3 rounded-md text-center cursor-pointer flex justify-between items-center"
         v-for="element in list"
         :key="element.name"
     >
-          <span class="flex items-center gap-3">
-          <Icon class="text-2xl" name="mdi:drag"/>
-      {{ element.name }}
-          </span>
+      <span class="flex items-center gap-3">
+        <Icon class="text-2xl text-skin-base/20" name="mdi:drag"/>{{ element.name }}</span>
       <n-tag>{{ element.label }}</n-tag>
     </p>
   </VueDraggableNext>
