@@ -81,29 +81,29 @@
           </n-collapse-item>
         </n-collapse>
         <section class="grid grid-cols-3 gap-3">
-          <n-form-item path="name" :label="taxDeferredInvestmentForm.name.label">
-            <n-input v-model:value="modelRef.name"/>
+          <n-form-item path="name" label="Name">
+            <n-input v-model:value="modelRef.name" placeholder="ABC Corp 401K"/>
           </n-form-item>
-          <n-form-item path="initialBalance" :label="taxDeferredInvestmentForm.initialBalance.label"
+          <n-form-item path="initialBalance" label="Initial Balance"
           >
-            <n-input-number class="w-full" v-model:value="modelRef.initialBalance"/>
+            <n-input-number class="w-full" v-model:value="modelRef.initialBalance" placeholder="Amount currently saved"/>
           </n-form-item>
-          <n-form-item path="growthRate" :label="taxDeferredInvestmentForm.growthRate.label">
-            <n-input-number class="w-full" v-model:value="modelRef.growthRate"/>
+          <n-form-item path="growthRate" label="Annual Growth Rate">
+            <n-input-number class="w-full" v-model:value="modelRef.growthRate" placeholder="Annual Growth Rate"/>
           </n-form-item>
         </section>
 
         <IncomeSelector :incomes="incomes" v-model="modelRef.income"/>
 
         <n-form-item path="electiveContributionStrategy"
-                     :label="taxDeferredInvestmentForm.electiveContributionStrategy.label"
+                     label="Contribution Strategy"
         >
           <div class="grid grid-cols-4 gap-3">
             <CommonRadioCard v-model="modelRef.electiveContributionStrategy"
                              :value="TaxDeferredContributionStrategy.Fixed"
                              title="Fixed Payment">
               <n-form-item path="contributionFixedAmount"
-                           :label="taxDeferredInvestmentForm.electiveContributionFixedAmount.label"
+                           label="Fixed Contribution Amount"
               >
                 <n-input-number class="w-full" v-model:value="modelRef.electiveContributionFixedAmount" :precision="2"
                                 :min="0"
@@ -138,7 +138,7 @@
             <CommonRadioCard v-model="modelRef.electiveContributionStrategy"
                              :value="TaxDeferredContributionStrategy.PercentageOfIncome" title="Percentage of Income">
               <n-form-item path="contributionPercentage"
-                           :label="taxDeferredInvestmentForm.electiveContributionPercentage.label"
+                           label="Contribution Percentage"
               >
                 <n-input-number class="w-full" v-model:value="modelRef.electiveContributionPercentage" :precision="2">
                   <template #prefix>%</template>
@@ -226,13 +226,13 @@
         </n-form-item>
 
         <n-form-item path="employerContributionStrategy"
-                     :label="taxDeferredInvestmentForm.employerContributionStrategy.label"
+                     label="Employer Contribution Strategy"
         >
           <div class="grid grid-cols-3 gap-3">
             <CommonRadioCard v-model="modelRef.employerContributionStrategy" :value="EmployerContributionStrategy.Fixed"
                              title="Fixed Payment">
               <n-form-item path="contributionFixedAmount"
-                           :label="taxDeferredInvestmentForm.employerContributionFixedAmount.label"
+                           label="Fixed Contribution Amount"
               >
                 <n-input-number class="w-full" v-model:value="modelRef.employerContributionFixedAmount" :precision="2"
                                 :min="0"
@@ -269,12 +269,12 @@
                              title="Percentage of Contribution">
               <p class="grid grid-cols-2 gap-3">
                 <n-form-item path="employerMatchPercentage"
-                             :label="taxDeferredInvestmentForm.employerMatchPercentage.label"
+                             label="Employer Match Percentage"
                 >
                   <n-input-number v-model:value="modelRef.employerMatchPercentage"/>
                 </n-form-item>
                 <n-form-item path="employerMatchPercentageLimit"
-                             :label="taxDeferredInvestmentForm.employerMatchPercentageLimit.label"
+                             label="Employer Match Percentage Limit"
                 >
                   <n-input-number v-model:value="modelRef.employerMatchPercentageLimit"/>
                 </n-form-item>
@@ -306,7 +306,7 @@
                              :value="EmployerContributionStrategy.PercentageOfCompensation"
                              title="Percentage of Compensation">
               <n-form-item path="employerCompensationMatchPercentage"
-                           :label="taxDeferredInvestmentForm.employerCompensationMatchPercentage.label"
+                           label="Employer Compensation MatchPercentage"
               >
                 <n-input-number v-model:value="modelRef.employerCompensationMatchPercentage"/>
               </n-form-item>
@@ -348,7 +348,6 @@
 </template>
 
 <script lang="ts" setup>
-import {taxDeferredInvestmentForm} from "~/forms/taxDeferredInvestmentForm";
 import {
   EmployerContributionStrategy,
   TaxDeferredContributionStrategy,
