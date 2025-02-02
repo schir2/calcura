@@ -1,6 +1,6 @@
 <template>
   <n-modal v-model:show="showModal">
-    <CashReserveForm :cashReservePartial="cashReserve" mode="edit"
+    <CashReserveForm :initialValues="cashReserve" mode="edit"
                  @delete="handleDelete"
                  @create="handleCreate"
                  @update="handleUpdate"

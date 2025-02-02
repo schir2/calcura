@@ -1,6 +1,6 @@
 <template>
   <n-modal v-model:show="showModal">
-    <IncomeForm :incomePartial="income" mode="edit"
+    <IncomeForm :initialValues="income" mode="edit"
                 @delete="handleDelete"
                 @create="handleCreate"
                 @update="handleUpdate"

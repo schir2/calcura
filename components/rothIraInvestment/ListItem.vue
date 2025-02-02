@@ -1,6 +1,6 @@
 <template>
   <n-modal v-model:show="showModal">
-    <RothIraInvestmentForm :rothIraInvestmentPartial="rothIraInvestment" mode="edit"
+    <RothIraInvestmentForm :initialValues="rothIraInvestment" mode="edit"
                            @delete="handleDelete"
                            @create="handleCreate"
                            @update="handleUpdate"

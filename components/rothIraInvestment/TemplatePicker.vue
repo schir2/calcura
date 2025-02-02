@@ -1,7 +1,7 @@
 <template>
   <n-thing>
     <n-modal v-model:show="showModal">
-      <RothIraInvestmentForm :rothIraInvestmentPartial="activeRothIraInvestmentPartial" mode="create"
+      <RothIraInvestmentForm :initialValues="activeRothIraInvestmentPartial" mode="create"
                                @create="handleCreate"
                                @cancel="handleClose"
       />

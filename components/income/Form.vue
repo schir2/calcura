@@ -1,40 +1,48 @@
 <template>
   <n-card role="dialog" class="max-w-2xl" :bordered="true">
     <template #header>
-      <h3 class="text-2xl">Income: {{ incomePartial.name }}</h3>
+      <h3 class="text-2xl">Income: {{ initialValues.name }}</h3>
     </template>
 
     <template #default>
-      <n-form>
+      <n-form ref="formRef" :model="modelRef" :rules="rules">
         <section class="grid grid-cols-3 gap-3">
+          <n-form-item path="name" label="Income Name">
+            <n-input v-model:value="modelRef.name" placeholder="Enter income name"/>
+          </n-form-item>
 
-          <n-form-item path="name" v-bind="nameProps" :label="incomeForm.name.label" required>
-            <n-input v-model:value="name"/>
+          <n-form-item path="grossIncome" label="Gross Income">
+            <n-input-number v-model:value="modelRef.grossIncome" placeholder="Enter gross income amount"/>
           </n-form-item>
-          <n-form-item path="grossIncome" :label="incomeForm.grossIncome.label" v-bind="grossIncomeProps">
-            <n-input-number v-model:value="grossIncome"/>
-          </n-form-item>
-          <n-form-item path="growthRate" :label="incomeForm.growthRate.label" v-bind="growthRateProps">
-              <n-input-number v-model:value="growthRate">
-                <template #prefix>
-                  <n-tag size="small">%</n-tag>
-                </template>
-              </n-input-number>
+
+          <n-form-item path="growthRate" label="Growth Rate (%)">
+            <n-space vertical class="w-full">
+              <n-input-number class="w-full" v-model:value="modelRef.growthRate"/>
+            </n-space>
           </n-form-item>
         </section>
 
-        <n-form-item path="incomeType" :label="incomeForm.incomeType.label" v-bind="incomeTypeProps">
-          <n-radio-group v-model:value="incomeType">
-            <n-radio-button v-for="option in incomeForm.incomeType.options" :key="option.value" :label="option.label"
-                            :value="option.value"/>
+        <n-form-item path="frequency" label="Frequency">
+          <n-radio-group v-model:value="modelRef.frequency">
+            <n-radio-button v-for="option in [
+              { label: 'Weekly', value: 'weekly' },
+              { label: 'Biweekly', value: 'biweekly' },
+              { label: 'Monthly', value: 'monthly' },
+              { label: 'Quarterly', value: 'quarterly' },
+              { label: 'Annual', value: 'annual' }
+            ]" :key="option.value" :label="option.label" :value="option.value"/>
           </n-radio-group>
         </n-form-item>
 
-        <n-form-item path="frequency" :label="incomeForm.frequency.label" v-bind="frequencyProps">
-          <n-radio-group v-model:value="frequency">
-            <n-radio-button v-for="option in incomeForm.frequency.options" :key="option.value" :label="option.label" :value="option.value"/>
-          </n-radio-group>
-        </n-form-item>
+        <section class="grid grid-cols-4 gap-3">
+          <n-form-item path="incomeType" label="Income Type">
+            <n-radio-group v-model:value="modelRef.incomeType">
+              <n-radio-button v-for="option in [
+                { label: 'Ordinary', value: 'ordinary' }
+              ]" :key="option.value" :label="option.label" :value="option.value"/>
+            </n-radio-group>
+          </n-form-item>
+        </section>
       </n-form>
       <Bar v-if="data" id="my-chart-id"
            :options="chartOptions"
@@ -42,7 +50,7 @@
       ></Bar>
     </template>
     <template #action>
-      <FormActionButtons :mode="mode" :errors="errors" @update="handleUpdate" @create="handleCreate"
+      <FormActionButtons :mode="mode" @update="handleUpdate" @create="handleCreate"
                          @cancel="handleCancel"/>
     </template>
 
@@ -51,32 +59,21 @@
 
 <script lang="ts" setup>
 import {Bar} from 'vue-chartjs'
-import {incomeForm, incomeFormSchema} from "~/forms/incomeForm";
-import {useForm} from "vee-validate";
 import type {Income} from "~/models/income/Income";
 import {BarElement, CategoryScale, Chart as ChartJS, Legend, LinearScale, Title, Tooltip} from 'chart.js'
-import {naiveConfig} from "~/utils/schemaUtils";
 import {getAnnualAmount} from "~/utils";
 import type {Frequency} from "~/models/expense/Expense";
+import {useIncomeValidation} from "~/composables/validators/useIncomeValidator";
 
 interface Props {
-  incomePartial: Partial<Income>;
+  initialValues: Partial<Income>;
   mode: 'create' | 'edit'
 }
 
 const props = defineProps<Props>();
 const emit = defineEmits(["update", "cancel", "create"]);
-
-const {defineField, values, errors, handleSubmit, meta} = useForm({
-  validationSchema: incomeFormSchema,
-  initialValues: props.incomePartial,
-});
-
-const [name, nameProps] = defineField('name', naiveConfig);
-const [frequency, frequencyProps] = defineField('frequency', naiveConfig);
-const [grossIncome, grossIncomeProps] = defineField('grossIncome', naiveConfig);
-const [growthRate, growthRateProps] = defineField('growthRate', naiveConfig);
-const [incomeType, incomeTypeProps] = defineField('incomeType', naiveConfig);
+const { formRef, modelRef, rules, handleCreate, handleUpdate, handleCancel } =
+    useCrudFormWithValidation(props.initialValues, emit, useIncomeValidation);
 
 ChartJS.register(Title, Tooltip, Legend, BarElement, CategoryScale, LinearScale)
 
@@ -92,7 +89,7 @@ const chartData = computed(() => ({
     label: 'Projection',
 
     backgroundColor: "#1355FF",
-    data: generateGrowthData(getAnnualAmount(grossIncome.value ?? 0, frequency.value as Frequency), growthRate.value),
+    data: generateGrowthData(getAnnualAmount(modelRef.value.grossIncome ?? 0, modelRef.value.frequency as Frequency), modelRef.value.growthRate),
   }]
 }));
 
@@ -104,18 +101,5 @@ function generateGrowthData(principal: number, growthRate: number = 0) {
     data[i] = data[i - 1] * growthMultiplier
   }
   return data
-}
-
-function handleCreate() {
-  emit('create', values)
-
-}
-
-function handleCancel() {
-  emit('cancel')
-}
-
-function handleUpdate() {
-  emit('update', values)
 }
 </script>

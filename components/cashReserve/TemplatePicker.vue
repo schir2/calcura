@@ -1,7 +1,7 @@
 <template>
   <n-thing>
     <n-modal v-model:show="showModal">
-      <CashReserveForm :cashReservePartial="activeCashReservePartial" mode="create"
+      <CashReserveForm :initialValues="activeCashReservePartial" mode="create"
                        @create="handleCreate"
                        @cancel="handleClose"
       />

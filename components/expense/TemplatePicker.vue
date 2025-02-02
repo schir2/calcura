@@ -1,7 +1,7 @@
 <template>
   <n-thing>
     <n-modal v-model:show="showModal">
-      <ExpenseForm :expensePartial="activeExpensePartial" mode="create"
+      <ExpenseForm :initialValues="activeExpensePartial" mode="create"
                    @create="handleCreate"
                    @cancel="handleClose"
       />

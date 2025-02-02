@@ -1,6 +1,6 @@
 <template>
   <n-modal v-model:show="showModal">
-    <ExpenseForm :expensePartial="expense" mode="edit"
+    <ExpenseForm :initialValues="expense" mode="edit"
                  @delete="handleDelete"
                  @create="handleCreate"
                  @update="handleUpdate"

@@ -1,7 +1,7 @@
 <template>
   <n-thing>
     <n-modal v-model:show="showModal">
-      <IncomeForm :incomePartial="activeIncomePartial" mode="create"
+      <IncomeForm :initialValues="activeIncomePartial" mode="create"
                   @create="handleCreate"
                   @cancel="handleClose"
       />

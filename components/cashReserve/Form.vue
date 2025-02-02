@@ -1,69 +1,61 @@
 <template>
-  <n-card role="dialog" class="max-w-2xl" :bordered="true">
+  <n-card role="dialog" class="max-w-6xl" :bordered="true">
     <template #header>
-      <h3 class="text-2xl">CashReserve: {{ cashReservePartial.name }}</h3>
+      <h3 class="text-2xl">Cash Reserve: {{ modelRef.name }}</h3>
     </template>
 
     <template #default>
-      <n-form>
-        <n-form-item path="name" :label="cashReserveForm.name.label" v-bind="formFields.name.props">
-          <n-input v-model:value="formFields.name.value"/>
+      <n-form ref="formRef" :model="modelRef" :rules="rules">
+        <section class="grid grid-cols-3 gap-3">
+          <n-form-item path="name" label="Cash Reserve Name">
+            <n-input v-model:value="modelRef.name" placeholder="Enter cash reserve name"/>
+          </n-form-item>
+
+          <n-form-item path="initialAmount" label="Initial Amount">
+            <n-input-number class="w-full" v-model:value="modelRef.initialAmount"
+                            placeholder="Enter the amount currently in your cash reserve"/>
+          </n-form-item>
+
+          <n-form-item path="cashReserveStrategy" label="Cash Reserve Strategy">
+            <n-select v-model:value="modelRef.cashReserveStrategy" :options="[
+            { label: 'Fixed Cash Reserve', value: 'fixed' },
+            { label: 'Variable Cash Reserve', value: 'variable' }
+          ]" placeholder="Select cash reserve strategy"/>
+          </n-form-item>
+        </section>
+
+        <n-form-item path="reserveAmount" label="Reserve Amount">
+          <n-input-number class="w-full" v-model:value="modelRef.reserveAmount" :precision="2"
+                          placeholder="Enter reserve amount"/>
         </n-form-item>
-        <n-form-item path="initialAmount" :label="cashReserveForm.initialAmount.label" v-bind="formFields.initialAmount.props">
-          <n-input-number  v-model:value="formFields.initialAmount.value"/>
-        </n-form-item>
-        <n-form-item path="cashReserveStrategy" :label="cashReserveForm.cashReserveStrategy.label"  v-bind="formFields.cashReserveStrategy.props">
-          <n-radio-group v-model:value="formFields.cashReserveStrategy.value">
-            <n-radio-button v-for="option in cashReserveForm.cashReserveStrategy.options" :key="option.value" :value="option.value" :label="option.label" />
-          </n-radio-group>
-        </n-form-item>
-        <n-form-item path="reserveAmount" :label="cashReserveForm.reserveAmount.label" v-bind="formFields.reserveAmount.props">
-          <n-input-number v-model:value="formFields.reserveAmount.value"/>
-        </n-form-item>
-        <n-form-item path="reserveMonths" :label="cashReserveForm.reserveMonths.label" v-bind="formFields.reserveMonths.props">
-          <n-input-number v-model:value="formFields.reserveMonths.value"/>
+
+        <n-form-item path="reserveMonths" label="Reserve Months">
+          <n-input-number class="w-full" v-model:value="modelRef.reserveMonths" :precision="2"
+                          placeholder="Enter reserve months"/>
         </n-form-item>
       </n-form>
     </template>
 
     <template #action>
-      <FormActionButtons :mode="mode" @update="handleUpdate" @create="handleCreate" @cancel="handleCancel"/>
+      <FormActionButtons :mode="mode" @update="handleUpdate"
+                         @create="handleCreate" @cancel="handleCancel"/>
     </template>
   </n-card>
 </template>
 
 <script lang="ts" setup>
-import {cashReserveForm, cashReserveFormSchema} from "~/forms/cashReserveForm";
-import {useForm} from "vee-validate";
 import type {CashReserve} from "~/models/cashReserve/CashReserve";
-import {useFieldHelpers} from "~/composables/useFieldHelpers";
 
 interface Props {
-  cashReservePartial: Partial<CashReserve>;
+  initialValues: Partial<CashReserve>;
   mode: 'create' | 'edit'
 }
 
 const props = defineProps<Props>();
 const emit = defineEmits(["update", "cancel", "create"]);
 
-const {defineField, values, errors, handleSubmit, meta} = useForm({
-  validationSchema: cashReserveFormSchema,
-  initialValues: props.cashReservePartial,
-});
-
-const formFields = ref(useFieldHelpers(cashReserveForm, defineField))
+const {formRef, modelRef, rules, handleCreate, handleUpdate, handleCancel} =
+    useCrudFormWithValidation(props.initialValues, emit, useCashReserveValidation);
 
 
-function handleCreate() {
-  emit('create', values)
-
-}
-
-function handleCancel() {
-  emit('cancel')
-}
-
-function handleUpdate() {
-  emit('update', values)
-}
 </script>
