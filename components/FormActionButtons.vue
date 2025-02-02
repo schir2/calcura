@@ -1,5 +1,4 @@
 <template>
-  {{errors}}
   <n-button-group v-if="mode !== 'view'">
     <n-button secondary round v-if="mode ==='edit'" type="success" :disabled="hasErrors" @click="emit('update')">
       <template #icon>

@@ -1,7 +1,7 @@
 <template>
   <n-thing>
     <n-modal v-model:show="showModal">
-      <PlanForm :planPartial="activePlanPartial" mode="create"
+      <PlanForm :initialValues="activePlanPartial" mode="create"
                 @create="handleCreate"
                 @cancel="handleClose"
       />

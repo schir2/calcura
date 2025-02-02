@@ -21,17 +21,22 @@
         </section>
         <n-form-item label="Contribution Strategy" path="contributionStrategy">
           <div class="grid grid-cols-3 gap-3 w-full">
-            <CommonRadioCard v-model="modelRef.contributionStrategy" :value="BrokerageContributionStrategy.Fixed" title="Fixed">
+            <CommonRadioCard v-model="modelRef.contributionStrategy" :value="BrokerageContributionStrategy.Fixed"
+                             title="Fixed">
               <n-form-item label="Fixed Contribution Amount" path="contributionFixedAmount">
-                <n-input-number class="w-full" v-model:value="modelRef.contributionFixedAmount" placeholder="Enter fixed amount"/>
+                <n-input-number class="w-full" v-model:value="modelRef.contributionFixedAmount"
+                                placeholder="Enter fixed amount"/>
               </n-form-item>
             </CommonRadioCard>
-            <CommonRadioCard v-model="modelRef.contributionStrategy" :value="BrokerageContributionStrategy.PercentageOfIncome" title="Percentage of Income">
+            <CommonRadioCard v-model="modelRef.contributionStrategy"
+                             :value="BrokerageContributionStrategy.PercentageOfIncome" title="Percentage of Income">
               <n-form-item label="Contribution Percentage (%)" path="contributionPercentage">
-                <n-input-number class="w-full" v-model:value="modelRef.contributionPercentage" placeholder="Enter percentage"/>
+                <n-input-number class="w-full" v-model:value="modelRef.contributionPercentage"
+                                placeholder="Enter percentage"/>
               </n-form-item>
             </CommonRadioCard>
-            <CommonRadioCard v-model="modelRef.contributionStrategy" :value="BrokerageContributionStrategy.Max" title="Max Out"/>
+            <CommonRadioCard v-model="modelRef.contributionStrategy" :value="BrokerageContributionStrategy.Max"
+                             title="Max Out"/>
           </div>
         </n-form-item>
 
@@ -45,92 +50,25 @@
 </template>
 
 <script lang="ts" setup>
-import {BrokerageContributionStrategy, type BrokerageInvestment, type BrokerageInvestmentPartial} from "~/models/brokerageInvestment/BrokerageInvestment";
-import type {FormInst, FormItemRule, FormRules} from "naive-ui";
-import {useMessage} from "naive-ui";
-
-const message = useMessage()
+import {
+  BrokerageContributionStrategy,
+  type BrokerageInvestment,
+  type BrokerageInvestmentPartial
+} from "~/models/brokerageInvestment/BrokerageInvestment";
+import type {FormInst} from "naive-ui";
+import {useBrokerageInvestmentValidator} from "~/composables/validators/useBrokerageInvestmentValidator";
 
 interface Props {
-  initialValues: Partial<BrokerageInvestment | BrokerageInvestmentPartial>;
+  initialValues: Partial<BrokerageInvestment>;
   mode: 'create' | 'edit' | 'view'
 }
 
 const props = defineProps<Props>();
 const emit = defineEmits(["update", "cancel", "create"]);
-
 const modelRef = ref<BrokerageInvestmentPartial>(props.initialValues)
-
 const formRef = ref<FormInst | null>(null);
-
-function validateContributionFixedAmount(rule: FormItemRule, value: number | undefined) {
-  console.log(value)
-  if (modelRef.value.contributionStrategy === BrokerageContributionStrategy.Fixed) {
-    if (value === null || value === undefined) {
-      return false
-    }
-  }
-}
-
-function validateContributionPercentage(rule: FormItemRule, value: number | undefined) {
-  console.log(value, modelRef.value.contributionStrategy)
-  if (modelRef.value.contributionStrategy === BrokerageContributionStrategy.PercentageOfIncome) {
-    if (value === null || value === undefined) {
-      return false
-    }
-  }
-}
-
-const rules: FormRules = {
-  name: [
-    {required: true, message: "Name is required", trigger: ['blur', 'change']},
-    {min: 3, message: "Investment name must be at least 3 characters long", trigger: ["blur", "change"]},
-    {max: 50, message: "Investment name must be at most 50 characters long", trigger: ["blur", "change"]}
-  ],
-  growthRate: [
-    {required: true, type: 'number', message: "Growth rate is required", trigger: ["blur", "change"]},
-    {type: "number", min: 0, message: "Growth rate cannot be negative", trigger: ["blur", "change"]},
-    {type: "number", max: 100, message: "Growth rate must be less than or equal to 100", trigger: ["blur", "change"]}
-  ],
-  initialBalance: [
-    {required: true, type: 'number', message: "Initial balance is required", trigger: ["blur", "change"]},
-    {type: "number", min: 0, message: "Initial balance cannot be negative", trigger: ["blur", "change"]}
-  ],
-  contributionStrategy: [
-    {required: true, message: "Contribution strategy is required", trigger: ["blur", "change"]}
-  ],
-  contributionPercentage: [
-    {validator: validateContributionPercentage, message: 'Contribution Percentage is required when Percentage of Income Contribution strategy is selected', trigger: ['blur', 'change']},
-    {type: "number", min: 0, message: "Contribution percentage cannot be negative", trigger: ["blur", "change"]},
-    {type: "number", max: 100, message: "Contribution percentage must be less than or equal to 100", trigger: ["blur", "change"]}
-  ],
-  contributionFixedAmount: [
-    {validator: validateContributionFixedAmount, message: 'Fixed contribution amount is required when Fixed Contribution strategy is selected', trigger: ['blur', 'change']},
-    {type: 'number', message: "Fixed contribution amount is required", trigger: ["blur", "change"]},
-    {type: "number", min: 0, message: "Contribution amount cannot be negative", trigger: ["blur", "change"]}
-  ],
-};
-
-function handleCreate() {
-  formRef.value?.validate((errors) => {
-    if (!errors) {
-      emit('create', modelRef.value)
-    }
-  })
-
-}
-
-function handleCancel() {
-  emit('cancel')
-}
-
-function handleUpdate() {
-  formRef.value?.validate((errors) => {
-    if (!errors) {
-      emit('update', modelRef.value)
-    }
-  })
-}
+const {handleCreate, handleUpdate, handleCancel} = useCrudForm(emit, formRef, modelRef)
+const {rules} = useBrokerageInvestmentValidator(modelRef)
 
 
 export type BrokerageInvestmentProjection = {

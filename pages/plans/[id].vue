@@ -7,7 +7,7 @@
   </client-only>
   <div v-if="plan" class="col-span-4 space-y-6">
     <n-modal v-model:show="showModal">
-      <PlanForm :planPartial="plan" mode="edit"
+      <PlanForm :initialValues="plan" mode="edit"
                 @update="handleUpdate"
                 @cancel="handleClose"
       />

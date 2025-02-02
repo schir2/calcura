@@ -1,118 +1,143 @@
 <template>
   <n-card role="dialog" class="max-w-6xl" :bordered="true">
     <template #header>
-      <h3 class="text-2xl">Plan {{ planPartial.id }}: {{ planPartial.name }}</h3>
+      <h3 class="text-2xl">Plan {{ initialValues.id }}: {{ initialValues.name }}</h3>
     </template>
     <template #default>
-      <n-form :model="values">
+      <n-form ref="formRef" :model="modelRef" :rules="rules">
         <section id="planBasicInfo" class="grid grid-cols-4 gap-3">
-          <n-form-item path="name" :label="planForm.name.label" v-bind="nameProps">
-            <n-input v-model:value="name"></n-input>
+          <n-form-item path="name" label="Name">
+            <n-input v-model:value="modelRef.name"></n-input>
           </n-form-item>
 
-          <n-form-item path="age" :label="planForm.age.label" v-bind="ageProps">
-            <n-input-number class="w-full" v-model:value="age"/>
+          <n-form-item path="age" label="Age">
+            <n-input-number class="w-full" v-model:value="modelRef.age"/>
           </n-form-item>
 
-          <n-form-item path="year" :label="planForm.year.label" v-bind="yearProps">
-            <n-input-number class="w-full" v-model:value="year"/>
+          <n-form-item path="year" label="Year">
+            <n-input-number class="w-full" v-model:value="modelRef.year"/>
           </n-form-item>
 
-          <n-form-item path="lifeExpectancy" :label="planForm.lifeExpectancy.label" v-bind="lifeExpectancyProps">
-            <n-input-number class="w-full" v-model:value="lifeExpectancy"/>
+          <n-form-item path="lifeExpectancy" label="Life Expectancy">
+            <n-input-number class="w-full" v-model:value="modelRef.lifeExpectancy"/>
           </n-form-item>
         </section>
-        <section id="planGrowthAndInflation">
-          <n-form-item path="inflationRate" :label="planForm.inflationRate.label" v-bind="inflationRateProps">
-            <n-input-number class="w-full" v-model:value="inflationRate"/>
+
+        <section id="planGrowthAndInflation" class="grid grid-cols-4 gap-3">
+          <n-form-item path="inflationRate" label="Inflation Rate">
+            <n-input-number class="w-full" v-model:value="modelRef.inflationRate"/>
           </n-form-item>
-          <n-form-item path="insufficientFundsStrategy" :label="planForm.insufficientFundsStrategy.label" v-bind="insufficientFundsStrategyProps">
-            <n-radio-group v-model:value="insufficientFundsStrategy">
-              <n-radio-button v-for="option in planForm.insufficientFundsStrategy.options" :key="option.value" :label="option.label" :value="option.value"/>
+
+          <n-form-item path="growthRate" label="Growth Rate">
+            <n-input-number class="w-full" v-model:value="modelRef.growthRate"/>
+          </n-form-item>
+
+          <n-form-item path="insufficientFundsStrategy" label="Allow Negative Funds">
+            <n-radio-group v-model:value="modelRef.insufficientFundsStrategy">
+              <n-radio-button v-for="option in insufficientFundsStrategyOptions" :key="option.value"
+                              :label="option.label" :value="option.value"/>
             </n-radio-group>
           </n-form-item>
-          <n-form-item path="growthRate" :label="planForm.growthRate.label" v-bind="growthRateProps">
-            <n-input-number class="w-full" v-model:value="growthRate"/>
-          </n-form-item>
-          <n-form-item path="growthApplicationStrategy" :label="planForm.growthApplicationStrategy.label" v-bind="growthApplicationStrategyProps">
-            <n-radio-group v-model:value="growthApplicationStrategy">
-              <n-radio-button v-for="option in planForm.growthApplicationStrategy.options" :key="option.value" :label="option.label" :value="option.value"/>
+
+          <n-form-item path="growthApplicationStrategy" label="Growth Application Strategy">
+            <n-radio-group v-model:value="modelRef.growthApplicationStrategy">
+              <n-radio-button v-for="option in growthApplicationStrategyOptions" :key="option.value"
+                              :label="option.label" :value="option.value"/>
             </n-radio-group>
           </n-form-item>
         </section>
-        <n-form-item path="taxStrategy" :label="planForm.taxStrategy.label" v-bind="taxStrategyProps">
-          <CommonRadioCard v-model="taxStrategy" :value="IncomeTaxStrategy.Simple" title="Simple">
-            <n-form-item path="taxRate" :label="planForm.taxRate.label" v-bind="taxRateProps">
-              <n-slider v-model:value="taxRate" :marks="sliderMarks"></n-slider>
+
+        <n-form-item path="taxStrategy" label="Tax Strategy">
+          <CommonRadioCard v-model="modelRef.taxStrategy" :value="IncomeTaxStrategy.Simple" title="Simple">
+            <n-form-item path="taxRate" label="Tax Rate (%)">
+              <n-slider v-model:value="modelRef.taxRate" :marks="sliderMarks"></n-slider>
             </n-form-item>
           </CommonRadioCard>
         </n-form-item>
-        <n-form-item path="retirementStrategy" :label="planForm.retirementStrategy.label"
-                     v-bind="retirementStrategyProps">
 
+        <n-form-item path="retirementStrategy" label="Retirement Strategy">
           <div class="grid grid-cols-4 gap-3 w-full">
-
-            <CommonRadioCard v-model="retirementStrategy" :value="RetirementStrategy.Age"
+            <CommonRadioCard v-model="modelRef.retirementStrategy" :value="RetirementStrategy.Age"
                              title="Retire by a certain age">
-              <n-form-item
-                  path="retirementAge" :label="planForm.retirementAge.label" v-bind="retirementAgeProps">
-                <n-input-number class="w-full" v-model:value="retirementAge"/>
+              <n-form-item path="retirementAge" label="Retirement Age">
+                <n-input-number class="w-full" v-model:value="modelRef.retirementAge"/>
               </n-form-item>
             </CommonRadioCard>
 
-            <CommonRadioCard v-model="retirementStrategy" :value="RetirementStrategy.TargetSavings"
+            <CommonRadioCard v-model="modelRef.retirementStrategy" :value="RetirementStrategy.TargetSavings"
                              title="Reach a savings goal">
-              <n-form-item path="retirementSavingsAmount" :label="planForm.retirementSavingsAmount.label" v-bind="retirementSavingsAmountProps">
-                <n-input-number class="w-full" v-model:value="retirementSavingsAmount"/>
+              <n-form-item path="retirementSavingsAmount" label="Retirement Savings Amount">
+                <n-input-number class="w-full" v-model:value="modelRef.retirementSavingsAmount"/>
               </n-form-item>
             </CommonRadioCard>
 
-            <CommonRadioCard v-model="retirementStrategy" :value="RetirementStrategy.DebtFree"
+            <CommonRadioCard v-model="modelRef.retirementStrategy" :value="RetirementStrategy.DebtFree"
                              title="Retire when all debts are paid">
             </CommonRadioCard>
 
-            <CommonRadioCard v-model="retirementStrategy" :value="RetirementStrategy.PercentRule" title="Percent Rule">
-              <n-form-item
-                  path="retirementWithdrawalRate" :label="planForm.retirementWithdrawalRate.label"
-
-                  v-bind="retirementWithdrawalRateProps"
-              >
-                <n-input-number class="w-full" v-model:value="retirementWithdrawalRate"/>
+            <CommonRadioCard v-model="modelRef.retirementStrategy" :value="RetirementStrategy.PercentRule"
+                             title="Percent Rule">
+              <n-form-item path="retirementWithdrawalRate" label="Retirement Withdrawal Rate (%)">
+                <n-input-number class="w-full" v-model:value="modelRef.retirementWithdrawalRate"/>
               </n-form-item>
 
-              <n-form-item path="retirementIncomeGoal" :label="planForm.retirementIncomeGoal.label"
-                           v-bind="retirementIncomeGoalProps">
-                <n-input-number class="w-full" v-model:value="retirementIncomeGoal"/>
+              <n-form-item path="retirementIncomeGoal" label="Retirement Income Goal">
+                <n-input-number class="w-full" v-model:value="modelRef.retirementIncomeGoal"/>
               </n-form-item>
-              <n-form-item path="retirementIncomeAdjustedForInflation" :label="planForm.retirementIncomeAdjustedForInflation.label"
-                           v-bind="retirementIncomeAdjustedForInflationProps">
-                <n-switch class="w-full" v-model:value="retirementIncomeAdjustedForInflation"/>
+
+              <n-form-item path="retirementIncomeAdjustedForInflation"
+                           label="Retirement Income Goal Adjusted For Inflation">
+                <n-switch class="w-full" v-model:value="modelRef.retirementIncomeAdjustedForInflation"/>
               </n-form-item>
             </CommonRadioCard>
           </div>
         </n-form-item>
       </n-form>
-{{ errors}}
+
     </template>
 
     <template #action>
-      <FormActionButtons :mode="mode" @update="handleUpdate" @create="handleCreate" @cancel="handleCancel" :errors="errors"/>
+      <FormActionButtons :mode="mode" @update="handleUpdate" @create="handleCreate" @cancel="handleCancel"/>
     </template>
   </n-card>
 </template>
 <script lang="ts" setup>
-import {planForm, planFormSchema} from "~/forms/planForm";
 import {IncomeTaxStrategy, type Plan, RetirementStrategy} from "~/models/plan/Plan";
-import {useFieldHelpers} from "~/composables/useFieldHelpers";
-import {naiveConfig} from "~/utils/schemaUtils";
+import type {FormInst} from "naive-ui";
+import {usePlanValidator} from "~/composables/validators/usePlanValidator";
 
 interface Props {
-  planPartial: Partial<Plan>;
+  initialValues: Partial<Plan>;
   mode: 'create' | 'edit'
 }
 
-
 const props = defineProps<Props>();
+const formRef = ref<FormInst | null>(null)
+const modelRef = ref(props.initialValues)
+const emit = defineEmits(['create', 'update', 'cancel'])
+const {handleCreate, handleUpdate, handleCancel} = useCrudForm(emit, formRef, modelRef)
+const {rules} = usePlanValidator(modelRef)
+
+
+const insufficientFundsStrategyOptions = [
+  {value: 'none', label: 'No'},
+  {value: 'minimum_only', label: 'Pay Minimums'},
+  {value: 'full', label: 'Allow'},
+]
+
+const growthApplicationStrategyOptions = [
+  {value: 'start', label: 'Start of Year'},
+  {value: 'end', label: 'End of Year'},
+]
+
+const retirementStrategyOptions = [
+  [
+    {label: 'Age', value: 'age'},
+    {label: 'Debt Free', value: 'debt_free'},
+    {label: 'Percent Rule', value: 'percent_rule'},
+    {label: 'Savings Amount', value: 'target_savings'}
+  ]
+]
 
 const taxBrackets = [
   {min: 0, max: 10, label: "Very Low", colorClass: "text-green-500"},
@@ -129,45 +154,5 @@ const sliderMarks = Object.fromEntries(
       `${bracket.max}%`
     ])
 );
-
-const emit = defineEmits(['create', 'update', 'cancel'])
-
-function handleCreate() {
-  emit('create', values)
-
-}
-
-function handleCancel() {
-  emit('cancel')
-}
-
-function handleUpdate() {
-  emit('update', values)
-}
-
-const {defineField, values, errors, handleSubmit, meta} = useForm({
-  validationSchema: planFormSchema,
-  initialValues: props.planPartial
-})
-
-const [name, nameProps] = defineField('name', naiveConfig)
-const [age, ageProps] = defineField('age', naiveConfig)
-const [year, yearProps] = defineField('year', naiveConfig)
-const [inflationRate, inflationRateProps] = defineField('inflationRate', naiveConfig)
-const [growthRate, growthRateProps] = defineField('growthRate', naiveConfig)
-const [insufficientFundsStrategy, insufficientFundsStrategyProps] = defineField('insufficientFundsStrategy', naiveConfig)
-const [growthApplicationStrategy, growthApplicationStrategyProps] = defineField('growthApplicationStrategy', naiveConfig)
-const [taxStrategy, taxStrategyProps] = defineField('taxStrategy', naiveConfig)
-const [taxRate, taxRateProps] = defineField('taxRate', naiveConfig)
-const [lifeExpectancy, lifeExpectancyProps] = defineField('lifeExpectancy', naiveConfig)
-const [retirementStrategy, retirementStrategyProps] = defineField('retirementStrategy', naiveConfig)
-const [retirementWithdrawalRate, retirementWithdrawalRateProps] = defineField('retirementWithdrawalRate', naiveConfig)
-const [retirementIncomeGoal, retirementIncomeGoalProps] = defineField('retirementIncomeGoal', naiveConfig)
-const [retirementIncomeAdjustedForInflation, retirementIncomeAdjustedForInflationProps] = defineField('retirementIncomeAdjustedForInflation', naiveConfig)
-const [retirementAge, retirementAgeProps] = defineField('retirementAge', naiveConfig)
-const [retirementSavingsAmount, retirementSavingsAmountProps] = defineField('retirementSavingsAmount', naiveConfig)
-
-const formFields = ref(useFieldHelpers(planForm, defineField))
-
 
 </script>

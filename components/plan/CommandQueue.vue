@@ -2,7 +2,7 @@
 
   <VueDraggableNext v-if="list" class="dragArea list-group w-full" :list="list" @change="onChange">
     <p
-        class="list-group-item bg-skin-surface m-1 p-3 rounded-md text-center cursor-pointer flex justify-between items-center"
+        class="list-group-item bg-skin-surface m-1 p-3 rounded-md text-center cursor-grab flex justify-between items-center"
         v-for="element in list"
         :key="element.name"
     >

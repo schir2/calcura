@@ -272,12 +272,13 @@ export default class PlanManager extends BaseOrchestrator<Plan, PlanState, Manag
         const currentState = this.getCurrentState()
         const amountPaid = this.requestFunds(amountRequested, FundType.Taxed)
         const shortfall = amountRequested - amountPaid
+        console.log(amountRequested, amountPaid, shortfall)
         this.withdraw(amountPaid, FundType.Taxed)
         this.updateCurrentState({
             ...currentState,
             expensesPaid: currentState.expensesPaid + amountPaid,
             expensesShortfall: currentState.expensesShortfall + shortfall,
-            expensesTotal: currentState.expensesTotal + amountPaid,
+            expensesTotal: currentState.expensesTotal + amountRequested,
             expensesPaidLifetime: currentState.expensesPaidLifetime + amountPaid,
             expensesShortfallLifetime: currentState.expensesShortfallLifetime + shortfall,
         })
@@ -419,6 +420,7 @@ export default class PlanManager extends BaseOrchestrator<Plan, PlanState, Manag
 
     processImplementation(): void {
         const allManagers = this.getAllManagers()
+        this.managers.incomeManagers.forEach((manager) => this.processUnprocessed(manager))
         this.managers.debtManagers.forEach((manager) => this.processUnprocessed(manager))
         this.managers.expenseManagers.forEach((manager) => this.processUnprocessed(manager))
         this.managers.cashReserveManagers.forEach((manager) => this.processUnprocessed(manager))
@@ -426,9 +428,9 @@ export default class PlanManager extends BaseOrchestrator<Plan, PlanState, Manag
         this.managers.rothIraInvestmentManagers.forEach((manager) => this.processUnprocessed(manager))
         this.managers.iraInvestmentManagers.forEach((manager) => this.processUnprocessed(manager))
         this.managers.brokerageInvestmentManagers.forEach((manager) => this.processUnprocessed(manager))
-        allManagers.forEach(manager => {
-            this.processUnprocessed(manager)
-        })
+        // allManagers.forEach(manager => {
+        //     this.processUnprocessed(manager)
+        // })
         const previousState = this.getCurrentState()
 
         const savingsEndOfYear = previousState.savingsTaxDeferredEndOfYear + previousState.savingsTaxExemptEndOfYear + previousState.savingsTaxableEndOfYear + previousState.taxedCapital;
@@ -462,7 +464,6 @@ export default class PlanManager extends BaseOrchestrator<Plan, PlanState, Manag
                 })
             }
             this.process()
-            console.log(this.canRetire())
             if (this.canRetire()) {
                 return this.states
             }
