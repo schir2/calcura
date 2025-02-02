@@ -1,7 +1,7 @@
 <template>
   <n-thing>
     <n-modal v-model:show="showModal">
-      <DebtForm :debtPartial="activeDebtPartial" mode="create"
+      <DebtForm :initialValues="activeDebtPartial" mode="create"
                 @create="handleCreate"
                 @cancel="handleClose"
       />

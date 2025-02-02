@@ -1,6 +1,6 @@
 <template>
   <n-modal v-model:show="showModal">
-    <DebtForm :debtPartial="debt" mode="edit"
+    <DebtForm :initialValues="debt" mode="edit"
                  @delete="handleDelete"
                  @create="handleCreate"
                  @update="handleUpdate"

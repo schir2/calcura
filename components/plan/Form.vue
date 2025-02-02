@@ -1,7 +1,7 @@
 <template>
   <n-card role="dialog" class="max-w-6xl" :bordered="true">
     <template #header>
-      <h3 class="text-2xl">Plan {{ initialValues.id }}: {{ initialValues.name }}</h3>
+      <h3 class="text-2xl">Plan {{ initialValues.id }}: {{ modelRef.name }}</h3>
     </template>
     <template #default>
       <n-form ref="formRef" :model="modelRef" :rules="rules">
@@ -103,7 +103,6 @@
 </template>
 <script lang="ts" setup>
 import {IncomeTaxStrategy, type Plan, RetirementStrategy} from "~/models/plan/Plan";
-import type {FormInst} from "naive-ui";
 import {usePlanValidator} from "~/composables/validators/usePlanValidator";
 
 interface Props {
@@ -112,11 +111,9 @@ interface Props {
 }
 
 const props = defineProps<Props>();
-const formRef = ref<FormInst | null>(null)
-const modelRef = ref(props.initialValues)
 const emit = defineEmits(['create', 'update', 'cancel'])
-const {handleCreate, handleUpdate, handleCancel} = useCrudForm(emit, formRef, modelRef)
-const {rules} = usePlanValidator(modelRef)
+const {formRef, modelRef, rules, handleCreate, handleUpdate, handleCancel} =
+    useCrudFormWithValidation<Plan>(props.initialValues, emit, usePlanValidator);
 
 
 const insufficientFundsStrategyOptions = [
