@@ -1,4 +1,7 @@
-import type {TaxDeferredInvestment} from "~/models/taxDeferredInvestment/TaxDeferredInvestment";
+import {
+    TaxDeferredContributionStrategy,
+    type TaxDeferredInvestment
+} from "~/models/taxDeferredInvestment/TaxDeferredInvestment";
 import type {FormItemRule, FormRules} from "naive-ui";
 
 export function useTaxDeferredInvestmentValidator(modelRef: Ref<Partial<TaxDeferredInvestment>>) {
@@ -16,11 +19,21 @@ export function useTaxDeferredInvestmentValidator(modelRef: Ref<Partial<TaxDefer
         return true;
     }
 
+    function validateIncome(rule: FormItemRule, value: string | undefined) {
+        console.log(value)
+        if (modelRef.value.electiveContributionStrategy === TaxDeferredContributionStrategy.PercentageOfIncome && (value === null || value === undefined)) {
+            return new Error("Income is required for Percentage of Income Contribution Strategy");
+        }
+    }
+
     const rules: FormRules = {
         name: [
             {required: true, message: "Name is required", trigger: ["blur", "change"]},
             {min: 3, message: "Investment name must be at least 3 characters long", trigger: ["blur", "change"]},
             {max: 32, message: "Investment name must be at most 32 characters long", trigger: ["blur", "change"]}
+        ],
+        income: [
+            {validator: validateIncome, trigger: ["blur", "change"]},
         ],
         growthRate: [
             {required: true, type: "number", message: "Growth rate is required", trigger: ["blur", "change"]},

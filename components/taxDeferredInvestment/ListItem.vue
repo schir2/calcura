@@ -10,14 +10,9 @@
   </n-modal>
   <n-card size="small">
     <template #header>
-      <span>{{ taxDeferredInvestment.name }}</span>
-      <NuxtLink :to="{name: 'taxDeferredInvestments-id-Form', params: {id: taxDeferredInvestment.id}}">
-        <n-button circle secondary type="primary" size="small">
-          <template #icon>
-            <Icon name="mdi:open-in-new"/>
-          </template>
-        </n-button>
-      </NuxtLink>
+      <span>{{taxDeferredInvestment.id}} {{ taxDeferredInvestment.name }}</span>
+      <n-tag>{{ taxDeferredInvestment.electiveContributionStrategy }}</n-tag>
+      <n-tag>{{ taxDeferredInvestment.employerContributionStrategy }}</n-tag>
     </template>
     <template #default>
       <ul class="grid grid-cols-5">

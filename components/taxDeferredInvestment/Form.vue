@@ -84,16 +84,17 @@
           <n-form-item path="name" label="Name">
             <n-input v-model:value="modelRef.name" placeholder="ABC Corp 401K"/>
           </n-form-item>
-          <n-form-item path="initialBalance" label="Initial Balance"
-          >
-            <n-input-number class="w-full" v-model:value="modelRef.initialBalance" placeholder="Amount currently saved"/>
+          <n-form-item path="initialBalance" label="Initial Balance">
+            <n-input-number class="w-full" v-model:value="modelRef.initialBalance"
+                            placeholder="Amount currently saved"/>
           </n-form-item>
           <n-form-item path="growthRate" label="Annual Growth Rate">
             <n-input-number class="w-full" v-model:value="modelRef.growthRate" placeholder="Annual Growth Rate"/>
           </n-form-item>
         </section>
-
-        <IncomeSelector :incomes="incomes" v-model="modelRef.income"/>
+        <n-form-item path="income" label="Income">
+          <IncomeSelector :incomes="incomes" v-model="modelRef.income"/>
+        </n-form-item>
 
         <n-form-item path="electiveContributionStrategy"
                      label="Contribution Strategy"

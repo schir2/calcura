@@ -272,7 +272,6 @@ export default class PlanManager extends BaseOrchestrator<Plan, PlanState, Manag
         const currentState = this.getCurrentState()
         const amountPaid = this.requestFunds(amountRequested, FundType.Taxed)
         const shortfall = amountRequested - amountPaid
-        console.log(amountRequested, amountPaid, shortfall)
         this.withdraw(amountPaid, FundType.Taxed)
         this.updateCurrentState({
             ...currentState,
@@ -455,6 +454,7 @@ export default class PlanManager extends BaseOrchestrator<Plan, PlanState, Manag
     }
 
     simulate(commands?: Command[], maxIterations: number = 60): PlanState[] {
+        maxIterations = Math.min(maxIterations, this.config.lifeExpectancy - this.config.age+1)
         for (let i = 0; i < maxIterations; i++) {
             let manager: BaseManager<any, any> | undefined = undefined
             if (commands) {

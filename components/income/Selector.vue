@@ -3,6 +3,14 @@
     <template #header>
       Associate Income
     </template>
+
+
+    <label class="flex justify-between hover:cursor-pointer hover:bg-skin-surface-hover p-3">
+        <span class="flex gap-3 items-center">
+          <input type="radio" v-model="model" :value="undefined"/>
+          <span class="text-lg">None</span>
+        </span>
+    </label>
     <template v-for="income in incomes" :key="income.id">
 
       <label class="flex justify-between hover:cursor-pointer hover:bg-skin-surface-hover p-3">
