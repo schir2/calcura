@@ -6,6 +6,8 @@ import type {BrokerageInvestment} from "~/models/brokerageInvestment/BrokerageIn
 import type {IraInvestment} from "~/models/iraInvestment/IraInvestment";
 import type {CashReserve} from "~/models/cashReserve/CashReserve";
 import type {RothIraInvestment} from "~/models/rothIraInvestment/RothIraInvestment";
+import type {ManagerMap} from "~/models/plan/PlanManager";
+import type {Command} from "~/models/common/Command";
 
 
 export enum InsufficientFundsStrategy {
@@ -37,6 +39,10 @@ export enum ContributionLimitType {
 
 }
 
+export type PlanCommands = {
+    [K in keyof ManagerMap]: Command<ManagerMap[K]>;
+}[keyof ManagerMap][];
+
 export interface Plan {
     id: number;
     name: string;
@@ -63,6 +69,7 @@ export interface Plan {
     brokerageInvestments: BrokerageInvestment[];
     iraInvestments: IraInvestment[];
     rothIraInvestments: RothIraInvestment[];
+    commands: PlanCommands
 }
 
 export type PlanPartial = Partial<Omit<Plan, 'id'>>

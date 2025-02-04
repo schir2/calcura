@@ -1,10 +1,10 @@
-import type {Plan} from "~/models/plan/Plan";
+import type {Plan, PlanCommands} from "~/models/plan/Plan";
 import {ContributionLimitType, RetirementStrategy} from "~/models/plan/Plan";
 import type {PlanState} from "~/models/plan/PlanState";
 import DebtManager from "~/models/debt/DebtManager";
 import BaseManager from "~/models/common/BaseManager";
 import {adjustForInsufficientFunds, getIraLimit, getTaxDeferredContributionLimit, getTaxDeferredElectiveContributionLimit} from "~/utils";
-import type Command from "~/models/common/Command";
+import type {Command} from "~/models/common/Command";
 import {IncomeManager} from "~/models/income/IncomeManager";
 import {BrokerageInvestmentManager} from "~/models/brokerageInvestment/BrokerageInvestmentManager";
 import {ExpenseManager} from "~/models/expense/ExpenseManager";
@@ -441,26 +441,18 @@ export default class PlanManager extends BaseOrchestrator<Plan, PlanState, Manag
         })
     }
 
-    override getCommands(): Command[] {
-        const commands: Command[] = []
-        this.managers.debtManagers.forEach((manager) => commands.push(...manager.getCommands()))
-        this.managers.expenseManagers.forEach((manager) => commands.push(...manager.getCommands()))
-        this.managers.cashReserveManagers.forEach((manager) => commands.push(...manager.getCommands()))
-        this.managers.taxDeferredInvestmentManagers.forEach((manager) => commands.push(...manager.getCommands()))
-        this.managers.rothIraInvestmentManagers.forEach((manager) => commands.push(...manager.getCommands()))
-        this.managers.iraInvestmentManagers.forEach((manager) => commands.push(...manager.getCommands()))
-        this.managers.brokerageInvestmentManagers.forEach((manager) => commands.push(...manager.getCommands()))
-        return commands;
+    getCommands(): PlanCommands {
+        return this.config.commands
     }
 
-    simulate(commands?: Command[], maxIterations: number = 60): PlanState[] {
+    simulate(commands?: PlanCommands, maxIterations: number = 60): PlanState[] {
         maxIterations = Math.min(maxIterations, this.config.lifeExpectancy - this.config.age+1)
         for (let i = 0; i < maxIterations; i++) {
             let manager: BaseManager<any, any> | undefined = undefined
             if (commands) {
                 commands.forEach(command => {
                     manager = this.getManagerById(command.managerName, Number(command.managerId))
-                    manager.process()
+                    manager?.process()
                 })
             }
             this.process()

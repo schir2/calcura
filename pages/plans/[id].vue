@@ -329,6 +329,7 @@ async function loadPlan() {
   try {
     plan.value = await planService.get(planId)
     planManager = new PlanManager(plan.value);
+    console.log(plan.value.commands)
     const newCommands: Command[] = planManager.getCommands()
     if (!orderedCommands.value) {
       orderedCommands.value = newCommands

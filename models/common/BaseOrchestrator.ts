@@ -104,11 +104,5 @@ export abstract class BaseOrchestrator<TConfig, TState extends BaseState, TManag
         return allManagers;
     }
 
-    getCommands(): Command[] {
-        const commands: Command[] = []
-        this.getAllManagers().forEach(manager => commands.push(...manager.getCommands()))
-        return commands;
-    }
-
     abstract createNextState(previousState: TState): TState;
 }

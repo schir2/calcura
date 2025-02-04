@@ -1,15 +1,18 @@
 import type {ManagerMap} from "~/models/plan/PlanManager";
 
-export default interface Command {
+export interface Command<T> {
+    commandId: number;
+    order: number;
     name: string;
     label: string;
     managerName: keyof ManagerMap;
-    managerId: string;
-    action: 'process'
+    managerId: number;
+    action: "process";
+    data: T;
 }
 
 
-export function compareAndSyncCommands(previousCommands: Command[], newCommands: Command[]): Command[] {
+export function compareAndSyncCommands<T extends keyof ManagerMap>(previousCommands: Command<ManagerMap[T]>[], newCommands: Command<ManagerMap[T]>[]): Command<ManagerMap[T]>[] {
     const commandMap = new Map<string, number>()
     previousCommands.forEach((command, index) => {
         commandMap.set(`${command.managerName}-${command.managerId}`, index)
@@ -19,8 +22,7 @@ export function compareAndSyncCommands(previousCommands: Command[], newCommands:
         const key = `${command.managerName}-${command.managerId}`;
         if (commandMap.has(key)) {
             commandMap.delete(key);
-        }
-        else {
+        } else {
             previousCommands.push(command)
             return previousCommands
         }
