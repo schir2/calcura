@@ -476,7 +476,6 @@ export default class PlanManager extends BaseOrchestrator<Plan, PlanState, Manag
     }
 
     getManagerById<T extends BaseManager<any, any>>(managerName: keyof PlanManager['managers'], id: number): T | undefined {
-        this.config
         const manager = this.managers[managerName].find((manager) => manager.getConfig().id === id);
         if (manager === undefined) {
             eventBus.emit('error', {

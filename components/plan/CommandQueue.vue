@@ -14,7 +14,7 @@
 
 </template>
 <script setup lang="ts">
-import type Command from "~/models/common/Command";
+import type {Command} from "~/models/common/Command";
 import {VueDraggableNext} from "vue-draggable-next";
 
 interface Props {
@@ -22,7 +22,10 @@ interface Props {
 }
 
 const props = defineProps<Props>()
-const list = ref(props.commands)
+const list = ref([...props.commands])
+watch(() => props.commands, (newCommands) => {
+  list.value = [...newCommands];
+}, { deep: true });
 
 const emits = defineEmits(['update'])
 
