@@ -29,4 +29,8 @@ function getNaiveUiTheme() {
 }
 
 const naiveUiTheme = ref(getNaiveUiTheme())
+
+onMounted(async (): Promise<void> => {
+
+})
 </script>

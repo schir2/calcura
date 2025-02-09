@@ -1,16 +1,35 @@
 <script setup lang="ts">
 
+import {NConfigProvider} from "naive-ui";
+
 const menu = ref({open: false})
+const {user, logout} = useAuth()
+const isLoggingOut = ref(false)
+const message = useMessage()
+const isAuthenticated = computed(() => !!user.value)
+
+async function handleLogout() {
+  isLoggingOut.value = true
+  await logout()
+  isLoggingOut.value = false
+  message.info('Logged out')
+
+}
 
 const themeStore = useThemeStore()
 
 const toggleMenu = () => {
   menu.value.open = !menu.value.open;
 }
+
+onMounted(async () => {
+
+})
 </script>
 
 <template>
-  <nav class="bg-skin-surface fixed top-0 z-50 shadow-md h-16 w-full flex justify-center items-center px-4 sm:px-8 lg:px-16">
+  <NuxtLoadingIndicator />
+  <nav class="bg-skin-surface shadow-md h-16 w-full flex justify-center items-center px-4 sm:px-8 lg:px-16">
     <NButton
         class="sm:hidden text-skin-secondary/80 hover:text-skin-secondary font-normal ease-in-out duration-500 transition-all"
         @click="toggleMenu"
@@ -26,10 +45,16 @@ const toggleMenu = () => {
           <NuxtLink to="/plans">Plans</NuxtLink>
         </NButton>
       </div>
-      <nav class="hidden sm:block">
-        <NButton>Logout</NButton>
-      </nav>
       <nav class="flex items-center space-x-3">
+        <ClientOnly>
+            <NButton v-if="isAuthenticated" @click="handleLogout()" :loading="isLoggingOut">Logout</NButton>
+            <NButton keyboard v-if="!user">
+              <NuxtLink to='/login'>Login</NuxtLink>
+            </NButton>
+            <n-avatar v-if="user">
+              {{ user.username }}
+            </n-avatar>
+        </ClientOnly>
         <NButton circle tertiary @click="themeStore.toggleTheme()">
           <TransitionGroup
               name="icon-spin"

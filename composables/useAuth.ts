@@ -1,43 +1,54 @@
+import type {User} from "~/types/User";
 import type {Credentials} from "~/types/Auth";
 
-export function useAuth() {
-    const user = useState("user", () => null);
-    const { $api } = useNuxtApp();
+export const useAuth = () => {
+    const user = useState<User | null>("user", () => null);
 
-    async function login(credentials: Credentials) {
-        console.log("🟡 Sending login request...");
-
-        try {
-            const { data, error } = await $api("auth/login/", {
-                method: "POST",
-                body: credentials,
-            });
-
-            console.log("✅ Login response received in Nuxt:", { data, error });
-
-            if (error && error.value) {
-                console.error("❌ Login API error:", error.value);
-            }
-
-            return { data, error };
-        } catch (err) {
-            console.error("❌ Unexpected login error in Nuxt:", err);
-            return { data: null, error: { value: err } };
-        }
+    async function getCsrfToken() {
+        const data = await $fetch("/api/auth/csrf/", {
+            credentials: "include",
+        });
+        return data.csrfToken;
     }
 
-
-    async function logout() {
-        const { error } = await $api("auth/logout/", {
-            method: "POST",
-        });
-
-        if (!error.value) {
+    const fetchUser = async () => {
+        if (user.value) return;
+        try {
+            user.value =  await $fetch("/api/users/me/");
+        } catch (error) {
+            console.error("Failed to fetch user", error);
             user.value = null;
         }
+        console.log(user.value);
+    };
 
-        return { error };
+    async function login(credentials: Credentials) {
+        const csrfToken = await getCsrfToken()
+        await $fetch('/api/auth/login/', {
+            method: 'POST',
+            body: credentials,
+            credentials: 'include',
+            headers: {'X-CSRFToken': csrfToken}
+        })
+        await fetchUser();
     }
 
-    return { user, login, logout };
-}
+    async function logout() {
+        try {
+
+            const csrfToken = await getCsrfToken()
+            const data = await $fetch("/api/auth/logout/", {
+                method: "POST",
+                credentials: 'include',
+                headers: {'X-CSRFToken': csrfToken}
+            });
+            user.value = null;
+        } catch (error) {
+            console.log(error)
+        }
+    }
+
+
+
+    return { user, fetchUser, login, logout };
+};

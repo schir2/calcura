@@ -1,6 +1,9 @@
 import {createBaseService} from '~/services/baseService';
 import type {Plan} from "~/models/plan/Plan";
 
+const {$api} = useNuxtApp()
+
+
 type PlanRelatedModel =
     'Incomes'
     | 'Debts'
@@ -12,8 +15,7 @@ type PlanRelatedModel =
     | 'RothIraInvestments'
 
 export function usePlanService() {
-    const {$api} = useNuxtApp();
-    const baseService = createBaseService<Plan>($api, 'plans/');
+    const baseService = createBaseService<Plan>('/api/plans/');
 
     return baseService.extend({
         async addRelatedModel(
@@ -22,7 +24,7 @@ export function usePlanService() {
             relatedId: number | string
         ): Promise<Plan> {
             return await $api(
-                `plans/${planId}/manage_related_model/`,
+                `/api/plans/${planId}/manage_related_model/`,
                 {
                     method: 'POST',
                     body: {
@@ -39,7 +41,7 @@ export function usePlanService() {
             relatedId: number | string
         ): Promise<Plan> {
             return await $api(
-                `plans/${planId}/manage_related_model/`,
+                `/api/plans/${planId}/manage_related_model/`,
                 {
                     method: 'POST',
                     body: {

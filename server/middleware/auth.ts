@@ -1,14 +1,12 @@
 export default defineEventHandler(async (event) => {
+    const cookies = parseCookies(event);
+    const csrfToken = cookies['csrftoken'];
+    const sessionId = cookies['sessionid'];
 
-    try {
-        const user = await $fetch("http://localhost:8000/api/users/me/", {
-            credentials: "include",
-            headers: { cookie: getHeader(event, "cookie") ?? '' },
-        });
-
-        event.context.auth = user;
-    } catch (error) {
-        console.error("Auth Middleware Error:", error);
-        event.context.auth = null;
+    if (csrfToken) {
+        setHeader(event, 'X-CSRFToken', csrfToken);
+    }
+    if (sessionId) {
+        setHeader(event, 'Cookie', `sessionid=${sessionId}`);
     }
 });
