@@ -1,18 +1,18 @@
-import type {ManagerMap} from "~/models/plan/PlanManager";
+import type {PlanManagers} from "~/models/plan/PlanManager";
 
 export interface Command<T> {
     commandId: number;
     order: number;
     name: string;
     label: string;
-    managerName: keyof ManagerMap;
+    managerName: keyof PlanManagers;
     managerId: number;
     action: "process";
     data: T;
 }
 
 
-export function compareAndSyncCommands<T extends keyof ManagerMap>(previousCommands: Command<ManagerMap[T]>[], newCommands: Command<ManagerMap[T]>[]): Command<ManagerMap[T]>[] {
+export function compareAndSyncCommands<T extends keyof PlanManagers>(previousCommands: Command<PlanManagers[T]>[], newCommands: Command<PlanManagers[T]>[]): Command<PlanManagers[T]>[] {
     const commandMap = new Map<string, number>()
     previousCommands.forEach((command, index) => {
         commandMap.set(`${command.managerName}-${command.managerId}`, index)

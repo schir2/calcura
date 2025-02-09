@@ -300,7 +300,7 @@ async function handleRemoveTaxDeferredInvestment(taxDeferredInvestmentPartial: T
   await loadPlan();
 }
 
-async function handleCommandQueueUpdate(commands: Command[]) {
+async function handleCommandQueueUpdate(commands: Command<any>[]) {
   orderedCommands.value = commands
   planManager = new PlanManager(plan.value);
   planStates.value = planManager.simulate(orderedCommands.value)

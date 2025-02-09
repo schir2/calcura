@@ -1,5 +1,11 @@
+import type {Plan} from "~/models/plan/Plan";
+
 export function createBaseService<T>(resource: string) {
-    const { $api } = useNuxtApp(); // Use our global API wrapper
+    const { $api } = useNuxtApp();
+
+    if (!$api) {
+        throw new Error('API returned no api returned no api');
+    }
 
     const service = {
         async list(params?: Record<string, any>): Promise<T[]> {
@@ -35,6 +41,41 @@ export function createBaseService<T>(resource: string) {
             await $api(`${resource}${id}/`, {
                 method: "DELETE",
             });
+        },
+
+        async addRelatedModel(
+            id: number,
+            relatedModel: string,
+            relatedId: number | string
+        ): Promise<Plan> {
+            return await $api(
+                `/api/${resource}/${id}/manage_related_model/`,
+                {
+                    method: 'POST',
+                    body: {
+                        related_model: relatedModel,
+                        related_id: relatedId,
+                        action: 'add',
+                    }
+                }
+            )
+        },
+        async removeRelatedModel(
+            id: number | string,
+            relatedModel: string,
+            relatedId: number | string
+        ): Promise<Plan> {
+            return await $api(
+                `/api/${resource}/${id}/manage_related_model/`,
+                {
+                    method: 'POST',
+                    body: {
+                        related_model: relatedModel,
+                        related_id: relatedId,
+                        action: 'remove',
+                    }
+                }
+            )
         },
     };
 

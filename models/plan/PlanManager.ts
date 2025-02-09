@@ -4,7 +4,6 @@ import type {PlanState} from "~/models/plan/PlanState";
 import DebtManager from "~/models/debt/DebtManager";
 import BaseManager from "~/models/common/BaseManager";
 import {adjustForInsufficientFunds, getIraLimit, getTaxDeferredContributionLimit, getTaxDeferredElectiveContributionLimit} from "~/utils";
-import type {Command} from "~/models/common/Command";
 import {IncomeManager} from "~/models/income/IncomeManager";
 import {BrokerageInvestmentManager} from "~/models/brokerageInvestment/BrokerageInvestmentManager";
 import {ExpenseManager} from "~/models/expense/ExpenseManager";
@@ -20,10 +19,9 @@ import eventBus from "~/services/eventBus";
 export enum FundType {
     Taxable = "taxable",
     Taxed = "taxed",
-
 }
 
-export type ManagerMap = {
+export type PlanManagers = {
     expenseManagers: ExpenseManager[];
     cashReserveManagers: CashReserveManager[];
     debtManagers: DebtManager[];
@@ -35,9 +33,9 @@ export type ManagerMap = {
 };
 
 
-export default class PlanManager extends BaseOrchestrator<Plan, PlanState, ManagerMap> {
+export default class PlanManager extends BaseOrchestrator<Plan, PlanState, PlanManagers> {
 
-    createManagers(): ManagerMap {
+    createManagers(): PlanManagers {
         return {
             incomeManagers: this.config.incomes.map((income) => new IncomeManager(this, income)),
             cashReserveManagers: this.config.cashReserves.map((cashReserve) => new CashReserveManager(this, cashReserve)),
@@ -446,7 +444,7 @@ export default class PlanManager extends BaseOrchestrator<Plan, PlanState, Manag
     }
 
     simulate(commands?: PlanCommands, maxIterations: number = 60): PlanState[] {
-        maxIterations = Math.min(maxIterations, this.config.lifeExpectancy - this.config.age+1)
+        maxIterations = Math.min(maxIterations, this.config.lifeExpectancy - this.config.age + 1)
         for (let i = 0; i < maxIterations; i++) {
             let manager: BaseManager<any, any> | undefined = undefined
             if (commands) {

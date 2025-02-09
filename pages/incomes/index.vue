@@ -9,38 +9,33 @@
 import type {Income, IncomePartial} from "~/models/income/Income";
 
 import {useIncomeService} from "~/composables/api/useIncomeService";
-
+import {useApi} from "~/composables/useApi";
+const {get, create, update, list} = useApi<Income>('incomes');
+const incomes = ref<Income[]>([]);
 const incomeService = useIncomeService();
 
+console.log(incomes.value)
 
-async function handleCreateIncome(incomeTemplate: IncomePartial) {
-  const income = await incomeService.create(incomeTemplate)
-  await loadIncomes();
+
+async function handleCreateIncome(incomePartial: Partial<IncomePartial>) {
+  await create(incomePartial)
+  await refresh();
 }
 
 async function handleDeleteIncome(income: Income) {
   await incomeService.delete(income.id)
-  await loadIncomes();
+  await refresh();
 }
 
 async function handleUpdateIncome(income: Income) {
   await incomeService.update(income.id, income)
-  await loadIncomes();
-}
-
-const incomes = ref<Income[]>([])
-const loading = ref<boolean>(true);
-
-async function loadIncomes() {
-  try {
-    incomes.value = await incomeService.list();
-  } catch (error) {
-    console.error('Error loading incomes:', error);
-  }
-  loading.value = false;
+  await refresh();
 }
 
 onMounted(async () => {
-  await loadIncomes();
-});
+  const {data, refresh} = await list()
+  incomes.value = data.value
+
+})
+
 </script>

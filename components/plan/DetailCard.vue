@@ -11,7 +11,7 @@
   <n-card>
     <template #header>
       <h1 class="text-2xl">
-        <Icon name="mdi:tab-recent"/>
+        <Icon name="mdi:flower-poppy"/>
         Plan {{ plan.id }}: {{ plan.name }}
       </h1>
     </template>

@@ -64,17 +64,6 @@ export class RothIraInvestmentManager extends BaseManager<RothIraInvestment, Rot
         };
     }
 
-
-    override getCommands(): Command[] {
-        return [{
-            managerName: "rothIraInvestmentManagers",
-            managerId: `${this.config.id}`,
-            label: 'Roth IRA',
-            name: this.config.name,
-            action: 'process',
-        }];
-    }
-
     processImplementation() {
         const currentState = this.getCurrentState()
         const contributionRequest = this.calculateContribution()

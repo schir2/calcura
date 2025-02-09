@@ -40,16 +40,6 @@ export class BrokerageInvestmentManager extends BaseManager<BrokerageInvestment,
         };
     }
 
-    override getCommands(): Command[] {
-        return [{
-            managerName: "brokerageInvestmentManagers",
-            managerId: `${this.config.id}`,
-            label: 'Brokerage Investment',
-            name: this.config.name,
-            action: 'process',
-        }];
-    }
-
     processImplementation() {
         const currentState = this.getCurrentState()
         const contributionRequest = this.calculateContribution()

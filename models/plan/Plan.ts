@@ -6,7 +6,7 @@ import type {BrokerageInvestment} from "~/models/brokerageInvestment/BrokerageIn
 import type {IraInvestment} from "~/models/iraInvestment/IraInvestment";
 import type {CashReserve} from "~/models/cashReserve/CashReserve";
 import type {RothIraInvestment} from "~/models/rothIraInvestment/RothIraInvestment";
-import type {ManagerMap} from "~/models/plan/PlanManager";
+import type {PlanManagers} from "~/models/plan/PlanManager";
 import type {Command} from "~/models/common/Command";
 
 
@@ -40,8 +40,8 @@ export enum ContributionLimitType {
 }
 
 export type PlanCommands = {
-    [K in keyof ManagerMap]: Command<ManagerMap[K]>;
-}[keyof ManagerMap][];
+    [K in keyof PlanManagers]: Command<PlanManagers[K]>;
+}[keyof PlanManagers][];
 
 export interface Plan {
     id: number;
@@ -83,6 +83,7 @@ export const planDefaults: PlanPartial = {
     growthApplicationStrategy: GrowthApplicationStrategy.Start,
     taxStrategy: IncomeTaxStrategy.Simple,
     taxRate: 2.5,
+    growthRate: 6.0,
     lifeExpectancy: 85,
     retirementStrategy: RetirementStrategy.Age,
     retirementWithdrawalRate: 4,
@@ -97,4 +98,5 @@ export const planDefaults: PlanPartial = {
     brokerageInvestments: [],
     iraInvestments: [],
     rothIraInvestments: [],
+    commands: []
 };

@@ -65,17 +65,6 @@ export class IraInvestmentManager extends BaseManager<IraInvestment, IraInvestme
         };
     }
 
-
-    override getCommands(): Command[] {
-        return [{
-            managerName: "iraInvestmentManagers",
-            managerId: `${this.config.id}`,
-            label: 'IRA Investment',
-            name: this.config.name,
-            action: 'process',
-        }];
-    }
-
     processImplementation() {
         const currentState = this.getCurrentState()
         const contributionRequest = this.calculateContribution()

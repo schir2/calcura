@@ -157,16 +157,6 @@ export class TaxDeferredInvestmentManager extends BaseManager<TaxDeferredInvestm
         };
     }
 
-    override getCommands(): Command[] {
-        return [{
-            managerName: "taxDeferredInvestmentManagers",
-            managerId: `${this.config.id}`,
-            label: 'Tax Deferred Investment',
-            name: this.config.name,
-            action: 'process',
-        }];
-    }
-
     getContributionsAdjustedForLimits(electiveContribution: number, employerContribution: number): {
         electiveContribution: number,
         employerContribution: number,

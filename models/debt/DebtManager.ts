@@ -68,16 +68,6 @@ export default class DebtManager extends BaseManager<Debt, DebtState> {
             processed: false
         };
     }
-
-    override getCommands(): Command[] {
-        return [{
-            managerName: "debtManagers",
-            managerId: `${this.config.id}`,
-            label: 'Debt',
-            name: this.config.name,
-            action: 'process',
-        }];
-    }
 }
 
 export function calculateDebtPayment(debtConfig: Debt, principal: number): number {

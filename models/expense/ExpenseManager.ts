@@ -58,16 +58,6 @@ export class ExpenseManager extends BaseManager<Expense, ExpenseState> {
         }
     }
 
-    override getCommands(): Command[] {
-        return [{
-            managerName: "expenseManagers",
-            managerId: `${this.config.id}`,
-            label: 'Expense',
-            name: this.config.name,
-            action: 'process',
-        }];
-    }
-
     processImplementation(): void {
         const currentState = this.getCurrentState()
         const amountRequested = this.calculatePayment()
