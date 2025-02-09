@@ -13,7 +13,7 @@
       />
     </n-modal>
     <PlanDetailCard :plan="plan" @update="handleUpdate"></PlanDetailCard>
-    <span v-if="orderedCommands">{{orderedCommands}}</span>
+    <span v-if="orderedCommands">{{plan.commandSequences}}</span>
     <section class="grid grid-cols-2 gap-3">
       <section class="space-y-3">
         <DebtList v-if="plan.debts" :debts="plan.debts"
@@ -98,7 +98,8 @@ import type {Income, IncomePartial} from "~/models/income/Income";
 import type {BrokerageInvestment, BrokerageInvestmentPartial} from "~/models/brokerageInvestment/BrokerageInvestment";
 import type {RothIraInvestment, RothIraInvestmentPartial} from "~/models/rothIraInvestment/RothIraInvestment";
 import eventBus from "~/services/eventBus";
-import {type Command, compareAndSyncCommands} from "~/models/common/Command";
+import {type Command} from "~/types/Command";
+import {compareAndSyncCommands} from "~/utils/commandUtils";
 
 const planService = usePlanService()
 const debtService = useDebtService()

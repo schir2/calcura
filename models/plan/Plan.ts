@@ -7,7 +7,7 @@ import type {IraInvestment} from "~/models/iraInvestment/IraInvestment";
 import type {CashReserve} from "~/models/cashReserve/CashReserve";
 import type {RothIraInvestment} from "~/models/rothIraInvestment/RothIraInvestment";
 import type {PlanManagers} from "~/models/plan/PlanManager";
-import type {Command} from "~/models/common/Command";
+import type {Command} from "~/types/Command";
 
 
 export enum InsufficientFundsStrategy {

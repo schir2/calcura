@@ -4,7 +4,7 @@
       <n-input placeholder="Username" v-model:value="credentialsRef.username"></n-input>
     </n-form-item>
     <n-form-item path="password" label="Password">
-      <n-input type="password" placeholder="Password" v-model:value="credentialsRef.password"></n-input>
+      <n-input type="password" placeholder="Password"  v-model:value="credentialsRef.password"></n-input>
     </n-form-item>
     <n-button attr-type="submit" @click="handleLogin(formRef)" :loading="isLoginLoading">Login</n-button>
   </n-form>

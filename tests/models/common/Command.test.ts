@@ -1,6 +1,6 @@
 import {describe, expect, it} from "vitest";
-import {compareAndSyncCommands} from '~/models/common/Command'
-import type Command from "~/models/common/Command";
+import type Command from "~/types/Command";
+import {compareAndSyncCommands} from "~/utils/commandUtils";
 
 describe("compareAndSyncCommands", () => {
     it("should add a new command to the list", () => {

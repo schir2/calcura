@@ -1,7 +1,5 @@
 <script setup lang="ts">
 
-import {NConfigProvider} from "naive-ui";
-
 const menu = ref({open: false})
 const {user, logout} = useAuth()
 const isLoggingOut = ref(false)
@@ -16,8 +14,6 @@ async function handleLogout() {
 
 }
 
-const themeStore = useThemeStore()
-
 const toggleMenu = () => {
   menu.value.open = !menu.value.open;
 }
@@ -28,7 +24,7 @@ onMounted(async () => {
 </script>
 
 <template>
-  <NuxtLoadingIndicator />
+  <NuxtLoadingIndicator/>
   <nav class="bg-skin-surface shadow-md h-16 w-full flex justify-center items-center px-4 sm:px-8 lg:px-16">
     <NButton
         class="sm:hidden text-skin-secondary/80 hover:text-skin-secondary font-normal ease-in-out duration-500 transition-all"
@@ -47,24 +43,14 @@ onMounted(async () => {
       </div>
       <nav class="flex items-center space-x-3">
         <ClientOnly>
-            <NButton v-if="isAuthenticated" @click="handleLogout()" :loading="isLoggingOut">Logout</NButton>
-            <NButton keyboard v-if="!user">
-              <NuxtLink to='/login'>Login</NuxtLink>
-            </NButton>
-            <n-avatar v-if="user">
-              {{ user.username }}
-            </n-avatar>
+          <NButton v-if="isAuthenticated" @click="handleLogout()" :loading="isLoggingOut">Logout</NButton>
+          <NButton keyboard v-if="!user">
+            <NuxtLink to='/login'>Login</NuxtLink>
+          </NButton>
+          <n-avatar v-if="user">
+            {{ user.username }}
+          </n-avatar>
         </ClientOnly>
-        <NButton circle tertiary @click="themeStore.toggleTheme()">
-          <TransitionGroup
-              name="icon-spin"
-              tag="div"
-              class="inline-block"
-          >
-            <Icon name="uil:sun" class="animate__animated animate__rotateIn text-yellow-500 text-xl" v-if="themeStore.theme === 'dark'"/>
-            <Icon name="uil:moon" class="animate__animated animate__rotateIn text-purple-500 text-xl" v-if="themeStore.theme === 'light'"/>
-          </TransitionGroup>
-        </NButton>
       </nav>
       <div v-show="menu.open"
            class="absolute top-16 left-0 w-full bg-skin-surface shadow-md sm:hidden flex flex-col items-start space-y-2 p-4"
@@ -74,16 +60,3 @@ onMounted(async () => {
     </div>
   </nav>
 </template>
-<style scoped>
-/* Scoped styles for transition-group */
-.icon-spin-enter-active,
-.icon-spin-leave-active {
-  animation-duration: 1s;
-}
-
-.icon-spin-enter,
-.icon-spin-leave-to {
-  /* Keep the element hidden initially */
-  display: none;
-}
-</style>

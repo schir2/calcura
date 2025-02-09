@@ -1,5 +1,5 @@
 <template>
-  <n-config-provider :theme="naiveUiTheme">
+  <n-config-provider :theme="darkTheme">
     <n-message-provider>
     <div>
       <!-- Navbar -->
@@ -21,16 +21,6 @@
   </n-config-provider>
 </template>
 <script setup lang="ts">
-const themeStore = useThemeStore()
-import {darkTheme, lightTheme, NConfigProvider, NMessageProvider} from 'naive-ui'
+import {darkTheme, NConfigProvider, NMessageProvider} from 'naive-ui'
 
-function getNaiveUiTheme() {
-  return themeStore.theme === 'dark' ? darkTheme : lightTheme
-}
-
-const naiveUiTheme = ref(getNaiveUiTheme())
-
-onMounted(async (): Promise<void> => {
-
-})
 </script>

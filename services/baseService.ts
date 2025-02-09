@@ -3,10 +3,6 @@ import type {Plan} from "~/models/plan/Plan";
 export function createBaseService<T>(resource: string) {
     const { $api } = useNuxtApp();
 
-    if (!$api) {
-        throw new Error('API returned no api returned no api');
-    }
-
     const service = {
         async list(params?: Record<string, any>): Promise<T[]> {
             return toCamelCase(await $api(resource, { params }));
@@ -46,7 +42,7 @@ export function createBaseService<T>(resource: string) {
         async addRelatedModel(
             id: number,
             relatedModel: string,
-            relatedId: number | string
+            relatedId: number
         ): Promise<Plan> {
             return await $api(
                 `${resource}/${id}/manage_related_model/`,
@@ -61,9 +57,9 @@ export function createBaseService<T>(resource: string) {
             )
         },
         async removeRelatedModel(
-            id: number | string,
+            id: number,
             relatedModel: string,
-            relatedId: number | string
+            relatedId: number
         ): Promise<Plan> {
             return await $api(
                 `/api/${resource}/${id}/manage_related_model/`,

@@ -14,7 +14,7 @@
 
 </template>
 <script setup lang="ts">
-import type {Command} from "~/models/common/Command";
+import type {Command} from "~/types/Command";
 import {VueDraggableNext} from "vue-draggable-next";
 
 interface Props {
