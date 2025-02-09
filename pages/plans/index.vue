@@ -18,7 +18,7 @@ async function handleCreatePlan(planTemplate: PlanPartial) {
 }
 
 async function handleDeletePlan(plan: Plan) {
-  await planService.delete(plan.id)
+  await planService.remove(plan.id)
   await loadPlans();
 }
 

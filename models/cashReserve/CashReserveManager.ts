@@ -2,7 +2,6 @@ import BaseManager from "~/models/common/BaseManager";
 import type {CashReserve} from "~/models/cashReserve/CashReserve";
 import {CashReserveStrategy} from "~/models/cashReserve/CashReserve";
 import type CashReserveState from "~/models/cashReserve/CashReserveState";
-import type Command from "~/models/common/Command";
 import {FundType} from "~/models/plan/PlanManager";
 
 export class CashReserveManager extends BaseManager<CashReserve, CashReserveState> {
@@ -26,6 +25,7 @@ export class CashReserveManager extends BaseManager<CashReserve, CashReserveStat
             processed: false,
         }
     }
+
     calculateContribution(): number {
         const currentState = this.getCurrentState();
         let contribution = 0

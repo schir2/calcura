@@ -13,5 +13,5 @@ type PlanRelatedModel =
     | 'RothIraInvestments'
 
 export function usePlanService() {
-    return createBaseService<Plan>('/api/plans/');
+    return useApi<Plan>('plans');
 }

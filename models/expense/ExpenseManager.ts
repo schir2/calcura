@@ -1,5 +1,4 @@
 import BaseManager from "~/models/common/BaseManager";
-import type Command from "~/models/common/Command";
 import type {Expense} from "~/models/expense/Expense";
 import {Frequency} from "~/models/expense/Expense";
 import type ExpenseState from "~/models/expense/ExpenseState";

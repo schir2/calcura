@@ -3,7 +3,6 @@ import {DebtPaymentStrategy} from "~/models/debt/Debt";
 import type DebtState from "~/models/debt/DebtState";
 import {assertDefined} from "~/utils";
 import BaseManager from "~/models/common/BaseManager";
-import type Command from "~/models/common/Command";
 import {FundType} from "~/models/plan/PlanManager";
 
 export default class DebtManager extends BaseManager<Debt, DebtState> {

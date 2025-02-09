@@ -2,5 +2,5 @@ import {createBaseService} from '~/services/baseService';
 import type {Expense} from "~/models/expense/Expense";
 
 export function useExpenseService() {
-    return createBaseService<Expense>('/api/expenses/');
+    return useApi<Expense>('expenses');
 }

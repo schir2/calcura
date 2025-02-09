@@ -2,7 +2,6 @@ import {BrokerageContributionStrategy, type BrokerageInvestment} from './Brokera
 import {assertDefined, calculateInvestmentGrowthAmount} from "~/utils";
 import type BrokerageInvestmentState from "~/models/brokerageInvestment/BrokerageInvestmentState";
 import BaseManager from "~/models/common/BaseManager";
-import type Command from "~/models/common/Command";
 import {FundType} from "~/models/plan/PlanManager";
 import {ContributionType} from "~/models/common";
 import type {PlanState} from "~/models/plan/PlanState";

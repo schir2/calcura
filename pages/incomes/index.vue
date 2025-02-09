@@ -1,41 +1,46 @@
 <template>
-  <IncomeList :incomes="incomes"
-               @create="handleCreateIncome"
-               @update="handleUpdateIncome"
-               @delete="handleDeleteIncome"
+  <n-skeleton v-if="loading" text :repeat="2"/>
+  <IncomeList v-else :incomes="incomes"
+              @create="handleCreateIncome"
+              @update="handleUpdateIncome"
+              @delete="handleDeleteIncome"
   ></IncomeList>
 </template>
 <script setup lang="ts">
 import type {Income, IncomePartial} from "~/models/income/Income";
 
-import {useIncomeService} from "~/composables/api/useIncomeService";
 import {useApi} from "~/composables/useApi";
-const {get, create, update, list} = useApi<Income>('incomes');
+
 const incomes = ref<Income[]>([]);
-const incomeService = useIncomeService();
+const {get, create, update, list, remove} = useApi<Income>('incomes');
+const loading = ref<boolean>(false);
 
-console.log(incomes.value)
 
-
-async function handleCreateIncome(incomePartial: Partial<IncomePartial>) {
-  await create(incomePartial)
-  await refresh();
+async function handleCreateIncome(incomeTemplate: IncomePartial) {
+  await create(incomeTemplate)
+  await loadIncomes();
 }
 
 async function handleDeleteIncome(income: Income) {
-  await incomeService.delete(income.id)
-  await refresh();
+  await remove(income.id)
+  await loadIncomes();
 }
 
 async function handleUpdateIncome(income: Income) {
-  await incomeService.update(income.id, income)
-  await refresh();
+  await update(income.id, income)
+  await loadIncomes();
+}
+
+async function loadIncomes() {
+  try {
+    incomes.value = await list();
+  } catch (error) {
+    console.error('Error loading incomes:', error);
+  }
+  loading.value = false;
 }
 
 onMounted(async () => {
-  const {data, refresh} = await list()
-  incomes.value = data.value
-
+  await loadIncomes()
 })
-
 </script>

@@ -2,7 +2,6 @@ import {IraContributionStrategy, type IraInvestment} from './IraInvestment';
 import {assertDefined, calculateInvestmentGrowthAmount} from "~/utils";
 import type IraInvestmentState from "~/models/iraInvestment/IraInvestmentState";
 import BaseManager from "~/models/common/BaseManager";
-import type Command from "~/models/common/Command";
 import type {IncomeManager} from "~/models/income/IncomeManager";
 import {FundType} from "~/models/plan/PlanManager";
 import {ContributionType} from "~/models/common";
