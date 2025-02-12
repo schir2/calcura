@@ -13,7 +13,6 @@
       />
     </n-modal>
     <PlanDetailCard :plan="plan" @update="handleUpdate"></PlanDetailCard>
-    <span v-if="orderedCommands">{{plan.commandSequences}}</span>
     <section class="grid grid-cols-2 gap-3">
       <section class="space-y-3">
         <DebtList v-if="plan.debts" :debts="plan.debts"
@@ -135,7 +134,7 @@ async function handleCreateDebt(debtPartial: DebtPartial) {
 }
 
 async function handleDeleteDebt(debt: Debt) {
-  await debtService.delete(debt.id)
+  await debtService.remove(debt.id)
   await loadPlan();
 }
 
@@ -158,7 +157,7 @@ async function handleCreateCashReserve(cashReservePartial: CashReserve) {
 }
 
 async function handleDeleteCashReserve(cashReserve: CashReserve) {
-  await cashReserveService.delete(cashReserve.id)
+  await cashReserveService.remove(cashReserve.id)
   await loadPlan();
 }
 
@@ -180,7 +179,7 @@ async function handleCreateIncome(incomeTemplate: IncomePartial) {
 }
 
 async function handleDeleteIncome(income: Income) {
-  await incomeService.delete(income.id)
+  await incomeService.remove(income.id)
   await loadPlan();
 }
 
@@ -202,7 +201,7 @@ async function handleCreateExpense(expensePartial: ExpensePartial) {
 }
 
 async function handleDeleteExpense(expense: Expense) {
-  await expenseService.delete(expense.id)
+  await expenseService.remove(expense.id)
   await loadPlan();
 }
 
@@ -223,7 +222,7 @@ async function handleCreateBrokerageInvestment(brokerageInvestmentPartial: Broke
 }
 
 async function handleDeleteBrokerageInvestment(brokerageInvestment: BrokerageInvestment) {
-  await brokerageInvestmentService.delete(brokerageInvestment.id)
+  await brokerageInvestmentService.remove(brokerageInvestment.id)
   await loadPlan();
 }
 
@@ -244,7 +243,7 @@ async function handleCreateIraInvestment(iraInvestmentPartial: IraInvestmentPart
 }
 
 async function handleDeleteIraInvestment(iraInvestment: IraInvestment) {
-  await iraInvestmentService.delete(iraInvestment.id)
+  await iraInvestmentService.remove(iraInvestment.id)
   await loadPlan();
 }
 
@@ -265,7 +264,7 @@ async function handleCreateRothIraInvestment(rothIraInvestmentPartial: RothIraIn
 }
 
 async function handleDeleteRothIraInvestment(rothIraInvestment: RothIraInvestment) {
-  await rothIraInvestmentService.delete(rothIraInvestment.id)
+  await rothIraInvestmentService.remove(rothIraInvestment.id)
   await loadPlan();
 }
 
@@ -286,7 +285,7 @@ async function handleCreateTaxDeferredInvestment(taxDeferredInvestmentPartial: T
 }
 
 async function handleDeleteTaxDeferredInvestment(taxDeferredInvestment: TaxDeferredInvestment) {
-  await taxDeferredInvestmentService.delete(taxDeferredInvestment.id)
+  await taxDeferredInvestmentService.remove(taxDeferredInvestment.id)
   await loadPlan();
 }
 
@@ -331,7 +330,6 @@ async function loadPlan() {
   try {
     plan.value = await planService.get(planId)
     planManager = new PlanManager(plan.value);
-    console.log(plan.value.commands)
     const newCommands: Command[] = planManager.getCommands()
     if (!orderedCommands.value) {
       orderedCommands.value = newCommands

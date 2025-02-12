@@ -1,5 +1,5 @@
 <template>
-  <n-form v-if="!user" ref="formRef" :model="credentialsRef" :rules="rules">
+  <n-form v-if="!authStore.user" ref="formRef" :model="credentialsRef" :rules="rules">
     <n-form-item path="username" label="Username">
       <n-input placeholder="Username" v-model:value="credentialsRef.username"></n-input>
     </n-form-item>
@@ -8,13 +8,14 @@
     </n-form-item>
     <n-button attr-type="submit" @click="handleLogin(formRef)" :loading="isLoginLoading">Login</n-button>
   </n-form>
-  <n-button v-if="user" @click="logout()" :loading="isLogoutLoading">Log Out</n-button>
+  <n-button v-if="authStore.user" @click="authStore.logout()" :loading="isLogoutLoading">Log Out</n-button>
 </template>
 <script lang="ts" setup>
 
 import type {FormInst, FormRules} from "naive-ui"
 
-const {user, login, logout} = useAuth()
+const router = useRouter()
+const authStore = useAuthStore()
 
 interface Credentials {
   username: string
@@ -40,12 +41,12 @@ const rules: FormRules = {
 }
 
 const message = useMessage()
+const loadingBar = useLoading()
 const isLoginLoading = ref<boolean>(false)
 const isLogoutLoading = ref<boolean>(false)
 
 async function getUserProfile() {
   const data = await $fetch('/api/users/me/')
-  console.log(data)
 }
 
 
@@ -53,19 +54,19 @@ async function handleLogin() {
   formRef.value?.validate(async (errors) => {
     if (!errors) {
       isLoginLoading.value = true;
+      loadingBar.start()
       try {
-        await login(credentialsRef.value)
+        await authStore.login(credentialsRef.value)
         message.success('Login Successful')
       } catch (error) {
-        console.log(error)
         if (error.response) {
-
-          console.log("HTTP Status Code:", error.response.status);
-          console.log("Response Data:", error.response._data);
           message.error(error.response._data.error)
+          loadingBar.error()
         }
       }
       isLoginLoading.value = false;
+      loadingBar.finish()
+      await router.push('/')
     }
   })
 }

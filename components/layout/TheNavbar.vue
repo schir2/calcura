@@ -1,28 +1,3 @@
-<script setup lang="ts">
-
-const menu = ref({open: false})
-const authStore = useAuthStore()
-const message = useMessage()
-
-async function handleLogout() {
-  isLoggingOut.value = true
-  await authStore.logout()
-  isLoggingOut.value = false
-  message.info('Logged out')
-
-}
-
-const toggleMenu = () => {
-  menu.value.open = !menu.value.open;
-}
-
-onMounted(async () => {
-  if (!authStore.user) {
-    await authStore.fetchUser()
-  }
-})
-</script>
-
 <template>
   <NuxtLoadingIndicator/>
   <nav class="bg-skin-surface shadow-md h-16 w-full flex justify-center items-center px-4 sm:px-8 lg:px-16">
@@ -43,7 +18,7 @@ onMounted(async () => {
       </div>
       <nav class="flex items-center space-x-3">
         <ClientOnly>
-          <NButton v-if="isAuthenticated" @click="handleLogout()" :loading="isLoggingOut">Logout</NButton>
+          <NButton v-if="authStore.isAuthenticated" @click="handleLogout()">Logout</NButton>
           <NButton keyboard v-if="!authStore.user">
             <NuxtLink to='/login'>Login</NuxtLink>
           </NButton>
@@ -60,3 +35,26 @@ onMounted(async () => {
     </div>
   </nav>
 </template>
+<script setup lang="ts">
+const router = useRouter()
+const menu = ref({open: false})
+const authStore = useAuthStore()
+const message = useMessage()
+
+async function handleLogout() {
+  await authStore.logout()
+  message.info('Logged out')
+  await router.push('/')
+
+}
+
+const toggleMenu = () => {
+  menu.value.open = !menu.value.open;
+}
+
+onMounted(async () => {
+  if (!authStore.user) {
+    await authStore.fetchUser()
+  }
+})
+</script>
