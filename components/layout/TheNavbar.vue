@@ -1,14 +1,12 @@
 <script setup lang="ts">
 
 const menu = ref({open: false})
-const {user, logout} = useAuth()
-const isLoggingOut = ref(false)
+const authStore = useAuthStore()
 const message = useMessage()
-const isAuthenticated = computed(() => !!user.value)
 
 async function handleLogout() {
   isLoggingOut.value = true
-  await logout()
+  await authStore.logout()
   isLoggingOut.value = false
   message.info('Logged out')
 
@@ -19,7 +17,9 @@ const toggleMenu = () => {
 }
 
 onMounted(async () => {
-
+  if (!authStore.user) {
+    await authStore.fetchUser()
+  }
 })
 </script>
 
@@ -44,11 +44,11 @@ onMounted(async () => {
       <nav class="flex items-center space-x-3">
         <ClientOnly>
           <NButton v-if="isAuthenticated" @click="handleLogout()" :loading="isLoggingOut">Logout</NButton>
-          <NButton keyboard v-if="!user">
+          <NButton keyboard v-if="!authStore.user">
             <NuxtLink to='/login'>Login</NuxtLink>
           </NButton>
-          <n-avatar v-if="user">
-            {{ user.username }}
+          <n-avatar v-if="authStore.user">
+            {{ authStore.user.username }}
           </n-avatar>
         </ClientOnly>
       </nav>

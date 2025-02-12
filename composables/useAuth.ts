@@ -1,8 +1,6 @@
-import type {User} from "~/types/User";
 import type {Credentials} from "~/types/Auth";
 
 export const useAuth = () => {
-    const user = useState<User | null>("user", () => null);
 
     async function getCsrfToken() {
         const data = await $fetch("/api/auth/csrf/", {
@@ -11,26 +9,18 @@ export const useAuth = () => {
         return data.csrfToken;
     }
 
-    const fetchUser = async () => {
-        if (user.value) return;
-        try {
-            user.value =  await $fetch("/api/users/me/");
-        } catch (error) {
-            console.error("Failed to fetch user", error);
-            user.value = null;
-        }
-        console.log(user.value);
-    };
-
     async function login(credentials: Credentials) {
         const csrfToken = await getCsrfToken()
-        await $fetch('/api/auth/login/', {
-            method: 'POST',
-            body: credentials,
-            credentials: 'include',
-            headers: {'X-CSRFToken': csrfToken}
-        })
-        await fetchUser();
+        try {
+            await $fetch('/api/auth/login/', {
+                method: 'POST',
+                body: credentials,
+                credentials: 'include',
+                headers: {'X-CSRFToken': csrfToken}
+            })
+        } catch (error) {
+            `Failed to perform useAuth.login() ${error}`
+        }
     }
 
     async function logout() {
@@ -42,13 +32,11 @@ export const useAuth = () => {
                 credentials: 'include',
                 headers: {'X-CSRFToken': csrfToken}
             });
-            user.value = null;
         } catch (error) {
-            console.log(error)
+            console.log(`Failed to perform useAuth.logout() ${error}`)
         }
     }
 
 
-
-    return { user, fetchUser, login, logout };
+    return {login, logout};
 };
