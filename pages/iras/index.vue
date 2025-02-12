@@ -35,7 +35,7 @@ async function loadIraInvestments() {
   try {
     iraInvestments.value = await iraInvestmentService.list();
   } catch (error) {
-    console.error('Error loading iraInvestments:', error);
+    console.error('Error loading iras:', error);
   }
   loading.value = false;
 }

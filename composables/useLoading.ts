@@ -22,5 +22,5 @@ export const useLoading = () => {
         loadingBar.error()
     }
 
-    return {loadingBar, disabledRef, handleStart: start, handleFinish: finish}
+    return {loadingBar, disabledRef, start, finish}
 }

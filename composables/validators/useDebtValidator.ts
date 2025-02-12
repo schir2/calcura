@@ -29,6 +29,14 @@ export function useDebtValidation(modelRef: Ref<Partial<Debt>>) {
         return true;
     }
 
+    function validatePaymentMinimum(rule: FormItemRule, value: number | undefined) {
+        if (modelRef.value.paymentStrategy === DebtPaymentStrategy.MinimumPayment){
+            if (value === null || value === undefined) {
+                return new Error("Fixed payment amount is required if Fixed Payment Strategy is selected")
+            }
+        }
+    }
+
     const rules: FormRules = {
         name: [
             {required: true, message: "Debt name is required", trigger: ["blur", "change"]},
@@ -74,7 +82,6 @@ export function useDebtValidation(modelRef: Ref<Partial<Debt>>) {
             }
         ],
         paymentMinimum: [
-            {required: true, type: "number", message: "Minimum payment is required", trigger: ["blur", "change"]},
             {
                 type: "number",
                 min: MIN_PAYMENT,
@@ -86,6 +93,9 @@ export function useDebtValidation(modelRef: Ref<Partial<Debt>>) {
                 max: MAX_PAYMENT,
                 message: `Minimum payment cannot exceed $${MAX_PAYMENT}.`,
                 trigger: ["blur", "change"]
+            },
+            {
+                validator: validatePaymentMinimum, trigger: ["blur", "change"],
             }
         ],
         paymentStrategy: [
@@ -95,16 +105,10 @@ export function useDebtValidation(modelRef: Ref<Partial<Debt>>) {
             {validator: validatePaymentFixedAmount, trigger: ["blur", "change"]},
             {
                 type: "number",
-                min: MIN_PAYMENT,
+                min: 0,
                 message: `Fixed payment must be at least $${MIN_PAYMENT}.`,
                 trigger: ["blur", "change"]
             },
-            {
-                type: "number",
-                max: MAX_PAYMENT,
-                message: `Fixed payment cannot exceed $${MAX_PAYMENT}.`,
-                trigger: ["blur", "change"]
-            }
         ],
         paymentPercentage: [
             {validator: validatePaymentPercentage, trigger: ["blur", "change"]},

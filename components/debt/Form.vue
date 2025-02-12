@@ -28,7 +28,7 @@
               <template #inputs>
                 <n-form-item path="paymentFixedAmount"
                              label="Fixed Payment Amount">
-                  <n-input-number class="w-full" v-model:value="modelRef.paymentFixedAmount" :step="100" :precision="2"
+                  <n-input-number class="w-full" v-model:value="modelRef.paymentFixedAmount" :step="100" :precision="2" :max="modelRef.principal"
                                   placeholder="Enter fixed payment amount">
                     <template #prefix>$</template>
                   </n-input-number>

@@ -1,26 +1,21 @@
 <template>
+  <n-scrollbar class="h-screen">
   <n-loading-bar-provider>
     <n-config-provider :theme="darkTheme">
       <n-message-provider>
-        <div>
-          <!-- Navbar -->
+        <n-space vertical :naive-scrollbar="false" class="bg-black max-h-96">
           <LayoutTheNavbar/>
-
-          <div class="grid grid-cols-12 gap-6">
-
-            <LayoutTheLeftSidebar class="col-span-1"/>
-
-
-            <main class="flex-grow mx-auto container p-16 bg-skin-base shadow-md rounded-md space-y-12 col-span-8">
+          <n-layout has-sider class="h-screen" :naive-scrollbar="false">
+            <LayoutTheLeftSidebar/>
+            <n-layout :native-scrollbar="false">
               <slot/>
-            </main>
-
-            <LayoutTheRightSidebar class="col-span-3"/>
-          </div>
-        </div>
+            </n-layout>
+          </n-layout>
+        </n-space>
       </n-message-provider>
     </n-config-provider>
   </n-loading-bar-provider>
+  </n-scrollbar>
 </template>
 <script setup lang="ts">
 import {darkTheme, NConfigProvider, NMessageProvider} from 'naive-ui'

@@ -1,12 +1,12 @@
 <template>
-  <n-card class="rounded-md border border-skin-error/50" :bordered="false">
+  <n-card>
     <template #header>
       <Icon name="game-icons:expense"/> Debt(s)
     </template>
     <template #header-extra>
       <DebtTemplatePicker @create="handleCreate"/>
     </template>
-    <DebtListItem v-for="(debt, index) in debts" :debt="debt" :key="debt.id"
+    <DebtListItem v-for="debt in debts" :debt="debt" :key="debt.id"
                   @delete="handleDelete" @update="handleUpdate" @create="handleCreate"
                   @remove="handleRemove"></DebtListItem>
 

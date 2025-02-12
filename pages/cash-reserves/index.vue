@@ -35,7 +35,7 @@ async function loadCashReserves() {
   try {
     cashReserves.value = await cashReserveService.list();
   } catch (error) {
-    console.error('Error loading cashReserves:', error);
+    console.error('Error loading cash-reserves:', error);
   }
   loading.value = false;
 }

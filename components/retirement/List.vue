@@ -1,5 +1,5 @@
 <template>
-  <NButton @click="handleCreateRetirement()">Add</NButton>
+  <n-button @click="handleCreateRetirement()">Add</n-button>
   <div class="container">
     <Retirement v-for="(debtConfig, index) in debts" :debtConfig="debtConfig" :key="debtConfig.id"
           @deleteRetirement="handleDeleteRetirement" @updateRetirement="handleUpdateRetirement"></Retirement>

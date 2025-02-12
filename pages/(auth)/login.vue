@@ -16,6 +16,11 @@ import type {FormInst, FormRules} from "naive-ui"
 
 const router = useRouter()
 const authStore = useAuthStore()
+const message = useMessage()
+const loadingBar = useLoading()
+const isLoginLoading = ref<boolean>(false)
+const isLogoutLoading = ref<boolean>(false)
+
 
 interface Credentials {
   username: string
@@ -39,11 +44,6 @@ const rules: FormRules = {
 
   ]
 }
-
-const message = useMessage()
-const loadingBar = useLoading()
-const isLoginLoading = ref<boolean>(false)
-const isLogoutLoading = ref<boolean>(false)
 
 async function getUserProfile() {
   const data = await $fetch('/api/users/me/')

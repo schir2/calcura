@@ -41,7 +41,6 @@ export default defineNuxtConfig({
     app: {
         head: {
             bodyAttrs: {
-                class: 'bg-skin-primary text-lg text-skin-base'
             }
         }
     },

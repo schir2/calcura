@@ -1,11 +1,6 @@
 <template>
-  <client-only>
-    <Teleport to="#right-side-bar">
-      <PlanChartGrowth :states="planStates"></PlanChartGrowth>
-      <PlanCommandQueue v-if="orderedCommands" :commands="orderedCommands" @update="handleCommandQueueUpdate"></PlanCommandQueue>
-    </Teleport>
-  </client-only>
-  <div v-if="plan" class="col-span-4 space-y-6">
+<div class="grid grid-cols-3 gap-2">
+  <div v-if="plan" class="gap-2 col-span-2">
     <n-modal v-model:show="showModal">
       <PlanForm :initialValues="plan" mode="edit"
                 @update="handleUpdate"
@@ -13,7 +8,7 @@
       />
     </n-modal>
     <PlanDetailCard :plan="plan" @update="handleUpdate"></PlanDetailCard>
-    <section class="grid grid-cols-2 gap-3">
+    <section class="grid grid-cols-2 gap-2">
       <section class="space-y-3">
         <DebtList v-if="plan.debts" :debts="plan.debts"
                   @create="handleCreateDebt"
@@ -83,6 +78,13 @@
 
     <PlanTable v-if="plan && planStates" :planStates="planStates"/>
   </div>
+  <client-only>
+    <div>
+      <PlanChartGrowth :states="planStates"></PlanChartGrowth>
+      <PlanCommandQueue v-if="orderedCommands" :commands="orderedCommands" @update="handleCommandQueueUpdate"></PlanCommandQueue>
+    </div>
+  </client-only>
+</div>
 </template>
 <script setup lang="ts">
 import PlanManager from "~/models/plan/PlanManager";
@@ -92,7 +94,10 @@ import type {Expense, ExpensePartial} from "~/models/expense/Expense"
 import type {Plan} from "~/models/plan/Plan";
 import type {CashReserve} from "~/models/cashReserve/CashReserve";
 import type {IraInvestment, IraInvestmentPartial} from "~/models/iraInvestment/IraInvestment";
-import type {TaxDeferredInvestment, TaxDeferredInvestmentPartial} from "~/models/taxDeferredInvestment/TaxDeferredInvestment";
+import type {
+  TaxDeferredInvestment,
+  TaxDeferredInvestmentPartial
+} from "~/models/taxDeferredInvestment/TaxDeferredInvestment";
 import type {Income, IncomePartial} from "~/models/income/Income";
 import type {BrokerageInvestment, BrokerageInvestmentPartial} from "~/models/brokerageInvestment/BrokerageInvestment";
 import type {RothIraInvestment, RothIraInvestmentPartial} from "~/models/rothIraInvestment/RothIraInvestment";

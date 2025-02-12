@@ -1,5 +1,5 @@
 <template>
-  <n-card title="BrokerageInvestment(s)" :bordered="false" class="border border-skin-info/50 rounded-md">
+  <n-card title="Brokerages">
     <template #header-extra>
       <BrokerageInvestmentTemplatePicker @create="handleCreate"/>
     </template>
