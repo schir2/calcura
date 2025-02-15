@@ -45,11 +45,6 @@ const rules: FormRules = {
   ]
 }
 
-async function getUserProfile() {
-  const data = await $fetch('/api/users/me/')
-}
-
-
 async function handleLogin() {
   formRef.value?.validate(async (errors) => {
     if (!errors) {

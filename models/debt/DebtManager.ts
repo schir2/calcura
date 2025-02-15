@@ -76,7 +76,7 @@ export function calculateDebtPayment(debtConfig: Debt, principal: number): numbe
             payment = debtConfig.paymentFixedAmount;
             break
         case DebtPaymentStrategy.PercentageOfDebt:
-            payment = debtConfig.principal * (debtConfig.paymentPercentage / 100);
+            payment = principal * (debtConfig.paymentPercentage / 100);
             break
         case DebtPaymentStrategy.MaximumPayment:
             payment = principal;

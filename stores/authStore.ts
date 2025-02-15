@@ -13,20 +13,31 @@ export const useAuthStore = defineStore('auth', () => {
 
     async function login(credentials: Credentials): Promise<void> {
         try {
-            await auth.login(credentials)
+            const response = await auth.login(credentials)
             await fetchUser()
+            return response
         } catch (error) {
-            console.error("Login failed:", error);
+            console.debug("Login failed:", error);
+            throw error
+        }
+    }
+
+    async function register(credentials: Credentials): Promise<void> {
+        try {
+            return await auth.register(credentials)
+        } catch (error) {
+            console.debug("Registration failed:", error);
             throw error
         }
     }
 
     async function logout(): Promise<void> {
         try {
-            await auth.logout();
+            const response = await auth.logout();
             user.value = null;
+            return response
         } catch (error) {
-            console.error("Logout failed:", error);
+            console.debug("Logout failed:", error);
         }
     }
 
@@ -34,9 +45,9 @@ export const useAuthStore = defineStore('auth', () => {
         try {
             user.value = await $fetch("/api/users/me/");
         } catch (error) {
-            console.error("Failed to fetch user", error);
+            console.debug("Failed to fetch user", error);
         }
     }
 
-    return {user, login, logout, isAuthenticated, csrfToken, fetchUser};
+    return {user, login, logout, register, isAuthenticated, csrfToken, fetchUser};
 })
