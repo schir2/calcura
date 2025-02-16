@@ -11,7 +11,7 @@ export const useAuthStore = defineStore('auth', () => {
 
     })
 
-    async function login(credentials: Credentials): Promise<void> {
+    async function login(credentials: Credentials) {
         try {
             const response = await auth.login(credentials)
             await fetchUser()
@@ -22,7 +22,7 @@ export const useAuthStore = defineStore('auth', () => {
         }
     }
 
-    async function register(credentials: Credentials): Promise<void> {
+    async function register(credentials: Credentials) {
         try {
             return await auth.register(credentials)
         } catch (error) {
@@ -31,7 +31,7 @@ export const useAuthStore = defineStore('auth', () => {
         }
     }
 
-    async function logout(): Promise<void> {
+    async function logout() {
         try {
             const response = await auth.logout();
             user.value = null;
@@ -60,5 +60,14 @@ export const useAuthStore = defineStore('auth', () => {
         }
     }
 
-    return {user, login, logout, register, verify, isAuthenticated, csrfToken, fetchUser};
+    async function emailExists(email: string): Promise<boolean>{
+        try {
+            return await auth.emailExists(email)
+        }
+        catch (error) {
+            throw error
+        }
+    }
+
+    return {user, login, logout, register, verify, emailExists, isAuthenticated, csrfToken, fetchUser};
 })

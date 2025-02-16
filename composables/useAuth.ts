@@ -2,7 +2,7 @@ import type {Credentials} from "~/types/Auth";
 
 export const useAuth = () => {
 
-    async function getCsrfToken() {
+    async function getCsrfToken(): Promise<string> {
         const data = await $fetch("/api/auth/csrf-token/", {
             credentials: "include",
         });
@@ -50,6 +50,16 @@ export const useAuth = () => {
         })
     }
 
+    async function emailExists(email: string): Promise<boolean> {
+        const csrfToken = await getCsrfToken()
+        return await $fetch("/api/auth/email-exists/", {
+            method: "GET",
+            credentials: 'include',
+            body: {email: email},
+            headers: {'X-CSRFToken': csrfToken}
+        })
+    }
 
-    return {login, logout, register, verify};
+
+    return {login, logout, register, verify, emailExists};
 };
