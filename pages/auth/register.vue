@@ -21,6 +21,7 @@ import type {FormInst, FormItemRule, FormRules} from "naive-ui"
 
 definePageMeta({
   layout: 'auth',
+  title: 'Register',
 })
 
 const router = useRouter()
@@ -30,7 +31,6 @@ const loadingBar = useLoading()
 const isRegisterLoading = ref<boolean>(false)
 const isLogoutLoading = ref<boolean>(false)
 const {emailExists} = useAuth()
-
 
 interface Registration {
   email: string

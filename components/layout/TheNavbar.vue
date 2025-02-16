@@ -1,15 +1,18 @@
 <template>
   <n-layout-header :inverted="true" class="pt-3 pb-2 px-4">
     <nav class="justify-between items-center flex">
-      <ul>
-        <n-button>Home</n-button>
-      </ul>
+      <n-button quaternary @click="router.push('/')">
+        <span class="flex gap-2 items-center">
+        <img class="h-8 inline-block" src="/assets/img/logos/calcura-logo.svg" alt="logo"/>
+        <span class="text-xl">Calcura</span>
+        </span>
+      </n-button>
       <ul class="flex items-center gap-2">
         <ClientOnly>
           <n-button v-if="authStore.isAuthenticated" @click="handleLogout()">Logout</n-button>
           <n-button keyboard v-if="!authStore.user" @click="$router.push('/auth/login')">Login</n-button>
           <n-avatar circle v-if="authStore.user">
-            <icon class="text-xl" name="mdi:user" />
+            <icon class="text-xl" name="mdi:user"/>
           </n-avatar>
         </ClientOnly>
       </ul>
