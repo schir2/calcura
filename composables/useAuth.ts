@@ -40,6 +40,16 @@ export const useAuth = () => {
         });
     }
 
+    async function verify(key: string) {
+        const csrfToken = await getCsrfToken()
+        return await $fetch("/api/auth/verify/", {
+            method: "POST",
+            credentials: 'include',
+            body: {key: key},
+            headers: {'X-CSRFToken': csrfToken}
+        })
+    }
 
-    return {login, logout, register};
+
+    return {login, logout, register, verify};
 };

@@ -18,7 +18,7 @@
 <script lang="ts" setup>
 const router = useRouter()
 function handleStartNow() {
-  router.push({ path: "/register" });
+  router.push({ path: "/auth/register" });
 }
 
 function handleLearnMore() {

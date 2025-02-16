@@ -53,6 +53,7 @@ async function handleLogin() {
       try {
         await authStore.login(credentialsRef.value)
         message.success('Login Successful')
+        await router.push('/')
       } catch (error) {
         if (error.response) {
           message.error(error.response._data.error)
@@ -61,7 +62,6 @@ async function handleLogin() {
       }
       isLoginLoading.value = false;
       loadingBar.finish()
-      await router.push('/')
     }
   })
 }

@@ -49,5 +49,16 @@ export const useAuthStore = defineStore('auth', () => {
         }
     }
 
-    return {user, login, logout, register, isAuthenticated, csrfToken, fetchUser};
+    async function verify(key: string){
+        try {
+            const response = await auth.verify(key)
+            await fetchUser()
+            return response
+        } catch (error) {
+            console.debug("Verification failed:", error);
+            throw error
+        }
+    }
+
+    return {user, login, logout, register, verify, isAuthenticated, csrfToken, fetchUser};
 })

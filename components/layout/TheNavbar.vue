@@ -7,7 +7,7 @@
       <nav class="flex items-center space-x-3">
         <ClientOnly>
           <n-button v-if="authStore.isAuthenticated" @click="handleLogout()">Logout</n-button>
-          <n-button keyboard v-if="!authStore.user" @click="$router.push('/login')">Login</n-button>
+          <n-button keyboard v-if="!authStore.user" @click="$router.push('/auth/login')">Login</n-button>
           <n-avatar v-if="authStore.user">
             {{ authStore.user.username }}
           </n-avatar>
