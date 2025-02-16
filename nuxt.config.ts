@@ -44,7 +44,7 @@ export default defineNuxtConfig({
                 { rel: 'icon', type: 'image/svg+xml', href: '/favicon.svg' }
             ],
             bodyAttrs: {
-                class: 'bg-skin-base'
+                class: 'bg-skin-base text-skin-base'
             }
         }
     },

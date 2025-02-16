@@ -8,9 +8,15 @@
         <n-input type="password" placeholder="Password" v-model:value="registration.password"></n-input>
       </n-form-item>
       <n-form-item path="passwordConfirmation" label="Password Confirmation">
-        <n-input type="password" placeholder="Password Confirmation" v-model:value="registration.passwordConfirmation"></n-input>
+        <n-input type="password" placeholder="Password Confirmation"
+                 v-model:value="registration.passwordConfirmation"></n-input>
       </n-form-item>
-      <n-button attr-type="submit" @click="handleRegister" :loading="isRegisterLoading">Register</n-button>
+      <n-form-item>
+        <div class="grid grid-cols-2 w-full gap-2">
+          <n-button attr-type="submit" @click="handleRegister" :loading="isRegisterLoading">Register</n-button>
+          <n-button @click="$router.push('/auth/login/')">Login</n-button>
+        </div>
+      </n-form-item>
     </n-form>
     <n-button v-if="authStore.user" @click="authStore.logout()" :loading="isLogoutLoading">Log Out</n-button>
   </client-only>
