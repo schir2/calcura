@@ -13,7 +13,7 @@
       </n-form-item>
       <n-form-item>
         <div class="grid grid-cols-2 w-full gap-2">
-          <n-button attr-type="submit" @click="handleRegister" :loading="isRegisterLoading">Register</n-button>
+          <n-button type="primary" attr-type="submit" @click="handleRegister" :loading="isRegisterLoading">Register</n-button>
           <n-button @click="$router.push('/auth/login/')">Login</n-button>
         </div>
       </n-form-item>

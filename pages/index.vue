@@ -12,7 +12,7 @@
     </p>
     <n-space>
       <n-button type="primary" size="large" strong @click="handleStartNow">
-        Get Started for Free
+        Get Started
       </n-button>
       <n-button type="default" size="large" ghost @click="handleLearnMore">
         Learn More
