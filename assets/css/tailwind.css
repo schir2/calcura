@@ -14,7 +14,7 @@
     }
 
     .spin-fast {
-        animation: spin-multiple 0.5s ease-in-out; /* 0.5 seconds for quick spin */
+        animation: spin-multiple 0.5s ease-in-out; 
     }
 
     .prose :where(code):not(:where([class~="not-prose"] *))::before {
@@ -44,89 +44,97 @@
 
     :root {
         [data-theme="light"] {
+            --bg-base: 255, 255, 255; 
+            --bg-surface: 255, 255, 255; 
+            --bg-overlay: 255, 255, 255, 0.82; 
+            --bg-muted: 255, 255, 255; 
+            --bg-hover: 54, 173, 106; 
 
-            --text-base: 33, 33, 33;
-            --text-muted: 97, 97, 97;
-            --text-primary: 25, 118, 210;
-            --text-secondary: 245, 127, 23;
-            --text-tertiary: 66, 165, 245;
-            --text-accent: 233, 30, 99;
-            --text-error: 211, 47, 47;
-            --text-success: 56, 142, 60;
-            --text-warning: 255, 193, 7;
-            --text-info: 3, 169, 244;
-            --text-link: 25, 118, 210;
-            --text-link-hover: 66, 165, 245;
-            --text-link-active: 21, 101, 192;
+            --text-base: 0, 0, 0; 
+            --text-inverted: 255, 255, 255; 
+            --text-primary: 24, 160, 88; 
+            --text-primary-hover: 54, 173, 106; 
+            --text-primary-active: 12, 122, 67; 
 
+            --text-info: 32, 128, 240; 
+            --text-info-hover: 64, 152, 252; 
+            --text-info-active: 16, 96, 201; 
 
-            --bg-base: 250, 250, 250;
-            --bg-muted: 238, 238, 238;
-            --bg-primary: 224, 224, 224;
-            --bg-secondary: 232, 234, 246;
-            --bg-tertiary: 240, 240, 240;
-            --bg-accent: 245, 245, 245;
-            --bg-error: 255, 205, 210;
-            --bg-success: 200, 230, 201;
-            --bg-warning: 255, 249, 196;
-            --bg-info: 187, 222, 251;
-            --bg-surface: 255, 255, 255;
-            --bg-surface-hover: 245, 245, 245;
-            --bg-overlay: 0, 0, 0, 0.5;
+            --text-error: 208, 48, 80; 
+            --text-error-hover: 222, 87, 109; 
+            --text-error-active: 171, 31, 63; 
 
+            --text-warning: 240, 160, 32; 
+            --text-warning-hover: 252, 176, 64; 
+            --text-warning-active: 201, 124, 16; 
 
-            --border-base: 200, 200, 200;
-            --border-muted: 220, 220, 220;
-            --border-primary: 25, 118, 210;
-            --border-secondary: 245, 127, 23;
-            --border-tertiary: 66, 165, 245;
-            --border-accent: 233, 30, 99;
-            --border-error: 211, 47, 47;
-            --border-success: 56, 142, 60;
-            --border-warning: 255, 193, 7;
-            --border-info: 3, 169, 244;
+            --text-success: 24, 160, 88; 
+            --text-success-hover: 54, 173, 106; 
+            --text-success-active: 12, 122, 67; 
+
+            --border-base: 0, 0, 0, 0.12; 
+            --border-muted: 0, 0, 0, 0.06; 
+            --border-primary: 24, 160, 88; 
+            --border-secondary: 32, 128, 240; 
+            --border-error: 208, 48, 80; 
+            --border-success: 24, 160, 88; 
+            --border-warning: 240, 160, 32; 
+            --border-info: 32, 128, 240; 
+
+            --alpha-disabled: 0, 0, 0, 0.5; 
+            --alpha-disabled-input: 0, 0, 0, 0.02; 
+            --alpha-divider: 0, 0, 0, 0.06; 
+            --alpha-pressed: 0, 0, 0, 0.07; 
+            --alpha-scrollbar: 0, 0, 0, 0.25; 
+            --alpha-scrollbar-hover: 0, 0, 0, 0.4; 
+            --alpha-overlay: 255, 255, 255, 0.82; 
         }
 
         [data-theme="dark"] {
+            --bg-base: 16, 16, 20; 
+            --bg-surface: 24, 24, 28; 
+            --bg-overlay: 44, 44, 50, 0.9; 
+            --bg-muted: 72, 72, 78; 
+            --bg-hover: 42, 148, 125; 
 
-            --text-base: 235, 235, 235; /* Light gray, maintaining good contrast */
-            --text-muted: 200, 200, 200; /* Increased brightness for improved readability */
-            --text-primary: 88, 166, 255; /* Adjusted to be more visible on lighter bg-primary */
-            --text-secondary: 255, 203, 107; /* Enhanced contrast for secondary text */
-            --text-tertiary: 130, 177, 255;
-            --text-accent: 255, 138, 128;
-            --text-error: 255, 110, 110; /* Slightly lighter for error clarity */
-            --text-success: 105, 240, 174; /* Bright and noticeable against success backgrounds */
-            --text-warning: 255, 224, 130; /* Slightly more visible against new warning bg */
-            --text-info: 129, 212, 250; /* Brighter to pop on the info background */
-            --text-link: 88, 166, 255;
-            --text-link-hover: 130, 177, 255;
-            --text-link-active: 70, 154, 239;
+            --text-base: 255, 255, 255; 
+            --text-inverted: 0, 0, 0; 
+            --text-primary: 99, 226, 183; 
+            --text-primary-hover: 127, 231, 196; 
+            --text-primary-active: 90, 206, 167; 
 
-            --bg-base: 40, 40, 40; /* Lighter than before, close to light theme */
-            --bg-muted: 55, 55, 55; /* Matches light theme's muted feel */
-            --bg-primary: 70, 70, 70; /* Maintains distinction without overpowering text */
-            --bg-secondary: 60, 60, 60; /* A subtle but clear contrast */
-            --bg-tertiary: 75, 75, 75; /* Lighter gray to add contrast and hierarchy */
-            --bg-accent: 85, 85, 85; /* Accents remain subtle but not too dark */
-            --bg-error: 115, 0, 0; /* Matches light theme but with slightly reduced intensity */
-            --bg-success: 0, 102, 0; /* Deep green for readability against text-success */
-            --bg-warning: 130, 110, 0; /* Gold tone without high saturation */
-            --bg-info: 80, 100, 140; /* Subtle blue for info elements */
-            --bg-surface: 48, 48, 48; /* Soft background for surfaces, close to light theme */
-            --bg-surface-hover: 65, 65, 65; /* Hover states slightly more pronounced */
-            --bg-overlay: 10, 10, 10, 0.8; /* Subtle overlay without full darkness */
+            --text-info: 112, 192, 232; 
+            --text-info-hover: 138, 203, 236; 
+            --text-info-active: 102, 175, 211; 
 
-            --border-base: 58, 58, 58;
-            --border-muted: 48, 48, 48;
-            --border-primary: 88, 166, 255;
-            --border-secondary: 255, 203, 107;
-            --border-tertiary: 130, 177, 255;
-            --border-accent: 255, 138, 128;
-            --border-error: 255, 85, 85;
-            --border-success: 105, 240, 174;
-            --border-warning: 255, 224, 130;
-            --border-info: 129, 212, 250;
+            --text-error: 232, 128, 128; 
+            --text-error-hover: 233, 139, 139; 
+            --text-error-active: 229, 114, 114; 
+
+            --text-warning: 242, 201, 125; 
+            --text-warning-hover: 245, 213, 153; 
+            --text-warning-active: 230, 194, 96; 
+
+            --text-success: 99, 226, 183; 
+            --text-success-hover: 127, 231, 196; 
+            --text-success-active: 90, 206, 167; 
+
+            --border-base: 58, 58, 58; 
+            --border-muted: 48, 48, 48; 
+            --border-primary: 99, 226, 183; 
+            --border-secondary: 112, 192, 232; 
+            --border-error: 232, 128, 128; 
+            --border-success: 99, 226, 183; 
+            --border-warning: 242, 201, 125; 
+            --border-info: 112, 192, 232; 
+
+            --alpha-disabled: 0, 0, 0, 0.38; 
+            --alpha-disabled-input: 0, 0, 0, 0.06; 
+            --alpha-divider: 0, 0, 0, 0.09; 
+            --alpha-pressed: 0, 0, 0, 0.05; 
+            --alpha-scrollbar: 0, 0, 0, 0.2; 
+            --alpha-scrollbar-hover: 0, 0, 0, 0.3; 
+            --alpha-overlay: 10, 10, 10, 0.8; 
         }
     }
 }

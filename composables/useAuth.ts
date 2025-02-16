@@ -52,12 +52,13 @@ export const useAuth = () => {
 
     async function emailExists(email: string): Promise<boolean> {
         const csrfToken = await getCsrfToken()
-        return await $fetch("/api/auth/email-exists/", {
-            method: "GET",
-            credentials: 'include',
+        const data =  await $fetch('/api/auth/email-exists/', {
+            method: 'POST',
             body: {email: email},
+            credentials: 'include',
             headers: {'X-CSRFToken': csrfToken}
         })
+        return data.exists
     }
 
 

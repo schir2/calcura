@@ -3,7 +3,7 @@
   <n-loading-bar-provider>
     <n-config-provider :theme="darkTheme">
       <n-message-provider>
-        <n-space vertical :naive-scrollbar="false" class="bg-black max-h-96">
+        <n-space vertical :naive-scrollbar="false">
           <LayoutTheNavbar/>
           <n-layout has-sider class="h-screen" :naive-scrollbar="false">
             <LayoutTheLeftSidebar/>

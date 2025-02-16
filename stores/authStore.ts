@@ -60,14 +60,5 @@ export const useAuthStore = defineStore('auth', () => {
         }
     }
 
-    async function emailExists(email: string): Promise<boolean>{
-        try {
-            return await auth.emailExists(email)
-        }
-        catch (error) {
-            throw error
-        }
-    }
-
-    return {user, login, logout, register, verify, emailExists, isAuthenticated, csrfToken, fetchUser};
+    return {user, login, logout, register, verify, isAuthenticated, csrfToken, fetchUser};
 })

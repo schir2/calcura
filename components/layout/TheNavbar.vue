@@ -1,21 +1,19 @@
 <template>
-  <n-layout-header :inverted="true" class="p-3">
-    <n-space justify="space-between" align="center">
-      <nav>
+  <n-layout-header :inverted="true" class="pt-3 pb-2 px-4">
+    <nav class="justify-between items-center flex">
+      <ul>
         <n-button>Home</n-button>
-      </nav>
-      <nav class="flex items-center space-x-3">
+      </ul>
+      <ul class="flex items-center gap-2">
         <ClientOnly>
           <n-button v-if="authStore.isAuthenticated" @click="handleLogout()">Logout</n-button>
           <n-button keyboard v-if="!authStore.user" @click="$router.push('/auth/login')">Login</n-button>
-          <n-avatar v-if="authStore.user">
-            {{ authStore.user.username }}
+          <n-avatar circle v-if="authStore.user">
+            <icon class="text-xl" name="mdi:user" />
           </n-avatar>
         </ClientOnly>
-      </nav>
-    </n-space>
-
-
+      </ul>
+    </nav>
 
 
   </n-layout-header>

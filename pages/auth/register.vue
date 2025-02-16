@@ -1,8 +1,8 @@
 <template>
   <client-only>
     <n-form v-if="!authStore.user" ref="registrationForm" :model="registration" :rules="rules">
-      <n-form-item path="username" label="Username">
-        <n-input placeholder="Username" v-model:value="registration.username"></n-input>
+      <n-form-item path="email" label="Email">
+        <n-input placeholder="Email" v-model:value="registration.email"></n-input>
       </n-form-item>
       <n-form-item path="password" label="Password">
         <n-input type="password" placeholder="Password" v-model:value="registration.password"></n-input>
@@ -10,7 +10,7 @@
       <n-form-item path="passwordConfirmation" label="Password Confirmation">
         <n-input type="password" placeholder="Password Confirmation" v-model:value="registration.passwordConfirmation"></n-input>
       </n-form-item>
-      <n-button attr-type="submit" @click="handleRegister(registrationForm)" :loading="isRegisterLoading">Register</n-button>
+      <n-button attr-type="submit" @click="handleRegister" :loading="isRegisterLoading">Register</n-button>
     </n-form>
     <n-button v-if="authStore.user" @click="authStore.logout()" :loading="isLogoutLoading">Log Out</n-button>
   </client-only>
@@ -19,36 +19,62 @@
 
 import type {FormInst, FormItemRule, FormRules} from "naive-ui"
 
+definePageMeta({
+  layout: 'auth',
+})
+
 const router = useRouter()
 const authStore = useAuthStore()
 const message = useMessage()
 const loadingBar = useLoading()
 const isRegisterLoading = ref<boolean>(false)
 const isLogoutLoading = ref<boolean>(false)
+const {emailExists} = useAuth()
 
 
 interface Registration {
-  username: string
+  email: string
   password: string
   passwordConfirmation: string
 }
 
 const registrationForm = ref<FormInst | null>(null)
 const registration = ref<Registration>({
-  username: '',
+  email: '',
   password: '',
   passwordConfirmation: '',
 })
 
+function validateEmail(rule: FormItemRule, value: string): boolean {
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  return emailRegex.test(value);
+}
+
+function validateEmailAlreadyExists(rule: FormItemRule, value: string): Promise<void> {
+  return new Promise((resolve, reject) => {
+    emailExists(value).then(exists => {
+      console.log(exists)
+      if (exists) {
+        reject(new Error('Email already exists'));
+      } else {
+        resolve();
+      }
+    }).catch(error => {
+      reject(new Error('Validation failed'));
+    });
+  });
+}
 
 function validatePasswordSame(rule: FormItemRule, value: string): boolean {
   return value === registration.value.password
 }
 
 const rules: FormRules = {
-  username: [
-    {required: true, message: 'Username is required', trigger: ['blur', 'change']},
+  email: [
+    {required: true, message: 'Email is required', trigger: ['blur', 'change']},
     {min: 5, max: 32, message: 'Password must be at least 8 characters', trigger: ['blur', 'change']},
+    {validator: validateEmail, message: 'Email is invalid', trigger: ['blur', 'change']},
+    {validator: validateEmailAlreadyExists, message: 'An Account with this email already exists.', trigger: ['change']}
   ],
   password: [
     {required: true, message: 'Password is required', trigger: ['blur', 'change']},
