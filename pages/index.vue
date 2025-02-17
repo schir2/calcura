@@ -20,6 +20,9 @@
             <n-button type="primary" size="large" strong @click="handleStartNow">
               Get Started
             </n-button>
+            <n-button type="primary" size="large" strong @click="$router.push('/auth/login')">
+              Log In
+            </n-button>
             <n-button type="default" size="large" ghost @click="handleLearnMore">
               Learn More
             </n-button>
