@@ -12,7 +12,7 @@
         <n-button @click="$router.push('/auth/register/')">Register</n-button>
       </div>
     </n-form-item>
-      <n-button quaternary>Forgot Password?</n-button>
+      <n-button quaternary type="primary" y>Forgot Password?</n-button>
   </n-form>
   <n-button v-if="authStore.user" @click="authStore.logout()" :loading="isLogoutLoading">Log Out</n-button>
 </template>

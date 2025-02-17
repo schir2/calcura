@@ -1,6 +1,7 @@
 import type {GrowthApplicationStrategy} from "~/models/plan/Plan";
 import {InsufficientFundsStrategy} from "~/models/plan/Plan";
-import {Frequency} from "~/models/expense/Expense";
+
+import {Frequency} from "~/types/Frequency";
 
 export function calculateCompoundInterest(principal: number, interestRate: number, numberOfInterestApplicationsPerPeriod: number = 1, numberOfPeriods: number): number {
     return principal * (1 + (interestRate / numberOfInterestApplicationsPerPeriod)) ** (numberOfInterestApplicationsPerPeriod * numberOfPeriods)

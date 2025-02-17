@@ -1,7 +1,7 @@
 import BaseManager from "~/models/common/BaseManager";
 import type {Expense} from "~/models/expense/Expense";
-import {Frequency} from "~/models/expense/Expense";
 import type ExpenseState from "~/models/expense/ExpenseState";
+import {Frequency} from "~/types/Frequency";
 
 export class ExpenseManager extends BaseManager<Expense, ExpenseState> {
     protected createInitialState(): ExpenseState {

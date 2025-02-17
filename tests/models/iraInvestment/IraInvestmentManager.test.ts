@@ -10,7 +10,8 @@ import {
     RetirementStrategy
 } from "~/models/plan/Plan";
 import {ProcessIraInvestmentCommand} from "~/models/iraInvestment/IraInvestmentCommands";
-import {IncomeFrequency} from "~/models/income/Income";
+
+import {Frequency} from "~/types/Frequency";
 
 const planConfig: Plan = {
     id: 1,
@@ -36,7 +37,7 @@ const planConfig: Plan = {
             grossIncome: 100_000,
             growthRate: 0,
             incomeType: "ordinary",
-            frequency: IncomeFrequency.annual
+            frequency: Frequency.annual
         },
         {
             id: 1,
@@ -44,7 +45,7 @@ const planConfig: Plan = {
             grossIncome: 50_000,
             growthRate: 0,
             incomeType: "ordinary",
-            frequency: IncomeFrequency.annual
+            frequency: Frequency.annual
         }
     ],
     expenses: [],
@@ -66,7 +67,7 @@ const planConfig: Plan = {
                     grossIncome: 100_000,
                     growthRate: 0,
                     incomeType: "ordinary",
-                    frequency: IncomeFrequency.annual
+                    frequency: Frequency.annual
                 },
 
         }

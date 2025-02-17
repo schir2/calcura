@@ -7,11 +7,11 @@ import {
     type Plan,
     RetirementStrategy
 } from "~/models/plan/Plan";
-import {ExpenseType, Frequency} from "~/models/expense/Expense";
+import {ExpenseType} from "~/models/expense/Expense";
 import {ExpenseManager} from "~/models/expense/ExpenseManager"
 import type ExpenseState from "~/models/expense/ExpenseState";
 import {ProcessExpenseCommand} from "~/models/expense/ExpenseCommands";
-import {IncomeFrequency} from "~/models/income/Income";
+import {Frequency} from "~/types/Frequency";
 
 const planConfig: Plan = {
     id: 1,
@@ -37,7 +37,7 @@ const planConfig: Plan = {
             grossIncome: 100_000,
             growthRate: 0,
             incomeType: "ordinary",
-            frequency: IncomeFrequency.annual
+            frequency: Frequency.annual
         },
         {
             id: 1,
@@ -45,7 +45,7 @@ const planConfig: Plan = {
             grossIncome: 50_000,
             growthRate: 0,
             incomeType: "ordinary",
-            frequency: IncomeFrequency.annual
+            frequency: Frequency.annual
         }
     ],
     expenses: [

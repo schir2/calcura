@@ -2,11 +2,21 @@
   <n-loading-bar-provider>
     <n-config-provider :theme="darkTheme">
       <n-message-provider>
-          <LayoutTheNavbar/>
+        <LayoutTheNavbar/>
         <aurora-background>
           <div class="min-h-nav-offset flex items-center justify-center">
             <n-card class="w-96 mx-auto">
-              <h1 class="text-4xl mb-4">{{ title }}</h1>
+              <template #header>
+                <div class="flex justify-between">
+                  <h1 class="text-4xl flex items-center gap-4">
+                    <a href="#" @click.prevent="$router.push('/')" aria-label="Back to Home">
+                      <img src="/assets/img/logos/calcura-logo.svg" alt="Calcura" class="h-12 inline-block">
+                    </a>
+                    <span>{{ title }}</span>
+                  </h1>
+                  <n-button quaternary type="primary" @click="$router.push('/')">Home</n-button>
+                </div>
+              </template>
               <slot/>
             </n-card>
           </div>
@@ -18,14 +28,10 @@
 <script setup lang="ts">
 import {darkTheme, NConfigProvider, NMessageProvider} from 'naive-ui'
 import AuroraBackground from "~/components/effects/AuroraBackground.vue";
+import {useTitle} from "~/composables/useTitle";
 
-const route = useRoute()
+const {title} = useTitle()
 
-function getTitle(): string {
-  return route.meta.title as string || 'Calcura';
-}
-
-const title = getTitle()
 useHead({
   title: title
 })

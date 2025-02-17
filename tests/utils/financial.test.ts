@@ -1,7 +1,8 @@
 import {describe, expect, it} from 'vitest';
 import {adjustForInsufficientFunds, calculateCompoundInterest, calculateInvestmentGrowthAmount, getAnnualAmount} from '@/utils/financial';
 import {GrowthApplicationStrategy, InsufficientFundsStrategy} from "~/models/plan/Plan";
-import {Frequency} from "~/models/expense/Expense";
+
+import {Frequency} from "~/types/Frequency";
 
 describe('financialUtils', () => {
 

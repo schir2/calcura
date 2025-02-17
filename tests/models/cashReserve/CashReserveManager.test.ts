@@ -9,8 +9,8 @@ import {CashReserveStrategy} from "~/models/cashReserve/CashReserve";
 import {beforeEach, describe, expect, it} from "vitest";
 import type {CashReserveManager} from "~/models/cashReserve/CashReserveManager";
 import PlanManager from "~/models/plan/PlanManager";
-import {ExpenseType, Frequency} from "~/models/expense/Expense";
-import {IncomeFrequency} from "~/models/income/Income";
+import {ExpenseType} from "~/models/expense/Expense";
+import {Frequency} from "~/types/Frequency";
 
 const planConfig: Plan = {
     id: 1,
@@ -46,7 +46,7 @@ const planConfig: Plan = {
             grossIncome: 100_000,
             growthRate: 0,
             incomeType: "ordinary",
-            frequency: IncomeFrequency.Annual
+            frequency: Frequency.Annually
         },
         {
             id: 1,
@@ -54,7 +54,7 @@ const planConfig: Plan = {
             grossIncome: 50_000,
             growthRate: 0,
             incomeType: "ordinary",
-            frequency: IncomeFrequency.Annual
+            frequency: Frequency.Annually
         }
     ],
     expenses: [

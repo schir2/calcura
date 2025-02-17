@@ -1,16 +1,9 @@
 import type {Income} from "~/models/income/Income";
+import {Frequency} from "~/types/Frequency";
 
 export enum ExpenseType {
     fixed = 'fixed',
     variable = 'variable',
-}
-
-export enum Frequency {
-    Monthly = 'monthly',
-    Weekly = 'weekly',
-    Quarterly = 'quarterly',
-    Annually = 'annual',
-    Biweekly = 'biweekly',
 }
 
 export interface Expense {

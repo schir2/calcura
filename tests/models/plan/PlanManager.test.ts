@@ -15,10 +15,10 @@ import {
 import {IraContributionStrategy} from "~/models/iraInvestment/IraInvestment";
 import {RothIraContributionStrategy} from "~/models/rothIraInvestment/RothIraInvestment";
 import {BrokerageContributionStrategy} from "~/models/brokerageInvestment/BrokerageInvestment";
-import {ExpenseType, Frequency} from "~/models/expense/Expense";
+import {ExpenseType} from "~/models/expense/Expense";
 import {DebtPaymentStrategy} from "~/models/debt/Debt";
 import {CashReserveStrategy} from "~/models/cashReserve/CashReserve";
-import {IncomeFrequency} from "~/models/income/Income";
+import {Frequency} from "~/types/Frequency";
 
 describe("PlanManager", () => {
     let planConfig: Plan;
@@ -59,7 +59,7 @@ describe("PlanManager", () => {
                     grossIncome: 100000,
                     growthRate: 0,
                     incomeType: "ordinary",
-                    frequency: IncomeFrequency.Annual
+                    frequency: Frequency.Annually
                 },
                 {
                     id: 2,
@@ -67,7 +67,7 @@ describe("PlanManager", () => {
                     grossIncome: 50000,
                     growthRate: 0,
                     incomeType: "ordinary",
-                    frequency: IncomeFrequency.Annual
+                    frequency: Frequency.Annually
                 }
             ],
             expenses: [
@@ -136,7 +136,7 @@ describe("PlanManager", () => {
                         grossIncome: 100_000,
                         growthRate: 0,
                         incomeType: "ordinary",
-                        frequency: IncomeFrequency.Annual
+                        frequency: Frequency.Annually
                     }
 
                 }
@@ -169,7 +169,7 @@ describe("PlanManager", () => {
                             grossIncome: 100_000,
                             growthRate: 0,
                             incomeType: "ordinary",
-                            frequency: IncomeFrequency.Annual
+                            frequency: Frequency.Annually
                         },
                 }],
             rothIraInvestments: [
@@ -188,7 +188,7 @@ describe("PlanManager", () => {
                             grossIncome: 100_000,
                             growthRate: 0,
                             incomeType: "ordinary",
-                            frequency: IncomeFrequency.Annual
+                            frequency: Frequency.Annually
                         },
                 }],
         }

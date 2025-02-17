@@ -10,7 +10,8 @@ import {
     type Plan,
     RetirementStrategy
 } from "~/models/plan/Plan";
-import {IncomeFrequency} from "~/models/income/Income";
+
+import {Frequency} from "~/types/Frequency";
 
 const planConfig: Plan = {
     id: 1,
@@ -37,7 +38,7 @@ const planConfig: Plan = {
             grossIncome: 100_000,
             growthRate: 0,
             incomeType: "ordinary",
-            frequency: IncomeFrequency.Annual
+            frequency: Frequency.Annually
         },
         {
             id: 1,
@@ -45,7 +46,7 @@ const planConfig: Plan = {
             grossIncome: 50_000,
             growthRate: 0,
             incomeType: "ordinary",
-            frequency: IncomeFrequency.Annual
+            frequency: Frequency.Annually
         }
     ],
     expenses: [],

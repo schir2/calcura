@@ -27,8 +27,6 @@
 import type {MenuOption} from 'naive-ui'
 import {Icon} from '#components'
 
-const router = useRouter()
-
 function renderIcon(name: string) {
   return () => h(Icon, {name: name})
 }
@@ -42,6 +40,7 @@ function renderLabel(label: string, to: string) {
 const authStore = useAuthStore()
 const collapsed = ref<boolean>(false)
 const menuOptions: MenuOption[] = [
+  {label: renderLabel('Dashboard', '/dashboard'), key: 'dashboard', icon: renderIcon('uil:create-dashboard'),},
   {label: renderLabel('Plans', '/plans'), key: 'plans', icon: renderIcon('mdi:flower-poppy'),},
   {label: renderLabel('Incomes', '/incomes'), key: 'incomes', icon: renderIcon('mdi:currency-usd'),},
   {label: renderLabel('Expenses', '/expenses'), key: 'expenses', icon: renderIcon('mdi:cash-minus'),},

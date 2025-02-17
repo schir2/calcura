@@ -62,8 +62,8 @@ import {Bar} from 'vue-chartjs'
 import type {Income} from "~/models/income/Income";
 import {BarElement, CategoryScale, Chart as ChartJS, Legend, LinearScale, Title, Tooltip} from 'chart.js'
 import {getAnnualAmount} from "~/utils";
-import type {Frequency} from "~/models/expense/Expense";
 import {useIncomeValidation} from "~/composables/validators/useIncomeValidator";
+import {Frequency} from "~/types/Frequency";
 
 interface Props {
   initialValues: Partial<Income>;

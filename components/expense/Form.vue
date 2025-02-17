@@ -73,9 +73,10 @@
 </template>
 
 <script lang="ts" setup>
-import {type Expense, Frequency} from "~/models/expense/Expense";
+import {type Expense} from "~/models/expense/Expense";
 import {useCrudFormWithValidation} from "~/composables/useCrudFormWithValidation";
 import {getAnnualAmount} from "~/utils";
+import {Frequency} from "~/types/Frequency";
 
 interface Props {
   initialValues: Partial<Expense>;
