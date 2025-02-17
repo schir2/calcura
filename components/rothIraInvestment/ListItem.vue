@@ -9,13 +9,7 @@
   </n-modal>
   <n-card size="small">
     <template #header>
-      <span>{{ rothIraInvestment.name }} <NuxtLink :to="{name: 'rothIraInvestments-id-Form', params:{id:rothIraInvestment.id}}">
-        <n-button circle secondary type="primary" size="small">
-          <template #icon>
-            <Icon name="mdi:open-in-new"/>
-          </template>
-        </n-button>
-      </NuxtLink></span>
+      <span>{{ rothIraInvestment.name }}</span>
     </template>
     <template #default>
       <ul class="grid grid-cols-5">

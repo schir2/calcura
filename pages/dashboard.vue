@@ -1,5 +1,5 @@
 <template>
-  <h2 class="text-2xl mb-2">Summary</h2>
+  <h2 class="text-2xl mb-2">My Plans</h2>
   <div class="flex gap-2 flex-wrap">
     <dashboard-income-annual @click="$router.push('/incomes')" class="w-64" :incomes="incomes"/>
     <dashboard-cash-reserve-total @click="$router.push('/cash-reserves')" class="w-64" :cashReserves="cashReserves"/>
