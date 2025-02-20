@@ -1,4 +1,4 @@
-import {type GrowthApplicationStrategy, InsufficientFundsStrategy} from "~/models/plan/Plan";
+import {GrowthApplicationStrategy, InsufficientFundsStrategy} from "~/models/plan/Plan";
 
 export const DEFAULT_GROWTH_RATE = 6
 
@@ -22,4 +22,4 @@ export const MAX_GROWTH_RATE = 200;
 
 export const DEFAULT_AGE: number = 30;
 export const DEFAULT_ALLOW_NEGATIVE_DISPOSABLE_INCOME: InsufficientFundsStrategy = InsufficientFundsStrategy.None
-export const DEFAULT_GROWTH_APPLICATION_STRATEGY: GrowthApplicationStrategy = 'start'
+export const DEFAULT_GROWTH_APPLICATION_STRATEGY: GrowthApplicationStrategy = GrowthApplicationStrategy.Start

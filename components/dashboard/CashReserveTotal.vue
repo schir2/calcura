@@ -14,7 +14,7 @@
 <script setup lang="ts">
 import type {CashReserve} from "~/models/cashReserve/CashReserve";
 import {formatValue} from "~/utils/formatValue";
-import {FormatType} from "~/enums/FormatType";
+import {FormatType} from "~/types/FormatType";
 
 interface Props {
   cashReserves: CashReserve[],

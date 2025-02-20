@@ -15,7 +15,7 @@
 import type {Income} from "~/models/income/Income";
 import {getAnnualAmount} from "~/utils";
 import {formatValue} from "~/utils/formatValue";
-import {FormatType} from "~/enums/FormatType";
+import {FormatType} from "~/types/FormatType";
 
 interface Props {
   incomes: Income[],

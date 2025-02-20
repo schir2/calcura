@@ -124,6 +124,10 @@ eventBus.on("*", (eventName, payload) => {
   console.log(`[Event Bus]: ${eventName}`, payload);
 });
 
+definePageMeta({
+  layoutTransition: {name: 'slide-in'}
+})
+
 
 useHead({
   title: 'Calcura Dashboard',

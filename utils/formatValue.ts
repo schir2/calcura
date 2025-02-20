@@ -1,6 +1,6 @@
 // utils/formatValue.ts
 import {format, parseISO} from 'date-fns';
-import type {FormatType} from "~/enums/FormatType";
+import type {FormatType} from "~/types/FormatType";
 
 export function formatValue(value: string | number, formatType: FormatType) {
     const numericValue = Number(value);
