@@ -20,7 +20,7 @@ import {FormatType} from "~/types/FormatType";
 interface Props {
   expenses: Expense[],
 }
-const {expenses} = defineProps<Props>()
+const {expenses = []} = defineProps<Props>()
 const totalAnnualExpense = computed(() =>{
   return expenses.reduce((acc, expense) => acc + getAnnualAmount(expense.amount, expense.frequency), 0);
 })

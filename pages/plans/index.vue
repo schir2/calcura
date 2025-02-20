@@ -1,5 +1,16 @@
 <template>
-  <PlanTemplatePicker @create="handleCreatePlan "/>
+  <n-button type="primary" circle @click="handleClickCreatePlan">
+    <template #icon>
+      <icon name="mdi:add"/>
+    </template>
+  </n-button>
+  <n-modal v-model:show="showModal">
+    <plan-form
+        @create="handleCreatePlan"
+        @update="handleUpdatePlan"
+        @cancel="showModal = false"
+    />
+  </n-modal>
   <PlanList :plans="plans"
             @duplicate="handleCreatePlan"
             @update="handleUpdatePlan"
@@ -7,36 +18,37 @@
   ></PlanList>
 </template>
 <script lang="ts" setup>
-import {usePlanService} from "~/composables/api/usePlanService";
 import type {Plan, PlanPartial} from "~/models/plan/Plan";
+import {usePlanService} from "~/composables/api/usePlanService";
+
 
 const planService = usePlanService()
+const {data: plans, refresh: refreshPlans} = await planService.list()
+const plan = ref<null | Plan>(null)
+
+const showModal = ref(false)
 
 async function handleCreatePlan(planTemplate: PlanPartial) {
   await planService.create(planTemplate)
-  await loadPlans();
+  await refreshPlans();
+}
+
+function handleClickCreatePlan() {
+  console.log("Create Plan")
+  showModal.value = true
 }
 
 async function handleDeletePlan(plan: Plan) {
   await planService.remove(plan.id)
-  await loadPlans();
+  await refreshPlans();
 }
 
 async function handleUpdatePlan(plan: Plan) {
   await planService.update(plan.id, plan)
-  await loadPlans();
-}
-
-const plans = ref<Plan[]>([])
-
-async function loadPlans() {
-  try {
-    plans.value = await planService.list();
-  } catch (error) {
-  }
+  await refreshPlans();
 }
 
 onMounted(async () => {
-  await loadPlans();
+  await refreshPlans();
 });
 </script>

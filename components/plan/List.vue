@@ -12,7 +12,7 @@ interface Props {
   plans: Plan[]
 }
 
-const props = defineProps<Props>()
+const {plans = []} = defineProps<Props>()
 
 const emit = defineEmits(['delete', 'update', 'create', 'remove', 'duplicate']);
 

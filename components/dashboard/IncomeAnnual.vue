@@ -1,5 +1,6 @@
 <template>
   <n-card size="small" class="opacity-85">
+    {{incomes}} {{totalAnnualIncome}}
     <n-statistic :value="formatValue(totalAnnualIncome, FormatType.Currency)">
       <template #label>
         <span class="flex gap-2">
@@ -21,7 +22,7 @@ interface Props {
   incomes: Income[],
 }
 
-const {incomes} = defineProps<Props>()
+const {incomes = []} = defineProps<Props>()
 const totalAnnualIncome = computed(() => {
   return incomes.reduce((acc, income) => acc + getAnnualAmount(income.grossIncome, income.frequency), 0);
 })

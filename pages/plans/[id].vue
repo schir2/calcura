@@ -181,8 +181,8 @@ async function handleRemoveCashReserve(cashReservePartial: CashReserve) {
   await loadPlan();
 }
 
-async function handleCreateIncome(incomeTemplate: IncomePartial) {
-  const income = await incomeService.create(incomeTemplate)
+async function handleCreateIncome(incomePartial: IncomePartial) {
+  const income = await incomeService.create(incomePartial)
   await planService.addRelatedModel(planId, 'incomes', income.id)
   await loadPlan();
 }

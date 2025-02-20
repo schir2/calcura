@@ -20,7 +20,7 @@ interface Props {
   debts: Debt[],
 }
 
-const {debts} = defineProps<Props>()
+const {debts = []} = defineProps<Props>()
 const totalAnnualDebt = computed(() => {
   return debts.reduce((acc, debt) => acc + debt.principal, 0);
 })

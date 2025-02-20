@@ -102,18 +102,18 @@
   </n-card>
 </template>
 <script lang="ts" setup>
-import {IncomeTaxStrategy, type Plan, RetirementStrategy} from "~/models/plan/Plan";
+import {IncomeTaxStrategy, type Plan, planDefaults, RetirementStrategy} from "~/models/plan/Plan";
 import {usePlanValidator} from "~/composables/validators/usePlanValidator";
 
 interface Props {
-  initialValues: Partial<Plan>;
-  mode: 'create' | 'edit'
+  initialValues?: Partial<Plan>;
+  mode?: 'create' | 'edit'
 }
 
-const props = defineProps<Props>();
+const {initialValues = planDefaults, mode='create'} = defineProps<Props>();
 const emit = defineEmits(['create', 'update', 'cancel'])
 const {formRef, modelRef, rules, handleCreate, handleUpdate, handleCancel} =
-    useCrudFormWithValidation<Plan>(props.initialValues, emit, usePlanValidator);
+    useCrudFormWithValidation<Plan>(initialValues, emit, usePlanValidator);
 
 
 const insufficientFundsStrategyOptions = [
@@ -125,15 +125,6 @@ const insufficientFundsStrategyOptions = [
 const growthApplicationStrategyOptions = [
   {value: 'start', label: 'Start of Year'},
   {value: 'end', label: 'End of Year'},
-]
-
-const retirementStrategyOptions = [
-  [
-    {label: 'Age', value: 'age'},
-    {label: 'Debt Free', value: 'debt_free'},
-    {label: 'Percent Rule', value: 'percent_rule'},
-    {label: 'Savings Amount', value: 'target_savings'}
-  ]
 ]
 
 const taxBrackets = [

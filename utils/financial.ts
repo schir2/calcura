@@ -41,6 +41,7 @@ export function adjustForInsufficientFunds(
 }
 
 export function getAnnualAmount(amount: number, frequency: Frequency): number {
+    console.log(amount, frequency)
     switch (frequency) {
         case Frequency.Monthly:
             return amount * 12
