@@ -1,5 +1,5 @@
 <template>
-  <n-steps v-model:current="currentStep">
+  <n-steps v-model:current="currentStep" >
     <n-step title="Profile">
       <template #icon>
         <Icon name="mdi:user"/>
@@ -19,4 +19,8 @@
 </template>
 <script lang="ts" setup>
 const currentStep = defineModel<number>(1);
+const emit = defineEmits(['update'])
+watch(currentStep, (value, oldValue) => {
+  emit('update', {value: value, oldValue: oldValue});
+})
 </script>

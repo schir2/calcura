@@ -2,11 +2,11 @@
   <n-card role="dialog" class="max-w-6xl" :bordered="true">
     <template #header>
       <h3 class="text-2xl mb-2">Plan{{ modelRef.name }}</h3>
-      <PlanFormSteps v-model="currentStep"/>
+      <PlanFormSteps v-model="currentStep" @update=handleStepChange />
     </template>
     <template #default>
       <n-form ref="formRef" :model="modelRef" :rules="rules">
-        <transition key="currentStep" mode="out-in">
+        <transition mode="out-in" :name="transitionName">
           <PlanFormProfile v-if="currentStep===1" v-model="modelRef"/>
           <PlanFormSettings v-else-if="currentStep===2" v-model="modelRef"/>
           <PlanFormGoals v-else-if="currentStep===3" v-model="modelRef"/>
@@ -35,5 +35,42 @@ const {formRef, modelRef, rules, handleCreate, handleUpdate, handleCancel} =
     useCrudFormWithValidation<Plan>(initialValues, emit, usePlanValidator)
 
 const currentStep = ref<number>(1);
+const previousStep = ref<number>(1);
+
+function handleStepChange(payload: {value: number, oldValue: number}){
+  console.log(payload)
+}
+
+const transitionName = computed(() => {
+  return currentStep.value > previousStep.value ? "slide-left" : "slide-right";
+});
 
 </script>
+
+<style scoped>
+/* Define transitions */
+.slide-left-enter-active,
+.slide-left-leave-active,
+.slide-right-enter-active,
+.slide-right-leave-active {
+  transition: transform 0.3s ease-in-out, opacity 0.3s ease-in-out;
+}
+
+.slide-left-enter-from {
+  transform: translateX(100%);
+  opacity: 0;
+}
+.slide-left-leave-to {
+  transform: translateX(-100%);
+  opacity: 0;
+}
+
+.slide-right-enter-from {
+  transform: translateX(-100%);
+  opacity: 0;
+}
+.slide-right-leave-to {
+  transform: translateX(100%);
+  opacity: 0;
+}
+</style>
