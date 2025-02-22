@@ -1,5 +1,4 @@
 <template>
-  <client-only>
     <div class="mr-2">
       <n-layout-sider
           class="min-h-nav-offset"
@@ -21,7 +20,6 @@
         />
       </n-layout-sider>
     </div>
-  </client-only>
 </template>
 <script setup lang="ts">
 import type {MenuOption} from 'naive-ui'

@@ -78,12 +78,10 @@
 
     <PlanTable v-if="plan && planStates" :planStates="planStates"/>
   </div>
-  <client-only>
     <div>
       <PlanChartGrowth :states="planStates"></PlanChartGrowth>
       <PlanCommandQueue v-if="orderedCommands" :commands="orderedCommands" @update="handleCommandQueueUpdate"></PlanCommandQueue>
     </div>
-  </client-only>
 </div>
 </template>
 <script setup lang="ts">

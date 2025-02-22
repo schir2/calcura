@@ -1,6 +1,5 @@
 <template>
   <div class="space-y-2">
-    <client-only>
       <effects-blur-reveal>
         <n-card class="opacity-85" v-if="isAuthenticated" size="huge">
           <h1 class="text-4xl mb-4">Welcome Back
@@ -29,7 +28,6 @@
           </div>
         </n-card>
       </effects-blur-reveal>
-    </client-only>
     <section class="grid md:grid-cols-2 lg:grid-cols-3 gap-2">
       <n-card class="opacity-85" size="medium">
         <template #header>

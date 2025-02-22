@@ -1,6 +1,6 @@
 import type {PlanManagers} from "~/models/plan/PlanManager";
 
-export interface Command<T> {
+export interface Command {
     commandId: number;
     order: number;
     name: string;

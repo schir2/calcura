@@ -1,6 +1,5 @@
 <template>
   <n-card size="small" class="opacity-85">
-    {{incomes}} {{totalAnnualIncome}}
     <n-statistic :value="formatValue(totalAnnualIncome, FormatType.Currency)">
       <template #label>
         <span class="flex gap-2">

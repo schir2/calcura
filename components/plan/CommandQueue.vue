@@ -1,36 +1,47 @@
 <template>
 
-  <VueDraggableNext v-if="list" class="dragArea list-group w-full" :list="list" @change="onChange">
-    <n-card size="small"
-        v-for="element in list"
-        :key="element.name"
-    >
-      <p class="cursor-grab flex justify-between items-center">
+  <draggable class="dragArea list-group w-full"
+             v-model="commandsRef"
+             group="commands"
+             @start="drag=true"
+             @end="drag=false"
+             :animation="300"
+             item-key="id"
+             @change="onChange">
+    <template #item="{element: command} : {element: Command}">
+      <n-card size="small"
+              :key="command.name"
+      >
+        <p class="cursor-grab flex justify-between items-center">
       <span class="flex items-center gap-3">
-        <Icon class="text-2xl text-skin-base/20" name="mdi:drag"/>{{ element.name }}</span>
-      <n-tag>{{ element.label }}</n-tag>
-      </p>
-    </n-card>
-  </VueDraggableNext>
+        <Icon class="text-2xl text-skin-base/20" name="mdi:drag"/>{{ command.name }}</span>
+          <n-tag>{{ command.label }}</n-tag>
+        </p>
+      </n-card>
+    </template>
+  </draggable>
+  >
 
 </template>
 <script setup lang="ts">
 import type {Command} from "~/types/Command";
-import {VueDraggableNext} from "vue-draggable-next";
+import draggable from 'vuedraggable';
 
 interface Props {
   commands: Command[]
 }
 
 const props = defineProps<Props>()
-const list = ref([...props.commands])
+const commandsRef = ref([...props.commands])
 watch(() => props.commands, (newCommands) => {
-  list.value = [...newCommands];
-}, { deep: true });
+  commandsRef.value = [...newCommands];
+}, {deep: true});
 
 const emits = defineEmits(['update'])
 
 function onChange() {
-  emits('update', [...list.value])
+  emits('update', [...commandsRef.value])
 }
+
+const drag = ref<boolean>(false)
 </script>

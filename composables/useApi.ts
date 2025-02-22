@@ -12,7 +12,7 @@ export function useApi<T>(resource: string) {
             };
         }
 
-        return useFetch<R>(`/api/${url}`, options);
+        return $fetch<R>(`/api/${url}`, options);
     };
 
     return {
