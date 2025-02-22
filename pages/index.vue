@@ -1,6 +1,7 @@
 <template>
   <div class="space-y-2">
-      <effects-blur-reveal>
+    <effects-blur-reveal>
+      <client-only>
         <n-card class="opacity-85" v-if="isAuthenticated" size="huge">
           <h1 class="text-4xl mb-4">Welcome Back
             <span v-if="user">
@@ -27,7 +28,9 @@
             </n-button>
           </div>
         </n-card>
-      </effects-blur-reveal>
+
+      </client-only>
+    </effects-blur-reveal>
     <section class="grid md:grid-cols-2 lg:grid-cols-3 gap-2">
       <n-card class="opacity-85" size="medium">
         <template #header>
@@ -64,7 +67,8 @@ definePageMeta({
 })
 
 const router = useRouter()
-const {isAuthenticated, user} = useAuthStore()
+const authStore = useAuthStore()
+const {user, isAuthenticated} = storeToRefs(authStore)
 
 function handleStartNow() {
   router.push({path: "/auth/register"});

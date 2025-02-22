@@ -5,32 +5,32 @@ export function createBaseService<T>(resource: string) {
 
     const service = {
         async list(params?: Record<string, any>): Promise<T[]> {
-            return toCamelCase(await $api(resource, { params }));
+            return await $api(resource, { params });
         },
 
         async get(id: number | string, params?: Record<string, any>): Promise<T> {
-            return toCamelCase(await $api(`${resource}${id}/`, { params }));
+            return await $api(`${resource}${id}/`, { params });
         },
 
         async create(data: Partial<T>): Promise<T> {
-            return toCamelCase(await $api(resource, {
+            return await $api(resource, {
                 method: "POST",
-                body: toSnakeCase(data),
-            }));
+                body: data,
+            });
         },
 
         async update(id: number | string, data: Partial<T>): Promise<T> {
-            return toCamelCase(await $api(`${resource}${id}/`, {
+            return await $api(`${resource}${id}/`, {
                 method: "PUT",
-                body: toSnakeCase(data),
-            }));
+                body: data,
+            });
         },
 
         async patch(id: number | string, data: Partial<T>): Promise<T> {
-            return toCamelCase(await $api(`${resource}${id}/`, {
+            return await $api(`${resource}${id}/`, {
                 method: "PATCH",
-                body: toSnakeCase(data),
-            }));
+                body: data,
+            });
         },
 
         async delete(id: number | string): Promise<void> {
