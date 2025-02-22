@@ -19,7 +19,7 @@ async function handleCreateRothIraInvestment(rothIraInvestmentTemplate: RothIraI
 }
 
 async function handleDeleteRothIraInvestment(rothIraInvestment: RothIraInvestment) {
-  await rothIraInvestmentService.delete(rothIraInvestment.id)
+  await rothIraInvestmentService.remove(rothIraInvestment.id)
   await loadRothIraInvestments();
 }
 

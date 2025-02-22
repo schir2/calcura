@@ -19,7 +19,7 @@ async function handleCreateCashReserve(cashReserveTemplate: CashReservePartial) 
 }
 
 async function handleDeleteCashReserve(cashReserve: CashReserve) {
-  await cashReserveService.delete(cashReserve.id)
+  await cashReserveService.remove(cashReserve.id)
   await loadCashReserves();
 }
 

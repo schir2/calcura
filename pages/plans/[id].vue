@@ -118,6 +118,7 @@ const route = useRoute()
 const planId = Number(route.params.id)
 const plan = ref<Plan | null>(null)
 const loading = ref<boolean>(false);
+const loadingBar = useLoading()
 const orderedCommands = ref<Command[] | null>(null)
 
 eventBus.on("*", (eventName, payload) => {
@@ -332,6 +333,7 @@ const planStates = ref<PlanState[]>([])
 const finalPlanState = ref<PlanState | null>(null)
 
 async function loadPlan() {
+  loadingBar.start()
   try {
     plan.value = await planService.get(planId)
     planManager = new PlanManager(plan.value);
@@ -345,10 +347,12 @@ async function loadPlan() {
     planStates.value = planManager.simulate();
     finalPlanState.value = planStates.value[planStates.value.length - 1];
   } catch (error) {
+    loadingBar.error()
     console.log('Error loading plan:', error);
   } finally {
     loading.value = false;
   }
+  loadingBar.finish()
 }
 
 onMounted(async () => {

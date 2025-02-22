@@ -19,7 +19,7 @@ async function handleCreateIraInvestment(iraInvestmentTemplate: IraInvestmentPar
 }
 
 async function handleDeleteIraInvestment(iraInvestment: IraInvestment) {
-  await iraInvestmentService.delete(iraInvestment.id)
+  await iraInvestmentService.remove(iraInvestment.id)
   await loadIraInvestments();
 }
 

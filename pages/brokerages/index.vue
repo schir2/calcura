@@ -19,7 +19,7 @@ async function handleCreateBrokerageInvestment(brokerageInvestmentTemplate: Brok
 }
 
 async function handleDeleteBrokerageInvestment(brokerageInvestment: BrokerageInvestment) {
-  await brokerageInvestmentService.delete(brokerageInvestment.id)
+  await brokerageInvestmentService.remove(brokerageInvestment.id)
   await loadBrokerageInvestments();
 }
 

@@ -14,7 +14,7 @@ const incomeService = useIncomeService()
 const loading = ref<boolean>(false);
 
 async function handleDeleteIncome(income: Income) {
-  await incomeService.delete(income.id)
+  await incomeService.remove(income.id)
   await loadIncome();
 }
 

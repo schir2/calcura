@@ -47,7 +47,7 @@ describe('debtConfigsService Integration Tests', () => {
         if (createdId == null) throw new Error('No config created in previous test');
 
         const debtService = useDebtService();
-        await debtService.delete(createdId);
+        await debtService.remove(createdId);
 
         let errorCaught = false;
         try {

@@ -19,7 +19,7 @@ async function handleCreateDebt(debtTemplate: DebtPartial) {
 }
 
 async function handleDeleteDebt(debt: Debt) {
-  await debtService.delete(debt.id)
+  await debtService.remove(debt.id)
   await loadDebts();
 }
 

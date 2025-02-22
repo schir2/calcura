@@ -10,8 +10,7 @@
   </n-modal>
   <n-card>
     <template #header>
-      <NuxtLink :to="{name: 'plans-id', params: {id: plan.id}}"><h3 class="text-2xl">Plan {{ plan.id }}:
-        {{ plan.name }}</h3></NuxtLink>
+      <h3 class="text-2xl">{{ plan.name }}</h3>
     </template>
     <template #header-extra>
       <n-button-group size="small">
@@ -30,7 +29,7 @@
       </n-button-group>
     </template>
     <div class="grid grid-cols-6">
-      <span>ID: {{ plan.id }}</span>
+      <span>{{plan}}</span>
       <span>Age: {{ plan.age }}</span>
       <span>Year: {{ plan.year }}</span>
       <span>Life Expectancy: {{ plan.lifeExpectancy }}</span>

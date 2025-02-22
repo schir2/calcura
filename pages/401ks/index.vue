@@ -25,7 +25,7 @@ async function handleCreateTaxDeferredInvestment(taxDeferredInvestmentTemplate: 
 }
 
 async function handleDeleteTaxDeferredInvestment(taxDeferredInvestment: TaxDeferredInvestment) {
-  await taxDeferredInvestmentService.delete(taxDeferredInvestment.id)
+  await taxDeferredInvestmentService.remove(taxDeferredInvestment.id)
   await loadTaxDeferredInvestments();
 }
 
