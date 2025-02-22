@@ -9,7 +9,7 @@
 import type {Plan} from "~/models/plan/Plan";
 
 interface Props {
-  plans: Plan[]
+  plans?: Plan[]
 }
 
 const {plans = []} = defineProps<Props>()

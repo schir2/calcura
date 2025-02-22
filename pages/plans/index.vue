@@ -23,8 +23,7 @@ import {usePlanService} from "~/composables/api/usePlanService";
 
 
 const planService = usePlanService()
-const {data: plans, refresh: refreshPlans} = await planService.list()
-const plan = ref<null | Plan>(null)
+const {data: plans, refresh: refreshPlans} = useFetch<Plan[]>('api/plans')
 
 const showModal = ref(false)
 
