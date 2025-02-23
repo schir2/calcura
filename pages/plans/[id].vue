@@ -1,6 +1,6 @@
 <template>
 <div class="grid grid-cols-3 gap-2">
-  <div v-if="plan" class="gap-2 col-span-2">
+  <div class="gap-2 col-span-2">
     <n-modal v-model:show="showModal">
       <PlanForm :initialValues="plan" mode="edit"
                 @update="handleUpdate"
@@ -10,7 +10,7 @@
     <PlanDetailCard :plan="plan" @update="handleUpdate"></PlanDetailCard>
     <section class="grid grid-cols-2 gap-2">
       <section class="space-y-3">
-        <DebtList v-if="plan.debts" :debts="plan.debts"
+        <DebtList  :debts="plan.debts"
                   @create="handleCreateDebt"
                   @update="handleUpdateDebt"
                   @delete="handleDeleteDebt"
@@ -18,7 +18,7 @@
         ></DebtList>
 
 
-        <ExpenseList v-if="plan.expenses" :expenses="plan.expenses"
+        <ExpenseList  :expenses="plan.expenses"
                      @create="handleCreateExpense"
                      @update="handleUpdateExpense"
                      @delete="handleDeleteExpense"
@@ -27,13 +27,13 @@
       </section>
       <section class="space-y-3">
 
-        <IncomeList v-if="plan.incomes" :incomes="plan.incomes"
+        <IncomeList  :incomes="plan.incomes"
                     @create="handleCreateIncome"
                     @update="handleUpdateIncome"
                     @delete="handleDeleteIncome"
                     @remove="handleRemoveIncome"
         />
-        <CashReserveList v-if="plan.cashReserves" :cashReserves="plan.cashReserves"
+        <CashReserveList  :cashReserves="plan.cashReserves"
                          @create="handleCreateCashReserve"
                          @update="handleUpdateCashReserve"
                          @delete="handleDeleteCashReserve"
@@ -41,7 +41,7 @@
         />
 
 
-        <BrokerageInvestmentList v-if="plan.brokerageInvestments" :brokerageInvestments="plan.brokerageInvestments"
+        <BrokerageInvestmentList  :brokerageInvestments="plan.brokerageInvestments"
                                  @create="handleCreateBrokerageInvestment"
                                  @update="handleUpdateBrokerageInvestment"
                                  @delete="handleDeleteBrokerageInvestment"
@@ -49,7 +49,7 @@
         />
 
 
-        <IraInvestmentList v-if="plan.iraInvestments" :iraInvestments="plan.iraInvestments"
+        <IraInvestmentList  :iraInvestments="plan.iraInvestments"
                            @create="handleCreateIraInvestment"
                            @update="handleUpdateIraInvestment"
                            @delete="handleDeleteIraInvestment"
@@ -57,7 +57,7 @@
         />
 
 
-        <RothIraInvestmentList v-if="plan.rothIraInvestments" :rothIraInvestments="plan.rothIraInvestments" :plan="plan"
+        <RothIraInvestmentList  :rothIraInvestments="plan.rothIraInvestments" :plan="plan"
                                @create="handleCreateRothIraInvestment"
                                @update="handleUpdateRothIraInvestment"
                                @delete="handleDeleteRothIraInvestment"
@@ -65,7 +65,7 @@
         />
 
 
-        <TaxDeferredInvestmentList v-if="plan.taxDeferredInvestments"
+        <TaxDeferredInvestmentList
                                    :taxDeferredInvestments="plan.taxDeferredInvestments"
                                    :incomes="plan.incomes"
                                    @create="handleCreateTaxDeferredInvestment"
@@ -80,7 +80,7 @@
   </div>
     <div>
       <PlanChartGrowth :states="planStates"></PlanChartGrowth>
-      <PlanCommandQueue v-if="orderedCommands" :commands="orderedCommands" @update="handleCommandQueueUpdate"></PlanCommandQueue>
+      <CommandSequence v-if="orderedCommands" :commands="orderedCommands" @update="handleCommandSequenceUpdate"></CommandSequence>
     </div>
 </div>
 </template>
@@ -114,13 +114,9 @@ const brokerageInvestmentService = useBrokerageInvestmentService()
 const taxDeferredInvestmentService = useTaxDeferredInvestmentService()
 const route = useRoute()
 const planId = Number(route.params.id)
-const plan = ref<Plan | null>(null)
+const {data: plan, refresh: refreshPlan} = await useFetch<Plan>(`/api/plans/${planId}`)
 const loading = ref<boolean>(false);
 const orderedCommands = ref<Command[] | null>(null)
-
-eventBus.on("*", (eventName, payload) => {
-  console.log(`[Event Bus]: ${eventName}`, payload);
-});
 
 definePageMeta({
   layoutTransition: {name: 'slide-in'}
@@ -307,7 +303,7 @@ async function handleRemoveTaxDeferredInvestment(taxDeferredInvestmentPartial: T
   await loadPlan();
 }
 
-async function handleCommandQueueUpdate(commands: Command[]) {
+async function handleCommandSequenceUpdate(commands: Command[]) {
   orderedCommands.value = commands
   planManager = new PlanManager(plan.value);
   planStates.value = planManager.simulate(orderedCommands.value)
@@ -335,8 +331,8 @@ const finalPlanState = ref<PlanState | null>(null)
 
 async function loadPlan() {
   try {
-    plan.value = await planService.get(planId)
-    planManager = new PlanManager(plan.value);
+    await refreshPlan
+    planManager = new PlanManager(plan);
     const newCommands: Command[] = planManager.getCommands()
     if (!orderedCommands.value) {
       orderedCommands.value = newCommands
@@ -352,10 +348,6 @@ async function loadPlan() {
     loading.value = false;
   }
 }
-
-onMounted(async () => {
-  await loadPlan();
-})
 
 
 </script>
