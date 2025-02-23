@@ -38,7 +38,6 @@ const currentStep = ref<number>(1);
 const previousStep = ref<number>(1);
 
 function handleStepChange(payload: {value: number, oldValue: number}){
-  console.log(payload)
 }
 
 const transitionName = computed(() => {
