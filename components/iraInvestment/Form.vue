@@ -119,17 +119,16 @@
 </template>
 
 <script lang="ts" setup>
-import {IraContributionStrategy, type IraInvestment} from "~/models/iraInvestment/IraInvestment";
+import {IraContributionStrategy, type IraInvestment, iraInvestmentDefaults} from "~/models/iraInvestment/IraInvestment";
 
 interface Props {
-  initialValues: Partial<IraInvestment>;
-  age?: number;
+  initialValues?: Partial<IraInvestment>;
   mode: 'create' | 'edit'
 }
 
-const props = defineProps<Props>();
+const {initialValues = iraInvestmentDefaults} = defineProps<Props>();
 const emit = defineEmits(["update", "cancel", "create"]);
 
 const {formRef, modelRef, rules, handleCreate, handleUpdate, handleCancel} =
-    useCrudFormWithValidation(props.initialValues, emit, useIraInvestmentValidation);
+    useCrudFormWithValidation(initialValues, emit, useIraInvestmentValidation);
 </script>
