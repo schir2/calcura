@@ -3,7 +3,12 @@ import {ContributionLimitType, RetirementStrategy} from "~/models/plan/Plan";
 import type {PlanState} from "~/models/plan/PlanState";
 import DebtManager from "~/models/debt/DebtManager";
 import BaseManager from "~/models/common/BaseManager";
-import {adjustForInsufficientFunds, getIraLimit, getTaxDeferredContributionLimit, getTaxDeferredElectiveContributionLimit} from "~/utils";
+import {
+    adjustForInsufficientFunds,
+    getIraLimit,
+    getTaxDeferredContributionLimit,
+    getTaxDeferredElectiveContributionLimit
+} from "~/utils";
 import {IncomeManager} from "~/models/income/IncomeManager";
 import {BrokerageInvestmentManager} from "~/models/brokerageInvestment/BrokerageInvestmentManager";
 import {ExpenseManager} from "~/models/expense/ExpenseManager";
@@ -440,7 +445,10 @@ export default class PlanManager extends BaseOrchestrator<Plan, PlanState, PlanM
     }
 
     getCommands(): PlanCommands {
-        return this.config.commands
+        if (this.config.commandSequences.length > 0) {
+            return this.config.commandSequences[0].commands
+        }
+        return []
     }
 
     simulate(commands?: PlanCommands, maxIterations: number = 60): PlanState[] {
@@ -473,7 +481,7 @@ export default class PlanManager extends BaseOrchestrator<Plan, PlanState, PlanM
         manager.advanceTimePeriod()
     }
 
-    getManagerById<T extends BaseManager<any, any>>(managerName: keyof PlanManager['managers'], id: number): T | undefined {
+    getManagerById<T extends BaseManager<any, any>>(managerName: keyof PlanManager['managers'], id: number): T {
         const manager = this.managers[managerName].find((manager) => manager.getConfig().id === id);
         if (manager === undefined) {
             eventBus.emit('error', {
