@@ -58,7 +58,6 @@ function validateEmail(rule: FormItemRule, value: string): boolean {
 function validateEmailAlreadyExists(rule: FormItemRule, value: string): Promise<void> {
   return new Promise((resolve, reject) => {
     emailExists(value).then(exists => {
-      console.log(exists)
       if (exists) {
         reject(new Error('Email already exists'));
       } else {
