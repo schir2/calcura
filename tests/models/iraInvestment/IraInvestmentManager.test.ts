@@ -1,5 +1,5 @@
 import {beforeEach, describe, expect, it} from "vitest";
-import IraInvestmentManager from "~/models/iraInvestment/IraInvestmentManager";
+import {IraInvestmentManager} from "~/models/iraInvestment/IraInvestmentManager";
 import {IraContributionStrategy} from "~/models/iraInvestment/IraInvestment";
 import PlanManager from "~/models/plan/PlanManager";
 import {
@@ -9,7 +9,6 @@ import {
     type Plan,
     RetirementStrategy
 } from "~/models/plan/Plan";
-import {ProcessIraInvestmentCommand} from "~/models/iraInvestment/IraInvestmentCommands";
 
 import {Frequency} from "~/types/Frequency";
 
@@ -21,8 +20,10 @@ const planConfig: Plan = {
     inflationRate: 3,
     insufficientFundsStrategy: InsufficientFundsStrategy.None,
     growthApplicationStrategy: GrowthApplicationStrategy.Start,
+    retirementIncomeAdjustedForInflation: true,
     taxStrategy: IncomeTaxStrategy.Simple,
     taxRate: 30,
+    growthRate: 6,
     lifeExpectancy: 85,
     retirementStrategy: RetirementStrategy.Age,
     retirementWithdrawalRate: 4,
@@ -30,6 +31,7 @@ const planConfig: Plan = {
     retirementAge: 65,
     retirementSavingsAmount: 200000,
     cashReserves: [],
+    commands: [],
     incomes: [
         {
             id: 1,
@@ -37,7 +39,7 @@ const planConfig: Plan = {
             grossIncome: 100_000,
             growthRate: 0,
             incomeType: "ordinary",
-            frequency: Frequency.annual
+            frequency: Frequency.Annually
         },
         {
             id: 1,
@@ -45,7 +47,7 @@ const planConfig: Plan = {
             grossIncome: 50_000,
             growthRate: 0,
             incomeType: "ordinary",
-            frequency: Frequency.annual
+            frequency: Frequency.Annually
         }
     ],
     expenses: [],
@@ -67,7 +69,7 @@ const planConfig: Plan = {
                     grossIncome: 100_000,
                     growthRate: 0,
                     incomeType: "ordinary",
-                    frequency: Frequency.annual
+                    frequency: Frequency.Annually
                 },
 
         }
@@ -233,22 +235,6 @@ describe("IraInvestmentManager", () => {
         });
 
     })
-
-
-    describe('getCommands', () => {
-        it('should return an array with ProcessIraInvestmentCommand', () => {
-            const commands = iraInvestmentManager.getCommands();
-            expect(commands).toHaveLength(1);
-            expect(commands[0]).toBeInstanceOf(ProcessIraInvestmentCommand);
-        });
-
-        it('should execute ProcessIraInvestmentCommand correctly', () => {
-            const command = new ProcessIraInvestmentCommand(iraInvestmentManager);
-            command.execute();
-            expect(iraInvestmentManager.getCurrentState().processed).toBe(true);
-        });
-    });
-
 
     describe('createNextState', () => {
 
