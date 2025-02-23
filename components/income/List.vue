@@ -1,8 +1,5 @@
 <template>
   <n-card title="Income(s)">
-    <template #header-extra>
-      <IncomeTemplatePicker @create="handleCreate"/>
-    </template>
     <n-list>
       <IncomeListItem v-for="(income, index) in incomes" :income="income" :key="income.id"
                       @delete="handleDelete" @update="handleUpdate" @create="handleCreate"

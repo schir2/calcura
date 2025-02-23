@@ -1,8 +1,5 @@
 <template>
   <n-card title="Roth IRA Investment(s)">
-    <template #header-extra>
-      <RothIraInvestmentTemplatePicker @create="handleCreate"/>
-    </template>
       <RothIraInvestmentListItem v-for="(rothIraInvestment, index) in rothIraInvestments" :rothIraInvestment="rothIraInvestment" :key="rothIraInvestment.id"
                       @delete="handleDelete" @update="handleUpdate" @create="handleCreate"
                       @remove="handleRemove"></RothIraInvestmentListItem>

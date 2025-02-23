@@ -1,8 +1,5 @@
 <template>
   <n-card title="Tax Deferred Investment(s)">
-    <template #header-extra>
-      <TaxDeferredInvestmentTemplatePicker :incomes="incomes" @create="handleCreate"/>
-    </template>
     <TaxDeferredInvestmentListItem v-for="(taxDeferredInvestment, index) in taxDeferredInvestments"
                                    :taxDeferredInvestment="taxDeferredInvestment" :key="taxDeferredInvestment.id"
                                    :incomes="incomes"

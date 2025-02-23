@@ -1,8 +1,5 @@
 <template>
   <n-card>
-    <template #header>
-      <Icon name="game-icons:expense"/> Debt(s)
-    </template>
     <template #header-extra>
       <DebtTemplatePicker @create="handleCreate"/>
     </template>

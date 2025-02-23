@@ -1,8 +1,5 @@
 <template>
   <n-card title="Brokerages">
-    <template #header-extra>
-      <BrokerageInvestmentTemplatePicker @create="handleCreate"/>
-    </template>
       <BrokerageInvestmentListItem v-for="(brokerageInvestment, index) in brokerageInvestments" :brokerageInvestment="brokerageInvestment" :key="brokerageInvestment.id"
                       @delete="handleDelete" @update="handleUpdate" @create="handleCreate"
                       @remove="handleRemove"></BrokerageInvestmentListItem>

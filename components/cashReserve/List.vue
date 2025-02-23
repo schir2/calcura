@@ -1,8 +1,5 @@
 <template>
   <n-card title="Cash Reserve(s)">
-    <template #header-extra>
-      <CashReserveTemplatePicker @create="handleCreate"/>
-    </template>
       <CashReserveListItem v-for="(cashReserve, index) in cashReserves" :cashReserve="cashReserve" :key="cashReserve.id"
                       @delete="handleDelete" @update="handleUpdate" @create="handleCreate"
                       @remove="handleRemove"></CashReserveListItem>
