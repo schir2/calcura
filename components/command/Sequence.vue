@@ -10,7 +10,7 @@
              item-key="id"
              @change="onChange">
     <template #item="{element: command} : {element: Command}">
-      <CommandDraggableListItem :command="command"/>
+      <CommandSequenceCommand :command="command"/>
     </template>
   </draggable>
   >
