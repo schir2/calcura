@@ -5,7 +5,6 @@ const auth = useAuth()
 
 export const useAuthStore = defineStore('auth', () => {
     const user = ref<User | null>(null)
-    const csrfToken = ref<string>('')
     const isAuthenticated = computed((): boolean => {
         return !!user.value;
 
@@ -60,5 +59,5 @@ export const useAuthStore = defineStore('auth', () => {
         }
     }
 
-    return {user, login, logout, register, verify, isAuthenticated, csrfToken, fetchUser};
+    return {user, login, logout, register, verify, isAuthenticated, fetchUser};
 },)
