@@ -69,7 +69,7 @@ export interface Plan {
     brokerageInvestments: BrokerageInvestment[];
     iraInvestments: IraInvestment[];
     rothIraInvestments: RothIraInvestment[];
-    commands: PlanCommands
+    commandSequences: CommandSequence[];
 }
 
 export type PlanPartial = Partial<Omit<Plan, 'id'>>
@@ -98,5 +98,5 @@ export const planDefaults: PlanPartial = {
     brokerageInvestments: [],
     iraInvestments: [],
     rothIraInvestments: [],
-    commands: []
+    commandSequences: [],
 };
