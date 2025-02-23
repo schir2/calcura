@@ -20,7 +20,6 @@ export function useTaxDeferredInvestmentValidator(modelRef: Ref<Partial<TaxDefer
     }
 
     function validateIncome(rule: FormItemRule, value: string | undefined) {
-        console.log(value)
         if (modelRef.value.electiveContributionStrategy === TaxDeferredContributionStrategy.PercentageOfIncome && (value === null || value === undefined)) {
             return new Error("Income is required for Percentage of Income Contribution Strategy");
         }
