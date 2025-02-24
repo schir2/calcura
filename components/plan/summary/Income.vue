@@ -38,7 +38,7 @@
 
 <script setup lang="ts">
 
-import type {Income, IncomeType} from "~/models/income/Income";
+import type {Income, IncomeType} from "~/types/Income";
 
 interface Props {
   incomes: Income[]

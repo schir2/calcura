@@ -1,6 +1,6 @@
 import {beforeEach, describe, expect, it} from "vitest";
 import {IraInvestmentManager} from "~/models/iraInvestment/IraInvestmentManager";
-import {IraContributionStrategy} from "~/models/iraInvestment/IraInvestment";
+import {IraContributionStrategy} from "~/types/IraInvestment";
 import PlanManager from "~/models/plan/PlanManager";
 import {
     GrowthApplicationStrategy,
@@ -8,7 +8,7 @@ import {
     InsufficientFundsStrategy,
     type Plan,
     RetirementStrategy
-} from "~/models/plan/Plan";
+} from "~/types/Plan";
 
 import {Frequency} from "~/types/Frequency";
 

@@ -119,7 +119,7 @@
 </template>
 
 <script lang="ts" setup>
-import {IraContributionStrategy, type IraInvestment, iraInvestmentDefaults} from "~/models/iraInvestment/IraInvestment";
+import {IraContributionStrategy, type IraInvestment, iraInvestmentDefaults} from "~/types/IraInvestment";
 
 interface Props {
   initialValues?: Partial<IraInvestment>;

@@ -6,10 +6,10 @@
 
 </template>
 <script lang="ts" setup>
-import type {Plan} from "~/models/plan/Plan";
+import type {Plan} from "~/types/Plan";
 
 interface Props {
-  plans?: Plan[]
+  plans?: Plan[] | null
 }
 
 const {plans = []} = defineProps<Props>()

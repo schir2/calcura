@@ -6,7 +6,7 @@
   ></DebtList>
 </template>
 <script setup lang="ts">
-import type {Debt, DebtPartial} from "~/models/debt/Debt";
+import type {Debt, DebtPartial} from "~/types/Debt";
 
 import {useDebtService} from "~/composables/api/useDebtService";
 

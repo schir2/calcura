@@ -1,5 +1,5 @@
 import {createBaseService} from '~/services/baseService';
-import type {BrokerageInvestmentTemplate} from "~/models/brokerageInvestment/BrokerageInvestment";
+import type {BrokerageInvestmentTemplate} from "~/types/BrokerageInvestment";
 
 export function useBrokerageInvestmentTemplateService() {
     return useApi<BrokerageInvestmentTemplate>('brokerage-investment-templates')

@@ -1,7 +1,7 @@
 import type {Command} from "~/types/Command";
 
 export type CommandSequenceOrderingType =  'predefined' | 'custom'
-import type {Plan} from '~/models/plan/Plan'
+import type {Plan} from '~/types/Plan'
 export interface CommandSequence {
     name: string;
     plan: Plan

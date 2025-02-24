@@ -20,7 +20,7 @@
 <script lang="ts" setup>
 import {processTemplate} from "~/utils/templateProcessorUtils";
 import {useIncomeTemplateService} from "~/composables/api/useIncomeTemplateService";
-import {type Income, incomeDefaults, type IncomePartial} from "~/models/income/Income";
+import {type Income, incomeDefaults, type IncomePartial} from "~/types/Income";
 import type {IncomeTemplate} from "~/models/income/IncomeTemplate";
 
 const showModal = ref(false);

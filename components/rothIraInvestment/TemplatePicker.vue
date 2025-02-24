@@ -17,8 +17,8 @@
   </n-thing>
 </template>
 <script lang="ts" setup>
-import type {RothIraInvestmentTemplate} from "~/models/rothIraInvestment/RothIraInvestment";
-import {type RothIraInvestment, rothIraInvestmentDefaults, type RothIraInvestmentPartial} from "~/models/rothIraInvestment/RothIraInvestment";
+import type {RothIraInvestmentTemplate} from "~/types/RothIraInvestment";
+import {type RothIraInvestment, rothIraInvestmentDefaults, type RothIraInvestmentPartial} from "~/types/RothIraInvestment";
 import {useRothIraInvestmentTemplateService} from "~/composables/api/useRothIraInvestmentTemplateService";
 import {processTemplate} from "~/utils/templateProcessorUtils";
 

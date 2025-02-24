@@ -353,9 +353,9 @@ import {
   EmployerContributionStrategy,
   TaxDeferredContributionStrategy,
   type TaxDeferredInvestment
-} from "~/models/taxDeferredInvestment/TaxDeferredInvestment";
+} from "~/types/TaxDeferredInvestment";
 import {getTaxDeferredElectiveContributionLimit} from "~/utils";
-import type {Income} from "~/models/income/Income";
+import type {Income} from "~/types/Income";
 
 interface Props {
   initialValues: Partial<TaxDeferredInvestment>;

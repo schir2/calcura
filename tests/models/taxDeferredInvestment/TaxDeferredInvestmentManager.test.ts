@@ -3,7 +3,7 @@ import {TaxDeferredInvestmentManager} from "~/models/taxDeferredInvestment/TaxDe
 import {
     EmployerContributionStrategy,
     TaxDeferredContributionStrategy
-} from "~/models/taxDeferredInvestment/TaxDeferredInvestment";
+} from "~/types/TaxDeferredInvestment";
 import PlanManager from "~/models/plan/PlanManager";
 import {
     GrowthApplicationStrategy,
@@ -11,7 +11,7 @@ import {
     InsufficientFundsStrategy,
     type Plan,
     RetirementStrategy
-} from "~/models/plan/Plan";
+} from "~/types/Plan";
 import {ProcessTaxDeferredInvestmentCommand} from "~/models/taxDeferredInvestment/TaxDeferredInvestmentCommands";
 
 import {Frequency} from "~/types/Frequency";

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type {BrokerageInvestment} from "~/models/brokerageInvestment/BrokerageInvestment";
+import type {BrokerageInvestment} from "~/types/BrokerageInvestment";
 
 const route = useRoute()
 const brokerageInvestmentId = Number(route.params.id)

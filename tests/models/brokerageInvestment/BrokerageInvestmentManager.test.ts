@@ -1,7 +1,7 @@
 import {beforeEach, describe, expect, it} from "vitest";
 import {BrokerageInvestmentManager} from "~/models/brokerageInvestment/BrokerageInvestmentManager";
-import type {BrokerageInvestment} from "~/models/brokerageInvestment/BrokerageInvestment";
-import {BrokerageContributionStrategy} from "~/models/brokerageInvestment/BrokerageInvestment";
+import type {BrokerageInvestment} from "~/types/BrokerageInvestment";
+import {BrokerageContributionStrategy} from "~/types/BrokerageInvestment";
 import PlanManager from "~/models/plan/PlanManager";
 import {
     GrowthApplicationStrategy,
@@ -9,7 +9,7 @@ import {
     InsufficientFundsStrategy,
     type Plan,
     RetirementStrategy
-} from "~/models/plan/Plan";
+} from "~/types/Plan";
 import {ProcessBrokerageInvestmentCommand} from "~/models/brokerageInvestment/BrokerageInvestmentCommands";
 
 import {Frequency} from "~/types/Frequency";

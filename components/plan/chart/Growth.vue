@@ -12,7 +12,7 @@ import {darkTheme} from "naive-ui";
 import {Bar} from 'vue-chartjs'
 import {BarElement, CategoryScale, Chart as ChartJS, Legend, LinearScale, Title, Tooltip} from 'chart.js'
 
-import type {PlanState} from "~/models/plan/PlanState";
+import type {PlanState} from "~/types/PlanState";
 
 interface Props {
   states: PlanState[]

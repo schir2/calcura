@@ -13,7 +13,7 @@
 </template>
 <script lang="ts" setup>
 
-import type {Plan} from "~/models/plan/Plan";
+import type {Plan} from "~/types/Plan";
 
 definePageMeta({
       title: 'Dashboard',

@@ -54,7 +54,7 @@ import {
   BrokerageContributionStrategy,
   type BrokerageInvestment,
   type BrokerageInvestmentPartial
-} from "~/models/brokerageInvestment/BrokerageInvestment";
+} from "~/types/BrokerageInvestment";
 import type {FormInst} from "naive-ui";
 import {useBrokerageInvestmentValidator} from "~/composables/validators/useBrokerageInvestmentValidator";
 

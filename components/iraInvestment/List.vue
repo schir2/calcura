@@ -7,7 +7,7 @@
 
 </template>
 <script lang="ts" setup>
-import type {IraInvestment, IraInvestmentTemplate} from "~/models/iraInvestment/IraInvestment";
+import type {IraInvestment, IraInvestmentTemplate} from "~/types/IraInvestment";
 
 interface Props {
   iraInvestments: IraInvestment[]

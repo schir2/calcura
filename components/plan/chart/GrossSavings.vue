@@ -11,7 +11,7 @@
 import {darkTheme} from "naive-ui";
 import {ArcElement, Chart as ChartJS, Legend, Tooltip} from 'chart.js'
 import {Pie} from 'vue-chartjs'
-import type {PlanState} from "~/models/plan/PlanState";
+import type {PlanState} from "~/types/PlanState";
 
 interface Props {
   states: PlanState[]

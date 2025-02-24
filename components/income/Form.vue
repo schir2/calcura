@@ -59,7 +59,7 @@
 
 <script lang="ts" setup>
 import {Bar} from 'vue-chartjs'
-import type {Income} from "~/models/income/Income";
+import type {Income} from "~/types/Income";
 import {BarElement, CategoryScale, Chart as ChartJS, Legend, LinearScale, Title, Tooltip} from 'chart.js'
 import {getAnnualAmount} from "~/utils";
 import {useIncomeValidation} from "~/composables/validators/useIncomeValidator";

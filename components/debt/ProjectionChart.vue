@@ -3,7 +3,7 @@ import {darkTheme} from 'naive-ui'
 import {CategoryScale, Chart as ChartJS, Legend, LinearScale, LineElement, PointElement, Title, Tooltip} from 'chart.js'
 import {Line} from 'vue-chartjs'
 import type {DebtProjection} from "~/components/debt/Form.vue";
-import {DebtPaymentStrategy} from "~/models/debt/Debt";
+import {DebtPaymentStrategy} from "~/types/Debt";
 
 ChartJS.register(
     CategoryScale,

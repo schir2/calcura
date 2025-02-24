@@ -38,7 +38,7 @@
   </n-form-item>
 </template>
 <script lang="ts" setup>
-import {RetirementStrategy} from "~/models/plan/Plan";
+import {RetirementStrategy} from "~/types/Plan";
 
 const modelRef = defineModel<Plan>()
 

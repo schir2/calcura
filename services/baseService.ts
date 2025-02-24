@@ -1,4 +1,4 @@
-import type {Plan} from "~/models/plan/Plan";
+import type {Plan} from "~/types/Plan";
 
 export function createBaseService<T>(resource: string) {
     const { $api } = useNuxtApp();

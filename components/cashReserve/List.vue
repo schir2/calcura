@@ -7,7 +7,7 @@
 
 </template>
 <script lang="ts" setup>
-import type {CashReserve, CashReserveTemplate} from "~/models/cashReserve/CashReserve";
+import type {CashReserve, CashReserveTemplate} from "~/types/CashReserve";
 
 interface Props {
   cashReserves: CashReserve[]

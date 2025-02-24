@@ -1,6 +1,6 @@
-import {IraContributionStrategy, type IraInvestment} from './IraInvestment';
+import {IraContributionStrategy, type IraInvestment} from '../../types/IraInvestment';
 import {assertDefined, calculateInvestmentGrowthAmount} from "~/utils";
-import type IraInvestmentState from "~/models/iraInvestment/IraInvestmentState";
+import type IraInvestmentState from "~/types/IraInvestmentState";
 import BaseManager from "~/models/common/BaseManager";
 import type {IncomeManager} from "~/models/income/IncomeManager";
 import {FundType} from "~/models/plan/PlanManager";

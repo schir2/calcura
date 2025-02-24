@@ -1,5 +1,5 @@
-import type {GrowthApplicationStrategy} from "~/models/plan/Plan";
-import {InsufficientFundsStrategy} from "~/models/plan/Plan";
+import type {GrowthApplicationStrategy} from "~/types/Plan";
+import {InsufficientFundsStrategy} from "~/types/Plan";
 
 import {Frequency} from "~/types/Frequency";
 

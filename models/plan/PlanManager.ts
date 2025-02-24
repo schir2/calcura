@@ -1,6 +1,6 @@
-import type {Plan, PlanCommands} from "~/models/plan/Plan";
-import {ContributionLimitType, RetirementStrategy} from "~/models/plan/Plan";
-import type {PlanState} from "~/models/plan/PlanState";
+import type {Plan} from "~/types/Plan";
+import {ContributionLimitType, RetirementStrategy} from "~/types/Plan";
+import type {PlanState} from "~/types/PlanState";
 import DebtManager from "~/models/debt/DebtManager";
 import BaseManager from "~/models/common/BaseManager";
 import {
@@ -20,6 +20,7 @@ import {BaseOrchestrator} from "~/models/common/BaseOrchestrator";
 import {ContributionError} from "~/utils/errors/ContributionError";
 import {RothIraInvestmentManager} from "~/models/rothIraInvestment/RothIraInvestmentManager";
 import eventBus from "~/services/eventBus";
+import type {Command} from "~/types/Command";
 
 export enum FundType {
     Taxable = "taxable",
@@ -444,14 +445,14 @@ export default class PlanManager extends BaseOrchestrator<Plan, PlanState, PlanM
         })
     }
 
-    getCommands(): PlanCommands {
+    getCommands(): Command[] {
         if (this.config.commandSequences.length > 0) {
             return this.config.commandSequences[0].commands
         }
         return []
     }
 
-    simulate(commands?: PlanCommands, maxIterations: number = 60): PlanState[] {
+    simulate(commands?: Command[], maxIterations: number = 60): PlanState[] {
         maxIterations = Math.min(maxIterations, this.config.lifeExpectancy - this.config.age + 1)
         for (let i = 0; i < maxIterations; i++) {
             let manager: BaseManager<any, any> | undefined = undefined

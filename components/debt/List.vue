@@ -11,7 +11,7 @@
 
 </template>
 <script lang="ts" setup>
-import type {Debt, DebtTemplate} from "~/models/debt/Debt";
+import type {Debt, DebtTemplate} from "~/types/Debt";
 
 interface Props {
   debts: Debt[]

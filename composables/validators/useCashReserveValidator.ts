@@ -1,6 +1,6 @@
 import type { FormItemRule, FormRules } from "naive-ui";
 import type { Ref } from "vue";
-import type { CashReserve } from "~/models/cashReserve/CashReserve";
+import type { CashReserve } from "~/types/CashReserve";
 import {
     MAX_RESERVE_AMOUNT,
     MAX_RESERVE_MONTHS,

@@ -1,4 +1,10 @@
-import {GrowthApplicationStrategy, InsufficientFundsStrategy} from "~/models/plan/Plan";
+import {
+    GrowthApplicationStrategy,
+    IncomeTaxStrategy,
+    InsufficientFundsStrategy,
+    type Plan,
+    RetirementStrategy
+} from "~/types/Plan";
 
 export const DEFAULT_GROWTH_RATE = 6
 
@@ -23,3 +29,30 @@ export const MAX_GROWTH_RATE = 200;
 export const DEFAULT_AGE: number = 30;
 export const DEFAULT_ALLOW_NEGATIVE_DISPOSABLE_INCOME: InsufficientFundsStrategy = InsufficientFundsStrategy.None
 export const DEFAULT_GROWTH_APPLICATION_STRATEGY: GrowthApplicationStrategy = GrowthApplicationStrategy.Start
+
+export const planDefaults: Partial<Plan> = {
+    name: "Blank Plan",
+    age: 30,
+    year: new Date().getFullYear(),
+    inflationRate: 3,
+    insufficientFundsStrategy: InsufficientFundsStrategy.None,
+    growthApplicationStrategy: GrowthApplicationStrategy.Start,
+    taxStrategy: IncomeTaxStrategy.Simple,
+    taxRate: 2.5,
+    growthRate: 6.0,
+    lifeExpectancy: 85,
+    retirementStrategy: RetirementStrategy.Age,
+    retirementWithdrawalRate: 4,
+    retirementIncomeGoal: 50000,
+    retirementAge: 65,
+    retirementSavingsAmount: 200000,
+    cashReserves: [],
+    incomes: [],
+    expenses: [],
+    debts: [],
+    taxDeferredInvestments: [],
+    brokerageInvestments: [],
+    iraInvestments: [],
+    rothIraInvestments: [],
+    commandSequences: [],
+};

@@ -6,7 +6,7 @@
   ></CashReserveList>
 </template>
 <script setup lang="ts">
-import type {CashReserve, CashReservePartial} from "~/models/cashReserve/CashReserve";
+import type {CashReserve, CashReservePartial} from "~/types/CashReserve";
 
 import {useCashReserveService} from "~/composables/api/useCashReserveService";
 

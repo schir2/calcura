@@ -1,6 +1,6 @@
 import type {FormItemRule, FormRules} from "naive-ui";
-import type {RothIraInvestment} from "~/models/rothIraInvestment/RothIraInvestment";
-import {RothIraContributionStrategy} from "~/models/rothIraInvestment/RothIraInvestment";
+import type {RothIraInvestment} from "~/types/RothIraInvestment";
+import {RothIraContributionStrategy} from "~/types/RothIraInvestment";
 
 export function useRothIraInvestmentValidation(modelRef: Ref<Partial<RothIraInvestment>>) {
 

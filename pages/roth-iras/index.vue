@@ -6,7 +6,7 @@
   ></RothIraInvestmentList>
 </template>
 <script setup lang="ts">
-import type {RothIraInvestment, RothIraInvestmentPartial} from "~/models/rothIraInvestment/RothIraInvestment";
+import type {RothIraInvestment, RothIraInvestmentPartial} from "~/types/RothIraInvestment";
 
 import {useRothIraInvestmentService} from "~/composables/api/useRothIraInvestmentService";
 

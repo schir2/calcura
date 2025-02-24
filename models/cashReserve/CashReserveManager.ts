@@ -1,7 +1,7 @@
 import BaseManager from "~/models/common/BaseManager";
-import type {CashReserve} from "~/models/cashReserve/CashReserve";
-import {CashReserveStrategy} from "~/models/cashReserve/CashReserve";
-import type CashReserveState from "~/models/cashReserve/CashReserveState";
+import type {CashReserve} from "~/types/CashReserve";
+import {CashReserveStrategy} from "~/types/CashReserve";
+import type CashReserveState from "~/types/CashReserveState";
 import {FundType} from "~/models/plan/PlanManager";
 
 export class CashReserveManager extends BaseManager<CashReserve, CashReserveState> {

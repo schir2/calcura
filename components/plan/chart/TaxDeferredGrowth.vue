@@ -21,7 +21,7 @@ import {
   Tooltip
 } from 'chart.js'
 import {Line} from 'vue-chartjs'
-import type {PlanState} from "~/models/plan/PlanState";
+import type {PlanState} from "~/types/PlanState";
 
 ChartJS.register(
     CategoryScale,

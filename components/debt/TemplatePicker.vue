@@ -18,7 +18,7 @@
   </n-thing>
 </template>
 <script lang="ts" setup>
-import {type Debt, debtDefaults, type DebtPartial, type DebtTemplate} from "~/models/debt/Debt";
+import {type Debt, debtDefaults, type DebtPartial, type DebtTemplate} from "~/types/Debt";
 import {useDebtTemplateService} from "~/composables/api/useDebtTemplateService";
 import {processTemplate} from "~/utils/templateProcessorUtils";
 

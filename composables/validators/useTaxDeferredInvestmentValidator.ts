@@ -1,7 +1,7 @@
 import {
     TaxDeferredContributionStrategy,
     type TaxDeferredInvestment
-} from "~/models/taxDeferredInvestment/TaxDeferredInvestment";
+} from "~/types/TaxDeferredInvestment";
 import type {FormItemRule, FormRules} from "naive-ui";
 
 export function useTaxDeferredInvestmentValidator(modelRef: Ref<Partial<TaxDeferredInvestment>>) {

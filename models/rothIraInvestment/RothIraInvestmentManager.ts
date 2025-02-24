@@ -1,6 +1,6 @@
-import {RothIraContributionStrategy, type RothIraInvestment} from './RothIraInvestment';
+import {RothIraContributionStrategy, type RothIraInvestment} from '../../types/RothIraInvestment';
 import {assertDefined, calculateInvestmentGrowthAmount} from "~/utils";
-import type RothIraInvestmentState from "~/models/rothIraInvestment/RothIraInvestmentState";
+import type RothIraInvestmentState from "~/types/RothIraInvestmentState";
 import BaseManager from "~/models/common/BaseManager";
 import type {IncomeManager} from "~/models/income/IncomeManager";
 import {FundType} from "~/models/plan/PlanManager";

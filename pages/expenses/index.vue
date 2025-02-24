@@ -6,7 +6,7 @@
   ></ExpenseList>
 </template>
 <script setup lang="ts">
-import type {Expense, ExpensePartial} from "~/models/expense/Expense";
+import type {Expense, ExpensePartial} from "~/types/Expense";
 
 import {useExpenseService} from "~/composables/api/useExpenseService";
 

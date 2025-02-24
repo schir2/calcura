@@ -1,10 +1,10 @@
-import {BrokerageContributionStrategy, type BrokerageInvestment} from './BrokerageInvestment';
+import {BrokerageContributionStrategy, type BrokerageInvestment} from '../../types/BrokerageInvestment';
 import {assertDefined, calculateInvestmentGrowthAmount} from "~/utils";
-import type BrokerageInvestmentState from "~/models/brokerageInvestment/BrokerageInvestmentState";
+import type BrokerageInvestmentState from "~/types/BrokerageInvestmentState";
 import BaseManager from "~/models/common/BaseManager";
 import {FundType} from "~/models/plan/PlanManager";
 import {ContributionType} from "~/models/common";
-import type {PlanState} from "~/models/plan/PlanState";
+import type {PlanState} from "~/types/PlanState";
 
 export class BrokerageInvestmentManager extends BaseManager<BrokerageInvestment, BrokerageInvestmentState> {
 

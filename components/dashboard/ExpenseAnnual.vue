@@ -12,7 +12,7 @@
 </template>
 
 <script setup lang="ts">
-import type {Expense} from "~/models/expense/Expense";
+import type {Expense} from "~/types/Expense";
 import {getAnnualAmount} from "~/utils";
 import {formatValue} from "~/utils/formatValue";
 import {FormatType} from "~/types/FormatType";

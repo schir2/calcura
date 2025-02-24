@@ -7,7 +7,7 @@
   ></IncomeList>
 </template>
 <script setup lang="ts">
-import type {Income, IncomePartial} from "~/models/income/Income";
+import type {Income, IncomePartial} from "~/types/Income";
 
 import {useApi} from "~/composables/useApi";
 

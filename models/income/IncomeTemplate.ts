@@ -1,4 +1,4 @@
-import type {Income} from "~/models/income/Income";
+import type {Income} from "~/types/Income";
 
 export interface IncomeTemplate extends Income {
     description: string

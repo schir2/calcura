@@ -7,7 +7,7 @@
 
 </template>
 <script lang="ts" setup>
-import type {BrokerageInvestment, BrokerageInvestmentTemplate} from "~/models/brokerageInvestment/BrokerageInvestment";
+import type {BrokerageInvestment, BrokerageInvestmentTemplate} from "~/types/BrokerageInvestment";
 
 interface Props {
   brokerageInvestments: BrokerageInvestment[]

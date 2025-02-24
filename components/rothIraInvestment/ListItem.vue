@@ -23,7 +23,7 @@
 </template>
 <script setup lang="ts">
 
-import type {RothIraInvestment} from "~/models/rothIraInvestment/RothIraInvestment";
+import type {RothIraInvestment} from "~/types/RothIraInvestment";
 
 interface Props {
   rothIraInvestment: RothIraInvestment

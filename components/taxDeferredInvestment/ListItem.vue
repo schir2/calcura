@@ -26,8 +26,8 @@
 </template>
 <script setup lang="ts">
 
-import type {TaxDeferredInvestment} from "~/models/taxDeferredInvestment/TaxDeferredInvestment";
-import type {Income} from "~/models/income/Income";
+import type {TaxDeferredInvestment} from "~/types/TaxDeferredInvestment";
+import type {Income} from "~/types/Income";
 
 interface Props {
   taxDeferredInvestment: TaxDeferredInvestment

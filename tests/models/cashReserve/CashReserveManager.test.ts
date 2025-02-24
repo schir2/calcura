@@ -1,15 +1,15 @@
-import type {Plan} from "~/models/plan/Plan";
+import type {Plan} from "~/types/Plan";
 import {
     GrowthApplicationStrategy,
     IncomeTaxStrategy,
     InsufficientFundsStrategy,
     RetirementStrategy
-} from "~/models/plan/Plan";
-import {CashReserveStrategy} from "~/models/cashReserve/CashReserve";
+} from "~/types/Plan";
+import {CashReserveStrategy} from "~/types/CashReserve";
 import {beforeEach, describe, expect, it} from "vitest";
 import type {CashReserveManager} from "~/models/cashReserve/CashReserveManager";
 import PlanManager from "~/models/plan/PlanManager";
-import {ExpenseType} from "~/models/expense/Expense";
+import {ExpenseType} from "~/types/Expense";
 import {Frequency} from "~/types/Frequency";
 
 const planConfig: Plan = {

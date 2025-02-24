@@ -1,6 +1,6 @@
 import type {FormRules} from "naive-ui";
 import type {Ref} from "vue";
-import type {IraInvestment} from "~/models/iraInvestment/IraInvestment";
+import type {IraInvestment} from "~/types/IraInvestment";
 
 export function useIraInvestmentValidation(modelRef: Ref<Partial<IraInvestment>>) {
     const rules: FormRules = {

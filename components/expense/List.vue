@@ -12,7 +12,7 @@
 
 </template>
 <script lang="ts" setup>
-import type {Expense, ExpenseTemplate} from "~/models/expense/Expense";
+import type {Expense, ExpenseTemplate} from "~/types/Expense";
 import {getAnnualAmount} from "~/utils";
 
 interface Props {

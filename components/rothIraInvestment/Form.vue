@@ -126,7 +126,7 @@
 </template>
 
 <script lang="ts" setup>
-import type {RothIraInvestment} from "~/models/rothIraInvestment/RothIraInvestment";
+import type {RothIraInvestment} from "~/types/RothIraInvestment";
 
 interface Props {
   initialValues: Partial<RothIraInvestment>;

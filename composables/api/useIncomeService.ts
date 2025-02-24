@@ -1,5 +1,5 @@
 import {createBaseService} from '~/services/baseService';
-import type {Income} from "~/models/income/Income";
+import type {Income} from "~/types/Income";
 
 export function useIncomeService() {
     return useApi<Income>('incomes')

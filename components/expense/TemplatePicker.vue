@@ -18,7 +18,7 @@
   </n-thing>
 </template>
 <script lang="ts" setup>
-import {type Expense, expenseDefaults, type ExpensePartial, type ExpenseTemplate} from "~/models/expense/Expense";
+import {type Expense, expenseDefaults, type ExpensePartial, type ExpenseTemplate} from "~/types/Expense";
 import {useExpenseTemplateService} from "~/composables/api/useExpenseTemplateService";
 import {processTemplate} from "~/utils/templateProcessorUtils";
 

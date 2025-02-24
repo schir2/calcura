@@ -1,6 +1,6 @@
 import {describe, expect, it} from 'vitest';
 import {adjustForInsufficientFunds, calculateCompoundInterest, calculateInvestmentGrowthAmount, getAnnualAmount} from '@/utils/financial';
-import {GrowthApplicationStrategy, InsufficientFundsStrategy} from "~/models/plan/Plan";
+import {GrowthApplicationStrategy, InsufficientFundsStrategy} from "~/types/Plan";
 
 import {Frequency} from "~/types/Frequency";
 

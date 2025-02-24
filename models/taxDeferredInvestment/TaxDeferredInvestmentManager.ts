@@ -1,12 +1,12 @@
-import type {TaxDeferredInvestment} from './TaxDeferredInvestment';
-import {EmployerContributionStrategy, TaxDeferredContributionStrategy} from "./TaxDeferredInvestment";
+import type {TaxDeferredInvestment} from '../../types/TaxDeferredInvestment';
+import {EmployerContributionStrategy, TaxDeferredContributionStrategy} from "../../types/TaxDeferredInvestment";
 import {assertDefined, calculateInvestmentGrowthAmount} from "~/utils";
-import type TaxDeferredInvestmentState from "~/models/taxDeferredInvestment/TaxDeferredInvestmentState";
+import type TaxDeferredInvestmentState from "~/types/TaxDeferredInvestmentState";
 import BaseManager from "~/models/common/BaseManager";
 import type {IncomeManager} from "~/models/income/IncomeManager";
 import {FundType} from "~/models/plan/PlanManager";
 import {ContributionType} from "~/models/common";
-import {ContributionLimitType} from "~/models/plan/Plan";
+import {ContributionLimitType} from "~/types/Plan";
 import eventBus from "~/services/eventBus";
 
 export class TaxDeferredInvestmentManager extends BaseManager<TaxDeferredInvestment, TaxDeferredInvestmentState> {

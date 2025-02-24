@@ -17,7 +17,7 @@
 
 <script setup lang="ts">
 
-import type {CashReserve} from "~/models/cashReserve/CashReserve";
+import type {CashReserve} from "~/types/CashReserve";
 
 interface Props {
   cashReserves: CashReserve[]

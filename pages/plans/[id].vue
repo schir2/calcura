@@ -1,107 +1,94 @@
 <template>
-<div class="grid grid-cols-3 gap-2">
-  <div class="gap-2 col-span-2">
-    <n-modal v-model:show="showModal">
-      <PlanForm :initialValues="plan" mode="edit"
-                @update="handleUpdate"
-                @cancel="handleClose"
-      />
-    </n-modal>
-    <PlanDetailCard :plan="plan" @update="handleUpdate"></PlanDetailCard>
-    <section class="grid grid-cols-2 gap-2">
-      <section class="space-y-3">
-        <DebtList  :debts="plan.debts"
-                  @create="handleCreateDebt"
-                  @update="handleUpdateDebt"
-                  @delete="handleDeleteDebt"
-                  @remove="handleRemoveDebt"
-        ></DebtList>
-
-
-        <ExpenseList  :expenses="plan.expenses"
-                     @create="handleCreateExpense"
-                     @update="handleUpdateExpense"
-                     @delete="handleDeleteExpense"
-                     @remove="handleRemoveExpense"
+  <div class="grid grid-cols-3 gap-2">
+    <div v-if="plan" class="gap-2 col-span-2">
+      <n-modal v-model:show="showModal">
+        <PlanForm :initialValues="plan" mode="edit"
+                  @update="handleUpdate"
+                  @cancel="handleClose"
         />
-      </section>
-      <section class="space-y-3">
+      </n-modal>
+      <PlanDetailCard :plan="plan" @update="handleUpdate"></PlanDetailCard>
+      <nav>
+...
+      </nav>
+      <section class="grid gap-2">
+          <DebtListItem v-for="debt in plan.debts" :key="debt.id" :debt="debt"
+                    @update="handleUpdateDebt"
+                    @delete="handleDeleteDebt"
+                    @remove="handleRemoveDebt" />
+          <ExpenseListItem v-for="expense in plan.expenses" :key="expense.id" :expense="expense"
+                       @update="handleUpdateExpense"
+                       @delete="handleDeleteExpense"
+                       @remove="handleRemoveExpense"
+          />
 
-        <IncomeList  :incomes="plan.incomes"
-                    @create="handleCreateIncome"
-                    @update="handleUpdateIncome"
-                    @delete="handleDeleteIncome"
-                    @remove="handleRemoveIncome"
-        />
-        <CashReserveList  :cashReserves="plan.cashReserves"
-                         @create="handleCreateCashReserve"
-                         @update="handleUpdateCashReserve"
-                         @delete="handleDeleteCashReserve"
-                         @remove="handleRemoveCashReserve"
-        />
-
-
-        <BrokerageInvestmentList  :brokerageInvestments="plan.brokerageInvestments"
-                                 @create="handleCreateBrokerageInvestment"
-                                 @update="handleUpdateBrokerageInvestment"
-                                 @delete="handleDeleteBrokerageInvestment"
-                                 @remove="handleRemoveBrokerageInvestment"
-        />
-
-
-        <IraInvestmentList  :iraInvestments="plan.iraInvestments"
-                           @create="handleCreateIraInvestment"
-                           @update="handleUpdateIraInvestment"
-                           @delete="handleDeleteIraInvestment"
-                           @remove="handleRemoveIraInvestment"
-        />
+          <IncomeListItem v-for="income in plan.incomes" :key="income.id" :income="income"
+                      @create="handleCreateIncome"
+                      @update="handleUpdateIncome"
+                      @delete="handleDeleteIncome"
+                      @remove="handleRemoveIncome"
+          />
+          <CashReserveListItem v-for="cashReserve in plan.cashReserves" :key="cashReserve.id" :cashReserve="cashReserve"
+                           @update="handleUpdateCashReserve"
+                           @delete="handleDeleteCashReserve"
+                           @remove="handleRemoveCashReserve"
+          />
 
 
-        <RothIraInvestmentList  :rothIraInvestments="plan.rothIraInvestments" :plan="plan"
-                               @create="handleCreateRothIraInvestment"
-                               @update="handleUpdateRothIraInvestment"
-                               @delete="handleDeleteRothIraInvestment"
-                               @remove="handleRemoveRothIraInvestment"
-        />
+          <BrokerageInvestmentListItem v-for="brokerageInvestment in plan.brokerageInvestments" :key="brokerageInvestment.id" :brokerageInvestment="brokerageInvestment"
+                                   @update="handleUpdateBrokerageInvestment"
+                                   @delete="handleDeleteBrokerageInvestment"
+                                   @remove="handleRemoveBrokerageInvestment"
+          />
 
 
-        <TaxDeferredInvestmentList
-                                   :taxDeferredInvestments="plan.taxDeferredInvestments"
-                                   :incomes="plan.incomes"
-                                   @create="handleCreateTaxDeferredInvestment"
-                                   @update="handleUpdateTaxDeferredInvestment"
-                                   @delete="handleDeleteTaxDeferredInvestment"
-                                   @remove="handleRemoveTaxDeferredInvestment"
-        />
-      </section>
-    </section>
+          <IraInvestmentListItem v-for="iraInvestment in plan.iraInvestments" :key="iraInvestment.id" :iraInvestment="iraInvestment"
+                             @update="handleUpdateIraInvestment"
+                             @delete="handleDeleteIraInvestment"
+                             @remove="handleRemoveIraInvestment"
+          />
 
-    <PlanTable v-if="plan && planStates" :planStates="planStates"/>
-  </div>
-    <div>
-      <PlanChartGrowth :states="planStates"></PlanChartGrowth>
-      <CommandSequence v-if="orderedCommands" :commands="orderedCommands" @update="handleCommandSequenceUpdate"></CommandSequence>
+
+          <RothIraInvestmentListItem v-for="rothIraInvestment in plan.rothIraInvestments" :key="rothIraInvestment.id" :rothIraInvestment="rothIraInvestment"
+                                 @update="handleUpdateRothIraInvestment"
+                                 @delete="handleDeleteRothIraInvestment"
+                                 @remove="handleRemoveRothIraInvestment"
+          />
+
+
+          <TaxDeferredInvestmentListItem
+              v-for="taxDeferredInvestment in plan.taxDeferredInvestments" :key="taxDeferredInvestment.id" :taxDeferredInvestment="taxDeferredInvestment"
+              @update="handleUpdateTaxDeferredInvestment"
+              @delete="handleDeleteTaxDeferredInvestment"
+              @remove="handleRemoveTaxDeferredInvestment"
+          />
+        </section>
     </div>
-</div>
+    <div>
+      <PlanSimulation
+          :plan="plan"
+          v-for="commandSequence in plan.commandSequences"
+          :key="commandSequence.id"
+          :commandSequence="commandSequence"
+          @update="handleCommandSequenceUpdate"
+      ></PlanSimulation>
+    </div>
+  </div>
 </template>
 <script setup lang="ts">
-import PlanManager from "~/models/plan/PlanManager";
-import type {PlanState} from "~/models/plan/PlanState";
-import type {Debt, DebtPartial} from "~/models/debt/Debt";
-import type {Expense, ExpensePartial} from "~/models/expense/Expense"
-import type {Plan} from "~/models/plan/Plan";
-import type {CashReserve} from "~/models/cashReserve/CashReserve";
-import type {IraInvestment, IraInvestmentPartial} from "~/models/iraInvestment/IraInvestment";
+import type {Debt, DebtPartial} from "~/types/Debt";
+import type {Expense, ExpensePartial} from "~/types/Expense"
+import type {Plan} from "~/types/Plan";
+import type {CashReserve} from "~/types/CashReserve";
+import type {IraInvestment, IraInvestmentPartial} from "~/types/IraInvestment";
 import type {
   TaxDeferredInvestment,
   TaxDeferredInvestmentPartial
-} from "~/models/taxDeferredInvestment/TaxDeferredInvestment";
-import type {Income, IncomePartial} from "~/models/income/Income";
-import type {BrokerageInvestment, BrokerageInvestmentPartial} from "~/models/brokerageInvestment/BrokerageInvestment";
-import type {RothIraInvestment, RothIraInvestmentPartial} from "~/models/rothIraInvestment/RothIraInvestment";
-import eventBus from "~/services/eventBus";
+} from "~/types/TaxDeferredInvestment";
+import type {Income, IncomePartial} from "~/types/Income";
+import type {BrokerageInvestment, BrokerageInvestmentPartial} from "~/types/BrokerageInvestment";
+import type {RothIraInvestment, RothIraInvestmentPartial} from "~/types/RothIraInvestment";
 import {type Command} from "~/types/Command";
-import {compareAndSyncCommands} from "~/utils/commandUtils";
 
 const planService = usePlanService()
 const debtService = useDebtService()
@@ -114,13 +101,8 @@ const brokerageInvestmentService = useBrokerageInvestmentService()
 const taxDeferredInvestmentService = useTaxDeferredInvestmentService()
 const route = useRoute()
 const planId = Number(route.params.id)
-const {data: plan, refresh: refreshPlan} = await useFetch<Plan>(`/api/plans/${planId}`)
+const {data: plan, refresh: refreshPlan, pending: planLoading} = useFetch<Plan>(`/api/plans/${planId}`)
 const loading = ref<boolean>(false);
-const orderedCommands = ref<Command[] | null>(null)
-
-definePageMeta({
-  layoutTransition: {name: 'slide-in'}
-})
 
 
 useHead({
@@ -304,9 +286,7 @@ async function handleRemoveTaxDeferredInvestment(taxDeferredInvestmentPartial: T
 }
 
 async function handleCommandSequenceUpdate(commands: Command[]) {
-  orderedCommands.value = commands
-  planManager = new PlanManager(plan.value);
-  planStates.value = planManager.simulate(orderedCommands.value)
+  console.log('update command sequence in plan')
 }
 
 const showModal = ref(false);
@@ -325,23 +305,9 @@ function handleClose() {
   showModal.value = false;
 }
 
-let planManager: PlanManager | null = null
-const planStates = ref<PlanState[]>([])
-const finalPlanState = ref<PlanState | null>(null)
-
 async function loadPlan() {
   try {
-    await refreshPlan
-    planManager = new PlanManager(plan);
-    const newCommands: Command[] = planManager.getCommands()
-    if (!orderedCommands.value) {
-      orderedCommands.value = newCommands
-
-    } else {
-      orderedCommands.value = compareAndSyncCommands(orderedCommands.value, newCommands)
-    }
-    planStates.value = planManager.simulate();
-    finalPlanState.value = planStates.value[planStates.value.length - 1];
+    await refreshPlan()
   } catch (error) {
     console.log('Error loading plan:', error);
   } finally {

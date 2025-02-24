@@ -4,7 +4,7 @@
   </div>
 </template>
 <script setup lang="ts">
-import type {Income} from "~/models/income/Income";
+import type {Income} from "~/types/Income";
 
 const route = useRoute()
 const incomeId = Number(route.params.id)

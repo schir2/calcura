@@ -12,7 +12,7 @@
   </CommonList>
 </template>
 <script lang="ts" setup>
-import type PlanState from "~/models/plan/PlanState";
+import type PlanState from "~/types/PlanState";
 
 interface Props {
   planStates: PlanState[]

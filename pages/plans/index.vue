@@ -18,7 +18,7 @@
   ></PlanList>
 </template>
 <script lang="ts" setup>
-import type {Plan, PlanPartial} from "~/models/plan/Plan";
+import type {Plan} from "~/types/Plan";
 import {usePlanService} from "~/composables/api/usePlanService";
 
 
@@ -27,7 +27,7 @@ const {data: plans, refresh: refreshPlans} = useFetch<Plan[]>('api/plans')
 
 const showModal = ref(false)
 
-async function handleCreatePlan(planTemplate: PlanPartial) {
+async function handleCreatePlan(planTemplate: Partial<Plan>) {
   await planService.create(planTemplate)
   await refreshPlans();
 }

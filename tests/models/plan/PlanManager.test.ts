@@ -6,18 +6,18 @@ import {
     InsufficientFundsStrategy,
     type Plan,
     RetirementStrategy
-} from "~/models/plan/Plan";
+} from "~/types/Plan";
 import {ContributionType} from "~/models/common";
 import {
     EmployerContributionStrategy,
     TaxDeferredContributionStrategy
-} from "~/models/taxDeferredInvestment/TaxDeferredInvestment";
-import {IraContributionStrategy} from "~/models/iraInvestment/IraInvestment";
-import {RothIraContributionStrategy} from "~/models/rothIraInvestment/RothIraInvestment";
-import {BrokerageContributionStrategy} from "~/models/brokerageInvestment/BrokerageInvestment";
-import {ExpenseType} from "~/models/expense/Expense";
-import {DebtPaymentStrategy} from "~/models/debt/Debt";
-import {CashReserveStrategy} from "~/models/cashReserve/CashReserve";
+} from "~/types/TaxDeferredInvestment";
+import {IraContributionStrategy} from "~/types/IraInvestment";
+import {RothIraContributionStrategy} from "~/types/RothIraInvestment";
+import {BrokerageContributionStrategy} from "~/types/BrokerageInvestment";
+import {ExpenseType} from "~/types/Expense";
+import {DebtPaymentStrategy} from "~/types/Debt";
+import {CashReserveStrategy} from "~/types/CashReserve";
 import {Frequency} from "~/types/Frequency";
 
 describe("PlanManager", () => {

@@ -53,7 +53,7 @@
   </n-table>
 </template>
 <script setup lang="ts">
-import type {PlanState} from "~/models/plan/PlanState";
+import type {PlanState} from "~/types/PlanState";
 
 interface Props {
   planStates: PlanState[]

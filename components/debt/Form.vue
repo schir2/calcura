@@ -83,9 +83,9 @@
 
 <script lang="ts" setup>
 
-import {type Debt, DebtPaymentStrategy} from "~/models/debt/Debt";
+import {type Debt, DebtPaymentStrategy} from "~/types/Debt";
 import {calculateDebtPayment} from "~/models/debt/DebtManager";
-import type {Plan} from "~/models/plan/Plan";
+import type {Plan} from "~/types/Plan";
 
 interface Props {
   initialValues: Partial<Debt>;

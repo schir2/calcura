@@ -3,7 +3,7 @@ import {darkTheme} from 'naive-ui'
 import {CategoryScale, Chart as ChartJS, Legend, LinearScale, LineElement, PointElement, Title, Tooltip} from 'chart.js'
 import {Line} from 'vue-chartjs'
 import type {BrokerageInvestmentProjection} from "~/components/brokerageInvestment/Form.vue";
-import {BrokerageInvestmentPaymentStrategy} from "~/models/brokerageInvestment/BrokerageInvestment";
+import {BrokerageInvestmentPaymentStrategy} from "~/types/BrokerageInvestment";
 
 ChartJS.register(
     CategoryScale,

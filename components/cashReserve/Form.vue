@@ -44,7 +44,7 @@
 </template>
 
 <script lang="ts" setup>
-import type {CashReserve} from "~/models/cashReserve/CashReserve";
+import type {CashReserve} from "~/types/CashReserve";
 
 interface Props {
   initialValues: Partial<CashReserve>;

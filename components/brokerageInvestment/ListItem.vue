@@ -23,7 +23,7 @@
 </template>
 <script setup lang="ts">
 
-import type {BrokerageInvestment} from "~/models/brokerageInvestment/BrokerageInvestment";
+import type {BrokerageInvestment} from "~/types/BrokerageInvestment";
 
 interface Props {
   brokerageInvestment: BrokerageInvestment

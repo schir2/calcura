@@ -1,6 +1,6 @@
 import type {FormRules} from "naive-ui";
 import type {Ref} from "vue";
-import type {Expense} from "~/models/expense/Expense";
+import type {Expense} from "~/types/Expense";
 import {
     EXPENSE_NAME_MAX_LENGTH,
     EXPENSE_NAME_MIN_LENGTH,

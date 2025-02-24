@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type {TaxDeferredInvestment} from "~/models/taxDeferredInvestment/TaxDeferredInvestment";
+import type {TaxDeferredInvestment} from "~/types/TaxDeferredInvestment";
 
 const route = useRoute()
 const taxDeferredInvestmentId = Number(route.params.id)

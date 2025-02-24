@@ -21,8 +21,9 @@
   </n-card>
 </template>
 <script lang="ts" setup>
-import {type Plan, planDefaults} from "~/models/plan/Plan";
+import {type Plan} from "~/types/Plan";
 import {usePlanValidator} from "~/composables/validators/usePlanValidator";
+import {planDefaults} from "~/constants/planConstants";
 
 interface Props {
   initialValues?: Partial<Plan>;

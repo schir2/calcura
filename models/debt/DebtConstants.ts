@@ -1,4 +1,4 @@
-import type {DebtPaymentStrategy} from "~/models/debt/Debt";
+import type {DebtPaymentStrategy} from "~/types/Debt";
 
 export const DEFAULT_DEBT_NAME: string = "New Debt";
 export const DEFAULT_INTEREST_RATE: number = 5;

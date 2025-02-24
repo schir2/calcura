@@ -6,7 +6,7 @@
   ></BrokerageInvestmentList>
 </template>
 <script setup lang="ts">
-import type {BrokerageInvestment, BrokerageInvestmentPartial} from "~/models/brokerageInvestment/BrokerageInvestment";
+import type {BrokerageInvestment, BrokerageInvestmentPartial} from "~/types/BrokerageInvestment";
 
 import {useBrokerageInvestmentService} from "~/composables/api/useBrokerageInvestmentService";
 

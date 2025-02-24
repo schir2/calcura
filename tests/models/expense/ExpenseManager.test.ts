@@ -6,10 +6,10 @@ import {
     InsufficientFundsStrategy,
     type Plan,
     RetirementStrategy
-} from "~/models/plan/Plan";
-import {ExpenseType} from "~/models/expense/Expense";
+} from "~/types/Plan";
+import {ExpenseType} from "~/types/Expense";
 import {ExpenseManager} from "~/models/expense/ExpenseManager"
-import type ExpenseState from "~/models/expense/ExpenseState";
+import type ExpenseState from "~/types/ExpenseState";
 import {ProcessExpenseCommand} from "~/models/expense/ExpenseCommands";
 import {Frequency} from "~/types/Frequency";
 

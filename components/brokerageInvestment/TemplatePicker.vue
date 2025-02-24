@@ -23,7 +23,7 @@ import {
   brokerageInvestmentDefaults,
   type BrokerageInvestmentPartial,
   type BrokerageInvestmentTemplate
-} from "~/models/brokerageInvestment/BrokerageInvestment";
+} from "~/types/BrokerageInvestment";
 import {useBrokerageInvestmentTemplateService} from "~/composables/api/useBrokerageInvestmentTemplateService";
 import {processTemplate} from "~/utils/templateProcessorUtils";
 

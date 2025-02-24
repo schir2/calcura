@@ -17,8 +17,8 @@
   </n-thing>
 </template>
 <script lang="ts" setup>
-import type {IraInvestmentTemplate} from "~/models/iraInvestment/IraInvestment";
-import {type IraInvestment, iraInvestmentDefaults, type IraInvestmentPartial} from "~/models/iraInvestment/IraInvestment";
+import type {IraInvestmentTemplate} from "~/types/IraInvestment";
+import {type IraInvestment, iraInvestmentDefaults, type IraInvestmentPartial} from "~/types/IraInvestment";
 import {useIraInvestmentTemplateService} from "~/composables/api/useIraInvestmentTemplateService";
 import {processTemplate} from "~/utils/templateProcessorUtils";
 

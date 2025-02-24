@@ -34,7 +34,7 @@
 </template>
 <script setup lang="ts">
 
-import type {Debt} from "~/models/debt/Debt";
+import type {Debt} from "~/types/Debt";
 
 interface Props {
   debt: Debt

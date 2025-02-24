@@ -43,7 +43,7 @@
 </template>
 <script setup lang="ts">
 
-import type {Plan} from "~/models/plan/Plan";
+import type {Plan} from "~/types/Plan";
 
 interface Props {
   plan: Plan

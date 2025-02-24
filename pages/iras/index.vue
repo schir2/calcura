@@ -6,7 +6,7 @@
   ></IraInvestmentList>
 </template>
 <script setup lang="ts">
-import type {IraInvestment, IraInvestmentPartial} from "~/models/iraInvestment/IraInvestment";
+import type {IraInvestment, IraInvestmentPartial} from "~/types/IraInvestment";
 
 import {useIraInvestmentService} from "~/composables/api/useIraInvestmentService";
 

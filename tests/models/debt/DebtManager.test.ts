@@ -1,7 +1,7 @@
 import {beforeEach, describe, expect, it} from "vitest";
 import DebtManager from "~/models/debt/DebtManager";
-import type {Debt} from "~/models/debt/Debt";
-import {DebtPaymentStrategy} from "~/models/debt/Debt";
+import type {Debt} from "~/types/Debt";
+import {DebtPaymentStrategy} from "~/types/Debt";
 import PlanManager from "~/models/plan/PlanManager";
 import {
     GrowthApplicationStrategy,
@@ -9,7 +9,7 @@ import {
     InsufficientFundsStrategy,
     type Plan,
     RetirementStrategy
-} from "~/models/plan/Plan";
+} from "~/types/Plan";
 
 import {Frequency} from "~/types/Frequency";
 

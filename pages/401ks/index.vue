@@ -10,10 +10,10 @@
 import type {
   TaxDeferredInvestment,
   TaxDeferredInvestmentPartial
-} from "~/models/taxDeferredInvestment/TaxDeferredInvestment";
+} from "~/types/TaxDeferredInvestment";
 
 import {useTaxDeferredInvestmentService} from "~/composables/api/useTaxDeferredInvestmentService";
-import type {Income} from "~/models/income/Income";
+import type {Income} from "~/types/Income";
 
 const taxDeferredInvestmentService = useTaxDeferredInvestmentService();
 const incomeService = useIncomeService()

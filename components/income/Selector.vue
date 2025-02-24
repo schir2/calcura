@@ -41,7 +41,7 @@
   </n-card>
 </template>
 <script lang="ts" setup>
-import type {Income} from "~/models/income/Income";
+import type {Income} from "~/types/Income";
 import {getAnnualAmount} from "~/utils";
 
 const incomeService = useIncomeService()

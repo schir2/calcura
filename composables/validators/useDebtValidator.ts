@@ -1,6 +1,6 @@
 import type {FormItemRule, FormRules} from "naive-ui";
-import type {Debt} from "~/models/debt/Debt";
-import {DebtPaymentStrategy} from "~/models/debt/Debt";
+import type {Debt} from "~/types/Debt";
+import {DebtPaymentStrategy} from "~/types/Debt";
 import {
     MAX_DEBT_NAME_LENGTH,
     MAX_INTEREST_RATE,

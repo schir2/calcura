@@ -18,7 +18,7 @@
 
 <script setup lang="ts">
 
-import type Debt from "~/models/debt/Debt";
+import type Debt from "~/types/Debt";
 
 interface Props {
   debts: Debt[]

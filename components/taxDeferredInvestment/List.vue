@@ -12,8 +12,8 @@
 import type {
   TaxDeferredInvestment,
   TaxDeferredInvestmentTemplate
-} from "~/models/taxDeferredInvestment/TaxDeferredInvestment";
-import type {Income} from "~/models/income/Income";
+} from "~/types/TaxDeferredInvestment";
+import type {Income} from "~/types/Income";
 
 interface Props {
   taxDeferredInvestments: TaxDeferredInvestment[]

@@ -1,6 +1,6 @@
 import type {FormRules} from "naive-ui";
 import type {Ref} from "vue";
-import type {Income} from "~/models/income/Income";
+import type {Income} from "~/types/Income";
 
 export function useIncomeValidation(modelRef: Ref<Partial<Income>>) {
     const rules: FormRules = {

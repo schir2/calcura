@@ -12,7 +12,7 @@
 </template>
 
 <script setup lang="ts">
-import type {Debt} from "~/models/debt/Debt";
+import type {Debt} from "~/types/Debt";
 import {formatValue} from "~/utils/formatValue";
 import {FormatType} from "~/types/FormatType";
 

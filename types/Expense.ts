@@ -1,4 +1,4 @@
-import type {Income} from "~/models/income/Income";
+import type {Income} from "~/types/Income";
 import {Frequency} from "~/types/Frequency";
 
 export enum ExpenseType {

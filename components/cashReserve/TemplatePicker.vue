@@ -23,7 +23,7 @@ import {
   cashReserveDefaults,
   type CashReservePartial,
   type CashReserveTemplate
-} from "~/models/cashReserve/CashReserve";
+} from "~/types/CashReserve";
 import {useCashReserveTemplateService} from "~/composables/api/useCashReserveTemplateService";
 import {processTemplate} from "~/utils/templateProcessorUtils";
 
