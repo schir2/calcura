@@ -31,10 +31,14 @@ function handleUpdateCommandSequence(commandSequence: CommandSequence) {
   emit("update-command-sequence", commandSequence)
 }
 
-watch(props.plan, () => {
+watch(() => props.plan, (newValue, oldValue) => {
+  console.log('what')
   planManager = new PlanManager(props.plan);
   planStates.value = planManager.simulate();
   finalPlanState.value = planStates.value[planStates.value.length - 1];
+}, {
+  deep: true,
+  immediate: true,
 })
 
 </script>

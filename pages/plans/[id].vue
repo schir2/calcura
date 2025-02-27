@@ -301,6 +301,7 @@ async function handleCreateModel(payload: {model: ModelName, data: any}){
 
 async function handleCommandSequenceUpdate(commandSequence: CommandSequence) {
   await repo.commandSequence.update(commandSequence.id, commandSequence)
+  await refreshPlan()
 }
 
 const showModal = ref(false);
