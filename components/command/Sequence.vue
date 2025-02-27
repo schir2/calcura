@@ -5,10 +5,9 @@
              group="commands"
              handle=".drag-handle"
              @start="drag=true"
-             @end="drag=false"
              :animation="300"
              item-key="id"
-             @change="onChange">
+             @end="onChange">
     <template #item="{element: command} : {element: Command}">
       <CommandSequenceCommand :command="command"/>
     </template>
@@ -25,15 +24,33 @@ interface Props {
 }
 
 const props = defineProps<Props>()
-const commandsRef = ref([...props.commandSequence.commands])
+const commandsRef = ref(props.commandSequence.commands)
 watch(() => props.commandSequence.commands, (newCommands) => {
   commandsRef.value = [...newCommands];
 }, {deep: true});
 
-const emits = defineEmits(['update'])
+const emit = defineEmits(['update'])
+
+const reorderedCommands = computed(()=>{
+  let order = 0
+  return commandsRef.value.map((command: Command)=>{
+    order ++
+    return {
+      ...command,
+      order: order
+    }
+  })
+})
 
 function onChange() {
-  emits('update', [...commandsRef.value])
+
+  drag.value = false
+  console.log(commandsRef.value)
+  emit('update', {
+        ...props.commandSequence,
+        commands:  reorderedCommands.value
+      }
+  )
 }
 
 const drag = ref<boolean>(false)

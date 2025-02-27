@@ -1,41 +1,36 @@
 <template>
-  <Icon :name="getIconifyName()" />
+  <Icon :name="getIconifyName(name)"/>
 </template>
 
 <script setup lang="ts">
-
-type iconName = '401k' | 'brokerage' | 'cashReserve' | 'debt' | 'expense' | 'income' | 'ira' | 'plan' | 'roth' | 'dashboard';
+import {ModelName} from "~/types/ModelName";
 
 interface Props {
-  name: iconName;
+  name: IconName;
 }
 
 const props = defineProps<Props>();
 
-function getIconifyName(): string {
-  switch (props.name) {
-    case '401k':
-      return 'mdi:finance';
-    case 'brokerage':
-      return 'mdi:finance';
-    case 'cashReserve':
-      return 'mdi:bank';
-    case 'debt':
-      return 'mdi:trending-down';
-    case 'expense':
-      return 'mdi:cash-minus';
-    case 'income':
-      return 'mdi:currency-usd';
-    case 'ira':
-      return 'mdi:finance';
-    case 'plan':
-      return 'mdi:flower-poppy';
-    case 'roth':
-      return 'mdi:finance';
-    case 'dashboard':
-      return 'uil:create-dashboard';
-    default:
-      return ''; // Handle unknown icon names
-  }
+const iconMap = {
+  taxDeferredInvestment: 'mdi:finance',
+  brokerageInvestment: 'mdi:finance',
+  iraInvestment: 'mdi:finance',
+  rothIraInvestment: 'mdi:finance',
+  brokerage: 'mdi:finance',
+  cashReserve: 'mdi:bank',
+  debt: 'mdi:trending-down',
+  expense: 'mdi:cash-minus',
+  income: 'mdi:currency-usd',
+  ira: 'mdi:finance',
+  plan: 'mdi:flower-poppy',
+  roth: 'mdi:finance',
+  dashboard: 'uil:create-dashboard',
+}
+
+type IconName = keyof typeof iconMap
+
+
+function getIconifyName(name: IconName): string {
+  return iconMap[name] ?? 'mdi:home'
 }
 </script>

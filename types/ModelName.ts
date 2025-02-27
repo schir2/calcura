@@ -1,4 +1,4 @@
-export enum ModelNames {
+export enum ModelName {
     TaxDeferredInvestment = 'taxDeferredInvestment',
     BrokerageInvestment = 'brokerageInvestment',
     CashReserve = 'cashReserve',

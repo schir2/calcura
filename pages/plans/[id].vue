@@ -12,6 +12,7 @@
 ...
       </nav>
       <section class="grid gap-2">
+        <ChildCreateButtonList @create-model="handleCreateModel" />
           <DebtListItem v-for="debt in plan.debts" :key="debt.id" :debt="debt"
                     @update="handleUpdateDebt"
                     @delete="handleDeleteDebt"
@@ -57,7 +58,10 @@
 
 
           <TaxDeferredInvestmentListItem
-              v-for="taxDeferredInvestment in plan.taxDeferredInvestments" :key="taxDeferredInvestment.id" :taxDeferredInvestment="taxDeferredInvestment"
+              v-for="taxDeferredInvestment in plan.taxDeferredInvestments"
+              :key="taxDeferredInvestment.id"
+              :taxDeferredInvestment="taxDeferredInvestment"
+              :incomes="plan.incomes"
               @update="handleUpdateTaxDeferredInvestment"
               @delete="handleDeleteTaxDeferredInvestment"
               @remove="handleRemoveTaxDeferredInvestment"
@@ -70,7 +74,7 @@
           v-for="commandSequence in plan.commandSequences"
           :key="commandSequence.id"
           :commandSequence="commandSequence"
-          @update="handleCommandSequenceUpdate"
+          @update-command-sequence="handleCommandSequenceUpdate"
       ></PlanSimulation>
     </div>
   </div>
@@ -89,6 +93,9 @@ import type {Income, IncomePartial} from "~/types/Income";
 import type {BrokerageInvestment, BrokerageInvestmentPartial} from "~/types/BrokerageInvestment";
 import type {RothIraInvestment, RothIraInvestmentPartial} from "~/types/RothIraInvestment";
 import {type Command} from "~/types/Command";
+import ChildCreateButtonList from "~/components/plan/ChildCreateButtonList.vue";
+import type {ModelName} from "~/types/ModelName";
+import type {CommandSequence} from "~/types/CommandSequence";
 
 const planService = usePlanService()
 const debtService = useDebtService()
@@ -101,7 +108,7 @@ const brokerageInvestmentService = useBrokerageInvestmentService()
 const taxDeferredInvestmentService = useTaxDeferredInvestmentService()
 const route = useRoute()
 const planId = Number(route.params.id)
-const {data: plan, refresh: refreshPlan, pending: planLoading} = useFetch<Plan>(`/api/plans/${planId}`)
+const {data: plan, refresh: refreshPlan, pending: planLoading} = await useFetch<Plan>(`/api/plans/${planId}`)
 const loading = ref<boolean>(false);
 
 
@@ -285,8 +292,15 @@ async function handleRemoveTaxDeferredInvestment(taxDeferredInvestmentPartial: T
   await loadPlan();
 }
 
-async function handleCommandSequenceUpdate(commands: Command[]) {
-  console.log('update command sequence in plan')
+const repo = useRepo()
+async function handleCreateModel(payload: {model: ModelName, data: any}){
+  const {model, data} = payload
+  repo[model].create(data)
+
+}
+
+async function handleCommandSequenceUpdate(commandSequence: CommandSequence) {
+  await repo.commandSequence.update(commandSequence.id, commandSequence)
 }
 
 const showModal = ref(false);

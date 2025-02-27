@@ -1,7 +1,7 @@
 <template>
   <n-form v-if="!authStore.user" ref="formRef" :model="credentialsRef" :rules="rules">
     <n-form-item path="username" label="Username">
-      <n-input placeholder="Username" v-model:value="credentialsRef.username"></n-input>
+      <n-input ref="usernameRef"  placeholder="Username" v-model:value="credentialsRef.username"></n-input>
     </n-form-item>
     <n-form-item path="password" label="Password">
       <n-input type="password" placeholder="Password" v-model:value="credentialsRef.password"></n-input>
@@ -12,7 +12,7 @@
         <n-button @click="$router.push('/auth/register/')">Register</n-button>
       </div>
     </n-form-item>
-      <n-button quaternary type="primary" y>Forgot Password?</n-button>
+    <n-button quaternary type="primary" y>Forgot Password?</n-button>
   </n-form>
   <n-button v-if="authStore.user" @click="authStore.logout()" :loading="isLogoutLoading">Log Out</n-button>
 </template>
@@ -76,6 +76,14 @@ async function handleLogin() {
     }
   })
 }
+
+const usernameRef = ref<null | HTMLElement>(null)
+
+onMounted(() => {
+  if (usernameRef.value) {
+    usernameRef.value.focus()
+  }
+})
 
 
 </script>
