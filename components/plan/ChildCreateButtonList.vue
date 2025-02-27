@@ -12,10 +12,10 @@
     </n-button>
   </n-button-group>
   <n-modal v-model:show="showModal">
-    <component v-if="selectedModel"
-        :is="selectedModel.form" mode="create"
-        @create="handleCreate($event)"
-        @cancel="handleClose"
+    <component v-if="selectedChildProp"
+               :is="selectedChildProp.form" mode="create"
+               @create="handleCreate($event)"
+               @cancel="handleClose"
     />
   </n-modal>
 </template>
@@ -46,17 +46,17 @@ const items: CreateButtonProps[] = [
 ];
 
 const showModal = ref<boolean>(false)
-const selectedModel = ref<CreateButtonProps | null>(null)
+const selectedChildProp = ref<CreateButtonProps | null>(null)
 
 const emit = defineEmits(['create-model'])
 
 function handleOpenCreateModal(item: CreateButtonProps) {
-  selectedModel.value = item
+  selectedChildProp.value = item
   showModal.value = true;
 }
 
 function handleCreate(data: any) {
-  emit('create-model', {model: selectedModel.value, data: data})
+  emit('create-model', {model: selectedChildProp.value.name, data: data})
   showModal.value = false
 }
 

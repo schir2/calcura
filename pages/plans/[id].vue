@@ -12,7 +12,7 @@
 ...
       </nav>
       <section class="grid gap-2">
-        <ChildCreateButtonList @create-model="handleCreateModel" />
+        <ChildCreateButtonList @create-model="handleCreateModel($event)" />
           <DebtListItem v-for="debt in plan.debts" :key="debt.id" :debt="debt"
                     @update="handleUpdateDebt"
                     @delete="handleDeleteDebt"
@@ -294,8 +294,13 @@ async function handleRemoveTaxDeferredInvestment(taxDeferredInvestmentPartial: T
 
 const repo = useRepo()
 async function handleCreateModel(payload: {model: ModelName, data: any}){
-  const {model, data} = payload
-  repo[model].create(data)
+  if (!repo[payload.model]) {
+    throw new Error(`Model ${payload.model} does not exist in the repository.`);
+  }
+  const relatedModel = await repo[payload.model].create(payload.data)
+  console.log(toSnakeCase(payload.model))
+  await repo.plan.addRelatedModel( planId, `${toSnakeCase(payload.model)}s`, relatedModel.id,)
+  await refreshPlan();
 
 }
 

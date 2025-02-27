@@ -7,8 +7,10 @@ import type {Expense} from "~/types/Expense";
 import type {Income} from "~/types/Income";
 import type {CashReserve} from "~/types/CashReserve";
 import type {CommandSequence} from "~/types/CommandSequence";
+import type {Plan} from "~/types/Plan";
 
 export function useRepo() {
+    const plan= useApi<Plan>('plans')
     const brokerageInvestment = useApi<BrokerageInvestment>('brokerage-investments')
     const debt = useApi<Debt>('debts')
     const income = useApi<Income>('incomes')
@@ -20,6 +22,7 @@ export function useRepo() {
     const commandSequence = useApi<CommandSequence>('command-sequences')
 
     return {
+        plan,
         brokerageInvestment,
         debt,
         income,
