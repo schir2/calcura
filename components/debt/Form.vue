@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 
-import {type Debt, DebtPaymentStrategy} from "~/types/Debt";
+import {type Debt, debtDefaults, DebtPaymentStrategy} from "~/types/Debt";
 import {calculateDebtPayment} from "~/models/debt/DebtManager";
 import type {Plan} from "~/types/Plan";
 
@@ -13,7 +13,7 @@ const {initialValues = debtDefaults, mode} = defineProps<Props>();
 const emit = defineEmits(["update", "cancel", "create"]);
 
 const {formRef, modelRef, rules, handleCreate, handleUpdate, handleCancel} =
-    useCrudFormWithValidation<Plan>(props.initialValues, emit, useDebtValidation);
+    useCrudFormWithValidation<Plan>(initialValues, emit, useDebtValidation);
 
 const paymentStrategyOptions = [
   {label: "Fixed Payment", value: DebtPaymentStrategy.Fixed},
