@@ -5,7 +5,6 @@
                                @create="handleCreate"
                                @update="handleUpdate"
                                @cancel="handleClose"
-                               :incomes="incomes"
     />
   </n-modal>
   <n-card size="small">
@@ -31,7 +30,6 @@ import type {Income} from "~/types/Income";
 
 interface Props {
   taxDeferred: TaxDeferred
-  incomes: Income[] | undefined
 }
 
 const props = defineProps<Props>()

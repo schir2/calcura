@@ -3,11 +3,11 @@
     <div v-if="plan" class="gap-2 col-span-2">
       <n-modal v-model:show="showModal">
         <PlanForm :initialValues="plan" mode="edit"
-                  @update="handleUpdate"
+                  @update="handleUpdatePlan"
                   @cancel="handleClose"
         />
       </n-modal>
-      <PlanDetailCard :plan="plan" @update="handleUpdate"></PlanDetailCard>
+      <PlanDetailCard :plan="plan" @update="handleUpdatePlan"></PlanDetailCard>
       <nav>
         ...
       </nav>
@@ -16,45 +16,44 @@
         <DebtListItem v-for="debt in plan.debts" :key="debt.id" :debt="debt"
                       @update="handleUpdateDebt"
                       @delete="handleDeleteDebt"
-                      @remove="handleRemoveDebt"/>
+                      @remove="handleRemovePlanModel({...$event, model: 'debt'})"/>
 
         <ExpenseListItem v-for="expense in plan.expenses" :key="expense.id" :expense="expense"
                          @update="handleUpdateExpense"
                          @delete="handleDeleteExpense"
-                         @remove="handleRemoveExpense"
+                         @remove="handleRemovePlanModel({...$event, model: 'expense'})"
         />
 
         <IncomeListItem v-for="income in plan.incomes" :key="income.id" :income="income"
-                        @create="handleCreateIncome"
                         @update="handleUpdateIncome"
                         @delete="handleDeleteIncome"
-                        @remove="handleRemoveIncome"
+                        @remove="handleRemovePlanModel({...$event, model: 'income'})"
         />
         <CashReserveListItem v-for="cashReserve in plan.cashReserves" :key="cashReserve.id" :cashReserve="cashReserve"
                              @update="handleUpdateCashReserve"
                              @delete="handleDeleteCashReserve"
-                             @remove="handleRemoveCashReserve"
+                             @remove="handleRemovePlanModel({...$event, model: 'cashReserve'})"
         />
 
 
         <BrokerageListItem v-for="brokerage in plan.brokerages" :key="brokerage.id" :brokerage="brokerage"
                            @update="handleUpdateBrokerage"
                            @delete="handleDeleteBrokerage"
-                           @remove="handleRemoveBrokerage"
+                           @remove="handleRemovePlanModel({...$event, model: 'brokerage'})"
         />
 
 
         <IraListItem v-for="ira in plan.iras" :key="ira.id" :ira="ira"
                      @update="handleUpdateIra"
                      @delete="handleDeleteIra"
-                     @remove="handleRemoveIra"
+                     @remove="handleRemovePlanModel({...$event, model: 'ira'})"
         />
 
 
         <RothIraListItem v-for="rothIra in plan.rothIras" :key="rothIra.id" :rothIra="rothIra"
                          @update="handleUpdateRothIra"
                          @delete="handleDeleteRothIra"
-                         @remove="handleRemoveRothIra"
+                         @remove="handleRemovePlanModel({...$event, model: 'rothIra'})"
         />
 
 
@@ -62,10 +61,9 @@
             v-for="taxDeferred in plan.taxDeferreds"
             :key="taxDeferred.id"
             :taxDeferred="taxDeferred"
-            :incomes="plan.incomes"
             @update="handleUpdateTaxDeferred"
             @delete="handleDeleteTaxDeferred"
-            @remove="handleRemoveTaxDeferred"
+            @remove="handleRemovePlanModel({...$event, model: 'taxDeferred'})"
         />
       </section>
     </div>
@@ -81,15 +79,15 @@
   </div>
 </template>
 <script setup lang="ts">
-import type {Debt, DebtPartial} from "~/types/Debt";
-import type {Expense, ExpensePartial} from "~/types/Expense"
+import type {Debt} from "~/types/Debt";
+import type {Expense} from "~/types/Expense"
 import type {Plan} from "~/types/Plan";
 import type {CashReserve} from "~/types/CashReserve";
-import type {Ira, IraPartial} from "~/types/Ira";
-import type {TaxDeferred, TaxDeferredPartial} from "~/types/TaxDeferred";
-import type {Income, IncomePartial} from "~/types/Income";
-import type {Brokerage, BrokeragePartial} from "~/types/Brokerage";
-import type {RothIra, RothIraPartial} from "~/types/RothIra";
+import type {Ira} from "~/types/Ira";
+import type {TaxDeferred} from "~/types/TaxDeferred";
+import type {Income} from "~/types/Income";
+import type {Brokerage} from "~/types/Brokerage";
+import type {RothIra} from "~/types/RothIra";
 import ChildCreateButtonList from "~/components/plan/ChildCreateButtonList.vue";
 import type {ModelName} from "~/types/ModelName";
 import type {CommandSequence} from "~/types/CommandSequence";
@@ -117,10 +115,14 @@ useHead({
   ],
 })
 
-async function handleCreateDebt(debtPartial: DebtPartial) {
-  const debt = await debtService.create(debtPartial)
-  await planService.addRelatedModel(planId, 'debts', debt.id)
+async function handleRemovePlanModel(payload: { model: ModelName, id: number }) {
+  await useApi(`plans/${planId}/${toKebabCaseKey(payload.model)}s`).remove(payload.id)
   await loadPlan();
+}
+
+async function handleCreatePlanModel(payload: { model: ModelName, data: any }) {
+  plan.value = await useApi(`plans/${planId}/${toKebabCaseKey(payload.model)}s`).create(payload.data)
+  await loadPlan()
 }
 
 async function handleDeleteDebt(debt: Debt) {
@@ -130,19 +132,6 @@ async function handleDeleteDebt(debt: Debt) {
 
 async function handleUpdateDebt(debt: Debt) {
   await debtService.update(debt.id, debt)
-  await loadPlan();
-}
-
-async function handleRemoveDebt(debtPartial: DebtPartial) {
-  const debt = await debtService.create(debtPartial)
-  await planService.removeRelatedModel(planId, 'debts', debt.id)
-  await loadPlan();
-}
-
-
-async function handleCreateCashReserve(cashReservePartial: CashReserve) {
-  const cashReserve = await cashReserveService.create(cashReservePartial)
-  await planService.addRelatedModel(planId, 'cash_reserves', cashReserve.id)
   await loadPlan();
 }
 
@@ -156,18 +145,6 @@ async function handleUpdateCashReserve(cashReserve: CashReserve) {
   await loadPlan();
 }
 
-async function handleRemoveCashReserve(cashReservePartial: CashReserve) {
-  const cashReserve = await cashReserveService.create(cashReservePartial)
-  await planService.removeRelatedModel(planId, 'cash_reserves', cashReserve.id)
-  await loadPlan();
-}
-
-async function handleCreateIncome(incomePartial: IncomePartial) {
-  const income = await incomeService.create(incomePartial)
-  await planService.addRelatedModel(planId, 'incomes', income.id)
-  await loadPlan();
-}
-
 async function handleDeleteIncome(income: Income) {
   await incomeService.remove(income.id)
   await loadPlan();
@@ -178,17 +155,6 @@ async function handleUpdateIncome(income: Income) {
   await loadPlan();
 }
 
-async function handleRemoveIncome(income: Income) {
-  await planService.removeRelatedModel(planId, 'incomes', income.id)
-  await loadPlan();
-}
-
-
-async function handleCreateExpense(expensePartial: ExpensePartial) {
-  const expense = await expenseService.create(expensePartial)
-  await planService.addRelatedModel(planId, 'expenses', expense.id)
-  await loadPlan();
-}
 
 async function handleDeleteExpense(expense: Expense) {
   await expenseService.remove(expense.id)
@@ -200,16 +166,6 @@ async function handleUpdateExpense(expense: Expense) {
   await loadPlan();
 }
 
-async function handleRemoveExpense(expense: Expense) {
-  await planService.removeRelatedModel(planId, 'expenses', expense.id)
-  await loadPlan();
-}
-
-async function handleCreateBrokerage(brokeragePartial: BrokeragePartial) {
-  const brokerage = await brokerageService.create(brokeragePartial)
-  await planService.addRelatedModel(planId, 'brokerage_investments', brokerage.id)
-  await loadPlan();
-}
 
 async function handleDeleteBrokerage(brokerage: Brokerage) {
   await brokerageService.remove(brokerage.id)
@@ -221,16 +177,6 @@ async function handleUpdateBrokerage(brokerage: Brokerage) {
   await loadPlan();
 }
 
-async function handleRemoveBrokerage(brokerage: Brokerage) {
-  await planService.removeRelatedModel(planId, 'brokerage_investments', brokerage.id)
-  await loadPlan();
-}
-
-async function handleCreateIra(iraPartial: IraPartial) {
-  const ira = await iraService.create(iraPartial)
-  await planService.addRelatedModel(planId, 'ira_investments', ira.id)
-  await loadPlan();
-}
 
 async function handleDeleteIra(ira: Ira) {
   await iraService.remove(ira.id)
@@ -242,16 +188,6 @@ async function handleUpdateIra(ira: Ira) {
   await loadPlan();
 }
 
-async function handleRemoveIra(ira: Ira) {
-  await planService.removeRelatedModel(planId, 'ira_investments', ira.id)
-  await loadPlan();
-}
-
-async function handleCreateRothIra(rothIraPartial: RothIraPartial) {
-  const rothIra = await rothIraService.create(rothIraPartial)
-  await planService.addRelatedModel(planId, 'roth_ira_investments', rothIra.id)
-  await loadPlan();
-}
 
 async function handleDeleteRothIra(rothIra: RothIra) {
   await rothIraService.remove(rothIra.id)
@@ -263,16 +199,6 @@ async function handleUpdateRothIra(rothIra: RothIra) {
   await loadPlan();
 }
 
-async function handleRemoveRothIra(rothIra: RothIra) {
-  await planService.removeRelatedModel(planId, 'roth_ira_investments', rothIra.id)
-  await loadPlan();
-}
-
-async function handleCreateTaxDeferred(taxDeferredPartial: TaxDeferredPartial) {
-  const taxDeferred = await taxDeferredService.create(taxDeferredPartial)
-  await planService.addRelatedModel(planId, 'tax_deferred_investments', taxDeferred.id)
-  await loadPlan();
-}
 
 async function handleDeleteTaxDeferred(taxDeferred: TaxDeferred) {
   await taxDeferredService.remove(taxDeferred.id)
@@ -284,35 +210,19 @@ async function handleUpdateTaxDeferred(taxDeferred: TaxDeferred) {
   await loadPlan();
 }
 
-async function handleRemoveTaxDeferred(taxDeferredPartial: TaxDeferredPartial) {
-  const taxDeferred = await taxDeferredService.create(taxDeferredPartial)
-  await planService.removeRelatedModel(planId, 'tax_deferred_investments', taxDeferred.id)
-  await loadPlan();
-}
-
-async function handleCreatePlanModel(payload: { model: ModelName, data: any }) {
-  const p = await useApi<Expense>(`plans/${planId}/${toKebabCaseKey(payload.model)}s`).create(payload.data)
-  await refreshPlan();
-
-}
-
 const repo = useRepo()
 
 async function handleCommandSequenceUpdate(commandSequence: CommandSequence) {
   await repo.commandSequence.update(commandSequence.id, commandSequence)
-  await refreshPlan()
+  await loadPlan()
 }
 
 const showModal = ref(false);
 
-async function handleUpdate(planData: Plan) {
+async function handleUpdatePlan(planData: Plan) {
   await planService.update(planData.id, planData)
   showModal.value = false;
   await loadPlan()
-}
-
-function handleEdit() {
-  showModal.value = true;
 }
 
 function handleClose() {
