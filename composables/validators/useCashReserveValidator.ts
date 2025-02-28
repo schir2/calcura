@@ -1,6 +1,6 @@
-import type { FormItemRule, FormRules } from "naive-ui";
-import type { Ref } from "vue";
-import type { CashReserve } from "~/types/CashReserve";
+import type {FormItemRule, FormRules} from "naive-ui";
+import type {Ref} from "vue";
+import type {CashReserve} from "~/types/CashReserve";
 import {
     MAX_RESERVE_AMOUNT,
     MAX_RESERVE_MONTHS,
@@ -29,28 +29,46 @@ export function useCashReserveValidation(modelRef: Ref<Partial<CashReserve>>) {
 
     const rules: FormRules = {
         name: [
-            { required: true, message: "Cash Reserve name is required", trigger: ["blur", "change"] },
-            { min: 3, message: "Cash Reserve name must be at least 3 characters long.", trigger: ["blur", "change"] },
-            { max: 100, message: "Cash Reserve name must be at most 100 characters long.", trigger: ["blur", "change"] }
+            {required: true, message: "Cash Reserve name is required", trigger: ["blur", "change"]},
+            {min: 3, message: "Cash Reserve name must be at least 3 characters long.", trigger: ["blur", "change"]},
+            {max: 100, message: "Cash Reserve name must be at most 100 characters long.", trigger: ["blur", "change"]}
         ],
         initialAmount: [
-            { required: true, type: "number", message: "Initial amount is required", trigger: ["blur", "change"] },
-            { type: "number", min: 0, message: "Initial amount must be at least $0.", trigger: ["blur", "change"] }
+            {required: true, type: "number", message: "Initial amount is required", trigger: ["blur", "change"]},
+            {type: "number", min: 0, message: "Initial amount must be at least $0.", trigger: ["blur", "change"]}
         ],
         cashReserveStrategy: [
-            { required: true, message: "Cash Reserve strategy is required", trigger: ["blur", "change"] }
+            {required: true, message: "Cash Reserve strategy is required", trigger: ["blur", "change"]}
         ],
         reserveAmount: [
-            { validator: validateReserveAmount, trigger: ["blur", "change"] },
-            { type: "number", min: MIN_RESERVE_AMOUNT, message: `Reserve amount must be at least $${MIN_RESERVE_AMOUNT}.`, trigger: ["blur", "change"] },
-            { type: "number", max: MAX_RESERVE_AMOUNT, message: `Reserve amount cannot exceed $${MAX_RESERVE_AMOUNT}.`, trigger: ["blur", "change"] }
+            {
+                type: "number",
+                min: MIN_RESERVE_AMOUNT,
+                message: `Reserve amount must be at least $${MIN_RESERVE_AMOUNT}.`,
+                trigger: ["blur", "change"]
+            },
+            {
+                type: "number",
+                max: MAX_RESERVE_AMOUNT,
+                message: `Reserve amount cannot exceed $${MAX_RESERVE_AMOUNT}.`,
+                trigger: ["blur", "change"]
+            }
         ],
         reserveMonths: [
-            { validator: validateReserveMonths, trigger: ["blur", "change"] },
-            { type: "number", min: MIN_RESERVE_MONTHS, message: `Reserve months must be at least ${MIN_RESERVE_MONTHS}.`, trigger: ["blur", "change"] },
-            { type: "number", max: MAX_RESERVE_MONTHS, message: `Reserve months cannot exceed ${MAX_RESERVE_MONTHS}.`, trigger: ["blur", "change"] }
+            {
+                type: "number",
+                min: MIN_RESERVE_MONTHS,
+                message: `Reserve months must be at least ${MIN_RESERVE_MONTHS}.`,
+                trigger: ["blur", "change"]
+            },
+            {
+                type: "number",
+                max: MAX_RESERVE_MONTHS,
+                message: `Reserve months cannot exceed ${MAX_RESERVE_MONTHS}.`,
+                trigger: ["blur", "change"]
+            }
         ]
     };
 
-    return { rules };
+    return {rules};
 }
