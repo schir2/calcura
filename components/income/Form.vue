@@ -1,3 +1,50 @@
+<script lang="ts" setup>
+import {Bar} from 'vue-chartjs'
+import {type Income, incomeDefaults} from "~/types/Income";
+import {BarElement, CategoryScale, Chart as ChartJS, Legend, LinearScale, Title, Tooltip} from 'chart.js'
+import {getAnnualAmount} from "~/utils";
+import {useIncomeValidation} from "~/composables/validators/useIncomeValidator";
+import {Frequency} from "~/types/Frequency";
+
+interface Props {
+  initialValues?: Partial<Income>;
+  mode: 'create' | 'edit'
+}
+
+const {initialValues = incomeDefaults, mode} = defineProps<Props>();
+
+const emit = defineEmits(["update", "cancel", "create"]);
+const {formRef, modelRef, rules, handleCreate, handleUpdate, handleCancel} =
+    useCrudFormWithValidation(initialValues, emit, useIncomeValidation);
+
+ChartJS.register(Title, Tooltip, Legend, BarElement, CategoryScale, LinearScale)
+
+const data = ref(Array<number>(20).fill(0))
+
+const chartOptions = {
+  responsive: true,
+};
+
+const chartData = computed(() => ({
+  labels: Array.from({length: 20}, (_, i) => `Year ${i + 1}`),
+  datasets: [{
+    label: 'Projection',
+
+    backgroundColor: "#1355FF",
+    data: generateGrowthData(getAnnualAmount(modelRef.value.grossIncome ?? 0, modelRef.value.frequency as Frequency), modelRef.value.growthRate),
+  }]
+}));
+
+function generateGrowthData(principal: number, growthRate: number = 0) {
+  const data = Array(20).fill(0)
+  const growthMultiplier = 1 + growthRate / 100
+  data[0] = principal
+  for (let i = 1; i < 19; i++) {
+    data[i] = data[i - 1] * growthMultiplier
+  }
+  return data
+}
+</script>
 <template>
   <n-card role="dialog" class="max-w-2xl" :bordered="true">
     <template #header>
@@ -56,50 +103,3 @@
 
   </n-card>
 </template>
-
-<script lang="ts" setup>
-import {Bar} from 'vue-chartjs'
-import type {Income} from "~/types/Income";
-import {BarElement, CategoryScale, Chart as ChartJS, Legend, LinearScale, Title, Tooltip} from 'chart.js'
-import {getAnnualAmount} from "~/utils";
-import {useIncomeValidation} from "~/composables/validators/useIncomeValidator";
-import {Frequency} from "~/types/Frequency";
-
-interface Props {
-  initialValues: Partial<Income>;
-  mode: 'create' | 'edit'
-}
-
-const props = defineProps<Props>();
-const emit = defineEmits(["update", "cancel", "create"]);
-const { formRef, modelRef, rules, handleCreate, handleUpdate, handleCancel } =
-    useCrudFormWithValidation(props.initialValues, emit, useIncomeValidation);
-
-ChartJS.register(Title, Tooltip, Legend, BarElement, CategoryScale, LinearScale)
-
-const data = ref(Array<number>(20).fill(0))
-
-const chartOptions = {
-  responsive: true,
-};
-
-const chartData = computed(() => ({
-  labels: Array.from({length: 20}, (_, i) => `Year ${i + 1}`),
-  datasets: [{
-    label: 'Projection',
-
-    backgroundColor: "#1355FF",
-    data: generateGrowthData(getAnnualAmount(modelRef.value.grossIncome ?? 0, modelRef.value.frequency as Frequency), modelRef.value.growthRate),
-  }]
-}));
-
-function generateGrowthData(principal: number, growthRate: number = 0) {
-  const data = Array(20).fill(0)
-  const growthMultiplier = 1 + growthRate / 100
-  data[0] = principal
-  for (let i = 1; i < 19; i++) {
-    data[i] = data[i - 1] * growthMultiplier
-  }
-  return data
-}
-</script>
