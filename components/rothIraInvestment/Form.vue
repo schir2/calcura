@@ -1,3 +1,17 @@
+<script lang="ts" setup>
+import {type RothIraInvestment, rothIraInvestmentDefaults} from "~/types/RothIraInvestment";
+
+interface Props {
+  initialValues?: Partial<RothIraInvestment>;
+  mode: "create" | "edit";
+}
+
+const {initialValues = rothIraInvestmentDefaults, mode} = defineProps<Props>();
+const emit = defineEmits(["update", "cancel", "create"]);
+
+const {formRef, modelRef, rules, handleCreate, handleUpdate, handleCancel} =
+    useCrudFormWithValidation(initialValues, emit, useRothIraInvestmentValidation);
+</script>
 <template>
   <n-card role="dialog" class="max-w-6xl" :bordered="true">
     <template #header>
@@ -124,18 +138,3 @@
     </template>
   </n-card>
 </template>
-
-<script lang="ts" setup>
-import type {RothIraInvestment} from "~/types/RothIraInvestment";
-
-interface Props {
-  initialValues: Partial<RothIraInvestment>;
-  mode: "create" | "edit";
-}
-
-const props = defineProps<Props>();
-const emit = defineEmits(["update", "cancel", "create"]);
-
-const {formRef, modelRef, rules, handleCreate, handleUpdate, handleCancel} =
-    useCrudFormWithValidation(props.initialValues, emit, useRothIraInvestmentValidation);
-</script>
