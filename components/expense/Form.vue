@@ -1,3 +1,20 @@
+<script lang="ts" setup>
+import {type Expense, expenseDefaults} from "~/types/Expense";
+import {useCrudFormWithValidation} from "~/composables/useCrudFormWithValidation";
+import {getAnnualAmount} from "~/utils";
+import {Frequency} from "~/types/Frequency";
+
+interface Props {
+  initialValues?: Partial<Expense>;
+  mode: "create" | "edit";
+}
+
+const {initialValues = expenseDefaults, mode} = defineProps<Props>();
+const emit = defineEmits(["update", "cancel", "create"]);
+
+const {formRef, modelRef, rules, handleCreate, handleUpdate, handleCancel} =
+    useCrudFormWithValidation(initialValues, emit, useExpenseValidation);
+</script>
 <template>
   <n-card role="dialog" class="max-w-2xl" :bordered="true">
     <template #header>
@@ -71,21 +88,3 @@
     </template>
   </n-card>
 </template>
-
-<script lang="ts" setup>
-import {type Expense} from "~/types/Expense";
-import {useCrudFormWithValidation} from "~/composables/useCrudFormWithValidation";
-import {getAnnualAmount} from "~/utils";
-import {Frequency} from "~/types/Frequency";
-
-interface Props {
-  initialValues: Partial<Expense>;
-  mode: "create" | "edit";
-}
-
-const props = defineProps<Props>();
-const emit = defineEmits(["update", "cancel", "create"]);
-
-const {formRef, modelRef, rules, handleCreate, handleUpdate, handleCancel} =
-    useCrudFormWithValidation(props.initialValues, emit, useExpenseValidation);
-</script>
