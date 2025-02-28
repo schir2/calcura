@@ -4,6 +4,9 @@
         v-for="item in items"
         :key="item.name"
         @click="handleOpenCreateModal(item)"
+        :type="item.buttonType"
+        secondary
+        round
     >
       <template #icon>
         <BaseIco :name="item.name"/>
@@ -32,17 +35,17 @@ import {
   TaxDeferredForm,
 } from "#components";
 
-type CreateButtonProps = { name: ModelName, label: string, form: Component }
+type CreateButtonProps = { name: ModelName, label: string, form: Component, buttonType: string };
 
 const items: CreateButtonProps[] = [
-  {name: ModelName.TaxDeferred, label: '401k', form: TaxDeferredForm},
-  {name: ModelName.Brokerage, label: 'Brokerage', form: BrokerageForm},
-  {name: ModelName.CashReserve, label: 'Cash Reserve', form: CashReserveForm},
-  {name: ModelName.Debt, label: 'Debt', form: DebtForm},
-  {name: ModelName.Expense, label: 'Expense', form: ExpenseForm},
-  {name: ModelName.Income, label: 'Income', form: IncomeForm},
-  {name: ModelName.Ira, label: 'IRA', form: IraForm},
-  {name: ModelName.RothIra, label: 'Roth', form: RothIraForm},
+  {name: ModelName.Income, label: 'Income', form: IncomeForm, buttonType: 'primary'},
+  {name: ModelName.Expense, label: 'Expense', form: ExpenseForm, buttonType: 'warning'},
+  {name: ModelName.Debt, label: 'Debt', form: DebtForm, buttonType: 'error'},
+  {name: ModelName.CashReserve, label: 'Cash Reserve', form: CashReserveForm, buttonType: 'info'},
+  {name: ModelName.TaxDeferred, label: '401k', form: TaxDeferredForm, buttonType: 'info'},
+  {name: ModelName.RothIra, label: 'Roth', form: RothIraForm, buttonType: 'info'},
+  {name: ModelName.Ira, label: 'IRA', form: IraForm, buttonType: 'info'},
+  {name: ModelName.Brokerage, label: 'Brokerage', form: BrokerageForm, buttonType: 'info'},
 ];
 
 const showModal = ref<boolean>(false)

@@ -1,5 +1,5 @@
 <template>
-  <n-button-group :size="size">
+  <n-button-group :size="'tiny'">
     <n-button tertiary round type="warning" @click="$emit('edit')">
       <template #icon>
         <Icon name="mdi:edit"/>

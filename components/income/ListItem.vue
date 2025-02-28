@@ -9,7 +9,10 @@
   </n-modal>
   <n-card size="small">
     <template #header>
-      <span>{{income.id}} {{ income.name }}</span>
+      <h3 class="flex items-center gap-2 text-lg">
+        <base-ico class="text-skin-success" name="income"/>
+        <span>{{ income.name }}</span>
+      </h3>
     </template>
     <template #default>
       <p class="flex justify-between">
@@ -30,9 +33,9 @@
             {{ income.growthRate }}%
           </n-tag>
         </span>
-          <span class="text-lg">${{
-              $humanize.intComma(getAnnualAmount(income.grossIncome, income.frequency))
-            }}/year</span>
+        <span class="text-lg">${{
+            $humanize.intComma(getAnnualAmount(income.grossIncome, income.frequency))
+          }}/year</span>
       </p>
     </template>
     <template #header-extra>

@@ -12,16 +12,19 @@ interface Props {
 const props = defineProps<Props>();
 
 const iconMap = {
+  more: 'material-symbols:more-vert',
+  create: 'mdi:add-circle',
+  remove: 'material-symbols:close',
+  delete: 'material-symbols:delete',
+  add: 'material-symbols:add',
   taxDeferred: 'mdi:finance',
   brokerage: 'mdi:finance',
   ira: 'mdi:finance',
   rothIra: 'mdi:finance',
-  brokerage: 'mdi:finance',
   cashReserve: 'mdi:bank',
   debt: 'mdi:trending-down',
   expense: 'mdi:cash-minus',
   income: 'mdi:currency-usd',
-  ira: 'mdi:finance',
   plan: 'mdi:flower-poppy',
   roth: 'mdi:finance',
   dashboard: 'uil:create-dashboard',

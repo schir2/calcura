@@ -37,6 +37,7 @@
   "devDependencies": {
     "@faker-js/faker": "^9.2.0",
     "@iconify-json/mdi": "^1.2.1",
+    "@iconify/icons-material-symbols": "^1.2.58",
     "@inspira-ui/plugins": "^0.0.1",
     "@nuxt/test-utils": "^3.14.4",
     "@tailwindcss/aspect-ratio": "^0.4.2",

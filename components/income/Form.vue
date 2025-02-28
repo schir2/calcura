@@ -5,6 +5,7 @@ import {BarElement, CategoryScale, Chart as ChartJS, Legend, LinearScale, Title,
 import {getAnnualAmount} from "~/utils";
 import {useIncomeValidation} from "~/composables/validators/useIncomeValidator";
 import {Frequency} from "~/types/Frequency";
+import {FORM_LABEL_ALIGN, FORM_LABEL_PLACEMENT, FORM_MODAL_WIDTH_CLASS} from "~/constants/FormConstants";
 
 interface Props {
   initialValues?: Partial<Income>;
@@ -46,28 +47,36 @@ function generateGrowthData(principal: number, growthRate: number = 0) {
 }
 </script>
 <template>
-  <n-card role="dialog" class="max-w-2xl" :bordered="true">
+  <n-card role="dialog" :class="FORM_MODAL_WIDTH_CLASS" :bordered="true">
     <template #header>
       <h3 class="text-2xl">Income: {{ initialValues.name }}</h3>
     </template>
 
     <template #default>
-      <n-form ref="formRef" :model="modelRef" :rules="rules">
-        <section class="grid grid-cols-3 gap-3">
-          <n-form-item path="name" label="Income Name">
-            <n-input v-model:value="modelRef.name" placeholder="Enter income name"/>
-          </n-form-item>
+      <n-form
+          ref="formRef"
+          :model="modelRef"
+          :rules="rules"
+          :label-placement="FORM_LABEL_PLACEMENT"
+          :label-align="FORM_LABEL_ALIGN"
+      >
+        <n-form-item path="name" label="Income Name">
+          <n-input v-model:value="modelRef.name" placeholder="Enter income name"/>
+        </n-form-item>
 
-          <n-form-item path="grossIncome" label="Gross Income">
-            <n-input-number v-model:value="modelRef.grossIncome" placeholder="Enter gross income amount"/>
-          </n-form-item>
+        <n-form-item path="grossIncome" label="Gross Income">
+          <n-input-number
+              v-model:value="modelRef.grossIncome"
+              placeholder="Enter gross income amount"
+              class="w-full"
+          />
+        </n-form-item>
 
-          <n-form-item path="growthRate" label="Growth Rate (%)">
-            <n-space vertical class="w-full">
-              <n-input-number class="w-full" v-model:value="modelRef.growthRate"/>
-            </n-space>
-          </n-form-item>
-        </section>
+        <n-form-item path="growthRate" label="Growth Rate (%)">
+          <n-space vertical class="w-full">
+            <n-input-number class="w-full" v-model:value="modelRef.growthRate"/>
+          </n-space>
+        </n-form-item>
 
         <n-form-item path="frequency" label="Frequency">
           <n-radio-group v-model:value="modelRef.frequency">
@@ -80,21 +89,18 @@ function generateGrowthData(principal: number, growthRate: number = 0) {
             ]" :key="option.value" :label="option.label" :value="option.value"/>
           </n-radio-group>
         </n-form-item>
-
-        <section class="grid grid-cols-4 gap-3">
-          <n-form-item path="incomeType" label="Income Type">
-            <n-radio-group v-model:value="modelRef.incomeType">
-              <n-radio-button v-for="option in [
-                { label: 'Ordinary', value: 'ordinary' }
-              ]" :key="option.value" :label="option.label" :value="option.value"/>
-            </n-radio-group>
-          </n-form-item>
-        </section>
       </n-form>
       <Bar v-if="data" id="my-chart-id"
            :options="chartOptions"
            :data="chartData"
       ></Bar>
+    </template>
+    <template #footer>
+      <n-statistic class="text-end">
+        <span class="text-skin-success">+${{
+            $humanize.intComma(getAnnualAmount(modelRef.grossIncome ?? 0, modelRef.frequency ?? Frequency.Annually))
+          }}/year</span>
+      </n-statistic>
     </template>
     <template #action>
       <FormActionButtons :mode="mode" @update="handleUpdate" @create="handleCreate"
