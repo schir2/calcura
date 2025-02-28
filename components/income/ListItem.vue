@@ -8,14 +8,13 @@
     />
   </n-modal>
   <n-card size="small">
-    <template #header>
-      <h3 class="flex items-center gap-2 text-lg">
-        <base-ico class="text-skin-success" name="income"/>
-        <span>{{ income.name }}</span>
-      </h3>
-    </template>
-    <template #default>
-      <p class="flex justify-between">
+    <div class="flex justify-between">
+      <div class="flex gap-2 items-center">
+        <h3 class="flex items-center gap-2 text-lg">
+          <base-ico class="text-skin-success" name="income"/>
+          <span>{{ income.name }}</span>
+        </h3>
+        <p class="flex justify-between">
         <span class="flex">
           <n-tag>
             {{ income.incomeType }}
@@ -33,14 +32,15 @@
             {{ income.growthRate }}%
           </n-tag>
         </span>
-        <span class="text-lg">${{
-            $humanize.intComma(getAnnualAmount(income.grossIncome, income.frequency))
-          }}/year</span>
-      </p>
-    </template>
-    <template #header-extra>
-      <ListItemButtons size="small" @edit="handleEdit" @remove="handleRemove" @delete="handleDelete"/>
-    </template>
+        </p>
+      </div>
+      <div class="flex gap-2 items-center">
+      <span class="text-lg">${{
+          $humanize.intComma(getAnnualAmount(income.grossIncome, income.frequency))
+        }}/year</span>
+        <ListItemButtons size="small" @edit="handleEdit" @remove="handleRemove" @delete="handleDelete"/>
+      </div>
+    </div>
   </n-card>
 
 </template>
