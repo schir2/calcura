@@ -1,3 +1,17 @@
+<script lang="ts" setup>
+import {type IraInvestment, iraInvestmentDefaults} from "~/types/IraInvestment";
+
+interface Props {
+  initialValues?: Partial<IraInvestment>;
+  mode: 'create' | 'edit'
+}
+
+const {initialValues = iraInvestmentDefaults} = defineProps<Props>();
+const emit = defineEmits(["update", "cancel", "create"]);
+
+const {formRef, modelRef, rules, handleCreate, handleUpdate, handleCancel} =
+    useCrudFormWithValidation(initialValues, emit, useIraInvestmentValidation);
+</script>
 <template>
   <n-card role="dialog" class="max-w-6xl" :bordered="true">
     <template #header>
@@ -56,11 +70,13 @@
           </n-form-item>
 
           <n-form-item path="initialBalance" label="Current Savings">
-            <n-input-number class="w-full" v-model:value="modelRef.initialBalance" placeholder="Enter your current savings balance"/>
+            <n-input-number class="w-full" v-model:value="modelRef.initialBalance"
+                            placeholder="Enter your current savings balance"/>
           </n-form-item>
 
           <n-form-item path="growthRate" label="Growth Rate">
-            <n-input-number class="w-full" v-model:value="modelRef.growthRate" placeholder="Enter expected growth rate"/>
+            <n-input-number class="w-full" v-model:value="modelRef.growthRate"
+                            placeholder="Enter expected growth rate"/>
           </n-form-item>
         </section>
 
@@ -68,7 +84,8 @@
           <div class="grid grid-cols-3 gap-3">
             <CommonRadioCard v-model="modelRef.contributionStrategy" value="fixed" title="Fixed Payment">
               <n-form-item path="contributionFixedAmount" label="Elective Contribution Fixed Amount">
-                <n-input-number class="w-full" v-model:value="modelRef.contributionFixedAmount" :precision="2" :min="0" :max="8000">
+                <n-input-number class="w-full" v-model:value="modelRef.contributionFixedAmount" :precision="2" :min="0"
+                                :max="8000">
                   <template #prefix>$</template>
                   <template #suffix>per year</template>
                 </n-input-number>
@@ -82,7 +99,8 @@
               </section>
             </CommonRadioCard>
 
-            <CommonRadioCard v-model="modelRef.contributionStrategy" value="percentage_of_income" title="Percentage of Income">
+            <CommonRadioCard v-model="modelRef.contributionStrategy" value="percentage_of_income"
+                             title="Percentage of Income">
               <n-form-item path="contributionPercentage" label="Elective Contribution Percentage">
                 <n-input-number class="w-full" v-model:value="modelRef.contributionPercentage" :precision="2">
                   <template #prefix>%</template>
@@ -91,10 +109,12 @@
               </n-form-item>
               <section class="p-3">
                 <h3 class="text-lg font-semibold">What it means:</h3>
-                <p>Your contributions are based on a percentage of your income, automatically adjusting as your earnings change.</p>
+                <p>Your contributions are based on a percentage of your income, automatically adjusting as your earnings
+                  change.</p>
 
                 <h3 class="text-lg font-semibold mt-3">How it’s calculated:</h3>
-                <p>Specify a percentage (e.g., 10%) of your income. The dollar amount contributed will vary annually based on your income.</p>
+                <p>Specify a percentage (e.g., 10%) of your income. The dollar amount contributed will vary annually
+                  based on your income.</p>
               </section>
             </CommonRadioCard>
 
@@ -104,7 +124,8 @@
                 <p>You aim to contribute the maximum allowed by the IRS every year.</p>
 
                 <h3 class="text-lg font-semibold mt-3">How it’s calculated:</h3>
-                <p>Automatically sets your annual contribution to the IRS maximum (e.g., $7,000 or $8,000 if you’re 50+).</p>
+                <p>Automatically sets your annual contribution to the IRS maximum (e.g., $7,000 or $8,000 if you’re
+                  50+).</p>
               </section>
             </CommonRadioCard>
           </div>
@@ -117,18 +138,3 @@
     </template>
   </n-card>
 </template>
-
-<script lang="ts" setup>
-import {IraContributionStrategy, type IraInvestment, iraInvestmentDefaults} from "~/types/IraInvestment";
-
-interface Props {
-  initialValues?: Partial<IraInvestment>;
-  mode: 'create' | 'edit'
-}
-
-const {initialValues = iraInvestmentDefaults} = defineProps<Props>();
-const emit = defineEmits(["update", "cancel", "create"]);
-
-const {formRef, modelRef, rules, handleCreate, handleUpdate, handleCancel} =
-    useCrudFormWithValidation(initialValues, emit, useIraInvestmentValidation);
-</script>
