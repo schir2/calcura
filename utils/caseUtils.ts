@@ -1,11 +1,14 @@
-function toSnakeCaseKey(key: string): string {
+export function toSnakeCaseKey(key: string): string {
     return key.replace(/[A-Z]/g, (letter) => `_${letter.toLowerCase()}`)
 }
 
-function toCamelCaseKey(key: string): string {
-    return key.replace(/_([a-z])/g, (_, letter) => letter.toUpperCase())
+export function toKebabCaseKey(key: string): string {
+    return key.replace(/[A-Z]/g, (letter) => `-${letter.toLowerCase()}`)
 }
 
+export function toCamelCaseKey(key: string): string {
+    return key.replace(/_([a-z])/g, (_, letter) => letter.toUpperCase())
+}
 export function toSnakeCase(obj: any): any {
     if (obj === null || typeof obj !== 'object') return obj
     if (Array.isArray(obj)) return obj.map(toSnakeCase)
