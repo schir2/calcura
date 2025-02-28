@@ -67,8 +67,6 @@ async function loadPlan() {
     loading.value = false;
   }
 }
-
-
 </script>
 <template>
   <div class="grid grid-cols-3 gap-2">
