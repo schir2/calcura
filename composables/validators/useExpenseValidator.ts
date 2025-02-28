@@ -6,7 +6,7 @@ import {
     EXPENSE_NAME_MIN_LENGTH,
     MAX_EXPENSE_AMOUNT,
     MIN_EXPENSE_AMOUNT
-} from "~/models/expense/ExpenseConstants";
+} from "~/constants/ExpenseConstants";
 
 export function useExpenseValidation(modelRef: Ref<Partial<Expense>>) {
     const rules: FormRules = {

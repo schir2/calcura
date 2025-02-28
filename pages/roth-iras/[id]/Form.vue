@@ -1,9 +1,9 @@
 <script setup lang="ts">
-import type {RothIraInvestment} from "~/types/RothIraInvestment";
+import type {RothIra} from "~/types/RothIra";
 
 const route = useRoute()
 const rothIraInvestmentId = Number(route.params.id)
-const rothIraInvestment = ref<RothIraInvestment | null>(null);
+const rothIraInvestment = ref<RothIra | null>(null);
 const rothIraInvestmentService = useRothIraInvestmentService()
 onMounted(async () => {
   if (rothIraInvestmentId) {
@@ -12,5 +12,5 @@ onMounted(async () => {
 })
 </script>
 <template>
-  <RothIraInvestmentForm v-if="rothIraInvestment" mode="view" :initialValues="rothIraInvestment"></RothIraInvestmentForm>
+  <RothIraForm v-if="rothIraInvestment" mode="view" :initialValues="rothIraInvestment"></RothIraForm>
 </template>

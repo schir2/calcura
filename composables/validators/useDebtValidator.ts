@@ -8,7 +8,7 @@ import {
     MIN_DEBT_NAME_LENGTH,
     MIN_INTEREST_RATE,
     MIN_PAYMENT
-} from "~/models/debt/DebtConstants";
+} from "~/constants/DebtConstants";
 
 export function useDebtValidation(modelRef: Ref<Partial<Debt>>) {
     function validatePaymentFixedAmount(rule: FormItemRule, value: number | undefined) {

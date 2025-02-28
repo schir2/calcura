@@ -22,27 +22,27 @@
 <script setup lang="ts">
 import {ModelName} from "~/types/ModelName";
 import {
-  BrokerageInvestmentForm,
+  BrokerageForm,
   CashReserveForm,
   DebtForm,
   ExpenseForm,
   IncomeForm,
-  IraInvestmentForm,
-  RothIraInvestmentForm,
-  TaxDeferredInvestmentForm,
+  IraForm,
+  RothIraForm,
+  TaxDeferredForm,
 } from "#components";
 
 type CreateButtonProps = { name: ModelName, label: string, form: Component }
 
 const items: CreateButtonProps[] = [
-  {name: ModelName.TaxDeferredInvestment, label: '401k', form: TaxDeferredInvestmentForm},
-  {name: ModelName.BrokerageInvestment, label: 'Brokerage', form: BrokerageInvestmentForm},
+  {name: ModelName.TaxDeferred, label: '401k', form: TaxDeferredForm},
+  {name: ModelName.Brokerage, label: 'Brokerage', form: BrokerageForm},
   {name: ModelName.CashReserve, label: 'Cash Reserve', form: CashReserveForm},
   {name: ModelName.Debt, label: 'Debt', form: DebtForm},
   {name: ModelName.Expense, label: 'Expense', form: ExpenseForm},
   {name: ModelName.Income, label: 'Income', form: IncomeForm},
-  {name: ModelName.IraInvestment, label: 'IRA', form: IraInvestmentForm},
-  {name: ModelName.RothIraInvestment, label: 'Roth', form: RothIraInvestmentForm},
+  {name: ModelName.Ira, label: 'IRA', form: IraForm},
+  {name: ModelName.RothIra, label: 'Roth', form: RothIraForm},
 ];
 
 const showModal = ref<boolean>(false)

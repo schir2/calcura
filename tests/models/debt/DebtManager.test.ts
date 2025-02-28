@@ -51,10 +51,10 @@ const planConfig: Plan = {
     ],
     expenses: [],
     debts: [],
-    taxDeferredInvestments: [],
-    brokerageInvestments: [],
-    iraInvestments: [],
-    rothIraInvestments: [],
+    taxDeferreds: [],
+    brokerages: [],
+    iras: [],
+    rothIras: [],
 }
 
 const debt: Debt = {

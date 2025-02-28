@@ -8,14 +8,14 @@
 </template>
 <script setup lang="ts">
 import type {
-  TaxDeferredInvestment,
+  TaxDeferred,
   TaxDeferredInvestmentPartial
-} from "~/types/TaxDeferredInvestment";
+} from "~/types/TaxDeferred";
 
-import {useTaxDeferredInvestmentService} from "~/composables/api/useTaxDeferredInvestmentService";
+import {useTaxDeferredService} from "~/composables/api/useTaxDeferredService";
 import type {Income} from "~/types/Income";
 
-const taxDeferredInvestmentService = useTaxDeferredInvestmentService();
+const taxDeferredInvestmentService = useTaxDeferredService();
 const incomeService = useIncomeService()
 
 
@@ -24,17 +24,17 @@ async function handleCreateTaxDeferredInvestment(taxDeferredInvestmentTemplate: 
   await loadTaxDeferredInvestments();
 }
 
-async function handleDeleteTaxDeferredInvestment(taxDeferredInvestment: TaxDeferredInvestment) {
+async function handleDeleteTaxDeferredInvestment(taxDeferredInvestment: TaxDeferred) {
   await taxDeferredInvestmentService.delete(taxDeferredInvestment.id)
   await loadTaxDeferredInvestments();
 }
 
-async function handleUpdateTaxDeferredInvestment(taxDeferredInvestment: TaxDeferredInvestment) {
+async function handleUpdateTaxDeferredInvestment(taxDeferredInvestment: TaxDeferred) {
   await taxDeferredInvestmentService.update(taxDeferredInvestment.id, taxDeferredInvestment)
   await loadTaxDeferredInvestments();
 }
 
-const taxDeferredInvestments = ref<TaxDeferredInvestment[]>([])
+const taxDeferredInvestments = ref<TaxDeferred[]>([])
 const incomes = ref<Income[]>([])
 const loading = ref<boolean>(true);
 

@@ -92,10 +92,10 @@ const planConfig: Plan = {
             growsWithInflation: true,
         }],
     debts: [],
-    taxDeferredInvestments: [],
-    brokerageInvestments: [],
-    iraInvestments: [],
-    rothIraInvestments: [],
+    taxDeferreds: [],
+    brokerages: [],
+    iras: [],
+    rothIras: [],
 }
 
 let planManager: PlanManager

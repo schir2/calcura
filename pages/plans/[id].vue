@@ -36,35 +36,35 @@
           />
 
 
-          <BrokerageInvestmentListItem v-for="brokerageInvestment in plan.brokerageInvestments" :key="brokerageInvestment.id" :brokerageInvestment="brokerageInvestment"
-                                   @update="handleUpdateBrokerageInvestment"
-                                   @delete="handleDeleteBrokerageInvestment"
-                                   @remove="handleRemoveBrokerageInvestment"
+          <BrokerageListItem v-for="brokerage in plan.brokerages" :key="brokerage.id" :brokerage="brokerage"
+                                   @update="handleUpdateBrokerage"
+                                   @delete="handleDeleteBrokerage"
+                                   @remove="handleRemoveBrokerage"
           />
 
 
-          <IraInvestmentListItem v-for="iraInvestment in plan.iraInvestments" :key="iraInvestment.id" :iraInvestment="iraInvestment"
-                             @update="handleUpdateIraInvestment"
-                             @delete="handleDeleteIraInvestment"
-                             @remove="handleRemoveIraInvestment"
+          <IraListItem v-for="ira in plan.iras" :key="ira.id" :ira="ira"
+                             @update="handleUpdateIra"
+                             @delete="handleDeleteIra"
+                             @remove="handleRemoveIra"
           />
 
 
-          <RothIraInvestmentListItem v-for="rothIraInvestment in plan.rothIraInvestments" :key="rothIraInvestment.id" :rothIraInvestment="rothIraInvestment"
-                                 @update="handleUpdateRothIraInvestment"
-                                 @delete="handleDeleteRothIraInvestment"
-                                 @remove="handleRemoveRothIraInvestment"
+          <RothIraListItem v-for="rothIra in plan.rothIras" :key="rothIra.id" :rothIra="rothIra"
+                                 @update="handleUpdateRothIra"
+                                 @delete="handleDeleteRothIra"
+                                 @remove="handleRemoveRothIra"
           />
 
 
-          <TaxDeferredInvestmentListItem
-              v-for="taxDeferredInvestment in plan.taxDeferredInvestments"
-              :key="taxDeferredInvestment.id"
-              :taxDeferredInvestment="taxDeferredInvestment"
+          <TaxDeferredListItem
+              v-for="taxDeferred in plan.taxDeferreds"
+              :key="taxDeferred.id"
+              :taxDeferred="taxDeferred"
               :incomes="plan.incomes"
-              @update="handleUpdateTaxDeferredInvestment"
-              @delete="handleDeleteTaxDeferredInvestment"
-              @remove="handleRemoveTaxDeferredInvestment"
+              @update="handleUpdateTaxDeferred"
+              @delete="handleDeleteTaxDeferred"
+              @remove="handleRemoveTaxDeferred"
           />
         </section>
     </div>
@@ -84,14 +84,14 @@ import type {Debt, DebtPartial} from "~/types/Debt";
 import type {Expense, ExpensePartial} from "~/types/Expense"
 import type {Plan} from "~/types/Plan";
 import type {CashReserve} from "~/types/CashReserve";
-import type {IraInvestment, IraInvestmentPartial} from "~/types/IraInvestment";
+import type {Ira, IraPartial} from "~/types/Ira";
 import type {
-  TaxDeferredInvestment,
-  TaxDeferredInvestmentPartial
-} from "~/types/TaxDeferredInvestment";
+  TaxDeferred,
+  TaxDeferredPartial
+} from "~/types/TaxDeferred";
 import type {Income, IncomePartial} from "~/types/Income";
-import type {BrokerageInvestment, BrokerageInvestmentPartial} from "~/types/BrokerageInvestment";
-import type {RothIraInvestment, RothIraInvestmentPartial} from "~/types/RothIraInvestment";
+import type {Brokerage, BrokeragePartial} from "~/types/Brokerage";
+import type {RothIra, RothIraPartial} from "~/types/RothIra";
 import {type Command} from "~/types/Command";
 import ChildCreateButtonList from "~/components/plan/ChildCreateButtonList.vue";
 import type {ModelName} from "~/types/ModelName";
@@ -102,10 +102,10 @@ const debtService = useDebtService()
 const cashReserveService = useCashReserveService()
 const expenseService = useExpenseService()
 const incomeService = useIncomeService()
-const iraInvestmentService = useIraInvestmentService()
-const rothIraInvestmentService = useRothIraInvestmentService()
-const brokerageInvestmentService = useBrokerageInvestmentService()
-const taxDeferredInvestmentService = useTaxDeferredInvestmentService()
+const iraService = useIraService()
+const rothIraService = useRothIraService()
+const brokerageService = useBrokerageService()
+const taxDeferredService = useTaxDeferredService()
 const route = useRoute()
 const planId = Number(route.params.id)
 const {data: plan, refresh: refreshPlan, pending: planLoading} = await useFetch<Plan>(`/api/plans/${planId}`)
@@ -207,88 +207,88 @@ async function handleRemoveExpense(expense: Expense) {
   await loadPlan();
 }
 
-async function handleCreateBrokerageInvestment(brokerageInvestmentPartial: BrokerageInvestmentPartial) {
-  const brokerageInvestment = await brokerageInvestmentService.create(brokerageInvestmentPartial)
-  await planService.addRelatedModel(planId, 'brokerage_investments', brokerageInvestment.id)
+async function handleCreateBrokerage(brokeragePartial: BrokeragePartial) {
+  const brokerage = await brokerageService.create(brokeragePartial)
+  await planService.addRelatedModel(planId, 'brokerage_investments', brokerage.id)
   await loadPlan();
 }
 
-async function handleDeleteBrokerageInvestment(brokerageInvestment: BrokerageInvestment) {
-  await brokerageInvestmentService.remove(brokerageInvestment.id)
+async function handleDeleteBrokerage(brokerage: Brokerage) {
+  await brokerageService.remove(brokerage.id)
   await loadPlan();
 }
 
-async function handleUpdateBrokerageInvestment(brokerageInvestment: BrokerageInvestment) {
-  await brokerageInvestmentService.update(brokerageInvestment.id, brokerageInvestment)
+async function handleUpdateBrokerage(brokerage: Brokerage) {
+  await brokerageService.update(brokerage.id, brokerage)
   await loadPlan();
 }
 
-async function handleRemoveBrokerageInvestment(brokerageInvestment: BrokerageInvestment) {
-  await planService.removeRelatedModel(planId, 'brokerage_investments', brokerageInvestment.id)
+async function handleRemoveBrokerage(brokerage: Brokerage) {
+  await planService.removeRelatedModel(planId, 'brokerage_investments', brokerage.id)
   await loadPlan();
 }
 
-async function handleCreateIraInvestment(iraInvestmentPartial: IraInvestmentPartial) {
-  const iraInvestment = await iraInvestmentService.create(iraInvestmentPartial)
-  await planService.addRelatedModel(planId, 'ira_investments', iraInvestment.id)
+async function handleCreateIra(iraPartial: IraPartial) {
+  const ira = await iraService.create(iraPartial)
+  await planService.addRelatedModel(planId, 'ira_investments', ira.id)
   await loadPlan();
 }
 
-async function handleDeleteIraInvestment(iraInvestment: IraInvestment) {
-  await iraInvestmentService.remove(iraInvestment.id)
+async function handleDeleteIra(ira: Ira) {
+  await iraService.remove(ira.id)
   await loadPlan();
 }
 
-async function handleUpdateIraInvestment(iraInvestment: IraInvestment) {
-  await iraInvestmentService.update(iraInvestment.id, iraInvestment)
+async function handleUpdateIra(ira: Ira) {
+  await iraService.update(ira.id, ira)
   await loadPlan();
 }
 
-async function handleRemoveIraInvestment(iraInvestment: IraInvestment) {
-  await planService.removeRelatedModel(planId, 'ira_investments', iraInvestment.id)
+async function handleRemoveIra(ira: Ira) {
+  await planService.removeRelatedModel(planId, 'ira_investments', ira.id)
   await loadPlan();
 }
 
-async function handleCreateRothIraInvestment(rothIraInvestmentPartial: RothIraInvestmentPartial) {
-  const rothIraInvestment = await rothIraInvestmentService.create(rothIraInvestmentPartial)
-  await planService.addRelatedModel(planId, 'roth_ira_investments', rothIraInvestment.id)
+async function handleCreateRothIra(rothIraPartial: RothIraPartial) {
+  const rothIra = await rothIraService.create(rothIraPartial)
+  await planService.addRelatedModel(planId, 'roth_ira_investments', rothIra.id)
   await loadPlan();
 }
 
-async function handleDeleteRothIraInvestment(rothIraInvestment: RothIraInvestment) {
-  await rothIraInvestmentService.remove(rothIraInvestment.id)
+async function handleDeleteRothIra(rothIra: RothIra) {
+  await rothIraService.remove(rothIra.id)
   await loadPlan();
 }
 
-async function handleUpdateRothIraInvestment(rothIraInvestment: RothIraInvestment) {
-  await rothIraInvestmentService.update(rothIraInvestment.id, rothIraInvestment)
+async function handleUpdateRothIra(rothIra: RothIra) {
+  await rothIraService.update(rothIra.id, rothIra)
   await loadPlan();
 }
 
-async function handleRemoveRothIraInvestment(rothIraInvestment: RothIraInvestment) {
-  await planService.removeRelatedModel(planId, 'roth_ira_investments', rothIraInvestment.id)
+async function handleRemoveRothIra(rothIra: RothIra) {
+  await planService.removeRelatedModel(planId, 'roth_ira_investments', rothIra.id)
   await loadPlan();
 }
 
-async function handleCreateTaxDeferredInvestment(taxDeferredInvestmentPartial: TaxDeferredInvestmentPartial) {
-  const taxDeferredInvestment = await taxDeferredInvestmentService.create(taxDeferredInvestmentPartial)
-  await planService.addRelatedModel(planId, 'tax_deferred_investments', taxDeferredInvestment.id)
+async function handleCreateTaxDeferred(taxDeferredPartial: TaxDeferredPartial) {
+  const taxDeferred = await taxDeferredService.create(taxDeferredPartial)
+  await planService.addRelatedModel(planId, 'tax_deferred_investments', taxDeferred.id)
   await loadPlan();
 }
 
-async function handleDeleteTaxDeferredInvestment(taxDeferredInvestment: TaxDeferredInvestment) {
-  await taxDeferredInvestmentService.remove(taxDeferredInvestment.id)
+async function handleDeleteTaxDeferred(taxDeferred: TaxDeferred) {
+  await taxDeferredService.remove(taxDeferred.id)
   await loadPlan();
 }
 
-async function handleUpdateTaxDeferredInvestment(taxDeferredInvestment: TaxDeferredInvestment) {
-  await taxDeferredInvestmentService.update(taxDeferredInvestment.id, taxDeferredInvestment)
+async function handleUpdateTaxDeferred(taxDeferred: TaxDeferred) {
+  await taxDeferredService.update(taxDeferred.id, taxDeferred)
   await loadPlan();
 }
 
-async function handleRemoveTaxDeferredInvestment(taxDeferredInvestmentPartial: TaxDeferredInvestmentPartial) {
-  const taxDeferredInvestment = await taxDeferredInvestmentService.create(taxDeferredInvestmentPartial)
-  await planService.removeRelatedModel(planId, 'tax_deferred_investments', taxDeferredInvestment.id)
+async function handleRemoveTaxDeferred(taxDeferredPartial: TaxDeferredPartial) {
+  const taxDeferred = await taxDeferredService.create(taxDeferredPartial)
+  await planService.removeRelatedModel(planId, 'tax_deferred_investments', taxDeferred.id)
   await loadPlan();
 }
 

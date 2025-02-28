@@ -9,16 +9,16 @@ import {
     getTaxDeferredContributionLimit,
     getTaxDeferredElectiveContributionLimit
 } from "~/utils";
-import {IncomeManager} from "~/models/income/IncomeManager";
-import {BrokerageInvestmentManager} from "~/models/brokerageInvestment/BrokerageInvestmentManager";
+import {IncomeManager} from "~/constants/IncomeManager";
+import {BrokerageManager} from "~/models/brokerage/BrokerageManager";
 import {ExpenseManager} from "~/models/expense/ExpenseManager";
-import {IraInvestmentManager} from "~/models/iraInvestment/IraInvestmentManager";
+import {IraIManager} from "~/models/ira/IraIManager";
 import {CashReserveManager} from "~/models/cashReserve/CashReserveManager";
-import {TaxDeferredInvestmentManager} from "~/models/taxDeferredInvestment/TaxDeferredInvestmentManager";
+import {TaxDeferredManager} from "~/models/taxDeferred/TaxDeferredManager";
 import {ContributionType} from "~/models/common";
 import {BaseOrchestrator} from "~/models/common/BaseOrchestrator";
 import {ContributionError} from "~/utils/errors/ContributionError";
-import {RothIraInvestmentManager} from "~/models/rothIraInvestment/RothIraInvestmentManager";
+import {RothIraManager} from "~/models/rothIra/RothIraManager";
 import eventBus from "~/services/eventBus";
 import type {Command} from "~/types/Command";
 
@@ -32,10 +32,10 @@ export type PlanManagers = {
     cashReserveManagers: CashReserveManager[];
     debtManagers: DebtManager[];
     incomeManagers: IncomeManager[];
-    taxDeferredInvestmentManagers: TaxDeferredInvestmentManager[];
-    rothIraInvestmentManagers: RothIraInvestmentManager[];
-    iraInvestmentManagers: IraInvestmentManager[];
-    brokerageInvestmentManagers: BrokerageInvestmentManager[];
+    taxDeferredManagers: TaxDeferredManager[];
+    rothIraManagers: RothIraManager[];
+    iraManagers: IraIManager[];
+    brokerageManagers: BrokerageManager[];
 };
 
 
@@ -47,28 +47,28 @@ export default class PlanManager extends BaseOrchestrator<Plan, PlanState, PlanM
             cashReserveManagers: this.config.cashReserves.map((cashReserve) => new CashReserveManager(this, cashReserve)),
             expenseManagers: this.config.expenses.map((expense) => new ExpenseManager(this, expense)),
             debtManagers: this.config.debts.map((debt) => new DebtManager(this, debt)),
-            brokerageInvestmentManagers: this.config.brokerageInvestments.map((brokerageInvestment) => new BrokerageInvestmentManager(this, brokerageInvestment)),
-            iraInvestmentManagers: this.config.iraInvestments.map((iraInvestment) => new IraInvestmentManager(this, iraInvestment)),
-            rothIraInvestmentManagers: this.config.rothIraInvestments.map((rothIraInvestment) => new RothIraInvestmentManager(this, rothIraInvestment)),
-            taxDeferredInvestmentManagers: this.config.taxDeferredInvestments.map((taxDeferredInvestment) => new TaxDeferredInvestmentManager(this, taxDeferredInvestment))
+            brokerageManagers: this.config.brokerages.map((brokerage) => new BrokerageManager(this, brokerage)),
+            iraManagers: this.config.iras.map((ira) => new IraIManager(this, ira)),
+            rothIraManagers: this.config.rothIras.map((rothIra) => new RothIraManager(this, rothIra)),
+            taxDeferredManagers: this.config.taxDeferreds.map((taxDeferred) => new TaxDeferredManager(this, taxDeferred))
         }
     }
 
     getSavingsTaxableInitial(): number {
         // TODO Test this function
-        return this.config.brokerageInvestments.reduce((savingsTaxableStartOfYear, brokerageInvestment) => savingsTaxableStartOfYear + brokerageInvestment.initialBalance, 0)
+        return this.config.brokerages.reduce((savingsTaxableStartOfYear, brokerage) => savingsTaxableStartOfYear + brokerage.initialBalance, 0)
     }
 
     getSavingsTaxDeferredInitial(): number {
         // TODO Test this function
-        const taxDeferredInvestments = this.config.taxDeferredInvestments.reduce((total, taxDeferredInvestment) => total + taxDeferredInvestment.initialBalance, 0)
-        const iraInvestments = this.config.iraInvestments.reduce((total, iraInvestment) => total + iraInvestment.initialBalance, 0)
-        return taxDeferredInvestments + iraInvestments
+        const taxDeferreds = this.config.taxDeferreds.reduce((total, taxDeferred) => total + taxDeferred.initialBalance, 0)
+        const iras = this.config.iras.reduce((total, ira) => total + ira.initialBalance, 0)
+        return taxDeferreds + iras
     }
 
     getSavingsTaxExemptInitial(): number {
         // TODO Test this function
-        return this.config.rothIraInvestments.reduce((total, brokerageInvestment) => total + brokerageInvestment.initialBalance, 0)
+        return this.config.rothIras.reduce((total, brokerage) => total + brokerage.initialBalance, 0)
     }
 
     getDebtInitial(): number {
@@ -427,10 +427,10 @@ export default class PlanManager extends BaseOrchestrator<Plan, PlanState, PlanM
         this.managers.debtManagers.forEach((manager) => this.processUnprocessed(manager))
         this.managers.expenseManagers.forEach((manager) => this.processUnprocessed(manager))
         this.managers.cashReserveManagers.forEach((manager) => this.processUnprocessed(manager))
-        this.managers.taxDeferredInvestmentManagers.forEach((manager) => this.processUnprocessed(manager))
-        this.managers.rothIraInvestmentManagers.forEach((manager) => this.processUnprocessed(manager))
-        this.managers.iraInvestmentManagers.forEach((manager) => this.processUnprocessed(manager))
-        this.managers.brokerageInvestmentManagers.forEach((manager) => this.processUnprocessed(manager))
+        this.managers.taxDeferredManagers.forEach((manager) => this.processUnprocessed(manager))
+        this.managers.rothIraManagers.forEach((manager) => this.processUnprocessed(manager))
+        this.managers.iraManagers.forEach((manager) => this.processUnprocessed(manager))
+        this.managers.brokerageManagers.forEach((manager) => this.processUnprocessed(manager))
         // allManagers.forEach(manager => {
         //     this.processUnprocessed(manager)
         // })

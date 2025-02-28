@@ -62,10 +62,10 @@ const planConfig: Plan = {
         }
     ],
     debts: [],
-    taxDeferredInvestments: [],
-    brokerageInvestments: [],
-    iraInvestments: [],
-    rothIraInvestments: [],
+    taxDeferreds: [],
+    brokerages: [],
+    iras: [],
+    rothIras: [],
 }
 
 let planManager: PlanManager;

@@ -1,5 +1,5 @@
 import {describe, expect, it} from 'vitest';
-import {adjustForInsufficientFunds, calculateCompoundInterest, calculateInvestmentGrowthAmount, getAnnualAmount} from '@/utils/financial';
+import {adjustForInsufficientFunds, calculateCompoundInterest, calculateGrowthAmount, getAnnualAmount} from '@/utils/financial';
 import {GrowthApplicationStrategy, InsufficientFundsStrategy} from "~/types/Plan";
 
 import {Frequency} from "~/types/Frequency";
@@ -28,55 +28,55 @@ describe('financialUtils', () => {
         });
     });
 
-    describe('calculateInvestmentGrowthAmount', () => {
+    describe('calculateGrowthAmount', () => {
         it('calculates growth correctly with "start" strategy', () => {
-            const growthAmount = calculateInvestmentGrowthAmount(
+            const growthAmount = calculateGrowthAmount(
                 1000, 5, GrowthApplicationStrategy.Start);
             expect(growthAmount).toBe(50);
         });
 
         it('calculates growth correctly with "end" strategy', () => {
-            const growthAmount = calculateInvestmentGrowthAmount(1000, 5, GrowthApplicationStrategy.End, 200,);
+            const growthAmount = calculateGrowthAmount(1000, 5, GrowthApplicationStrategy.End, 200,);
             expect(growthAmount).toBe(60);
         });
 
         it('handles zero principal with "start" strategy', () => {
-            const growthAmount = calculateInvestmentGrowthAmount(0, 5, GrowthApplicationStrategy.Start,);
+            const growthAmount = calculateGrowthAmount(0, 5, GrowthApplicationStrategy.Start,);
             expect(growthAmount).toBe(0);
         });
 
         it('handles zero principal with "end" strategy', () => {
-            const growthAmount = calculateInvestmentGrowthAmount(0, 5, GrowthApplicationStrategy.End, 200,);
+            const growthAmount = calculateGrowthAmount(0, 5, GrowthApplicationStrategy.End, 200,);
 
             expect(growthAmount).toBe(10);
         });
 
         it('handles zero growth rate with "start" strategy', () => {
-            const growthAmount = calculateInvestmentGrowthAmount(1000, 0, GrowthApplicationStrategy.Start,);
+            const growthAmount = calculateGrowthAmount(1000, 0, GrowthApplicationStrategy.Start,);
 
             expect(growthAmount).toBe(0);
         });
 
         it('handles zero growth rate with "end" strategy', () => {
-            const growthAmount = calculateInvestmentGrowthAmount(1000, 0, GrowthApplicationStrategy.End, 200,);
+            const growthAmount = calculateGrowthAmount(1000, 0, GrowthApplicationStrategy.End, 200,);
 
             expect(growthAmount).toBe(0);
         });
 
         it('handles fractional growth rates with "start" strategy', () => {
-            const growthAmount = calculateInvestmentGrowthAmount(1000, 3.75, GrowthApplicationStrategy.Start,);
+            const growthAmount = calculateGrowthAmount(1000, 3.75, GrowthApplicationStrategy.Start,);
 
             expect(growthAmount).toBe(37.5);
         });
 
         it('handles fractional growth rates with "end" strategy', () => {
-            const growthAmount = calculateInvestmentGrowthAmount(1000, 3.75, GrowthApplicationStrategy.End, 200,);
+            const growthAmount = calculateGrowthAmount(1000, 3.75, GrowthApplicationStrategy.End, 200,);
             expect(growthAmount).toBe(45);
         });
 
         it('throws an error for invalid growth application strategy', () => {
             expect(() =>
-                calculateInvestmentGrowthAmount(1000, 5, 'invalid_strategy' as any,)
+                calculateGrowthAmount(1000, 5, 'invalid_strategy' as any,)
             ).toThrow('Invalid growth application strategy: invalid_strategy');
         });
     });

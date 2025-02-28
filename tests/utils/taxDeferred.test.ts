@@ -2,7 +2,7 @@ import {describe, expect, it} from 'vitest';
 import {getTaxDeferredContributionLimit, getTaxDeferredElectiveContributionCatchUpLimit, getTaxDeferredElectiveContributionLimit,} from '~/utils';
 
 
-import {TAX_DEFERRED_CONTRIBUTION_LIMIT_2025, TAX_DEFERRED_DEFAULT_YEAR, TAX_DEFERRED_ELECTIVE_CONTRIBUTION_CATCH_UP_LIMIT_2025, TAX_DEFERRED_ELECTIVE_CONTRIBUTION_LIMIT_2025, TAX_DEFERRED_LIMIT_INFLATION_RATE} from "~/models/taxDeferredInvestment/TaxDeferredInvestmentConstants";
+import {TAX_DEFERRED_CONTRIBUTION_LIMIT_2025, TAX_DEFERRED_DEFAULT_YEAR, TAX_DEFERRED_ELECTIVE_CONTRIBUTION_CATCH_UP_LIMIT_2025, TAX_DEFERRED_ELECTIVE_CONTRIBUTION_LIMIT_2025, TAX_DEFERRED_LIMIT_INFLATION_RATE} from "~/models/taxDeferred/TaxDeferredConstants";
 
 describe('Tax Deferred Contribution Limit Calculations', () => {
     it('calculates the tax deferred contribution limit for the current year', () => {

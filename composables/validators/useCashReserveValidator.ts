@@ -6,7 +6,7 @@ import {
     MAX_RESERVE_MONTHS,
     MIN_RESERVE_AMOUNT,
     MIN_RESERVE_MONTHS
-} from "~/models/cashReserve/CashReserveConstants";
+} from "~/constants/CashReserveConstants";
 
 export function useCashReserveValidation(modelRef: Ref<Partial<CashReserve>>) {
     function validateReserveAmount(rule: FormItemRule, value: number | undefined) {

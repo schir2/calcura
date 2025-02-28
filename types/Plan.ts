@@ -1,11 +1,11 @@
 import type {Debt} from "~/types/Debt";
-import type {TaxDeferredInvestment} from "~/types/TaxDeferredInvestment";
+import type {TaxDeferred} from "~/types/TaxDeferred";
 import type {Income} from "~/types/Income";
 import type {Expense} from "~/types/Expense";
-import type {BrokerageInvestment} from "~/types/BrokerageInvestment";
-import type {IraInvestment} from "~/types/IraInvestment";
+import type {Brokerage} from "~/types/Brokerage";
+import type {Ira} from "~/types/Ira";
 import type {CashReserve} from "~/types/CashReserve";
-import type {RothIraInvestment} from "~/types/RothIraInvestment";
+import type {RothIra} from "~/types/RothIra";
 import type {CommandSequence} from "~/types/CommandSequence";
 
 
@@ -38,7 +38,7 @@ export enum ContributionLimitType {
 
 }
 
-export type PlanModels = 'taxDeferredInvestment' | 'brokerageInvestment' | 'cashReserve' | 'debt' | 'expense' | 'income' | 'iraInvestment' | 'plan' | 'rothIraInvestment';
+export type PlanModels = 'taxDeferred' | 'brokerage' | 'cashReserve' | 'debt' | 'expense' | 'income' | 'ira' | 'plan' | 'rothIra';
 
 export interface Plan {
     id: number;
@@ -62,10 +62,10 @@ export interface Plan {
     incomes: Income[]
     expenses: Expense[]
     debts: Debt[]
-    taxDeferredInvestments: TaxDeferredInvestment[];
-    brokerageInvestments: BrokerageInvestment[];
-    iraInvestments: IraInvestment[];
-    rothIraInvestments: RothIraInvestment[];
+    taxDeferreds: TaxDeferred[];
+    brokerages: Brokerage[];
+    iras: Ira[];
+    rothIras: RothIra[];
     commandSequences: CommandSequence[];
 
 }

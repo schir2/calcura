@@ -6,29 +6,29 @@
   ></IraInvestmentList>
 </template>
 <script setup lang="ts">
-import type {IraInvestment, IraInvestmentPartial} from "~/types/IraInvestment";
+import type {Ira, IraPartial} from "~/types/Ira";
 
-import {useIraInvestmentService} from "~/composables/api/useIraInvestmentService";
+import {useIraService} from "~/composables/api/useIraService";
 
-const iraInvestmentService = useIraInvestmentService();
+const iraInvestmentService = useIraService();
 
 
-async function handleCreateIraInvestment(iraInvestmentTemplate: IraInvestmentPartial) {
+async function handleCreateIraInvestment(iraInvestmentTemplate: IraPartial) {
   const iraInvestment = await iraInvestmentService.create(iraInvestmentTemplate)
   await loadIraInvestments();
 }
 
-async function handleDeleteIraInvestment(iraInvestment: IraInvestment) {
-  await iraInvestmentService.delete(iraInvestment.id)
+async function handleDeleteIraInvestment(iraInvestment: Ira) {
+  await iraInvestmentService.remove(iraInvestment.id)
   await loadIraInvestments();
 }
 
-async function handleUpdateIraInvestment(iraInvestment: IraInvestment) {
+async function handleUpdateIraInvestment(iraInvestment: Ira) {
   await iraInvestmentService.update(iraInvestment.id, iraInvestment)
   await loadIraInvestments();
 }
 
-const iraInvestments = ref<IraInvestment[]>([])
+const iraInvestments = ref<Ira[]>([])
 const loading = ref<boolean>(true);
 
 async function loadIraInvestments() {

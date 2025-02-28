@@ -6,11 +6,11 @@
   ></RothIraInvestmentList>
 </template>
 <script setup lang="ts">
-import type {RothIraInvestment, RothIraInvestmentPartial} from "~/types/RothIraInvestment";
+import type {RothIra, RothIraInvestmentPartial} from "~/types/RothIra";
 
-import {useRothIraInvestmentService} from "~/composables/api/useRothIraInvestmentService";
+import {useRothIraService} from "~/composables/api/useRothIraService";
 
-const rothIraInvestmentService = useRothIraInvestmentService();
+const rothIraInvestmentService = useRothIraService();
 
 
 async function handleCreateRothIraInvestment(rothIraInvestmentTemplate: RothIraInvestmentPartial) {
@@ -18,17 +18,17 @@ async function handleCreateRothIraInvestment(rothIraInvestmentTemplate: RothIraI
   await loadRothIraInvestments();
 }
 
-async function handleDeleteRothIraInvestment(rothIraInvestment: RothIraInvestment) {
+async function handleDeleteRothIraInvestment(rothIraInvestment: RothIra) {
   await rothIraInvestmentService.delete(rothIraInvestment.id)
   await loadRothIraInvestments();
 }
 
-async function handleUpdateRothIraInvestment(rothIraInvestment: RothIraInvestment) {
+async function handleUpdateRothIraInvestment(rothIraInvestment: RothIra) {
   await rothIraInvestmentService.update(rothIraInvestment.id, rothIraInvestment)
   await loadRothIraInvestments();
 }
 
-const rothIraInvestments = ref<RothIraInvestment[]>([])
+const rothIraInvestments = ref<RothIra[]>([])
 const loading = ref<boolean>(true);
 
 async function loadRothIraInvestments() {

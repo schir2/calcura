@@ -7,7 +7,7 @@ export function calculateCompoundInterest(principal: number, interestRate: numbe
     return principal * (1 + (interestRate / numberOfInterestApplicationsPerPeriod)) ** (numberOfInterestApplicationsPerPeriod * numberOfPeriods)
 }
 
-export function calculateInvestmentGrowthAmount(
+export function calculateGrowthAmount(
     principal: number,
     growthRate: number,
     growthApplicationStrategy: GrowthApplicationStrategy,

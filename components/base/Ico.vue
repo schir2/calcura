@@ -12,10 +12,10 @@ interface Props {
 const props = defineProps<Props>();
 
 const iconMap = {
-  taxDeferredInvestment: 'mdi:finance',
-  brokerageInvestment: 'mdi:finance',
-  iraInvestment: 'mdi:finance',
-  rothIraInvestment: 'mdi:finance',
+  taxDeferred: 'mdi:finance',
+  brokerage: 'mdi:finance',
+  ira: 'mdi:finance',
+  rothIra: 'mdi:finance',
   brokerage: 'mdi:finance',
   cashReserve: 'mdi:bank',
   debt: 'mdi:trending-down',

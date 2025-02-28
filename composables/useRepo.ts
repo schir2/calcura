@@ -1,8 +1,8 @@
-import type {BrokerageInvestment} from "~/types/BrokerageInvestment";
+import type {Brokerage} from "~/types/Brokerage";
 import type {Debt} from "~/types/Debt";
-import type {RothIraInvestment} from "~/types/RothIraInvestment";
-import type {TaxDeferredInvestment} from "~/types/TaxDeferredInvestment";
-import type {IraInvestment} from "~/types/IraInvestment";
+import type {RothIra} from "~/types/RothIra";
+import type {TaxDeferred} from "~/types/TaxDeferred";
+import type {Ira} from "~/types/Ira";
 import type {Expense} from "~/types/Expense";
 import type {Income} from "~/types/Income";
 import type {CashReserve} from "~/types/CashReserve";
@@ -11,26 +11,26 @@ import type {Plan} from "~/types/Plan";
 
 export function useRepo() {
     const plan= useApi<Plan>('plans')
-    const brokerageInvestment = useApi<BrokerageInvestment>('brokerage-investments')
+    const brokerage = useApi<Brokerage>('brokerages')
     const debt = useApi<Debt>('debts')
     const income = useApi<Income>('incomes')
     const expense = useApi<Expense>('expenses')
     const cashReserve = useApi<CashReserve>('cash-reserves')
-    const iraInvestment = useApi<IraInvestment>('ira-investments')
-    const rothIraInvestment = useApi<RothIraInvestment>('roth-ira-investments')
-    const taxDeferredInvestment = useApi<TaxDeferredInvestment>('tax-deferred-investments')
+    const ira = useApi<Ira>('iras')
+    const rothIra = useApi<RothIra>('roth-iras')
+    const taxDeferred = useApi<TaxDeferred>('tax-deferreds')
     const commandSequence = useApi<CommandSequence>('command-sequences')
 
     return {
         plan,
-        brokerageInvestment,
+        brokerage,
         debt,
         income,
         expense,
         cashReserve,
-        iraInvestment,
-        rothIraInvestment,
-        taxDeferredInvestment,
+        ira,
+        rothIra,
+        taxDeferred,
         commandSequence,
     }
 }

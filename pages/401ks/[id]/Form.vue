@@ -1,9 +1,9 @@
 <script setup lang="ts">
-import type {TaxDeferredInvestment} from "~/types/TaxDeferredInvestment";
+import type {TaxDeferred} from "~/types/TaxDeferred";
 
 const route = useRoute()
 const taxDeferredInvestmentId = Number(route.params.id)
-const taxDeferredInvestment = ref<TaxDeferredInvestment | null>(null);
+const taxDeferredInvestment = ref<TaxDeferred | null>(null);
 const taxDeferredInvestmentService = useTaxDeferredInvestmentService()
 onMounted(async () => {
   if (taxDeferredInvestmentId) {
@@ -12,5 +12,5 @@ onMounted(async () => {
 })
 </script>
 <template>
-  <TaxDeferredInvestmentForm v-if="taxDeferredInvestment" mode="view" :initialValues="taxDeferredInvestment"></TaxDeferredInvestmentForm>
+  <TaxDeferredForm v-if="taxDeferredInvestment" mode="view" :initialValues="taxDeferredInvestment"></TaxDeferredForm>
 </template>

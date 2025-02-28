@@ -1,6 +1,6 @@
 import type {BaseState} from "~/models/common/BaseState";
 
-export interface InvestmentState extends BaseState {
+export interface State extends BaseState {
     contribution?: number;
     contributionLifetime: number;
     growthAmount?: number;

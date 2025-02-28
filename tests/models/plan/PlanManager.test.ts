@@ -11,10 +11,10 @@ import {ContributionType} from "~/models/common";
 import {
     EmployerContributionStrategy,
     TaxDeferredContributionStrategy
-} from "~/types/TaxDeferredInvestment";
-import {IraContributionStrategy} from "~/types/IraInvestment";
-import {RothIraContributionStrategy} from "~/types/RothIraInvestment";
-import {BrokerageContributionStrategy} from "~/types/BrokerageInvestment";
+} from "~/types/TaxDeferred";
+import {IraContributionStrategy} from "~/types/Ira";
+import {RothIraContributionStrategy} from "~/types/RothIra";
+import {BrokerageContributionStrategy} from "~/types/Brokerage";
 import {ExpenseType} from "~/types/Expense";
 import {DebtPaymentStrategy} from "~/types/Debt";
 import {CashReserveStrategy} from "~/types/CashReserve";
@@ -116,10 +116,10 @@ describe("PlanManager", () => {
                     paymentPercentage: 0,
                 }
             ],
-            taxDeferredInvestments: [
+            taxDeferreds: [
                 {
                     id: 1,
-                    name: 'Test TaxDeferred Investment',
+                    name: 'Test TaxDeferred ',
                     growthRate: 6,
                     initialBalance: 10_000,
                     electiveContributionStrategy: TaxDeferredContributionStrategy.PercentageOfIncome,
@@ -141,10 +141,10 @@ describe("PlanManager", () => {
 
                 }
             ],
-            brokerageInvestments: [
+            brokerages: [
                 {
                     id: 1,
-                    name: 'Test Brokerage Investment',
+                    name: 'Test Brokerage ',
                     growthRate: 6,
                     initialBalance: 10_000,
                     contributionStrategy: BrokerageContributionStrategy.Fixed,
@@ -153,10 +153,10 @@ describe("PlanManager", () => {
 
                 }
             ],
-            iraInvestments: [
+            iras: [
                 {
                     id: 1,
-                    name: 'Test Brokerage Investment',
+                    name: 'Test Brokerage ',
                     growthRate: 6,
                     initialBalance: 10_000,
                     contributionStrategy: IraContributionStrategy.Fixed,
@@ -172,10 +172,10 @@ describe("PlanManager", () => {
                             frequency: Frequency.Annually
                         },
                 }],
-            rothIraInvestments: [
+            rothIras: [
                 {
                     id: 1,
-                    name: 'Test Brokerage Investment',
+                    name: 'Test Brokerage ',
                     growthRate: 6,
                     initialBalance: 10_000,
                     contributionStrategy: RothIraContributionStrategy.Fixed,

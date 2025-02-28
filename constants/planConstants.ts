@@ -50,9 +50,9 @@ export const planDefaults: Partial<Plan> = {
     incomes: [],
     expenses: [],
     debts: [],
-    taxDeferredInvestments: [],
-    brokerageInvestments: [],
-    iraInvestments: [],
-    rothIraInvestments: [],
+    taxDeferreds: [],
+    brokerages: [],
+    iras: [],
+    rothIras: [],
     commandSequences: [],
 };

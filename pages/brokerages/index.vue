@@ -6,11 +6,11 @@
   ></BrokerageInvestmentList>
 </template>
 <script setup lang="ts">
-import type {BrokerageInvestment, BrokerageInvestmentPartial} from "~/types/BrokerageInvestment";
+import type {Brokerage, BrokerageInvestmentPartial} from "~/types/Brokerage";
 
-import {useBrokerageInvestmentService} from "~/composables/api/useBrokerageInvestmentService";
+import {useBrokerageService} from "~/composables/api/useBrokerageService";
 
-const brokerageInvestmentService = useBrokerageInvestmentService();
+const brokerageInvestmentService = useBrokerageService();
 
 
 async function handleCreateBrokerageInvestment(brokerageInvestmentTemplate: BrokerageInvestmentPartial) {
@@ -18,17 +18,17 @@ async function handleCreateBrokerageInvestment(brokerageInvestmentTemplate: Brok
   await loadBrokerageInvestments();
 }
 
-async function handleDeleteBrokerageInvestment(brokerageInvestment: BrokerageInvestment) {
+async function handleDeleteBrokerageInvestment(brokerageInvestment: Brokerage) {
   await brokerageInvestmentService.delete(brokerageInvestment.id)
   await loadBrokerageInvestments();
 }
 
-async function handleUpdateBrokerageInvestment(brokerageInvestment: BrokerageInvestment) {
+async function handleUpdateBrokerageInvestment(brokerageInvestment: Brokerage) {
   await brokerageInvestmentService.update(brokerageInvestment.id, brokerageInvestment)
   await loadBrokerageInvestments();
 }
 
-const brokerageInvestments = ref<BrokerageInvestment[]>([])
+const brokerageInvestments = ref<Brokerage[]>([])
 const loading = ref<boolean>(true);
 
 async function loadBrokerageInvestments() {
