@@ -24,7 +24,7 @@ function handleStepChange(payload: { value: number, oldValue: number }) {
   <n-card role="dialog" class="max-w-6xl" :bordered="true">
     <template #header>
       <h3 class="text-2xl mb-2">Plan{{ modelRef.name }}</h3>
-      <PlanFormSteps v-model="currentStep" @update=handleStepChange/>
+      <PlanFormSteps v-model="currentStep" @update="handleStepChange"/>
     </template>
     <template #default>
       <n-form ref="formRef" :model="modelRef" :rules="rules">
