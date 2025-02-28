@@ -1,11 +1,11 @@
 export enum ModelName {
-    TaxDeferredInvestment = 'taxDeferredInvestment',
-    BrokerageInvestment = 'brokerageInvestment',
+    TaxDeferred = 'taxDeferred',
+    Brokerage = 'brokerage',
     CashReserve = 'cashReserve',
     Debt = 'debt',
     Expense = 'expense',
     Income = 'income',
-    IraInvestment = 'iraInvestment',
+    Ira = 'ira',
     Plan = 'plan',
-    RothIraInvestment = 'rothIraInvestment'
+    RothIra = 'rothIra'
 }
