@@ -4,7 +4,7 @@
         v-bind="props"
         :class="
         cn(
-          'relative flex flex-col min-h-nav-offset',
+          'relative flex flex-col',
           props.class,
         )
       "
