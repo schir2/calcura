@@ -101,7 +101,7 @@ async function loadPlan() {
   <div class="grid grid-cols-6 xl:grid-cols-6 gap-2">
     <div v-if="plan" class="gap-2 col-span-3 space-y-2">
       <n-modal v-model:show="showModal">
-        <PlanForm :initialValues="plan" mode="edit"
+        <LazyPlanForm :initialValues="plan" mode="edit"
                   @update="handleUpdatePlan"
                   @cancel="handleClose"
         />
@@ -171,7 +171,7 @@ async function loadPlan() {
       />
     </div>
     <div class="col-span-3 space-y-2">
-      <n-button @click="handleClickShowMeTheDataButton">
+      <n-button type="primary" @click="handleClickShowMeTheDataButton">
         <template #icon>
           <base-ico name="table"/>
         </template>
@@ -183,10 +183,10 @@ async function loadPlan() {
           :draggable="true"
           preset="card">
         <template #header>Plan Data</template>
-        <PlanTable v-if="plan && planStates" :planStates="planStates"/>
+        <LazyPlanTable v-if="plan && planStates" :planStates="planStates"/>
       </n-modal>
-      <ChartExpensePie :expenses="plan?.expenses" :debts="plan?.debts"/>
-      <PlanChartGrowth :states="planStates"></PlanChartGrowth>
+      <LazyChartExpensePie :expenses="plan?.expenses" :debts="plan?.debts"/>
+      <LazyPlanChartGrowth :states="planStates"></LazyPlanChartGrowth>
       <CommandSequence v-if="activeCommandSequence"
                        :commandSequence="activeCommandSequence"
                        @update="handleCommandSequenceUpdate"
