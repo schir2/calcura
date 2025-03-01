@@ -4,7 +4,7 @@
   >
     <p class="cursor-grab flex justify-between items-center drag-handle">
       <span class="flex items-center gap-3">
-        <Icon class="text-2xl text-skin-base/20" name="mdi:drag"/>{{ command.name }}</span>
+        <base-ico class="text-2xl text-skin-base/20" name="drag"/>{{ command.name }}</span>
       <n-tag>{{ command.label }}</n-tag>
     </p>
   </n-card>

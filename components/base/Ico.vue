@@ -29,9 +29,13 @@ const iconMap = {
   roth: 'mdi:finance',
   dashboard: 'uil:create-dashboard',
   table: 'material-symbols:table-view',
+  drag: 'mdi:drag',
+  frequency: 'mdi-calendar',
+  growthRate: 'mdi:trending-up'
+
 }
 
-type IconName = keyof typeof iconMap
+export type IconName = keyof typeof iconMap
 
 
 function getIconifyName(name: IconName): string {

@@ -7,47 +7,27 @@
                 @cancel="handleClose"
     />
   </n-modal>
-  <n-card size="small">
-    <div class="flex justify-between">
-      <div class="flex gap-2 items-center">
-        <h3 class="flex items-center gap-2 text-lg">
-          <base-ico class="text-skin-success" name="income"/>
-          <span>{{ income.name }}</span>
-        </h3>
-        <p class="flex justify-between">
-        <span class="flex">
-          <n-tag>
-            {{ income.incomeType }}
-          </n-tag>
-          <n-tag>
-            <template #icon>
-              <Icon name="mdi-calendar"></Icon>
-            </template>
-            {{ income.frequency }}
-          </n-tag>
-          <n-tag v-if="income.growthRate">
-            <template #icon>
-              <Icon name="mdi:trending-up"></Icon>
-            </template>
-            {{ income.growthRate }}%
-          </n-tag>
-        </span>
-        </p>
-      </div>
-      <div class="flex gap-2 items-center">
-      <span class="text-lg">${{
-          $humanize.intComma(getAnnualAmount(income.grossIncome, income.frequency))
-        }}/year</span>
-        <ListItemButtons size="small" @edit="handleEdit" @remove="handleRemove" @delete="handleDelete"/>
-      </div>
-    </div>
-  </n-card>
+  <command-list-item
+      @edit="handleEdit" @remove="handleRemove" @delete="handleDelete"
+      :title="income.name"
+      :modelName="ModelName.Income"
+      :tags="[
+          {label: income.incomeType},
+          {label: income.frequency, iconName: 'frequency'},
+          {label: `Growth ${income.growthRate}%`, iconName: 'growthRate', hide: income.growthRate === 0},
+      ]"
+  >
+    <template #summary>
+      ${{ $humanize.intComma(getAnnualAmount(income.grossIncome, income.frequency)) }}/year
+    </template>
+  </command-list-item>
 
 </template>
 <script setup lang="ts">
 
 import type {Income} from "~/types/Income";
 import {getAnnualAmount} from "~/utils";
+import {ModelName} from "~/types/ModelName";
 
 interface Props {
   income: Income
