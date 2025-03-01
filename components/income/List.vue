@@ -13,7 +13,6 @@
 </template>
 <script lang="ts" setup>
 import type {Income} from "~/types/Income";
-import type {IncomeTemplate} from "~/models/income/IncomeTemplate";
 
 interface Props {
   incomes: Income[]
@@ -27,7 +26,7 @@ function handleDelete(income: Income) {
   emit('delete', income);
 }
 
-function handleCreate(incomeTemplate: IncomeTemplate) {
+function handleCreate(incomeTemplate: Partial<Income>) {
   emit('create', incomeTemplate);
 }
 

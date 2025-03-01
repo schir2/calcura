@@ -2,7 +2,7 @@ import {RothIraContributionStrategy, type RothIra} from '~/types/RothIra';
 import {assertDefined, calculateGrowthAmount} from "~/utils";
 import type RothIraState from "~/types/RothIraState";
 import BaseManager from "~/models/common/BaseManager";
-import type {IncomeManager} from "~/constants/IncomeManager";
+import type {IncomeManager} from "~/models/income/IncomeManager";
 import {FundType} from "~/models/plan/PlanManager";
 import {ContributionType} from "~/models/common";
 import eventBus from "~/services/eventBus";

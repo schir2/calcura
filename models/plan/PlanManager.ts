@@ -9,7 +9,7 @@ import {
     getTaxDeferredContributionLimit,
     getTaxDeferredElectiveContributionLimit
 } from "~/utils";
-import {IncomeManager} from "~/constants/IncomeManager";
+import {IncomeManager} from "~/models/income/IncomeManager";
 import {BrokerageManager} from "~/models/brokerage/BrokerageManager";
 import {ExpenseManager} from "~/models/expense/ExpenseManager";
 import {IraIManager} from "~/models/ira/IraIManager";

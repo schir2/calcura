@@ -3,7 +3,7 @@ import {EmployerContributionStrategy, TaxDeferredContributionStrategy} from "~/t
 import {assertDefined, calculateGrowthAmount} from "~/utils";
 import type TaxDeferredState from "~/types/TaxDeferredState";
 import BaseManager from "~/models/common/BaseManager";
-import type {IncomeManager} from "~/constants/IncomeManager";
+import type {IncomeManager} from "~/models/income/IncomeManager";
 import {FundType} from "~/models/plan/PlanManager";
 import {ContributionType} from "~/models/common";
 import {ContributionLimitType} from "~/types/Plan";
