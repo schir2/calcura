@@ -28,6 +28,7 @@ const iconMap = {
   plan: 'mdi:flower-poppy',
   roth: 'mdi:finance',
   dashboard: 'uil:create-dashboard',
+  table: 'material-symbols:table-view',
 }
 
 type IconName = keyof typeof iconMap
