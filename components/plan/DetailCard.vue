@@ -32,7 +32,7 @@
       </n-button-group>
     </template>
 
-    <section id="planInfo" class="grid lg:grid-cols-4">
+    <section id="planInfo" class="grid grid-cols-1 lg:grid-cols-2 2xl:grid-cols-4 gap-2">
       <n-card>
         <p class="flex justify-between px-3"><span>Name</span><span>{{ plan.name }}</span></p>
         <p class="flex justify-between px-3"><span>Year </span><span>{{ plan.year }}</span></p>

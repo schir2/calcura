@@ -82,9 +82,10 @@ export function calculateDebtPayment(debtConfig: Debt, principal: number): numbe
             payment = principal;
             break
         case DebtPaymentStrategy.MinimumPayment:
-            payment = debtConfig.paymentMinimum * 12
+            payment = debtConfig.paymentMinimum
             break
     }
+    payment = getAnnualAmount(payment, debtConfig.frequency)
     return Math.min(payment, principal);
 
 }

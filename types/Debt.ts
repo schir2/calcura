@@ -1,3 +1,5 @@
+import {Frequency} from "~/types/Frequency";
+
 export enum DebtPaymentStrategy {
     Fixed = 'fixed',
     MinimumPayment = 'minimum_payment',
@@ -15,6 +17,7 @@ export interface Debt {
     paymentStrategy: DebtPaymentStrategy;
     paymentFixedAmount: number;
     paymentPercentage: number;
+    frequency: Frequency
 }
 
 export type DebtPartial = Partial<Omit<Debt, 'id'>>
@@ -30,4 +33,5 @@ export const debtDefaults: DebtPartial = {
     paymentStrategy: DebtPaymentStrategy.Fixed,
     paymentFixedAmount: 0,
     paymentPercentage: 0,
+    frequency: Frequency.Monthly
 }
