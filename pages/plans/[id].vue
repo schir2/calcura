@@ -4,6 +4,8 @@ import ChildCreateButtonList from "~/components/plan/ChildCreateButtonList.vue";
 import {ModelName} from "~/types/ModelName";
 import type {CommandSequence} from "~/types/CommandSequence";
 import {toKebabCaseKey} from "~/utils";
+import PlanManager from "~/models/plan/PlanManager";
+import type {PlanState} from "~/types/PlanState";
 
 const planService = usePlanService()
 const route = useRoute()
@@ -47,6 +49,11 @@ async function handleCommandSequenceUpdate(commandSequence: CommandSequence) {
 }
 
 const showModal = ref(false);
+const showDataTable = ref<boolean>(false)
+
+function handleClickShowMeTheDataButton() {
+  showDataTable.value = true
+}
 
 async function handleUpdatePlan(planData: Plan) {
   await planService.update(planData.id, planData)
@@ -57,6 +64,28 @@ async function handleUpdatePlan(planData: Plan) {
 function handleClose() {
   showModal.value = false;
 }
+
+const activeCommandSequence: CommandSequence | null = null
+
+const planManager = computed<PlanManager>((): PlanManager => {
+  if (plan.value) {
+    return new PlanManager(plan.value);
+  }
+})
+
+const finalPlanState = computed<PlanState | undefined>(() => {
+  if (planStates.value) {
+    return planStates.value[planStates.value.length - 1];
+  }
+})
+
+const planStates = computed<PlanState[]>(() => {
+      if (activeCommandSequence && activeCommandSequence.value) {
+        return planManager.value.simulate()
+      }
+      return planManager.value.simulate()
+    }
+)
 
 async function loadPlan() {
   try {
@@ -142,14 +171,26 @@ async function loadPlan() {
       />
     </div>
     <div class="col-span-3 space-y-2">
+      <n-button @click="handleClickShowMeTheDataButton">
+        <template #icon>
+          <base-ico name="table"/>
+        </template>
+        Show Me the Data
+      </n-button>
+      <n-modal
+          class="max-w-[1800px] h-[720px]"
+          v-model:show="showDataTable"
+          :draggable="true"
+          preset="card">
+        <template #header>Plan Data</template>
+        <PlanTable v-if="plan && planStates" :planStates="planStates"/>
+      </n-modal>
       <ChartExpensePie :expenses="plan?.expenses" :debts="plan?.debts"/>
-      <PlanSimulation
-          :plan="plan"
-          v-for="commandSequence in plan.commandSequences"
-          :key="commandSequence.id"
-          :commandSequence="commandSequence"
-          @update-command-sequence="handleCommandSequenceUpdate"
-      ></PlanSimulation>
+      <PlanChartGrowth :states="planStates"></PlanChartGrowth>
+      <CommandSequence v-if="activeCommandSequence"
+                       :commandSequence="activeCommandSequence"
+                       @update="handleCommandSequenceUpdate"
+      ></CommandSequence>
     </div>
   </div>
 </template>
