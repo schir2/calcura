@@ -53,7 +53,7 @@ const {formRef, modelRef, rules, handleCreate, handleUpdate, handleCancel} =
               { label: 'Monthly', value: 'monthly' },
               { label: 'Weekly', value: 'weekly' },
               { label: 'Quarterly', value: 'quarterly' },
-              { label: 'Annually', value: 'annually' }
+              { label: 'Annually', value: 'annual' }
             ]" :key="option.value" :label="option.label" :value="option.value"/>
           </n-radio-group>
         </n-form-item>
