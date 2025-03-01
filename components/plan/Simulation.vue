@@ -5,7 +5,18 @@
       :commandSequence="commandSequence"
       @update="handleUpdateCommandSequence"
   ></CommandSequence>
-  <PlanTable v-if="plan && planStates" :planStates="planStates"/>
+  <n-button @click="handleClickShowMeTheDataButton">
+    <template #icon>
+      <base-ico name="table" />
+    </template>
+    Show Me the Data
+  </n-button>
+  <n-modal v-model:show="showDataTable">
+    <n-card class="max-w-[1800px]">
+      <template #header>Simulation Data</template>
+    <PlanTable v-if="plan && planStates" :planStates="planStates"/>
+    </n-card>
+  </n-modal>
 
 </template>
 <script setup lang="ts">
@@ -41,4 +52,9 @@ watch(() => props.plan, (newValue, oldValue) => {
   immediate: true,
 })
 
+const showDataTable = ref<boolean>(false)
+
+function handleClickShowMeTheDataButton() {
+  showDataTable.value = true
+}
 </script>
