@@ -43,7 +43,7 @@ const expenseMap = computed(() => {
   for (const debt of debts) {
     if (debt.interestRate <= 6) {
       expenseMap.lowInterestDebt = calculateDebtPayment(debt, debt.principal)
-    } else if (debt.interestRate <= 8) {
+    } else if (debt.interestRate < 8) {
       expenseMap.mediumInterestDebt = calculateDebtPayment(debt, debt.principal)
     } else {
       expenseMap.highInterestDebt = calculateDebtPayment(debt, debt.principal)
@@ -55,6 +55,40 @@ const expenseMap = computed(() => {
 const annualExpenses = computed(() => {
   return Object.values(expenseMap.value).reduce((acc, cur) => acc + cur, 0)
 })
+
+const borderColor = 'black'
+
+const chartColors = {
+  essentialFixed: {
+    background: "#5DADE2",
+    border: borderColor,
+  },
+  essentialVariable: {
+    background: "#48C9B0",
+    border: borderColor,
+  },
+  discretionaryFixed: {
+    background: "#F4D03F",
+    border: borderColor,
+  },
+  discretionaryVariable: {
+    background: "#E67E22",
+    border: borderColor,
+  },
+  lowInterestDebt: {
+    background: "#F1948A",
+    border: borderColor,
+  },
+  medInterestDebt: {
+    background: "#EC7063",
+    border: borderColor,
+  },
+  highInterestDebt: {
+    background: "#CB4335",
+    border: borderColor,
+  },
+};
+
 
 const data = computed(() => {
 
@@ -70,26 +104,10 @@ const data = computed(() => {
     ],
     datasets: [
       {
-        borderWidth: 3,
-        backgroundColor: [
-          darkTheme.common.infoColor,
-          darkTheme.common.warningColor,
-          darkTheme.common.errorColor,
-          darkTheme.common.successColor,
-          darkTheme.common.successColor,
-          darkTheme.common.successColor,
-          darkTheme.common.successColor,
-        ],
-        borderColor: [
-          darkTheme.common.infoColorPressed,
-          darkTheme.common.warningColorPressed,
-          darkTheme.common.errorColorPressed,
-          darkTheme.common.successColorPressed,
-          darkTheme.common.successColorPressed,
-          darkTheme.common.successColorPressed,
-          darkTheme.common.successColorPressed,
-        ],
-        data: Object.values(expenseMap.value)
+        borderWidth: 1,
+        data: Object.values(expenseMap.value),
+        backgroundColor: Object.values(chartColors).map(color => color.background),
+        borderColor: Object.values(chartColors).map(color => color.border)
 
       },
     ]
@@ -123,7 +141,7 @@ const options = {
 
 </script>
 <template>
-  <n-card size="small" class="max-w-sm">
+  <n-card size="small" class="max-w-sm" :bordered="true">
     <template #header>
       <h4 class="text-2xl font-semibold flex gap-2 items-center">
         <base-ico class="text-skin-warning" name="expense"/>
