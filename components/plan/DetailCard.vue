@@ -12,7 +12,7 @@
     <template #header>
       <h1 class="text-2xl">
         <Icon name="mdi:flower-poppy"/>
-        Plan {{ plan.id }}: {{ plan.name }}
+        Plan: {{ plan.name }}
       </h1>
     </template>
     <template #header-extra>
@@ -32,36 +32,34 @@
       </n-button-group>
     </template>
 
-    <section id="planInfo" class="grid grid-cols-1 lg:grid-cols-2 2xl:grid-cols-4 gap-2">
-      <n-card>
-        <p class="flex justify-between px-3"><span>Name</span><span>{{ plan.name }}</span></p>
-        <p class="flex justify-between px-3"><span>Year </span><span>{{ plan.year }}</span></p>
-        <p class="flex justify-between px-3"><span>Age</span><span>{{ plan.age }}</span></p>
-        <p class="flex justify-between px-3"><span>Retirement Age </span><span>{{ plan.retirementAge }}</span></p>
-        <p class="flex justify-between px-3"><span>Life Expectancy </span><span>{{ plan.lifeExpectancy }}</span></p>
+    <section id="planInfo" class="grid grid-cols-[repeat(auto-fit,minmax(250px,1fr))] gap-2">
+      <n-card size="small">
+        <template #header>Profile</template>
+        <p class="flex justify-between"><span>Year </span><span>{{ plan.year }}</span></p>
+        <p class="flex justify-between"><span>Age</span><span>{{ plan.age }}</span></p>
+        <p class="flex justify-between"><span>Retirement Age </span><span>{{ plan.retirementAge }}</span></p>
+        <p class="flex justify-between"><span>Life Expectancy </span><span>{{ plan.lifeExpectancy }}</span></p>
       </n-card>
-      <n-card>
-        <p class="flex justify-between px-3"><span>Inflation Rate </span><span>{{ plan.inflationRate }}</span></p>
-        <p class="flex justify-between px-3"><span>Growth Rate </span><span>{{ plan.growthRate }}</span></p>
-        <p class="flex justify-between px-3">
-          <span>Growth Application Strategy </span><span>{{ plan.growthApplicationStrategy }}</span></p>
-      </n-card>
-      <n-card>
-        <p class="flex justify-between px-3"><span>Tax Strategy </span><span>{{ plan.taxStrategy }}</span></p>
-        <p class="flex justify-between px-3"><span>Tax Rate </span><span>{{ plan.taxRate }}</span></p>
-        <p class="flex justify-between px-3">
+      <n-card size="small">
+        <template #header>Rates/Settings</template>
+        <p class="flex justify-between"><span>Inflation Rate </span><span>{{ plan.inflationRate }}</span></p>
+        <p class="flex justify-between"><span>Tax Rate </span><span>{{ plan.taxRate }}</span></p>
+        <p class="flex justify-between">
           <span>Insufficient Funds Strategy </span><span>{{ plan.insufficientFundsStrategy }}</span></p>
-        </n-card>
-      <n-card>
-        <p class="flex justify-between px-3"><span>Retirement Strategy </span><span>{{
+        <p class="flex justify-between">
+          <span>Growth Strategy</span><span>{{ plan.growthApplicationStrategy }}</span></p>
+      </n-card>
+      <n-card size="small">
+        <template #header>Retirement</template>
+        <p class="flex justify-between"><span>Retirement Strategy </span><span>{{
             plan.retirementStrategy
           }}</span></p>
-        <p class="flex justify-between px-3">
-          <span>RetirementWithdrawalRate </span><span>{{ plan.retirementWithdrawalRate }}</span></p>
-        <p class="flex justify-between px-3"><span>RetirementIncomeGoal </span><span>${{
+        <p class="flex justify-between">
+          <span>Withdrawal Rate </span><span>{{ plan.retirementWithdrawalRate }}%</span></p>
+        <p class="flex justify-between"><span>Income Goal </span><span>${{
             $humanize.intComma(plan.retirementIncomeGoal)
           }}</span></p>
-        <p class="flex justify-between px-3">
+        <p class="flex justify-between">
           <span>Retirement Savings Amount</span><span>${{ $humanize.intComma(plan.retirementSavingsAmount) }}</span></p>
       </n-card>
     </section>

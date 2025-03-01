@@ -69,7 +69,7 @@ async function loadPlan() {
 }
 </script>
 <template>
-  <div class="grid grid-cols-4 xl:grid-cols-4 gap-2">
+  <div class="grid grid-cols-6 xl:grid-cols-6 gap-2">
     <div v-if="plan" class="gap-2 col-span-3 space-y-2">
       <n-modal v-model:show="showModal">
         <PlanForm :initialValues="plan" mode="edit"
@@ -141,16 +141,15 @@ async function loadPlan() {
           @remove="handleRemovePlanModel({...$event, model: ModelName.TaxDeferred})"
       />
     </div>
-    <div>
+    <div class="col-span-3 space-y-2">
       <ChartExpensePie :expenses="plan?.expenses" :debts="plan?.debts"/>
+      <PlanSimulation
+          :plan="plan"
+          v-for="commandSequence in plan.commandSequences"
+          :key="commandSequence.id"
+          :commandSequence="commandSequence"
+          @update-command-sequence="handleCommandSequenceUpdate"
+      ></PlanSimulation>
     </div>
-    <PlanSimulation
-        class="col-span-2"
-        :plan="plan"
-        v-for="commandSequence in plan.commandSequences"
-        :key="commandSequence.id"
-        :commandSequence="commandSequence"
-        @update-command-sequence="handleCommandSequenceUpdate"
-    ></PlanSimulation>
   </div>
 </template>
