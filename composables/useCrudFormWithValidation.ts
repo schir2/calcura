@@ -15,7 +15,7 @@ export function useCrudFormWithValidation<T>(
     useValidator: (modelRef: Ref<Partial<T>>) => { rules: FormRules }
 ) {
     const formRef = ref<FormInst | null>(null);
-    const modelRef = ref<Partial<T>>(initialValues);
+    const modelRef = ref<Partial<Omit<T,'id'>>>(initialValues);
     const {rules} = useValidator(modelRef);
 
     function handleCreate() {

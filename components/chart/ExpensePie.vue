@@ -3,21 +3,27 @@ import {type Expense, ExpenseType} from "~/types/Expense";
 import {darkTheme} from "naive-ui";
 import {ArcElement, Chart as ChartJS, Legend, Tooltip} from 'chart.js'
 import {Doughnut} from 'vue-chartjs'
+import type {Debt} from "~/types/Debt";
+import {calculateDebtPayment} from "~/models/debt/DebtManager";
 
 interface Props {
   expenses?: Expense[]
+  debts?: Debt[]
 }
 
-const {expenses = []} = defineProps<Props>()
+const {expenses = [], debts = []} = defineProps<Props>()
 
 ChartJS.register(ArcElement, Tooltip, Legend)
 
-const data = computed(() => {
+const expenseMap = computed(() => {
   const expenseMap = {
     essentialFixed: 0,
     essentialVariable: 0,
     discretionaryFixed: 0,
     discretionaryVariable: 0,
+    lowInterestDebt: 0,
+    mediumInterestDebt: 0,
+    highInterestDebt: 0,
   }
 
 
@@ -33,8 +39,35 @@ const data = computed(() => {
       expenseMap.discretionaryVariable += annualExpense
     }
   }
+
+  for (const debt of debts) {
+    if (debt.interestRate <= 6) {
+      expenseMap.lowInterestDebt = calculateDebtPayment(debt, debt.principal)
+    } else if (debt.interestRate <= 8) {
+      expenseMap.mediumInterestDebt = calculateDebtPayment(debt, debt.principal)
+    } else {
+      expenseMap.highInterestDebt = calculateDebtPayment(debt, debt.principal)
+    }
+  }
+  return expenseMap
+
+})
+const annualExpenses = computed(() => {
+  return Object.values(expenseMap.value).reduce((acc, cur) => acc + cur, 0)
+})
+
+const data = computed(() => {
+
   return {
-    labels: ['Essential/Fixed', 'Essential/Variable', 'Discretionary/Fixed', 'Discretionary/Variable'],
+    labels: [
+      'Essential/Fixed',
+      'Essential/Variable',
+      'Discretionary/Fixed',
+      'Discretionary/Variable',
+      'Low Interest Debt',
+      'Med Interest Debt',
+      'High Interest Debt',
+    ],
     datasets: [
       {
         borderWidth: 3,
@@ -43,19 +76,21 @@ const data = computed(() => {
           darkTheme.common.warningColor,
           darkTheme.common.errorColor,
           darkTheme.common.successColor,
+          darkTheme.common.successColor,
+          darkTheme.common.successColor,
+          darkTheme.common.successColor,
         ],
         borderColor: [
           darkTheme.common.infoColorPressed,
           darkTheme.common.warningColorPressed,
           darkTheme.common.errorColorPressed,
           darkTheme.common.successColorPressed,
+          darkTheme.common.successColorPressed,
+          darkTheme.common.successColorPressed,
+          darkTheme.common.successColorPressed,
         ],
-        data: [
-          expenseMap.essentialFixed,
-          expenseMap.essentialVariable,
-          expenseMap.discretionaryFixed,
-          expenseMap.discretionaryVariable,
-        ]
+        data: Object.values(expenseMap.value)
+
       },
     ]
   }
@@ -83,11 +118,20 @@ const options = {
   },
   layout: {
     backgroundColor: darkTheme.common.bodyColor,
-    padding: 8,
   },
 }
 
 </script>
 <template>
-  <Doughnut v-if="data" :data="data" :options="options"/>
+  <n-card size="small" class="max-w-sm">
+    <template #header>
+      <h4 class="text-2xl font-semibold flex gap-2 items-center">
+        <base-ico class="text-skin-warning" name="expense"/>
+        <span>Annual Expenses</span></h4>
+    </template>
+    <Doughnut v-if="data" :data="data" :options="options"/>
+    <template #footer>
+      <p class="text-2xl text-skin-error text-end">-${{ $humanize.intComma(annualExpenses) }}/Year</p>
+    </template>
+  </n-card>
 </template>

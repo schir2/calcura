@@ -69,8 +69,8 @@ async function loadPlan() {
 }
 </script>
 <template>
-  <div class="grid grid-cols-1 xl:grid-cols-2 gap-2">
-    <div v-if="plan" class="gap-2 col-span-1 space-y-2">
+  <div class="grid grid-cols-4 xl:grid-cols-4 gap-2">
+    <div v-if="plan" class="gap-2 col-span-3 space-y-2">
       <n-modal v-model:show="showModal">
         <PlanForm :initialValues="plan" mode="edit"
                   @update="handleUpdatePlan"
@@ -142,21 +142,15 @@ async function loadPlan() {
       />
     </div>
     <div>
-      <n-card size="small" class="max-w-sm">
-        <template #header>
-          <h4 class="text-2xl font-semibold flex gap-2 items-center">
-          <base-ico class="text-skin-warning" name="expense"/>
-            <span>Annual Expenses</span></h4>
-        </template>
-        <ChartExpensePie :expenses="plan?.expenses"/>
-      </n-card>
-      <PlanSimulation
-          :plan="plan"
-          v-for="commandSequence in plan.commandSequences"
-          :key="commandSequence.id"
-          :commandSequence="commandSequence"
-          @update-command-sequence="handleCommandSequenceUpdate"
-      ></PlanSimulation>
+      <ChartExpensePie :expenses="plan?.expenses" :debts="plan?.debts"/>
     </div>
+    <PlanSimulation
+        class="col-span-2"
+        :plan="plan"
+        v-for="commandSequence in plan.commandSequences"
+        :key="commandSequence.id"
+        :commandSequence="commandSequence"
+        @update-command-sequence="handleCommandSequenceUpdate"
+    ></PlanSimulation>
   </div>
 </template>
