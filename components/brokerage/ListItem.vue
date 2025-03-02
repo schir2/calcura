@@ -74,8 +74,7 @@ const annualContribution = computed(() => {
       :tags="[
           {label: brokerage.contributionStrategy, },
           {label: `Growth ${brokerage.growthRate}%`, iconName: 'growthRate', hide: brokerage.growthRate === 0},
-      ]"
-  >
+      ]">
     <template #summary>
       <span v-if="planStates">
 

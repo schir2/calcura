@@ -7,26 +7,24 @@
                                @cancel="handleClose"
     />
   </n-modal>
-  <n-card size="small">
-    <template #header>
-      <span>{{taxDeferred.id}} {{ taxDeferred.name }}</span>
-      <n-tag>{{ taxDeferred.electiveContributionStrategy }}</n-tag>
-      <n-tag>{{ taxDeferred.employerContributionStrategy }}</n-tag>
-    </template>
-    <template #default>
-      <ul class="grid grid-cols-5">
-      </ul>
-    </template>
-    <template #header-extra>
-      <ListItemButtons size="small" @edit="handleEdit" @remove="handleRemove" @delete="handleDelete"/>
-    </template>
-  </n-card>
+
+  <command-list-item
+      @edit="handleEdit" @remove="handleRemove" @delete="handleDelete"
+      :title="taxDeferred.name"
+      :modelName="ModelName.Ira"
+      :tags="[
+          {label: taxDeferred.electiveContributionStrategy, },
+          {label: taxDeferred.employerContributionStrategy, },
+          {label: `Growth ${taxDeferred.growthRate}%`, iconName: 'growthRate', hide: taxDeferred.growthRate === 0},
+      ]">
+  </command-list-item>
 
 </template>
 <script setup lang="ts">
 
 import type {TaxDeferred} from "~/types/TaxDeferred";
 import type {Income} from "~/types/Income";
+import {ModelName} from "~/types/ModelName";
 
 interface Props {
   taxDeferred: TaxDeferred

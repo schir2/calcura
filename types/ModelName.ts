@@ -16,7 +16,7 @@ export enum ModelTextColor {
     brokerage = 'text-skin-info',
     cashReserve = 'text-skin-info',
     debt = 'text-skin-error',
-    expense = 'text-skin-warning',
+    expense = 'text-skin-error',
     income = 'text-skin-success',
     ira = 'text-skin-info',
     plan = 'text-skin-success',
