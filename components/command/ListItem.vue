@@ -1,9 +1,9 @@
 <template>
   <n-card size="small">
     <div class="flex justify-between">
-      <div class="flex gap-2 items-center">
+      <div class="flex gap-8 items-center">
         <slot name="header">
-          <h3 class="flex items-center gap-2 text-lg">
+          <h3 class="flex items-center gap-2 text-lg font-semibold">
             <base-ico class="text-2xl text-skin-base/20" name="drag"/>
             <base-ico v-if="modelName" :class="textClass" name="income"/>
             <span>{{ title }}</span>
@@ -13,11 +13,11 @@
           <span class="flex justify-between gap-0.5">
             <slot name="tags">
               <template v-for="tag in tags" :key="tag.label">
-                <n-tag round v-if="!tag.hide">
+                <n-tag disabled round v-if="!tag.hide">
                 <template #icon v-if="tag.iconName">
                   <base-ico :name="tag.iconName"></base-ico>
                 </template>
-                {{ tag.label }}
+                <span v-if="tag.label">{{ tag.label }}</span>
                 </n-tag>
               </template>
             </slot>
@@ -42,7 +42,7 @@ import {ModelName, ModelTextColor} from "~/types/ModelName"
 import type {IconName} from "~/components/base/Ico.vue";
 
 interface Tag {
-  label: string | number,
+  label?: string | number,
   iconName?: IconName,
   hide?: boolean
 }

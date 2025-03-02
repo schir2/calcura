@@ -31,7 +31,12 @@ const iconMap = {
   table: 'material-symbols:table-view',
   drag: 'mdi:drag',
   frequency: 'mdi-calendar',
-  growthRate: 'mdi:trending-up'
+  growthRate: 'mdi:trending-up',
+  inflation: 'mdi:trending-up',
+  essential: 'uil:exclamation-circle',
+  deductible: 'mdi:cash',
+  fixed: 'mdi:lock',
+  variable: 'mdi:tune',
 
 }
 
