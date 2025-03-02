@@ -1,4 +1,3 @@
-import type Command from "~/types/Command";
 import {ContributionType} from "~/models/common/index";
 import {FundType} from "~/models/plan/PlanManager";
 import BaseManager from "~/models/common/BaseManager";

@@ -57,14 +57,14 @@ export interface Plan {
     retirementAge: number;
     retirementSavingsAmount: number;
     retirementIncomeAdjustedForInflation: boolean;
-    cashReserve: CashReserve[]
-    income: Income[]
+    cashReserves: CashReserve[]
+    incomes: Income[]
     expenses: Expense[]
     debts: Debt[]
-    taxDeferred: TaxDeferred[];
-    brokerage: Brokerage[];
-    ira: Ira[];
-    rothIra: RothIra[];
+    taxDeferreds: TaxDeferred[];
+    brokerages: Brokerage[];
+    iras: Ira[];
+    rothIras: RothIra[];
     commandSequences: CommandSequence[];
 
 }

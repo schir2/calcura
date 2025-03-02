@@ -29,8 +29,8 @@ const planConfig: Plan = {
     retirementAge: 65,
     retirementSavingsAmount: 200000,
     retirementIncomeAdjustedForInflation: true,
-    cashReserve: [],
-    income: [
+    cashReserves: [],
+    incomes: [
         {
             id: 1,
             name: 'Ordinary Income',
@@ -50,9 +50,9 @@ const planConfig: Plan = {
     ],
     expenses: [],
     debts: [],
-    brokerage: [],
-    rothIra: [],
-    taxDeferred: [
+    brokerages: [],
+    rothIras: [],
+    taxDeferreds: [
         {
             id: 1,
             name: 'Test TaxDeferred ',
@@ -77,7 +77,7 @@ const planConfig: Plan = {
 
         }
     ],
-    ira: [],
+    iras: [],
     commandSequences: [],
 }
 
@@ -116,8 +116,8 @@ describe("TaxDeferredManager", () => {
             planManager = new PlanManager(
                 {
                     ...planConfig,
-                    taxDeferred: [{
-                        ...planConfig.taxDeferred[0],
+                    taxDeferreds: [{
+                        ...planConfig.taxDeferreds[0],
                         electiveContributionStrategy: TaxDeferredContributionStrategy.Fixed,
                         electiveContributionFixedAmount: 100,
 
@@ -134,8 +134,8 @@ describe("TaxDeferredManager", () => {
             planManager = new PlanManager(
                 {
                     ...planConfig,
-                    taxDeferred: [{
-                        ...planConfig.taxDeferred[0],
+                    taxDeferreds: [{
+                        ...planConfig.taxDeferreds[0],
                         electiveContributionStrategy: TaxDeferredContributionStrategy.PercentageOfIncome,
                         electiveContributionPercentage: 10,
 
@@ -152,8 +152,8 @@ describe("TaxDeferredManager", () => {
             planManager = new PlanManager(
                 {
                     ...planConfig,
-                    taxDeferred: [{
-                        ...planConfig.taxDeferred[0],
+                    taxDeferreds: [{
+                        ...planConfig.taxDeferreds[0],
                         electiveContributionStrategy: TaxDeferredContributionStrategy.Max,
                         electiveContributionPercentage: 10,
 
@@ -170,8 +170,8 @@ describe("TaxDeferredManager", () => {
             planManager = new PlanManager(
                 {
                     ...planConfig,
-                    taxDeferred: [{
-                        ...planConfig.taxDeferred[0],
+                    taxDeferreds: [{
+                        ...planConfig.taxDeferreds[0],
                         electiveContributionStrategy: TaxDeferredContributionStrategy.UntilCompanyMatch,
                         electiveContributionPercentage: 100,
                         employerContributionStrategy: EmployerContributionStrategy.PercentageOfContribution,
@@ -194,8 +194,8 @@ describe("TaxDeferredManager", () => {
             planManager = new PlanManager(
                 {
                     ...planConfig,
-                    taxDeferred: [{
-                        ...planConfig.taxDeferred[0],
+                    taxDeferreds: [{
+                        ...planConfig.taxDeferreds[0],
                         employerContributionStrategy: EmployerContributionStrategy.Fixed,
                         employerContributionFixedAmount: 10_000,
                     }]
@@ -211,8 +211,8 @@ describe("TaxDeferredManager", () => {
             planManager = new PlanManager(
                 {
                     ...planConfig,
-                    taxDeferred: [{
-                        ...planConfig.taxDeferred[0],
+                    taxDeferreds: [{
+                        ...planConfig.taxDeferreds[0],
                         employerContributionStrategy: EmployerContributionStrategy.PercentageOfCompensation,
                         employerCompensationMatchPercentage: 5,
                     }]
@@ -228,8 +228,8 @@ describe("TaxDeferredManager", () => {
             planManager = new PlanManager(
                 {
                     ...planConfig,
-                    taxDeferred: [{
-                        ...planConfig.taxDeferred[0],
+                    taxDeferreds: [{
+                        ...planConfig.taxDeferreds[0],
                         employerContributionStrategy: EmployerContributionStrategy.None,
                         employerCompensationMatchPercentage: 100,
                         employerMatchPercentageLimit: 3,
@@ -248,8 +248,8 @@ describe("TaxDeferredManager", () => {
             planManager = new PlanManager(
                 {
                     ...planConfig,
-                    taxDeferred: [{
-                        ...planConfig.taxDeferred[0],
+                    taxDeferreds: [{
+                        ...planConfig.taxDeferreds[0],
                         employerContributionStrategy: EmployerContributionStrategy.PercentageOfContribution,
                         electiveContributionStrategy: TaxDeferredContributionStrategy.Fixed,
                         electiveContributionFixedAmount: 1_500,
@@ -270,8 +270,8 @@ describe("TaxDeferredManager", () => {
             planManager = new PlanManager(
                 {
                     ...planConfig,
-                    taxDeferred: [{
-                        ...planConfig.taxDeferred[0],
+                    taxDeferreds: [{
+                        ...planConfig.taxDeferreds[0],
                         electiveContributionStrategy: TaxDeferredContributionStrategy.UntilCompanyMatch,
                         electiveContributionPercentage: 100,
                         employerContributionStrategy: EmployerContributionStrategy.PercentageOfContribution,
@@ -294,8 +294,8 @@ describe("TaxDeferredManager", () => {
             planManager = new PlanManager(
                 {
                     ...planConfig,
-                    taxDeferred: [{
-                        ...planConfig.taxDeferred[0],
+                    taxDeferreds: [{
+                        ...planConfig.taxDeferreds[0],
                         electiveContributionStrategy: TaxDeferredContributionStrategy.UntilCompanyMatch,
                         electiveContributionPercentage: 100,
                         employerContributionStrategy: EmployerContributionStrategy.PercentageOfContribution,
@@ -321,8 +321,8 @@ describe("TaxDeferredManager", () => {
                 {
                     ...planConfig,
                     growthApplicationStrategy: GrowthApplicationStrategy.Start,
-                    taxDeferred: [{
-                        ...planConfig.taxDeferred[0],
+                    taxDeferreds: [{
+                        ...planConfig.taxDeferreds[0],
                         growthRate: 6,
                         electiveContributionStrategy: TaxDeferredContributionStrategy.UntilCompanyMatch,
                         electiveContributionPercentage: 100,
@@ -361,8 +361,8 @@ describe("TaxDeferredManager", () => {
                 {
                     ...planConfig,
                     growthApplicationStrategy: GrowthApplicationStrategy.End,
-                    taxDeferred: [{
-                        ...planConfig.taxDeferred[0],
+                    taxDeferreds: [{
+                        ...planConfig.taxDeferreds[0],
                         growthRate: 6,
                         electiveContributionStrategy: TaxDeferredContributionStrategy.UntilCompanyMatch,
                         electiveContributionPercentage: 100,

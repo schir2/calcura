@@ -29,8 +29,8 @@ const planConfig: Plan = {
     retirementAge: 65,
     retirementSavingsAmount: 200000,
     retirementIncomeAdjustedForInflation: true,
-    cashReserve: [],
-    income: [
+    cashReserves: [],
+    incomes: [
         {
             id: 1,
             name: 'Ordinary Income',
@@ -62,10 +62,10 @@ const planConfig: Plan = {
         }
     ],
     debts: [],
-    taxDeferred: [],
-    brokerage: [],
-    ira: [],
-    rothIra: [],
+    taxDeferreds: [],
+    brokerages: [],
+    iras: [],
+    rothIras: [],
     commandSequences: [],
 }
 

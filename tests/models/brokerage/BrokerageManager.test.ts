@@ -30,8 +30,8 @@ const planConfig: Plan = {
     retirementAge: 65,
     retirementSavingsAmount: 200000,
     retirementIncomeAdjustedForInflation: true,
-    cashReserve: [],
-    income: [
+    cashReserves: [],
+    incomes: [
         {
             id: 1,
             name: 'Ordinary Income',
@@ -51,10 +51,10 @@ const planConfig: Plan = {
     ],
     expenses: [],
     debts: [],
-    taxDeferred: [],
-    brokerage: [],
-    ira: [],
-    rothIra: [],
+    taxDeferreds: [],
+    brokerages: [],
+    iras: [],
+    rothIras: [],
     commandSequences: [],
 }
 
@@ -131,7 +131,7 @@ describe("BrokerageManager", () => {
                 contributionFixedAmount: 1_000,
                 growthRate: 10
             }
-            planManager = new PlanManager({...planConfig, growthApplicationStrategy: GrowthApplicationStrategy.Start, brokerage: [brokerageConfig]})
+            planManager = new PlanManager({...planConfig, growthApplicationStrategy: GrowthApplicationStrategy.Start, brokerages: [brokerageConfig]})
             const brokerageManager = new BrokerageManager(planManager, brokerageConfig)
             brokerageManager.process();
             const planState = brokerageManager.orchestrator.getCurrentState();
@@ -159,7 +159,7 @@ describe("BrokerageManager", () => {
                 contributionFixedAmount: 1_000,
                 growthRate: 10
             }
-            planManager = new PlanManager({...planConfig, growthApplicationStrategy: GrowthApplicationStrategy.End, brokerage: [brokerageConfig]})
+            planManager = new PlanManager({...planConfig, growthApplicationStrategy: GrowthApplicationStrategy.End, brokerages: [brokerageConfig]})
             const brokerageManager = new BrokerageManager(planManager, brokerageConfig)
             brokerageManager.process();
             const planState = brokerageManager.orchestrator.getCurrentState();
@@ -201,7 +201,7 @@ describe("BrokerageManager", () => {
                 contributionFixedAmount: 1_000,
                 growthRate: 10
             }
-            planManager = new PlanManager({...planConfig, growthApplicationStrategy: GrowthApplicationStrategy.Start, brokerage: [brokerageConfig]})
+            planManager = new PlanManager({...planConfig, growthApplicationStrategy: GrowthApplicationStrategy.Start, brokerages: [brokerageConfig]})
             const brokerageManager = new BrokerageManager(planManager, brokerageConfig)
             brokerageManager.process();
             const brokerageState = brokerageManager.getCurrentState();

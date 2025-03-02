@@ -10,6 +10,18 @@ export enum ModelName {
     RothIra = 'rothIra'
 }
 
+export enum ModelNameUpperCase{
+    TaxDeferred = 'TaxDeferred',
+    Brokerage = 'Brokerage',
+    CashReserve = 'CashReserve',
+    Debt = 'Debt',
+    Expense = 'Expense',
+    Income = 'Income',
+    Ira = 'Ira',
+    Plan = 'Plan',
+    RothIra = 'RothIra'
+}
+
 
 export enum ModelTextColor {
     taxDeferred = 'text-skin-info',

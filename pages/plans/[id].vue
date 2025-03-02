@@ -70,7 +70,7 @@ const activeCommandSequence: CommandSequence | null = null
 const planManager = ref<PlanManager | null>(null);
 const planStates = ref<PlanState[] | null>(null);
 
-watch(() => plan, (newPlan: Ref<Plan>) => {
+watch(() => plan, (newPlan: Plan) => {
   if (newPlan.value) {
     planManager.value = new PlanManager(newPlan.value);
     if (activeCommandSequence && activeCommandSequence.value) {

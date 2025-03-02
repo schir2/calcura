@@ -39,7 +39,7 @@ describe("PlanManager", () => {
             retirementAge: 65,
             retirementSavingsAmount: 200000,
             retirementIncomeAdjustedForInflation: true,
-            cashReserve: [
+            cashReserves: [
                 {
                     id: 10,
                     name: 'Cash Reserve',
@@ -49,7 +49,7 @@ describe("PlanManager", () => {
                     initialAmount: 15_000,
                 }
             ],
-            income: [
+            incomes: [
                 {
                     id: 1,
                     name: 'Ordinary Income',
@@ -114,7 +114,7 @@ describe("PlanManager", () => {
                     frequency: Frequency.Annually,
                 }
             ],
-            taxDeferred: [
+            taxDeferreds: [
                 {
                     id: 1,
                     name: 'Test TaxDeferred ',
@@ -139,7 +139,7 @@ describe("PlanManager", () => {
 
                 }
             ],
-            brokerage: [
+            brokerages: [
                 {
                     id: 1,
                     name: 'Test Brokerage ',
@@ -151,7 +151,7 @@ describe("PlanManager", () => {
 
                 }
             ],
-            ira: [
+            iras: [
                 {
                     id: 1,
                     name: 'Test Brokerage ',
@@ -170,7 +170,7 @@ describe("PlanManager", () => {
                             frequency: Frequency.Annually
                         },
                 }],
-            rothIra: [
+            rothIras: [
                 {
                     id: 1,
                     name: 'Test Brokerage ',
