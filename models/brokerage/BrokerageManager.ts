@@ -70,7 +70,6 @@ export class BrokerageManager extends BaseManager<Brokerage, BrokerageState> {
 }
 
 export function calculateBrokerageContribution(brokerageConfig: Brokerage, grossIncome: number, taxedCapital: number): number {
-    console.log(grossIncome, taxedCapital)
     let contribution = 0
     switch (brokerageConfig.contributionStrategy) {
         case BrokerageContributionStrategy.Fixed:

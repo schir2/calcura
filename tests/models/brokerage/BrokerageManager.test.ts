@@ -10,7 +10,6 @@ import {
     type Plan,
     RetirementStrategy
 } from "~/types/Plan";
-import {ProcessBrokerageCommand} from "~/models/brokerage/BrokerageCommands";
 
 import {Frequency} from "~/types/Frequency";
 
@@ -30,6 +29,7 @@ const planConfig: Plan = {
     retirementIncomeGoal: 50000,
     retirementAge: 65,
     retirementSavingsAmount: 200000,
+    retirementIncomeAdjustedForInflation: true,
     cashReserves: [],
     incomes: [
         {
@@ -38,7 +38,7 @@ const planConfig: Plan = {
             grossIncome: 100_000,
             growthRate: 0,
             incomeType: "ordinary",
-            frequency: Frequency.annual
+            frequency: Frequency.Annually
         },
         {
             id: 1,
@@ -46,7 +46,7 @@ const planConfig: Plan = {
             grossIncome: 50_000,
             growthRate: 0,
             incomeType: "ordinary",
-            frequency: Frequency.annual
+            frequency: Frequency.Annually
         }
     ],
     expenses: [],
@@ -55,6 +55,7 @@ const planConfig: Plan = {
     brokerages: [],
     iras: [],
     rothIras: [],
+    commandSequences: [],
 }
 
 const brokerage: Brokerage = {
@@ -138,11 +139,11 @@ describe("BrokerageManager", () => {
 
             expect(brokerageState.contribution).toBe(1_000);
             expect(brokerageState.contributionLifetime).toBe(1_000);
-            expect(brokerageInvestmentState.growthAmount).toBe(1_000);
-            expect(brokerageInvestmentState.growthLifetime).toBe(1_000);
-            expect(brokerageInvestmentState.balanceStartOfYear).toBe(10_000);
-            expect(brokerageInvestmentState.balanceEndOfYear).toBe(12_000);
-            expect(brokerageInvestmentState.processed).toBe(true);
+            expect(brokerageState.growthAmount).toBe(1_000);
+            expect(brokerageState.growthLifetime).toBe(1_000);
+            expect(brokerageState.balanceStartOfYear).toBe(10_000);
+            expect(brokerageState.balanceEndOfYear).toBe(12_000);
+            expect(brokerageState.processed).toBe(true);
             expect(planState.taxedIncome).toBe(105_000);
             expect(planState.taxedCapital).toBe(104_000);
             expect(planState.taxableContributions).toBe(1_000);
@@ -151,27 +152,27 @@ describe("BrokerageManager", () => {
             expect(planState.taxedWithdrawals).toBe(1_000);
         });
 
-        it("should process brokerageInvestment and update state correctly for end of of year application strategy", () => {
-            const brokerageInvestmentConfig = {
-                ...brokerageInvestment,
+        it("should process brokerage and update state correctly for end of of year application strategy", () => {
+            const brokerageConfig = {
+                ...brokerage,
                 initialBalance: 10_000,
                 contributionFixedAmount: 1_000,
                 growthRate: 10
             }
-            planManager = new PlanManager({...planConfig, growthApplicationStrategy: GrowthApplicationStrategy.End, brokerageInvestments: [brokerageInvestmentConfig]})
-            const brokerageInvestmentManager = new BrokerageManager(planManager, brokerageInvestmentConfig)
-            brokerageInvestmentManager.process();
-            const planState = brokerageInvestmentManager.orchestrator.getCurrentState();
+            planManager = new PlanManager({...planConfig, growthApplicationStrategy: GrowthApplicationStrategy.End, brokerages: [brokerageConfig]})
+            const brokerageManager = new BrokerageManager(planManager, brokerageConfig)
+            brokerageManager.process();
+            const planState = brokerageManager.orchestrator.getCurrentState();
 
-            const brokerageInvestmentState = brokerageInvestmentManager.getCurrentState();
+            const brokerageState = brokerageManager.getCurrentState();
 
-            expect(brokerageInvestmentState.contribution).toBe(1_000);
-            expect(brokerageInvestmentState.contributionLifetime).toBe(1_000);
-            expect(brokerageInvestmentState.growthAmount).toBe(1100);
-            expect(brokerageInvestmentState.growthLifetime).toBe(1100);
-            expect(brokerageInvestmentState.balanceStartOfYear).toBe(10_000);
-            expect(brokerageInvestmentState.balanceEndOfYear).toBe(12_100);
-            expect(brokerageInvestmentState.processed).toBe(true);
+            expect(brokerageState.contribution).toBe(1_000);
+            expect(brokerageState.contributionLifetime).toBe(1_000);
+            expect(brokerageState.growthAmount).toBe(1100);
+            expect(brokerageState.growthLifetime).toBe(1100);
+            expect(brokerageState.balanceStartOfYear).toBe(10_000);
+            expect(brokerageState.balanceEndOfYear).toBe(12_100);
+            expect(brokerageState.processed).toBe(true);
             expect(planState.taxedIncome).toBe(105_000);
             expect(planState.taxedCapital).toBe(104_000);
             expect(planState.savingsTaxDeferredEndOfYear).toBe(0);
@@ -181,9 +182,9 @@ describe("BrokerageManager", () => {
         });
 
         it("should throw error if processing already processed state", () => {
-            const brokerageInvestmentManager = new BrokerageManager(planManager, brokerageInvestment)
-            brokerageInvestmentManager.process();
-            expect(()=> brokerageInvestmentManager.process()).toThrow(
+            const brokerageManager = new BrokerageManager(planManager, brokerage)
+            brokerageManager.process();
+            expect(()=> brokerageManager.process()).toThrow(
                 "Failed to process state, it is already processed."
             )
         });
@@ -191,37 +192,20 @@ describe("BrokerageManager", () => {
     })
 
 
-    describe('getCommands', () => {
-        it('should return an array with ProcessBrokerageInvestmentCommand', () => {
-            const brokerageInvestmentManager = new BrokerageManager(planManager, brokerageInvestment);
-            const commands = brokerageInvestmentManager.getCommands();
-            expect(commands).toHaveLength(1);
-            expect(commands[0]).toBeInstanceOf(ProcessBrokerageInvestmentCommand);
-        });
-
-        it('should execute ProcessBrokerageInvestmentCommand correctly', () => {
-            const brokerageInvestmentManager = new BrokerageManager(planManager, brokerageInvestment);
-            const command = new ProcessBrokerageInvestmentCommand(brokerageInvestmentManager);
-            command.execute();
-            expect(brokerageInvestmentManager.getCurrentState().processed).toBe(true);
-        });
-    });
-
-
     describe('createNextState', () => {
 
-        it("should process brokerageInvestment create the next state", () => {
-            const brokerageInvestmentConfig = {
-                ...brokerageInvestment,
+        it("should process brokerage create the next state", () => {
+            const brokerageConfig = {
+                ...brokerage,
                 initialBalance: 10_000,
                 contributionFixedAmount: 1_000,
                 growthRate: 10
             }
-            planManager = new PlanManager({...planConfig, growthApplicationStrategy: GrowthApplicationStrategy.Start, brokerageInvestments: [brokerageInvestmentConfig]})
-            const brokerageInvestmentManager = new BrokerageManager(planManager, brokerageInvestmentConfig)
-            brokerageInvestmentManager.process();
-            const brokerageInvestmentState = brokerageInvestmentManager.getCurrentState();
-            const newState = brokerageInvestmentManager.createNextState(brokerageInvestmentState);
+            planManager = new PlanManager({...planConfig, growthApplicationStrategy: GrowthApplicationStrategy.Start, brokerages: [brokerageConfig]})
+            const brokerageManager = new BrokerageManager(planManager, brokerageConfig)
+            brokerageManager.process();
+            const brokerageState = brokerageManager.getCurrentState();
+            const newState = brokerageManager.createNextState(brokerageState);
 
             expect(newState.contribution).toBe(0);
             expect(newState.contributionLifetime).toBe(1_000);

@@ -45,7 +45,6 @@ const reorderedCommands = computed(()=>{
 function onChange() {
 
   drag.value = false
-  console.log(commandsRef.value)
   emit('update', {
         ...props.commandSequence,
         commands:  reorderedCommands.value

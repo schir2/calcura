@@ -102,8 +102,8 @@ async function loadPlan() {
 }
 </script>
 <template>
-  <div class="grid grid-cols-6 xl:grid-cols-6 gap-2">
-    <div v-if="plan" class="gap-2 col-span-3 space-y-2">
+  <div class="grid plan-container">
+    <div v-if="plan" class="space-y-2" style="grid-area:main">
       <n-modal v-model:show="showModal">
         <LazyPlanForm :initialValues="plan" mode="edit"
                       @update="handleUpdatePlan"
@@ -119,6 +119,8 @@ async function loadPlan() {
         </template>
         <ChildCreateButtonList @create-model="handleCreatePlanModel($event)"/>
       </n-card>
+
+      <command-tabber :plan="plan"/>
 
       <IncomeListItem v-for="income in plan.incomes" :key="income.id" :income="income"
                       @update="handleUpdateModel(ModelName.Income, $event)"
@@ -174,7 +176,7 @@ async function loadPlan() {
           @remove="handleRemovePlanModel({...$event, model: ModelName.TaxDeferred})"
       />
     </div>
-    <div class="col-span-3 space-y-2">
+    <div class="space-y-2" style="grid-area:charts">
       <n-button type="primary" @click="handleClickShowMeTheDataButton">
         <template #icon>
           <base-ico name="table"/>
@@ -198,3 +200,11 @@ async function loadPlan() {
     </div>
   </div>
 </template>
+<style scoped>
+.plan-container{
+  gap: .5rem;
+  display: grid;
+  grid-template-columns:2fr 1fr;
+  grid-template-areas: 'main charts'
+}
+</style>

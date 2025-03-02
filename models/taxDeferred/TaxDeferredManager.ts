@@ -29,7 +29,7 @@ export class TaxDeferredManager extends BaseManager<TaxDeferred, TaxDeferredStat
 
     get incomeManager(): IncomeManager | undefined {
         if (this.config.income) {
-            return this.orchestrator.getManagerById('incomeManagers', this.config.income.id)
+            return this.orchestrator.getManagerById('income', this.config.income.id)
         }
         eventBus.emit('warning', {
             scope: 'taxDeferredManager:missingIncomeManager',

@@ -20,18 +20,16 @@ const planConfig: Plan = {
     inflationRate: 3,
     insufficientFundsStrategy: InsufficientFundsStrategy.None,
     growthApplicationStrategy: GrowthApplicationStrategy.Start,
-    retirementIncomeAdjustedForInflation: true,
     taxStrategy: IncomeTaxStrategy.Simple,
     taxRate: 30,
-    growthRate: 6,
     lifeExpectancy: 85,
     retirementStrategy: RetirementStrategy.Age,
     retirementWithdrawalRate: 4,
     retirementIncomeGoal: 50000,
     retirementAge: 65,
     retirementSavingsAmount: 200000,
+    retirementIncomeAdjustedForInflation: true,
     cashReserves: [],
-    commands: [],
     incomes: [
         {
             id: 1,
@@ -76,6 +74,7 @@ const planConfig: Plan = {
     ],
     brokerages: [],
     rothIras: [],
+    commandSequences: [],
 }
 
 let planManager: PlanManager;
@@ -84,7 +83,7 @@ let iraManager: IraIManager;
 describe("IraManager", () => {
     beforeEach(() => {
         planManager = new PlanManager(planConfig)
-        iraManager = planManager.getManagerById(1)
+        iraManager = planManager.getManagerById('ira', 1)
     });
 
     describe('constructor', () => {
@@ -113,7 +112,7 @@ describe("IraManager", () => {
                     }
                 ]
             })
-            iraManager = planManager.getManagerById(1)
+            iraManager = planManager.getManagerById('ira', 1)
             const contribution = iraManager.calculateContribution();
             expect(contribution).toBe(100);
         });
@@ -129,7 +128,7 @@ describe("IraManager", () => {
                     }
                 ]
             })
-            iraManager = planManager.getManagerById(1)
+            iraManager = planManager.getManagerById('ira', 1)
 
             const contribution = iraManager.calculateContribution();
             expect(contribution).toBe(7_000);
@@ -145,7 +144,7 @@ describe("IraManager", () => {
                     }
                 ]
             })
-            iraManager = planManager.getManagerById(1)
+            iraManager = planManager.getManagerById('ira', 1)
             const contribution = iraManager.calculateContribution();
             expect(contribution).toBe(7_000);
         });
@@ -166,18 +165,18 @@ describe("IraManager", () => {
                     }
                 ]
             })
-            iraManager = planManager.getManagerById(1)
+            iraManager = planManager.getManagerById('ira', 1)
             iraManager.process();
-            const planState = iraInvestmentManager.orchestrator.getCurrentState();
-            const iraInvestmentState = iraInvestmentManager.getCurrentState();
+            const planState = iraManager.orchestrator.getCurrentState();
+            const iraState = iraManager.getCurrentState();
 
-            expect(iraInvestmentState.contribution).toBe(7_000);
-            expect(iraInvestmentState.contributionLifetime).toBe(7_000);
-            expect(iraInvestmentState.growthAmount).toBe(1_000);
-            expect(iraInvestmentState.growthLifetime).toBe(1_000);
-            expect(iraInvestmentState.balanceStartOfYear).toBe(10_000);
-            expect(iraInvestmentState.balanceEndOfYear).toBe(18_000);
-            expect(iraInvestmentState.processed).toBe(true);
+            expect(iraState.contribution).toBe(7_000);
+            expect(iraState.contributionLifetime).toBe(7_000);
+            expect(iraState.growthAmount).toBe(1_000);
+            expect(iraState.growthLifetime).toBe(1_000);
+            expect(iraState.balanceStartOfYear).toBe(10_000);
+            expect(iraState.balanceEndOfYear).toBe(18_000);
+            expect(iraState.processed).toBe(true);
             expect(planState.taxableIncome).toBe(143_000);
             expect(planState.taxableCapital).toBe(143_000);
             expect(planState.taxedIncome).toBe(100_100);
@@ -191,33 +190,33 @@ describe("IraManager", () => {
             expect(planState.taxedWithdrawals).toBe(0);
         });
 
-        it("should process iraInvestment and update state correctly for end of of year application strategy", () => {
+        it("should process ira and update state correctly for end of of year application strategy", () => {
             planManager = new PlanManager({
                 ...planConfig,
                 growthApplicationStrategy: GrowthApplicationStrategy.End,
-                iraInvestments: [
+                iras: [
                     {
-                        ...planConfig.iraInvestments[0],
+                        ...planConfig.iras[0],
                         initialBalance: 10_000,
                         contributionFixedAmount: 5_000,
                         growthRate: 10
                     }
                 ]
             })
-            iraInvestmentManager = planManager.getManagerById(1)
+            iraManager = planManager.getManagerById('ira', 1)
 
-            iraInvestmentManager.process();
-            const planState = iraInvestmentManager.orchestrator.getCurrentState();
+            iraManager.process();
+            const planState = iraManager.orchestrator.getCurrentState();
 
-            const iraInvestmentState = iraInvestmentManager.getCurrentState();
+            const iraState = iraManager.getCurrentState();
 
-            expect(iraInvestmentState.contribution).toBe(5_000);
-            expect(iraInvestmentState.contributionLifetime).toBe(5_000);
-            expect(iraInvestmentState.growthAmount).toBe(1500);
-            expect(iraInvestmentState.growthLifetime).toBe(1500);
-            expect(iraInvestmentState.balanceStartOfYear).toBe(10_000);
-            expect(iraInvestmentState.balanceEndOfYear).toBe(16_500);
-            expect(iraInvestmentState.processed).toBe(true);
+            expect(iraState.contribution).toBe(5_000);
+            expect(iraState.contributionLifetime).toBe(5_000);
+            expect(iraState.growthAmount).toBe(1500);
+            expect(iraState.growthLifetime).toBe(1500);
+            expect(iraState.balanceStartOfYear).toBe(10_000);
+            expect(iraState.balanceEndOfYear).toBe(16_500);
+            expect(iraState.processed).toBe(true);
             expect(planState.taxedIncome).toBe(101_500);
             expect(planState.taxedCapital).toBe(101_500);
             expect(planState.savingsTaxableEndOfYear).toBe(0);
@@ -228,8 +227,8 @@ describe("IraManager", () => {
         });
 
         it("should throw error if processing already processed state", () => {
-            iraInvestmentManager.process();
-            expect(() => iraInvestmentManager.process()).toThrow(
+            iraManager.process();
+            expect(() => iraManager.process()).toThrow(
                 "Failed to process state, it is already processed."
             )
         });
@@ -238,24 +237,24 @@ describe("IraManager", () => {
 
     describe('createNextState', () => {
 
-        it("should process iraInvestment create the next state", () => {
+        it("should process ira create the next state", () => {
 
             planManager = new PlanManager({
                 ...planConfig,
                 growthApplicationStrategy: GrowthApplicationStrategy.Start,
-                iraInvestments: [
+                iras: [
                     {
-                        ...planConfig.iraInvestments[0],
+                        ...planConfig.iras[0],
                         initialBalance: 10_000,
                         contributionFixedAmount: 1_000,
                         growthRate: 10
                     }
                 ]
             })
-            iraInvestmentManager = planManager.getManagerById(1)
-            iraInvestmentManager.process();
-            const iraInvestmentState = iraInvestmentManager.getCurrentState();
-            const newState = iraInvestmentManager.createNextState(iraInvestmentState);
+            iraManager = planManager.getManagerById('ira', 1)
+            iraManager.process();
+            const iraState = iraManager.getCurrentState();
+            const newState = iraManager.createNextState(iraState);
 
             expect(newState.contribution).toBe(undefined);
             expect(newState.contributionLifetime).toBe(1_000);

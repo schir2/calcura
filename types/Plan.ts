@@ -47,7 +47,6 @@ export interface Plan {
     year: number;
     inflationRate: number;
     insufficientFundsStrategy: InsufficientFundsStrategy;
-    growthRate: number;
     growthApplicationStrategy: GrowthApplicationStrategy;
     taxStrategy: IncomeTaxStrategy
     taxRate: number

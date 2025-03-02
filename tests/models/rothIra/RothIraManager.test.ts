@@ -18,7 +18,6 @@ const planConfig: Plan = {
     age: 30,
     year: new Date().getFullYear(),
     inflationRate: 3,
-    growthRate: 6,
     insufficientFundsStrategy: InsufficientFundsStrategy.None,
     growthApplicationStrategy: GrowthApplicationStrategy.Start,
     taxStrategy: IncomeTaxStrategy.Simple,
@@ -29,6 +28,7 @@ const planConfig: Plan = {
     retirementIncomeGoal: 50000,
     retirementAge: 65,
     retirementSavingsAmount: 200000,
+    retirementIncomeAdjustedForInflation: true,
     cashReserves: [],
     incomes: [
         {
@@ -74,6 +74,7 @@ const planConfig: Plan = {
         }
     ],
     brokerages: [],
+    commandSequences: []
 }
 
 let planManager: PlanManager;
@@ -82,15 +83,15 @@ let rothIraManager: RothIraManager | undefined;
 describe("RothIraManager", () => {
     beforeEach(() => {
         planManager = new PlanManager(planConfig)
-        rothIraManager = planManager.getManagerById<RothIraManager>('rothIraManagers',1)
+        rothIraManager = planManager.getManagerById<RothIraManager>('rothIra',1)
         assertDefined(rothIraManager, 'RothIraManager')
     });
 
     describe('constructor', () => {
 
         it("should initialize with correct state", () => {
-            assertDefined(rothIraManager, 'RothIraInvestmentManager')
-            const state = rothIraInvestmentManager.getCurrentState();
+            assertDefined(rothIraManager, 'RothIraManager')
+            const state = rothIraManager.getCurrentState();
             expect(state.contribution).toBe(undefined);
             expect(state.contributionLifetime).toBe(0);
             expect(state.growthAmount).toBe(undefined);
@@ -105,67 +106,67 @@ describe("RothIraManager", () => {
         it("fixed", () => {
             planManager = new PlanManager({
                 ...planConfig,
-                rothIraInvestments: [
+                rothIras: [
                     {
-                        ...planConfig.rothIraInvestments[0],
+                        ...planConfig.rothIras[0],
                         contributionStrategy: RothIraContributionStrategy.Fixed,
                         contributionFixedAmount: 100,
                     }
                 ]
             })
 
-        rothIraInvestmentManager = planManager.getManagerById<RothIraManager>('rothIraInvestmentManagers',1)
-        assertDefined(rothIraInvestmentManager, 'RothIraInvestmentManager')
-            const contribution = rothIraInvestmentManager.calculateContribution();
+        rothIraManager = planManager.getManagerById<RothIraManager>('rothIra',1)
+        assertDefined(rothIraManager, 'RothIraManager')
+            const contribution = rothIraManager.calculateContribution();
             expect(contribution).toBe(100);
         });
 
         it("percentage_of_income", () => {
             planManager = new PlanManager({
                 ...planConfig,
-                rothIraInvestments: [
+                rothIras: [
                     {
-                        ...planConfig.rothIraInvestments[0],
+                        ...planConfig.rothIras[0],
                         contributionStrategy: RothIraContributionStrategy.PercentageOfIncome,
                         contributionPercentage: 10,
                     }
                 ]
             })
 
-        rothIraInvestmentManager = planManager.getManagerById<RothIraManager>('rothIraInvestmentManagers',1)
-        assertDefined(rothIraInvestmentManager, 'RothIraInvestmentManager')
+        rothIraManager = planManager.getManagerById<RothIraManager>('rothIra',1)
+        assertDefined(rothIraManager, 'RothIraManager')
 
-            const contribution = rothIraInvestmentManager.calculateContribution();
+            const contribution = rothIraManager.calculateContribution();
             expect(contribution).toBe(7_000);
         });
 
         it("max", () => {
             planManager = new PlanManager({
                 ...planConfig,
-                rothIraInvestments: [
+                rothIras: [
                     {
-                        ...planConfig.rothIraInvestments[0],
+                        ...planConfig.rothIras[0],
                         contributionStrategy: RothIraContributionStrategy.Max,
                     }
                 ]
             })
 
-        rothIraInvestmentManager = planManager.getManagerById<RothIraManager>('rothIraInvestmentManagers',1)
-        assertDefined(rothIraInvestmentManager, 'RothIraInvestmentManager')
-            const contribution = rothIraInvestmentManager.calculateContribution();
+        rothIraManager = planManager.getManagerById<RothIraManager>('rothIra',1)
+        assertDefined(rothIraManager, 'RothIraManager')
+            const contribution = rothIraManager.calculateContribution();
             expect(contribution).toBe(7_000);
         });
     })
 
     describe('process', () => {
 
-        it("should process rothIraInvestment and update state correctly for start of year application strategy", () => {
+        it("should process rothIra and update state correctly for start of year application strategy", () => {
             planManager = new PlanManager({
                 ...planConfig,
                 growthApplicationStrategy: GrowthApplicationStrategy.Start,
-                rothIraInvestments: [
+                rothIras: [
                     {
-                        ...planConfig.rothIraInvestments[0],
+                        ...planConfig.rothIras[0],
                         initialBalance: 10_000,
                         contributionFixedAmount: 10_000,
                         growthRate: 10
@@ -173,22 +174,22 @@ describe("RothIraManager", () => {
                 ]
             })
 
-        rothIraInvestmentManager = planManager.getManagerById<RothIraManager>('rothIraInvestmentManagers',1)
-        assertDefined(rothIraInvestmentManager, 'RothIraInvestmentManager')
-            rothIraInvestmentManager.process();
-            const planState = rothIraInvestmentManager.orchestrator.getCurrentState();
-            const rothIraInvestmentState = rothIraInvestmentManager.getCurrentState();
+        rothIraManager = planManager.getManagerById<RothIraManager>('rothIra',1)
+        assertDefined(rothIraManager, 'RothIraManager')
+            rothIraManager.process();
+            const planState = rothIraManager.orchestrator.getCurrentState();
+            const rothIraState = rothIraManager.getCurrentState();
 
-            expect(rothIraInvestmentState.contribution).toBe(7_000);
-            expect(rothIraInvestmentState.contributionLifetime).toBe(7_000);
-            expect(rothIraInvestmentState.growthAmount).toBe(1_000);
-            expect(rothIraInvestmentState.growthLifetime).toBe(1_000);
-            expect(rothIraInvestmentState.balanceStartOfYear).toBe(10_000);
-            expect(rothIraInvestmentState.balanceEndOfYear).toBe(18_000);
-            expect(rothIraInvestmentState.processed).toBe(true);
+            expect(rothIraState.contribution).toBe(7_000);
+            expect(rothIraState.contributionLifetime).toBe(7_000);
+            expect(rothIraState.growthAmount).toBe(1_000);
+            expect(rothIraState.growthLifetime).toBe(1_000);
+            expect(rothIraState.balanceStartOfYear).toBe(10_000);
+            expect(rothIraState.balanceEndOfYear).toBe(18_000);
+            expect(rothIraState.processed).toBe(true);
             expect(planState.taxableIncome).toBe(150_000);
             expect(planState.iraLimit).toBe(0);
-            expect(planState.taxableCapital).toBe(150_000);
+            expect(planState.taxableCapital).toBe(140_000);
             expect(planState.taxedIncome).toBe(105_000);
             expect(planState.taxedCapital).toBe(98_000);
             expect(planState.savingsTaxableEndOfYear).toBe(0);
@@ -199,13 +200,13 @@ describe("RothIraManager", () => {
             expect(planState.taxedWithdrawals).toBe(7_000);
         });
 
-        it("should process rothIraInvestment and update state correctly for end of of year application strategy", () => {
+        it("should process rothIra and update state correctly for end of of year application strategy", () => {
             planManager = new PlanManager({
                 ...planConfig,
                 growthApplicationStrategy: GrowthApplicationStrategy.End,
-                rothIraInvestments: [
+                rothIras: [
                     {
-                        ...planConfig.rothIraInvestments[0],
+                        ...planConfig.rothIras[0],
                         initialBalance: 10_000,
                         contributionFixedAmount: 5_000,
                         growthRate: 10
@@ -213,21 +214,21 @@ describe("RothIraManager", () => {
                 ]
             })
 
-        rothIraInvestmentManager = planManager.getManagerById<RothIraManager>('rothIraInvestmentManagers',1)
-        assertDefined(rothIraInvestmentManager, 'RothIraInvestmentManager')
+        rothIraManager = planManager.getManagerById<RothIraManager>('rothIra',1)
+        assertDefined(rothIraManager, 'RothIraManager')
 
-            rothIraInvestmentManager.process();
-            const planState = rothIraInvestmentManager.orchestrator.getCurrentState();
+            rothIraManager.process();
+            const planState = rothIraManager.orchestrator.getCurrentState();
 
-            const rothIraInvestmentState = rothIraInvestmentManager.getCurrentState();
+            const rothIraState = rothIraManager.getCurrentState();
 
-            expect(rothIraInvestmentState.contribution).toBe(5_000);
-            expect(rothIraInvestmentState.contributionLifetime).toBe(5_000);
-            expect(rothIraInvestmentState.growthAmount).toBe(1500);
-            expect(rothIraInvestmentState.growthLifetime).toBe(1500);
-            expect(rothIraInvestmentState.balanceStartOfYear).toBe(10_000);
-            expect(rothIraInvestmentState.balanceEndOfYear).toBe(16_500);
-            expect(rothIraInvestmentState.processed).toBe(true);
+            expect(rothIraState.contribution).toBe(5_000);
+            expect(rothIraState.contributionLifetime).toBe(5_000);
+            expect(rothIraState.growthAmount).toBe(1500);
+            expect(rothIraState.growthLifetime).toBe(1500);
+            expect(rothIraState.balanceStartOfYear).toBe(10_000);
+            expect(rothIraState.balanceEndOfYear).toBe(16_500);
+            expect(rothIraState.processed).toBe(true);
             expect(planState.taxedIncome).toBe(105_000);
             expect(planState.taxedCapital).toBe(100_000);
             expect(planState.savingsTaxableEndOfYear).toBe(0);
@@ -237,9 +238,9 @@ describe("RothIraManager", () => {
         });
 
         it("should throw error if processing already processed state", () => {
-            assertDefined(rothIraInvestmentManager, 'RothIraInvestmentManager')
-            rothIraInvestmentManager.process();
-            expect(() => rothIraInvestmentManager.process()).toThrow(
+            assertDefined(rothIraManager, 'RothIraManager')
+            rothIraManager.process();
+            expect(() => rothIraManager.process()).toThrow(
                 "Failed to process state, it is already processed."
             )
         });
@@ -248,14 +249,14 @@ describe("RothIraManager", () => {
 
     describe('createNextState', () => {
 
-        it("should process rothIraInvestment create the next state", () => {
+        it("should process rothIra create the next state", () => {
 
             planManager = new PlanManager({
                 ...planConfig,
                 growthApplicationStrategy: GrowthApplicationStrategy.Start,
-                rothIraInvestments: [
+                rothIras: [
                     {
-                        ...planConfig.rothIraInvestments[0],
+                        ...planConfig.rothIras[0],
                         initialBalance: 10_000,
                         contributionFixedAmount: 1_000,
                         growthRate: 10
@@ -263,11 +264,11 @@ describe("RothIraManager", () => {
                 ]
             })
 
-        rothIraInvestmentManager = planManager.getManagerById<RothIraManager>('rothIraInvestmentManagers',1)
-        assertDefined(rothIraInvestmentManager, 'RothIraInvestmentManager')
-            rothIraInvestmentManager.process();
-            const rothIraInvestmentState = rothIraInvestmentManager.getCurrentState();
-            const newState = rothIraInvestmentManager.createNextState(rothIraInvestmentState);
+        rothIraManager = planManager.getManagerById<RothIraManager>('rothIra',1)
+        assertDefined(rothIraManager, 'RothIraManager')
+            rothIraManager.process();
+            const rothIraState = rothIraManager.getCurrentState();
+            const newState = rothIraManager.createNextState(rothIraState);
 
             expect(newState.contribution).toBe(undefined);
             expect(newState.contributionLifetime).toBe(1_000);

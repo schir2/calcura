@@ -20,7 +20,6 @@ const planConfig: Plan = {
     year: new Date().getFullYear(),
     inflationRate: 3,
     insufficientFundsStrategy: InsufficientFundsStrategy.None,
-    growthRate: 6,
     growthApplicationStrategy: GrowthApplicationStrategy.Start,
     taxStrategy: IncomeTaxStrategy.Simple,
     taxRate: 30,
@@ -30,6 +29,7 @@ const planConfig: Plan = {
     retirementIncomeGoal: 50000,
     retirementAge: 65,
     retirementSavingsAmount: 200000,
+    retirementIncomeAdjustedForInflation: true,
     cashReserves: [],
     incomes: [
         {
@@ -55,6 +55,7 @@ const planConfig: Plan = {
     brokerages: [],
     iras: [],
     rothIras: [],
+    commandSequences: [],
 }
 
 const debt: Debt = {
@@ -66,6 +67,7 @@ const debt: Debt = {
     paymentStrategy: DebtPaymentStrategy.Fixed,
     paymentFixedAmount: 100,
     paymentPercentage: 20,
+    frequency: Frequency.Annually
 
 };
 
@@ -136,7 +138,7 @@ describe("DebtManager", () => {
             })
             const debtState = debtManager.getCurrentState();
             const payment = debtManager.calculatePayment(debtState);
-            expect(payment).toBe(1_200);
+            expect(payment).toBe(100);
         })
     })
 

@@ -8,10 +8,7 @@ import {
     RetirementStrategy
 } from "~/types/Plan";
 import {ContributionType} from "~/models/common";
-import {
-    EmployerContributionStrategy,
-    TaxDeferredContributionStrategy
-} from "~/types/TaxDeferred";
+import {EmployerContributionStrategy, TaxDeferredContributionStrategy} from "~/types/TaxDeferred";
 import {IraContributionStrategy} from "~/types/Ira";
 import {RothIraContributionStrategy} from "~/types/RothIra";
 import {BrokerageContributionStrategy} from "~/types/Brokerage";
@@ -31,7 +28,6 @@ describe("PlanManager", () => {
             age: 30,
             year: new Date().getFullYear(),
             inflationRate: 3,
-            growthRate: 6,
             insufficientFundsStrategy: InsufficientFundsStrategy.None,
             growthApplicationStrategy: GrowthApplicationStrategy.Start,
             taxStrategy: IncomeTaxStrategy.Simple,
@@ -42,6 +38,7 @@ describe("PlanManager", () => {
             retirementIncomeGoal: 50000,
             retirementAge: 65,
             retirementSavingsAmount: 200000,
+            retirementIncomeAdjustedForInflation: true,
             cashReserves: [
                 {
                     id: 10,
@@ -114,6 +111,7 @@ describe("PlanManager", () => {
                     paymentMinimum: 600,
                     paymentStrategy: DebtPaymentStrategy.MinimumPayment,
                     paymentPercentage: 0,
+                    frequency: Frequency.Annually,
                 }
             ],
             taxDeferreds: [
@@ -191,6 +189,7 @@ describe("PlanManager", () => {
                             frequency: Frequency.Annually
                         },
                 }],
+            commandSequences: []
         }
         planManager = new PlanManager(planConfig);
     })

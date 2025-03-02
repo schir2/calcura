@@ -10,7 +10,6 @@ import {
 import {ExpenseType} from "~/types/Expense";
 import {ExpenseManager} from "~/models/expense/ExpenseManager"
 import type ExpenseState from "~/types/ExpenseState";
-import {ProcessExpenseCommand} from "~/models/expense/ExpenseCommands";
 import {Frequency} from "~/types/Frequency";
 
 const planConfig: Plan = {
@@ -29,6 +28,7 @@ const planConfig: Plan = {
     retirementIncomeGoal: 50000,
     retirementAge: 65,
     retirementSavingsAmount: 200000,
+    retirementIncomeAdjustedForInflation: true,
     cashReserves: [],
     incomes: [
         {
@@ -37,7 +37,7 @@ const planConfig: Plan = {
             grossIncome: 100_000,
             growthRate: 0,
             incomeType: "ordinary",
-            frequency: Frequency.annual
+            frequency: Frequency.Annually
         },
         {
             id: 1,
@@ -45,7 +45,7 @@ const planConfig: Plan = {
             grossIncome: 50_000,
             growthRate: 0,
             incomeType: "ordinary",
-            frequency: Frequency.annual
+            frequency: Frequency.Annually
         }
     ],
     expenses: [
@@ -66,6 +66,7 @@ const planConfig: Plan = {
     brokerages: [],
     iras: [],
     rothIras: [],
+    commandSequences: [],
 }
 
 let planManager: PlanManager;
@@ -74,7 +75,7 @@ let expenseManager: ExpenseManager;
 describe("ExpenseManager", () => {
     beforeEach(() => {
         planManager = new PlanManager(planConfig)
-        expenseManager = planManager.getManagerById(1)
+        expenseManager = planManager.getManagerById('expense', 1)
     });
 
     describe('constructor', () => {
@@ -98,7 +99,7 @@ describe("ExpenseManager", () => {
                     frequency: Frequency.Annually
                 }]
             })
-            expenseManager = planManager.getManagerById(1)
+            expenseManager = planManager.getManagerById('expense', 1)
             const payment = expenseManager.calculatePayment();
             expect(payment).toBe(100);
         });
@@ -111,7 +112,7 @@ describe("ExpenseManager", () => {
                     frequency: Frequency.Quarterly
                 }]
             })
-            expenseManager = planManager.getManagerById(1)
+            expenseManager = planManager.getManagerById('expense', 1)
             const payment = expenseManager.calculatePayment();
             expect(payment).toBe(400);
         });
@@ -124,7 +125,7 @@ describe("ExpenseManager", () => {
                     frequency: Frequency.Monthly
                 }]
             })
-            expenseManager = planManager.getManagerById(1)
+            expenseManager = planManager.getManagerById('expense', 1)
             const payment = expenseManager.calculatePayment();
             expect(payment).toBe(1_200);
         });
@@ -137,7 +138,7 @@ describe("ExpenseManager", () => {
                     frequency: Frequency.Weekly
                 }]
             })
-            expenseManager = planManager.getManagerById(1)
+            expenseManager = planManager.getManagerById('expense', 1)
             const payment = expenseManager.calculatePayment();
             expect(payment).toBe(5_200);
         });
@@ -162,7 +163,7 @@ describe("ExpenseManager", () => {
                     frequency: Frequency.Quarterly
                 }]
             })
-            expenseManager = planManager.getManagerById(1)
+            expenseManager = planManager.getManagerById('expense', 1)
 
             expenseManager.process()
             const currentState: ExpenseState = expenseManager.getCurrentState()
@@ -181,7 +182,7 @@ describe("ExpenseManager", () => {
                     growthRate: 10,
                 }]
             })
-            expenseManager = planManager.getManagerById(1)
+            expenseManager = planManager.getManagerById('expense', 1)
 
             expenseManager.process()
             const currentState: ExpenseState = expenseManager.getCurrentState()
@@ -208,7 +209,7 @@ describe("ExpenseManager", () => {
                     growsWithInflation: true,
                 }]
             })
-            expenseManager = planManager.getManagerById(1)
+            expenseManager = planManager.getManagerById('expense', 1)
 
             expenseManager.process()
             const currentState: ExpenseState = expenseManager.getCurrentState()
@@ -229,20 +230,6 @@ describe("ExpenseManager", () => {
 
     describe('calculateGrowthAmount', () => {
 
-    });
-
-    describe('getCommands', () => {
-        it('should return an array with ProcessExpenseCommand', () => {
-            const commands = expenseManager.getCommands();
-            expect(commands).toHaveLength(1);
-            expect(commands[0]).toBeInstanceOf(ProcessExpenseCommand);
-        });
-
-        it('should execute ProcessExpenseCommand correctly', () => {
-            const command = new ProcessExpenseCommand(expenseManager);
-            command.execute();
-            expect(expenseManager.getCurrentState().processed).toBe(true);
-        });
     });
 
 

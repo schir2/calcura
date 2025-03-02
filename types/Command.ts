@@ -5,7 +5,7 @@ export interface Command {
     order: number;
     name: string;
     label: string;
-    managerName: keyof PlanManagers;
-    managerId: number;
+    modelName: keyof PlanManagers;
+    modelId: number;
     action: "process";
 }

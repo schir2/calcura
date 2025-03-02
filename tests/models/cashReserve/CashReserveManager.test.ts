@@ -29,6 +29,7 @@ const planConfig: Plan = {
     retirementIncomeGoal: 50000,
     retirementAge: 65,
     retirementSavingsAmount: 200000,
+    retirementIncomeAdjustedForInflation: true,
     cashReserves: [
         {
             id: 1,
@@ -96,6 +97,7 @@ const planConfig: Plan = {
     brokerages: [],
     iras: [],
     rothIras: [],
+    commandSequences: [],
 }
 
 let planManager: PlanManager
@@ -104,13 +106,13 @@ let cashReserveManager: CashReserveManager | undefined
 describe("CashManager", () => {
     beforeEach(() => {
         planManager = new PlanManager(planConfig)
-        cashReserveManager = planManager.getManagerById("cashReserveManagers", 1)
-        assertDefined(cashReserveManager, 'cashReserveManagers')
+        cashReserveManager = planManager.getManagerById("cashReserve", 1)
+        assertDefined(cashReserveManager, 'cashReserve')
     });
 
     describe('constructor', () => {
         it('constructor', () => {
-            assertDefined(cashReserveManager, 'cashReserveManagers')
+            assertDefined(cashReserveManager, 'cashReserve')
             const currentState = cashReserveManager.getCurrentState()
             expect(currentState.amountRequested).toBe(undefined)
             expect(currentState.amountPaid).toBe(undefined)
@@ -132,9 +134,9 @@ describe("CashManager", () => {
                     }
                 ]
             })
-            cashReserveManager = planManager.getManagerById("cashReserveManagers", 1)
+            cashReserveManager = planManager.getManagerById("cashReserve", 1)
 
-            assertDefined(cashReserveManager, 'cashReserveManagers')
+            assertDefined(cashReserveManager, 'cashReserve')
             expect(cashReserveManager.calculateContribution()).toBe(20_000)
         })
         it('fixedWithInitial', () => {
@@ -149,9 +151,9 @@ describe("CashManager", () => {
                     }
                 ]
             })
-            cashReserveManager = planManager.getManagerById("cashReserveManagers", 1)
+            cashReserveManager = planManager.getManagerById("cashReserve", 1)
 
-            assertDefined(cashReserveManager, 'cashReserveManagers')
+            assertDefined(cashReserveManager, 'cashReserve')
             expect(cashReserveManager.calculateContribution()).toBe(10_000)
         })
         it('variableWithInitial', () => {
@@ -166,9 +168,9 @@ describe("CashManager", () => {
                     }
                 ]
             })
-            cashReserveManager = planManager.getManagerById("cashReserveManagers", 1)
+            cashReserveManager = planManager.getManagerById("cashReserve", 1)
 
-            assertDefined(cashReserveManager, 'cashReserveManagers')
+            assertDefined(cashReserveManager, 'cashReserve')
             expect(cashReserveManager.calculateContribution()).toBe(11_945)
         })
         it('variableWithInitial', () => {
@@ -183,9 +185,9 @@ describe("CashManager", () => {
                     }
                 ]
             })
-            cashReserveManager = planManager.getManagerById('cashReserveManagers',1)
+            cashReserveManager = planManager.getManagerById('cashReserve',1)
 
-            assertDefined(cashReserveManager, 'cashReserveManagers')
+            assertDefined(cashReserveManager, 'cashReserve')
             expect(cashReserveManager.calculateContribution()).toBe(1_945)
         })
 
@@ -194,7 +196,7 @@ describe("CashManager", () => {
     describe('process', () => {
         it('sufficient funds', () => {
 
-            assertDefined(cashReserveManager, 'cashReserveManagers')
+            assertDefined(cashReserveManager, 'cashReserve')
             cashReserveManager.process()
             const currentState = cashReserveManager.getCurrentState()
             const planState = planManager.getCurrentState()
@@ -216,8 +218,8 @@ describe("CashManager", () => {
                     }
                 ]
             })
-            cashReserveManager = planManager.getManagerById('cashReserveManagers', 1)
-            assertDefined(cashReserveManager, 'cashReserveManagers')
+            cashReserveManager = planManager.getManagerById('cashReserve', 1)
+            assertDefined(cashReserveManager, 'cashReserve')
             cashReserveManager.process()
             const currentState = cashReserveManager.getCurrentState()
             const planState = planManager.getCurrentState()

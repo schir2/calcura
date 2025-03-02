@@ -25,7 +25,7 @@ export class IraIManager extends BaseManager<Ira, IraState> {
 
     get incomeManager(): IncomeManager | undefined {
         if (this.config.income) {
-            return this.orchestrator.getManagerById('incomeManagers', this.config.income.id)
+            return this.orchestrator.getManagerById('income', this.config.income.id)
         }
         eventBus.emit('warning', {scope: 'iraManager:missingIncomeManager', message: 'Missing income manager'})
         return undefined;

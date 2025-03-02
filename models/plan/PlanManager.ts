@@ -28,14 +28,14 @@ export enum FundType {
 }
 
 export type PlanManagers = {
-    expenseManagers: ExpenseManager[];
-    cashReserveManagers: CashReserveManager[];
-    debtManagers: DebtManager[];
-    incomeManagers: IncomeManager[];
-    taxDeferredManagers: TaxDeferredManager[];
-    rothIraManagers: RothIraManager[];
-    iraManagers: IraIManager[];
-    brokerageManagers: BrokerageManager[];
+    expense: ExpenseManager[];
+    cashReserve: CashReserveManager[];
+    debt: DebtManager[];
+    income: IncomeManager[];
+    taxDeferred: TaxDeferredManager[];
+    rothIra: RothIraManager[];
+    ira: IraIManager[];
+    brokerage: BrokerageManager[];
 };
 
 
@@ -43,14 +43,14 @@ export default class PlanManager extends BaseOrchestrator<Plan, PlanState, PlanM
 
     createManagers(): PlanManagers {
         return {
-            incomeManagers: this.config.incomes.map((income) => new IncomeManager(this, income)),
-            cashReserveManagers: this.config.cashReserves.map((cashReserve) => new CashReserveManager(this, cashReserve)),
-            expenseManagers: this.config.expenses.map((expense) => new ExpenseManager(this, expense)),
-            debtManagers: this.config.debts.map((debt) => new DebtManager(this, debt)),
-            brokerageManagers: this.config.brokerages.map((brokerage) => new BrokerageManager(this, brokerage)),
-            iraManagers: this.config.iras.map((ira) => new IraIManager(this, ira)),
-            rothIraManagers: this.config.rothIras.map((rothIra) => new RothIraManager(this, rothIra)),
-            taxDeferredManagers: this.config.taxDeferreds.map((taxDeferred) => new TaxDeferredManager(this, taxDeferred))
+            income: this.config.incomes.map((income) => new IncomeManager(this, income)),
+            cashReserve: this.config.cashReserves.map((cashReserve) => new CashReserveManager(this, cashReserve)),
+            expense: this.config.expenses.map((expense) => new ExpenseManager(this, expense)),
+            debt: this.config.debts.map((debt) => new DebtManager(this, debt)),
+            brokerage: this.config.brokerages.map((brokerage) => new BrokerageManager(this, brokerage)),
+            ira: this.config.iras.map((ira) => new IraIManager(this, ira)),
+            rothIra: this.config.rothIras.map((rothIra) => new RothIraManager(this, rothIra)),
+            taxDeferred: this.config.taxDeferreds.map((taxDeferred) => new TaxDeferredManager(this, taxDeferred))
         }
     }
 
@@ -77,7 +77,7 @@ export default class PlanManager extends BaseOrchestrator<Plan, PlanState, PlanM
     }
 
     getAnnualExpenseTotal(): number {
-        return this.managers.expenseManagers.reduce((total, expenseManager) => total + expenseManager.calculatePayment(), 0)
+        return this.managers.expense.reduce((total, expenseManager) => total + expenseManager.calculatePayment(), 0)
     }
 
     protected createInitialState(): PlanState {
@@ -410,11 +410,11 @@ export default class PlanManager extends BaseOrchestrator<Plan, PlanState, PlanM
     }
 
     getCurrentDebt(): number {
-        return this._managers.debtManagers.reduce((total, debtManager) => total + debtManager.getCurrentState().principalStartOfYear, 0)
+        return this._managers.debt.reduce((total, debtManager) => total + debtManager.getCurrentState().principalStartOfYear, 0)
     }
 
     getGrossIncome() {
-        return this._managers.incomeManagers.reduce((grossIncome, incomeManager) => grossIncome + incomeManager.getCurrentState().grossIncome, 0)
+        return this._managers.income.reduce((grossIncome, incomeManager) => grossIncome + incomeManager.getCurrentState().grossIncome, 0)
     }
 
     getInflationRate(): number {
@@ -423,14 +423,14 @@ export default class PlanManager extends BaseOrchestrator<Plan, PlanState, PlanM
 
     processImplementation(): void {
         const allManagers = this.getAllManagers()
-        this.managers.incomeManagers.forEach((manager) => this.processUnprocessed(manager))
-        this.managers.debtManagers.forEach((manager) => this.processUnprocessed(manager))
-        this.managers.expenseManagers.forEach((manager) => this.processUnprocessed(manager))
-        this.managers.cashReserveManagers.forEach((manager) => this.processUnprocessed(manager))
-        this.managers.taxDeferredManagers.forEach((manager) => this.processUnprocessed(manager))
-        this.managers.rothIraManagers.forEach((manager) => this.processUnprocessed(manager))
-        this.managers.iraManagers.forEach((manager) => this.processUnprocessed(manager))
-        this.managers.brokerageManagers.forEach((manager) => this.processUnprocessed(manager))
+        this.managers.income.forEach((manager) => this.processUnprocessed(manager))
+        this.managers.debt.forEach((manager) => this.processUnprocessed(manager))
+        this.managers.expense.forEach((manager) => this.processUnprocessed(manager))
+        this.managers.cashReserve.forEach((manager) => this.processUnprocessed(manager))
+        this.managers.taxDeferred.forEach((manager) => this.processUnprocessed(manager))
+        this.managers.rothIra.forEach((manager) => this.processUnprocessed(manager))
+        this.managers.ira.forEach((manager) => this.processUnprocessed(manager))
+        this.managers.brokerage.forEach((manager) => this.processUnprocessed(manager))
         // allManagers.forEach(manager => {
         //     this.processUnprocessed(manager)
         // })
@@ -458,7 +458,7 @@ export default class PlanManager extends BaseOrchestrator<Plan, PlanState, PlanM
             let manager: BaseManager<any, any> | undefined = undefined
             if (commands) {
                 commands.forEach(command => {
-                    manager = this.getManagerById(command.managerName, Number(command.managerId))
+                    manager = this.getManagerById(command.modelName, Number(command.modelId))
                     manager?.process()
                 })
             }
