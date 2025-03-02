@@ -64,17 +64,4 @@ function handleEdit() {
       -${{ $humanize.intComma(calculateIraContribution(ira, ira.income?.grossIncome, IRA_CONTRIBUTION_LIMIT_2024 )) }}/year
     </template>
   </command-list-item>
-    <n-card size="small">
-      <template #header>
-        <span>{{ ira.name }}</span>
-      </template>
-      <template #default>
-        <ul class="grid grid-cols-5">
-        </ul>
-      </template>
-      <template #header-extra>
-        <ListItemButtons size="small" @edit="handleEdit" @remove="handleRemove" @delete="handleDelete"/>
-      </template>
-    </n-card>
-
 </template>

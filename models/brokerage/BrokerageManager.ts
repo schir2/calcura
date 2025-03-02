@@ -1,17 +1,19 @@
-import {BrokerageContributionStrategy, type Brokerage} from '~/types/Brokerage';
+import {type Brokerage, BrokerageContributionStrategy} from '~/types/Brokerage';
 import {assertDefined, calculateGrowthAmount} from "~/utils";
 import type BrokerageState from "~/types/BrokerageState";
 import BaseManager from "~/models/common/BaseManager";
 import {FundType} from "~/models/plan/PlanManager";
 import {ContributionType} from "~/models/common";
-import type {PlanState} from "~/types/PlanState";
 
 export class BrokerageManager extends BaseManager<Brokerage, BrokerageState> {
 
     calculateContribution(): number {
+        const planState = this.orchestrator.getCurrentState()
         return calculateBrokerageContribution(
             this.config,
-            this.orchestrator.getCurrentState())
+            planState.grossIncome,
+            planState.taxedCapital,
+        )
     }
 
     protected createInitialState(): BrokerageState {
@@ -67,17 +69,18 @@ export class BrokerageManager extends BaseManager<Brokerage, BrokerageState> {
     }
 }
 
-export function calculateBrokerageContribution(brokerageConfig: Brokerage, planState: PlanState): number {
+export function calculateBrokerageContribution(brokerageConfig: Brokerage, grossIncome: number, taxedCapital: number): number {
+    console.log(grossIncome, taxedCapital)
     let contribution = 0
     switch (brokerageConfig.contributionStrategy) {
         case BrokerageContributionStrategy.Fixed:
             contribution = brokerageConfig.contributionFixedAmount
             break
         case BrokerageContributionStrategy.PercentageOfIncome:
-            contribution = planState.grossIncome * (brokerageConfig.contributionPercentage / 100)
+            contribution = grossIncome * (brokerageConfig.contributionPercentage / 100)
             break
         case BrokerageContributionStrategy.Max:
-            contribution = planState.taxedCapital
+            contribution = taxedCapital
             break
     }
     return contribution

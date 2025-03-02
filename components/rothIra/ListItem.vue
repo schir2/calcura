@@ -7,23 +7,26 @@
                            @cancel="handleClose"
     />
   </n-modal>
-  <n-card size="small">
-    <template #header>
-      <span>{{ rothIra.name }}</span>
-    </template>
-    <template #default>
-      <ul class="grid grid-cols-5">
-      </ul>
-    </template>
-    <template #header-extra>
-      <ListItemButtons size="small" @edit="handleEdit" @remove="handleRemove" @delete="handleDelete"/>
-    </template>
-  </n-card>
 
+  <command-list-item
+      @edit="handleEdit" @remove="handleRemove" @delete="handleDelete"
+      :title="rothIra.name"
+      :modelName="ModelName.Ira"
+      :tags="[
+          {label: rothIra.contributionStrategy, },
+          {label: `Growth ${rothIra.growthRate}%`, iconName: 'growthRate', hide: rothIra.growthRate === 0},
+      ]"
+  >
+    <template #summary>
+      -${{ $humanize.intComma(calculateIraContribution(rothIra, rothIra.income?.grossIncome, IRA_CONTRIBUTION_LIMIT_2024 )) }}/year
+    </template>
+  </command-list-item>
 </template>
 <script setup lang="ts">
 
 import type {RothIra} from "~/types/RothIra";
+import {ModelName} from "~/types/ModelName";
+import {calculateIraContribution} from "~/models/ira/IraIManager";
 
 interface Props {
   rothIra: RothIra

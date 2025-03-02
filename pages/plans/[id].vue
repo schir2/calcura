@@ -77,7 +77,6 @@ watch(() => plan, (newPlan) => {
       planStates.value = planManager.value.simulate()
     }
     planStates.value = planManager.value.simulate()
-    console.log(planStates.value)
   }
 }, {
   deep: true,
@@ -89,6 +88,8 @@ const finalPlanState = computed<PlanState | undefined>(() => {
     return planStates.value[planStates.value.length - 1];
   }
 })
+
+provide('planStates', planStates)
 
 async function loadPlan() {
   try {

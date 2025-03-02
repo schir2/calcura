@@ -1,4 +1,4 @@
-import {RothIraContributionStrategy, type RothIra} from '~/types/RothIra';
+import {type RothIra, RothIraContributionStrategy} from '~/types/RothIra';
 import {assertDefined, calculateGrowthAmount} from "~/utils";
 import type RothIraState from "~/types/RothIraState";
 import BaseManager from "~/models/common/BaseManager";
@@ -6,6 +6,7 @@ import type {IncomeManager} from "~/models/income/IncomeManager";
 import {FundType} from "~/models/plan/PlanManager";
 import {ContributionType} from "~/models/common";
 import eventBus from "~/services/eventBus";
+import {IRA_CONTRIBUTION_LIMIT_2024} from "~/constants/IraIConstants";
 
 export class RothIraManager extends BaseManager<RothIra, RothIraState> {
 
@@ -31,23 +32,11 @@ export class RothIraManager extends BaseManager<RothIra, RothIraState> {
     }
 
     calculateContribution(): number {
-        let contribution = 0
-        switch (this.config.contributionStrategy) {
-            case RothIraContributionStrategy.Fixed:
-                contribution = this.config.contributionFixedAmount
-                break
-            case RothIraContributionStrategy.PercentageOfIncome:
-                if (this.incomeManager === undefined) {
-                    eventBus.emit('warning', {scope: 'rothIraManager:missingIncomeManager', message: 'Cannot perform percentage of income without a lined income manager'})
-                    return 0
-                }
-                contribution = this.incomeManager.getCurrentState().grossIncome * this.config.contributionPercentage / 100
-                break
-            case RothIraContributionStrategy.Max:
-                contribution = Infinity
-                break
-        }
-        return Math.min(contribution, this.orchestrator.getCurrentState().iraLimit)
+        return calculateRothIraContribution(
+            this.config,
+            this.incomeManager?.getCurrentState().grossIncome,
+            this.orchestrator.getCurrentState().iraLimit
+        );
     }
 
     createNextState(previousState: RothIraState): RothIraState {
@@ -89,4 +78,29 @@ export class RothIraManager extends BaseManager<RothIra, RothIraState> {
             }
         )
     }
+}
+
+
+export function calculateRothIraContribution(rothIraConfig: RothIra, incomeAmount?: number, iraLimit: number = IRA_CONTRIBUTION_LIMIT_2024): number {
+    let contribution = 0
+    switch (rothIraConfig.contributionStrategy) {
+        case RothIraContributionStrategy.Fixed:
+            contribution = rothIraConfig.contributionFixedAmount
+            break
+        case RothIraContributionStrategy.PercentageOfIncome:
+            if (incomeAmount === undefined) {
+
+                eventBus.emit('warning', {
+                    scope: 'rothIraManager:missingIncomeManager',
+                    message: 'Cannot perform percentage of income without a lined income manager'
+                })
+                return 0
+            }
+            contribution = incomeAmount * rothIraConfig.contributionPercentage / 100
+            break
+        case RothIraContributionStrategy.Max:
+            contribution = iraLimit
+            break
+    }
+    return Math.min(contribution, iraLimit)
 }
