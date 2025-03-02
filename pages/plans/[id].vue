@@ -67,10 +67,21 @@ function handleClose() {
 
 const activeCommandSequence: CommandSequence | null = null
 
-const planManager = computed<PlanManager>((): PlanManager => {
-  if (plan.value) {
-    return new PlanManager(plan.value);
+const planManager = ref<PlanManager | null>(null);
+const planStates = ref<PlanState[] | null>(null);
+
+watch(() => plan, (newPlan) => {
+  if (newPlan.value) {
+    planManager.value = new PlanManager(newPlan.value);
+    if (activeCommandSequence && activeCommandSequence.value) {
+      planStates.value = planManager.value.simulate()
+    }
+    planStates.value = planManager.value.simulate()
+    console.log(planStates.value)
   }
+}, {
+  deep: true,
+  immediate: true,
 })
 
 const finalPlanState = computed<PlanState | undefined>(() => {
@@ -78,14 +89,6 @@ const finalPlanState = computed<PlanState | undefined>(() => {
     return planStates.value[planStates.value.length - 1];
   }
 })
-
-const planStates = computed<PlanState[]>(() => {
-      if (activeCommandSequence && activeCommandSequence.value) {
-        return planManager.value.simulate()
-      }
-      return planManager.value.simulate()
-    }
-)
 
 async function loadPlan() {
   try {
@@ -102,8 +105,8 @@ async function loadPlan() {
     <div v-if="plan" class="gap-2 col-span-3 space-y-2">
       <n-modal v-model:show="showModal">
         <LazyPlanForm :initialValues="plan" mode="edit"
-                  @update="handleUpdatePlan"
-                  @cancel="handleClose"
+                      @update="handleUpdatePlan"
+                      @cancel="handleClose"
         />
       </n-modal>
       <PlanDetailCard :plan="plan" @update="handleUpdatePlan"></PlanDetailCard>
@@ -186,7 +189,7 @@ async function loadPlan() {
         <LazyPlanTable v-if="plan && planStates" :planStates="planStates"/>
       </n-modal>
       <LazyChartExpensePie :expenses="plan?.expenses" :debts="plan?.debts"/>
-      <LazyPlanChartGrowth :states="planStates"></LazyPlanChartGrowth>
+      <LazyPlanChartGrowth v-if="planStates" :states="planStates"></LazyPlanChartGrowth>
       <CommandSequence v-if="activeCommandSequence"
                        :commandSequence="activeCommandSequence"
                        @update="handleCommandSequenceUpdate"
