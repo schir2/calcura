@@ -1,4 +1,4 @@
-import type {State} from "~/types/InvestmentState";
+import type {InvestmentState} from "~/types/InvestmentState";
 
 export default interface RothIraState extends InvestmentState {
 }
