@@ -43,7 +43,7 @@ const textClass = computed<string>(() => {
                 <template #icon v-if="tag.iconName">
                   <base-ico :name="tag.iconName"></base-ico>
                 </template>
-                <span v-if="tag.label">{{ tag.label }}</span>
+                <span v-if="tag.label" class="hidden xl2:inline">{{ tag.label }}</span>
                 </n-tag>
               </template>
             </slot>

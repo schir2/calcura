@@ -1,10 +1,10 @@
 <template>
   <n-modal v-model:show="showModal">
     <TaxDeferredForm :initialValues="taxDeferred" mode="edit"
-                               @delete="handleDelete"
-                               @create="handleCreate"
-                               @update="handleUpdate"
-                               @cancel="handleClose"
+                     @delete="handleDelete"
+                     @create="handleCreate"
+                     @update="handleUpdate"
+                     @cancel="handleClose"
     />
   </n-modal>
 
@@ -23,7 +23,6 @@
 <script setup lang="ts">
 
 import type {TaxDeferred} from "~/types/TaxDeferred";
-import type {Income} from "~/types/Income";
 import {ModelName} from "~/types/ModelName";
 
 interface Props {
