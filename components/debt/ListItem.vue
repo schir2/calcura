@@ -1,40 +1,8 @@
-<template>
-  <n-modal v-model:show="showModal">
-    <DebtForm :initialValues="debt" mode="edit"
-                 @delete="handleDelete"
-                 @create="handleCreate"
-                 @update="handleUpdate"
-                 @cancel="handleClose"
-    />
-  </n-modal>
-    <n-card size="small">
-      <template #header>
-        <span>{{ debt.name }}</span> <small class="text-xs">{{debt.id}}</small>
-      </template>
-      <ul class="grid grid-cols-2 items-end">
-        <li>
-          <span class="flex">
-            <n-tag>
-              <template #icon>
-                <Icon name="mdi:trending-up"></Icon>
-              </template>
-              {{ debt.interestRate }}%</n-tag>
-            <n-tag>{{ debt.paymentStrategy}}</n-tag>
-          </span>
-        </li>
-        <li class="text-end">
-          <span class="text-lg">${{$humanize.intComma(debt.principal)}}</span>
-        </li>
-      </ul>
-      <template #header-extra>
-        <ListItemButtons size="small" @edit="handleEdit" @remove="handleRemove" @delete="handleDelete"/>
-      </template>
-    </n-card>
-
-</template>
 <script setup lang="ts">
 
 import type {Debt} from "~/types/Debt";
+import {ModelName} from "~/types/ModelName";
+import {calculateDebtPayment} from "~/models/debt/DebtManager";
 
 interface Props {
   debt: Debt
@@ -73,4 +41,27 @@ function handleClose() {
 function handleEdit() {
   showModal.value = true;
 }
-</script>
+</script><template>
+  <n-modal v-model:show="showModal">
+    <DebtForm :initialValues="debt" mode="edit"
+              @delete="handleDelete"
+              @create="handleCreate"
+              @update="handleUpdate"
+              @cancel="handleClose"
+    />
+  </n-modal>
+  <command-list-item
+      @edit="handleEdit" @remove="handleRemove" @delete="handleDelete"
+      :title="debt.name"
+      :modelName="ModelName.Debt"
+      :tags="[
+          {label: debt.frequency, iconName: 'frequency'},
+          {label: `Interest ${debt.interestRate}%`, iconName: 'interest', hide: debt.interestRate === 0},
+      ]"
+  >
+    <template #summary>
+      -${{ $humanize.intComma(calculateDebtPayment(debt, debt.principal)) }}/year
+    </template>
+  </command-list-item>
+
+</template>
