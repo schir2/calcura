@@ -9,7 +9,13 @@
     "coverage": "vitest run --coverage",
     "generate": "nuxt generate",
     "preview": "nuxt preview",
-    "postinstall": "nuxt prepare"
+    "postinstall": "nuxt prepare",
+
+    "supabase:init": "supabase init",
+    "supabase:login": "supabase login",
+    "supabase:link": "supabase link --project-ref grgdzcojmndpjwzwpipt",
+    "db:migrate:new": "supabase migration new brokerages-schema",
+    "db:reset": "supabase db reset --linked"
   },
   "dependencies": {
     "@iconify/json": "^2.2.282",

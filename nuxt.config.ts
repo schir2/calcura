@@ -1,6 +1,7 @@
 import AutoImport from 'unplugin-auto-import/vite'
 import {NaiveUiResolver} from 'unplugin-vue-components/resolvers'
 import Components from 'unplugin-vue-components/vite'
+import type {Database} from "~/types/database.types";
 
 export default defineNuxtConfig({
     compatibilityDate: '2024-04-03',
@@ -58,6 +59,7 @@ export default defineNuxtConfig({
     supabase: {
         url: process.env.SUPABASE_URL,
         key: process.env.SUPABASE_KEY,
+        serviceKey: process.env.SUPABASE_SERVICE_KEY,
         redirect: false,
         redirectOptions: {
             login: '/auth/login',
