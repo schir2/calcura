@@ -21,14 +21,14 @@ useHead({
   ],
 })
 
-async function handleRemovePlanModel(payload: { model: ModelName, id: number }) {
-  await useApi(`plans/${planId}/${toKebabCaseKey(payload.model)}s`).remove(payload.id)
-  await loadPlan();
-}
-
 async function handleCreatePlanModel(payload: { model: ModelName, data: any }) {
   plan.value = await useApi(`plans/${planId}/${toKebabCaseKey(payload.model)}s`).create(payload.data)
   await loadPlan()
+}
+
+async function handleRemovePlanModel( model: ModelName, id: number ) {
+  await useApi(`plans/${planId}/${toKebabCaseKey(model)}s`).remove(id)
+  await loadPlan();
 }
 
 async function handleUpdateModel(model: ModelName, item: any) {
@@ -37,6 +37,7 @@ async function handleUpdateModel(model: ModelName, item: any) {
 }
 
 async function handleDeleteModel(model: ModelName, id: number) {
+  console.log(model, id)
   await useApi(`/${toKebabCaseKey(model)}s`).remove(id);
   await loadPlan();
 }
@@ -120,61 +121,66 @@ async function loadPlan() {
         <ChildCreateButtonList @create-model="handleCreatePlanModel($event)"/>
       </n-card>
 
-      <command-tabber :plan="plan"/>
-
-      <IncomeListItem v-for="income in plan.incomes" :key="income.id" :income="income"
-                      @update="handleUpdateModel(ModelName.Income, $event)"
-                      @delete="handleDeleteModel(ModelName.Income, $event.id)"
-                      @remove="handleRemovePlanModel({...$event, model: ModelName.Income})"
+      <command-tabber
+          :plan="plan"
+          @update="handleUpdateModel"
+          @delete="handleDeleteModel"
+          @remove="handleRemovePlanModel"
       />
 
-      <ExpenseListItem v-for="expense in plan.expenses" :key="expense.id" :expense="expense"
-                       @update="handleUpdateModel(ModelName.Expense, $event)"
-                       @delete="handleDeleteModel(ModelName.Expense, $event.id)"
-                       @remove="handleRemovePlanModel({...$event, model: ModelName.Expense})"
-      />
+<!--      <IncomeListItem v-for="income in plan.incomes" :key="income.id" :income="income"-->
+<!--                      @update="handleUpdateModel(ModelName.Income, $event)"-->
+<!--                      @delete="handleDeleteModel(ModelName.Income, $event.id)"-->
+<!--                      @remove="handleRemovePlanModel({...$event, model: ModelName.Income})"-->
+<!--      />-->
 
-      <DebtListItem v-for="debt in plan.debts" :key="debt.id" :debt="debt"
-                    @update="handleUpdateModel(ModelName.Debt, $event)"
-                    @delete="handleDeleteModel(ModelName.Debt, $event.id)"
-                    @remove="handleRemovePlanModel({...$event, model: ModelName.Debt})"/>
+<!--      <ExpenseListItem v-for="expense in plan.expenses" :key="expense.id" :expense="expense"-->
+<!--                       @update="handleUpdateModel(ModelName.Expense, $event)"-->
+<!--                       @delete="handleDeleteModel(ModelName.Expense, $event.id)"-->
+<!--                       @remove="handleRemovePlanModel({...$event, model: ModelName.Expense})"-->
+<!--      />-->
 
-      <CashReserveListItem v-for="cashReserve in plan.cashReserves" :key="cashReserve.id" :cashReserve="cashReserve"
-                           @update="handleUpdateModel(ModelName.CashReserve, $event)"
-                           @delete="handleDeleteModel(ModelName.CashReserve, $event.id)"
-                           @remove="handleRemovePlanModel({...$event, model: ModelName.CashReserve})"
-      />
+<!--      <DebtListItem v-for="debt in plan.debts" :key="debt.id" :debt="debt"-->
+<!--                    @update="handleUpdateModel(ModelName.Debt, $event)"-->
+<!--                    @delete="handleDeleteModel(ModelName.Debt, $event.id)"-->
+<!--                    @remove="handleRemovePlanModel({...$event, model: ModelName.Debt})"/>-->
 
-
-      <BrokerageListItem v-for="brokerage in plan.brokerages" :key="brokerage.id" :brokerage="brokerage"
-                         @update="handleUpdateModel(ModelName.Brokerage, $event)"
-                         @delete="handleDeleteModel(ModelName.Brokerage, $event.id)"
-                         @remove="handleRemovePlanModel({...$event, model: ModelName.Brokerage})"
-      />
-
-
-      <IraListItem v-for="ira in plan.iras" :key="ira.id" :ira="ira"
-                   @update="handleUpdateModel(ModelName.Ira, $event)"
-                   @delete="handleDeleteModel(ModelName.Ira, $event.id)"
-                   @remove="handleRemovePlanModel({...$event, model: ModelName.Ira})"
-      />
+<!--      <CashReserveListItem v-for="cashReserve in plan.cashReserves" :key="cashReserve.id" :cashReserve="cashReserve"-->
+<!--                           @update="handleUpdateModel(ModelName.CashReserve, $event)"-->
+<!--                           @delete="handleDeleteModel(ModelName.CashReserve, $event.id)"-->
+<!--                           @remove="handleRemovePlanModel({...$event, model: ModelName.CashReserve})"-->
+<!--      />-->
 
 
-      <RothIraListItem v-for="rothIra in plan.rothIras" :key="rothIra.id" :rothIra="rothIra"
-                       @update="handleUpdateModel(ModelName.RothIra, $event)"
-                       @delete="handleDeleteModel(ModelName.RothIra, $event.id)"
-                       @remove="handleRemovePlanModel({...$event, model: ModelName.RothIra})"
-      />
+<!--      <BrokerageListItem v-for="brokerage in plan.brokerages" :key="brokerage.id" :brokerage="brokerage"-->
+<!--                         @update="handleUpdateModel(ModelName.Brokerage, $event)"-->
+<!--                         @delete="handleDeleteModel(ModelName.Brokerage, $event.id)"-->
+<!--                         @remove="handleRemovePlanModel({...$event, model: ModelName.Brokerage})"-->
+<!--      />-->
 
 
-      <TaxDeferredListItem
-          v-for="taxDeferred in plan.taxDeferreds"
-          :key="taxDeferred.id"
-          :taxDeferred="taxDeferred"
-          @update="handleUpdateModel(ModelName.TaxDeferred, $event)"
-          @delete="handleDeleteModel(ModelName.TaxDeferred, $event.id)"
-          @remove="handleRemovePlanModel({...$event, model: ModelName.TaxDeferred})"
-      />
+<!--      <IraListItem v-for="ira in plan.iras" :key="ira.id" :ira="ira"-->
+<!--                   @update="handleUpdateModel(ModelName.Ira, $event)"-->
+<!--                   @delete="handleDeleteModel(ModelName.Ira, $event.id)"-->
+<!--                   @remove="handleRemovePlanModel({...$event, model: ModelName.Ira})"-->
+<!--      />-->
+
+
+<!--      <RothIraListItem v-for="rothIra in plan.rothIras" :key="rothIra.id" :rothIra="rothIra"-->
+<!--                       @update="handleUpdateModel(ModelName.RothIra, $event)"-->
+<!--                       @delete="handleDeleteModel(ModelName.RothIra, $event.id)"-->
+<!--                       @remove="handleRemovePlanModel({...$event, model: ModelName.RothIra})"-->
+<!--      />-->
+
+
+<!--      <TaxDeferredListItem-->
+<!--          v-for="taxDeferred in plan.taxDeferreds"-->
+<!--          :key="taxDeferred.id"-->
+<!--          :taxDeferred="taxDeferred"-->
+<!--          @update="handleUpdateModel(ModelName.TaxDeferred, $event)"-->
+<!--          @delete="handleDeleteModel(ModelName.TaxDeferred, $event.id)"-->
+<!--          @remove="handleRemovePlanModel({...$event, model: ModelName.TaxDeferred})"-->
+<!--      />-->
     </div>
     <div class="space-y-2" style="grid-area:charts">
       <n-button type="primary" @click="handleClickShowMeTheDataButton">
