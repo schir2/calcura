@@ -43,32 +43,32 @@ export default class PlanManager extends BaseOrchestrator<Plan, PlanState, PlanM
 
     createManagers(): PlanManagers {
         return {
-            income: this.config.incomes.map((income) => new IncomeManager(this, income)),
-            cashReserve: this.config.cashReserves.map((cashReserve) => new CashReserveManager(this, cashReserve)),
+            income: this.config.income.map((income) => new IncomeManager(this, income)),
+            cashReserve: this.config.cashReserve.map((cashReserve) => new CashReserveManager(this, cashReserve)),
             expense: this.config.expenses.map((expense) => new ExpenseManager(this, expense)),
             debt: this.config.debts.map((debt) => new DebtManager(this, debt)),
-            brokerage: this.config.brokerages.map((brokerage) => new BrokerageManager(this, brokerage)),
-            ira: this.config.iras.map((ira) => new IraIManager(this, ira)),
-            rothIra: this.config.rothIras.map((rothIra) => new RothIraManager(this, rothIra)),
-            taxDeferred: this.config.taxDeferreds.map((taxDeferred) => new TaxDeferredManager(this, taxDeferred))
+            brokerage: this.config.brokerage.map((brokerage) => new BrokerageManager(this, brokerage)),
+            ira: this.config.ira.map((ira) => new IraIManager(this, ira)),
+            rothIra: this.config.rothIra.map((rothIra) => new RothIraManager(this, rothIra)),
+            taxDeferred: this.config.taxDeferred.map((taxDeferred) => new TaxDeferredManager(this, taxDeferred))
         }
     }
 
     getSavingsTaxableInitial(): number {
         // TODO Test this function
-        return this.config.brokerages.reduce((savingsTaxableStartOfYear, brokerage) => savingsTaxableStartOfYear + brokerage.initialBalance, 0)
+        return this.config.brokerage.reduce((savingsTaxableStartOfYear, brokerage) => savingsTaxableStartOfYear + brokerage.initialBalance, 0)
     }
 
     getSavingsTaxDeferredInitial(): number {
         // TODO Test this function
-        const taxDeferreds = this.config.taxDeferreds.reduce((total, taxDeferred) => total + taxDeferred.initialBalance, 0)
-        const iras = this.config.iras.reduce((total, ira) => total + ira.initialBalance, 0)
+        const taxDeferreds = this.config.taxDeferred.reduce((total, taxDeferred) => total + taxDeferred.initialBalance, 0)
+        const iras = this.config.ira.reduce((total, ira) => total + ira.initialBalance, 0)
         return taxDeferreds + iras
     }
 
     getSavingsTaxExemptInitial(): number {
         // TODO Test this function
-        return this.config.rothIras.reduce((total, brokerage) => total + brokerage.initialBalance, 0)
+        return this.config.rothIra.reduce((total, brokerage) => total + brokerage.initialBalance, 0)
     }
 
     getDebtInitial(): number {

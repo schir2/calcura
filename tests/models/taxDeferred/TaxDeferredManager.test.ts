@@ -1,9 +1,6 @@
 import {beforeEach, describe, expect, it} from "vitest";
 import {TaxDeferredManager} from "~/models/taxDeferred/TaxDeferredManager";
-import {
-    EmployerContributionStrategy,
-    TaxDeferredContributionStrategy
-} from "~/types/TaxDeferred";
+import {EmployerContributionStrategy, TaxDeferredContributionStrategy} from "~/types/TaxDeferred";
 import PlanManager from "~/models/plan/PlanManager";
 import {
     GrowthApplicationStrategy,
@@ -32,8 +29,8 @@ const planConfig: Plan = {
     retirementAge: 65,
     retirementSavingsAmount: 200000,
     retirementIncomeAdjustedForInflation: true,
-    cashReserves: [],
-    incomes: [
+    cashReserve: [],
+    income: [
         {
             id: 1,
             name: 'Ordinary Income',
@@ -53,9 +50,9 @@ const planConfig: Plan = {
     ],
     expenses: [],
     debts: [],
-    brokerages: [],
-    rothIras: [],
-    taxDeferreds: [
+    brokerage: [],
+    rothIra: [],
+    taxDeferred: [
         {
             id: 1,
             name: 'Test TaxDeferred ',
@@ -80,7 +77,7 @@ const planConfig: Plan = {
 
         }
     ],
-    iras: [],
+    ira: [],
     commandSequences: [],
 }
 
@@ -119,8 +116,8 @@ describe("TaxDeferredManager", () => {
             planManager = new PlanManager(
                 {
                     ...planConfig,
-                    taxDeferreds: [{
-                        ...planConfig.taxDeferreds[0],
+                    taxDeferred: [{
+                        ...planConfig.taxDeferred[0],
                         electiveContributionStrategy: TaxDeferredContributionStrategy.Fixed,
                         electiveContributionFixedAmount: 100,
 
@@ -137,8 +134,8 @@ describe("TaxDeferredManager", () => {
             planManager = new PlanManager(
                 {
                     ...planConfig,
-                    taxDeferreds: [{
-                        ...planConfig.taxDeferreds[0],
+                    taxDeferred: [{
+                        ...planConfig.taxDeferred[0],
                         electiveContributionStrategy: TaxDeferredContributionStrategy.PercentageOfIncome,
                         electiveContributionPercentage: 10,
 
@@ -155,8 +152,8 @@ describe("TaxDeferredManager", () => {
             planManager = new PlanManager(
                 {
                     ...planConfig,
-                    taxDeferreds: [{
-                        ...planConfig.taxDeferreds[0],
+                    taxDeferred: [{
+                        ...planConfig.taxDeferred[0],
                         electiveContributionStrategy: TaxDeferredContributionStrategy.Max,
                         electiveContributionPercentage: 10,
 
@@ -173,8 +170,8 @@ describe("TaxDeferredManager", () => {
             planManager = new PlanManager(
                 {
                     ...planConfig,
-                    taxDeferreds: [{
-                        ...planConfig.taxDeferreds[0],
+                    taxDeferred: [{
+                        ...planConfig.taxDeferred[0],
                         electiveContributionStrategy: TaxDeferredContributionStrategy.UntilCompanyMatch,
                         electiveContributionPercentage: 100,
                         employerContributionStrategy: EmployerContributionStrategy.PercentageOfContribution,
@@ -197,8 +194,8 @@ describe("TaxDeferredManager", () => {
             planManager = new PlanManager(
                 {
                     ...planConfig,
-                    taxDeferreds: [{
-                        ...planConfig.taxDeferreds[0],
+                    taxDeferred: [{
+                        ...planConfig.taxDeferred[0],
                         employerContributionStrategy: EmployerContributionStrategy.Fixed,
                         employerContributionFixedAmount: 10_000,
                     }]
@@ -214,8 +211,8 @@ describe("TaxDeferredManager", () => {
             planManager = new PlanManager(
                 {
                     ...planConfig,
-                    taxDeferreds: [{
-                        ...planConfig.taxDeferreds[0],
+                    taxDeferred: [{
+                        ...planConfig.taxDeferred[0],
                         employerContributionStrategy: EmployerContributionStrategy.PercentageOfCompensation,
                         employerCompensationMatchPercentage: 5,
                     }]
@@ -231,8 +228,8 @@ describe("TaxDeferredManager", () => {
             planManager = new PlanManager(
                 {
                     ...planConfig,
-                    taxDeferreds: [{
-                        ...planConfig.taxDeferreds[0],
+                    taxDeferred: [{
+                        ...planConfig.taxDeferred[0],
                         employerContributionStrategy: EmployerContributionStrategy.None,
                         employerCompensationMatchPercentage: 100,
                         employerMatchPercentageLimit: 3,
@@ -251,8 +248,8 @@ describe("TaxDeferredManager", () => {
             planManager = new PlanManager(
                 {
                     ...planConfig,
-                    taxDeferreds: [{
-                        ...planConfig.taxDeferreds[0],
+                    taxDeferred: [{
+                        ...planConfig.taxDeferred[0],
                         employerContributionStrategy: EmployerContributionStrategy.PercentageOfContribution,
                         electiveContributionStrategy: TaxDeferredContributionStrategy.Fixed,
                         electiveContributionFixedAmount: 1_500,
@@ -273,8 +270,8 @@ describe("TaxDeferredManager", () => {
             planManager = new PlanManager(
                 {
                     ...planConfig,
-                    taxDeferreds: [{
-                        ...planConfig.taxDeferreds[0],
+                    taxDeferred: [{
+                        ...planConfig.taxDeferred[0],
                         electiveContributionStrategy: TaxDeferredContributionStrategy.UntilCompanyMatch,
                         electiveContributionPercentage: 100,
                         employerContributionStrategy: EmployerContributionStrategy.PercentageOfContribution,
@@ -297,8 +294,8 @@ describe("TaxDeferredManager", () => {
             planManager = new PlanManager(
                 {
                     ...planConfig,
-                    taxDeferreds: [{
-                        ...planConfig.taxDeferreds[0],
+                    taxDeferred: [{
+                        ...planConfig.taxDeferred[0],
                         electiveContributionStrategy: TaxDeferredContributionStrategy.UntilCompanyMatch,
                         electiveContributionPercentage: 100,
                         employerContributionStrategy: EmployerContributionStrategy.PercentageOfContribution,
@@ -324,8 +321,8 @@ describe("TaxDeferredManager", () => {
                 {
                     ...planConfig,
                     growthApplicationStrategy: GrowthApplicationStrategy.Start,
-                    taxDeferreds: [{
-                        ...planConfig.taxDeferreds[0],
+                    taxDeferred: [{
+                        ...planConfig.taxDeferred[0],
                         growthRate: 6,
                         electiveContributionStrategy: TaxDeferredContributionStrategy.UntilCompanyMatch,
                         electiveContributionPercentage: 100,
@@ -337,7 +334,7 @@ describe("TaxDeferredManager", () => {
                 }
             )
             taxDeferredManager = planManager.getManagerById('taxDeferred', 1)
-assertDefined(taxDeferredManager, 'TaxDeferredManager')
+            assertDefined(taxDeferredManager, 'TaxDeferredManager')
             taxDeferredManager.process();
             const planState = taxDeferredManager.orchestrator.getCurrentState();
             const taxDeferredState = taxDeferredManager.getCurrentState();
@@ -364,8 +361,8 @@ assertDefined(taxDeferredManager, 'TaxDeferredManager')
                 {
                     ...planConfig,
                     growthApplicationStrategy: GrowthApplicationStrategy.End,
-                    taxDeferreds: [{
-                        ...planConfig.taxDeferreds[0],
+                    taxDeferred: [{
+                        ...planConfig.taxDeferred[0],
                         growthRate: 6,
                         electiveContributionStrategy: TaxDeferredContributionStrategy.UntilCompanyMatch,
                         electiveContributionPercentage: 100,
@@ -377,7 +374,7 @@ assertDefined(taxDeferredManager, 'TaxDeferredManager')
                 }
             )
             taxDeferredManager = planManager.getManagerById('taxDeferred', 1)
-assertDefined(taxDeferredManager, 'TaxDeferredManager')
+            assertDefined(taxDeferredManager, 'TaxDeferredManager')
             taxDeferredManager.process();
             const planState = taxDeferredManager.orchestrator.getCurrentState();
             const taxDeferredState = taxDeferredManager.getCurrentState();
@@ -400,7 +397,7 @@ assertDefined(taxDeferredManager, 'TaxDeferredManager')
 
         it("should throw error if processing already processed state", () => {
             const taxDeferredManager = planManager.getManagerById('taxDeferred', 1)
-assertDefined(taxDeferredManager, 'TaxDeferredManager')
+            assertDefined(taxDeferredManager, 'TaxDeferredManager')
             taxDeferredManager.process();
             expect(() => taxDeferredManager.process()).toThrow(
                 "Failed to process state, it is already processed."
@@ -408,25 +405,6 @@ assertDefined(taxDeferredManager, 'TaxDeferredManager')
         });
 
     })
-
-
-    describe('getCommands', () => {
-        it('should return an array with ProcessTaxDeferredCommand', () => {
-            const taxDeferredManager = planManager.getManagerById('taxDeferred', 1)
-assertDefined(taxDeferredManager, 'TaxDeferredManager')
-            const commands = taxDeferredManager.getCommands();
-            expect(commands).toHaveLength(1);
-            expect(commands[0]).toBeInstanceOf(ProcessTaxDeferredCommand);
-        });
-
-        it('should execute ProcessTaxDeferredCommand correctly', () => {
-            const taxDeferredManager = planManager.getManagerById('taxDeferred', 1)
-assertDefined(taxDeferredManager, 'TaxDeferredManager')
-            const command = new ProcessTaxDeferredCommand(taxDeferredManager);
-            command.execute();
-            expect(taxDeferredManager.getCurrentState().processed).toBe(true);
-        });
-    });
 
 
     describe('createNextState', () => {

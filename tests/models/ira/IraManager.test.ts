@@ -29,8 +29,8 @@ const planConfig: Plan = {
     retirementAge: 65,
     retirementSavingsAmount: 200000,
     retirementIncomeAdjustedForInflation: true,
-    cashReserves: [],
-    incomes: [
+    cashReserve: [],
+    income: [
         {
             id: 1,
             name: 'Ordinary Income',
@@ -50,8 +50,8 @@ const planConfig: Plan = {
     ],
     expenses: [],
     debts: [],
-    taxDeferreds: [],
-    iras: [
+    taxDeferred: [],
+    ira: [
         {
             id: 1,
             name: 'Test Brokerage ',
@@ -72,8 +72,8 @@ const planConfig: Plan = {
 
         }
     ],
-    brokerages: [],
-    rothIras: [],
+    brokerage: [],
+    rothIra: [],
     commandSequences: [],
 }
 
@@ -104,9 +104,9 @@ describe("IraManager", () => {
         it("fixed", () => {
             planManager = new PlanManager({
                 ...planConfig,
-                iras: [
+                ira: [
                     {
-                        ...planConfig.iras[0],
+                        ...planConfig.ira[0],
                         contributionStrategy: IraContributionStrategy.Fixed,
                         contributionFixedAmount: 100,
                     }
@@ -120,9 +120,9 @@ describe("IraManager", () => {
         it("percentage_of_income", () => {
             planManager = new PlanManager({
                 ...planConfig,
-                iras: [
+                ira: [
                     {
-                        ...planConfig.iras[0],
+                        ...planConfig.ira[0],
                         contributionStrategy: IraContributionStrategy.PercentageOfIncome,
                         contributionPercentage: 10,
                     }
@@ -137,9 +137,9 @@ describe("IraManager", () => {
         it("max", () => {
             planManager = new PlanManager({
                 ...planConfig,
-                iras: [
+                ira: [
                     {
-                        ...planConfig.iras[0],
+                        ...planConfig.ira[0],
                         contributionStrategy: IraContributionStrategy.Max,
                     }
                 ]
@@ -156,9 +156,9 @@ describe("IraManager", () => {
             planManager = new PlanManager({
                 ...planConfig,
                 growthApplicationStrategy: GrowthApplicationStrategy.Start,
-                iras: [
+                ira: [
                     {
-                        ...planConfig.iras[0],
+                        ...planConfig.ira[0],
                         initialBalance: 10_000,
                         contributionFixedAmount: 10_000,
                         growthRate: 10
@@ -194,9 +194,9 @@ describe("IraManager", () => {
             planManager = new PlanManager({
                 ...planConfig,
                 growthApplicationStrategy: GrowthApplicationStrategy.End,
-                iras: [
+                ira: [
                     {
-                        ...planConfig.iras[0],
+                        ...planConfig.ira[0],
                         initialBalance: 10_000,
                         contributionFixedAmount: 5_000,
                         growthRate: 10
@@ -242,9 +242,9 @@ describe("IraManager", () => {
             planManager = new PlanManager({
                 ...planConfig,
                 growthApplicationStrategy: GrowthApplicationStrategy.Start,
-                iras: [
+                ira: [
                     {
-                        ...planConfig.iras[0],
+                        ...planConfig.ira[0],
                         initialBalance: 10_000,
                         contributionFixedAmount: 1_000,
                         growthRate: 10

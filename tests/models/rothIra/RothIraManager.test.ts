@@ -29,8 +29,8 @@ const planConfig: Plan = {
     retirementAge: 65,
     retirementSavingsAmount: 200000,
     retirementIncomeAdjustedForInflation: true,
-    cashReserves: [],
-    incomes: [
+    cashReserve: [],
+    income: [
         {
             id: 1,
             name: 'Ordinary Income',
@@ -50,9 +50,9 @@ const planConfig: Plan = {
     ],
     expenses: [],
     debts: [],
-    taxDeferreds: [],
-    iras: [],
-    rothIras: [
+    taxDeferred: [],
+    ira: [],
+    rothIra: [
         {
             id: 1,
             name: 'Test Roth ',
@@ -73,7 +73,7 @@ const planConfig: Plan = {
 
         }
     ],
-    brokerages: [],
+    brokerage: [],
     commandSequences: []
 }
 
@@ -106,9 +106,9 @@ describe("RothIraManager", () => {
         it("fixed", () => {
             planManager = new PlanManager({
                 ...planConfig,
-                rothIras: [
+                rothIra: [
                     {
-                        ...planConfig.rothIras[0],
+                        ...planConfig.rothIra[0],
                         contributionStrategy: RothIraContributionStrategy.Fixed,
                         contributionFixedAmount: 100,
                     }
@@ -124,9 +124,9 @@ describe("RothIraManager", () => {
         it("percentage_of_income", () => {
             planManager = new PlanManager({
                 ...planConfig,
-                rothIras: [
+                rothIra: [
                     {
-                        ...planConfig.rothIras[0],
+                        ...planConfig.rothIra[0],
                         contributionStrategy: RothIraContributionStrategy.PercentageOfIncome,
                         contributionPercentage: 10,
                     }
@@ -143,9 +143,9 @@ describe("RothIraManager", () => {
         it("max", () => {
             planManager = new PlanManager({
                 ...planConfig,
-                rothIras: [
+                rothIra: [
                     {
-                        ...planConfig.rothIras[0],
+                        ...planConfig.rothIra[0],
                         contributionStrategy: RothIraContributionStrategy.Max,
                     }
                 ]
@@ -164,9 +164,9 @@ describe("RothIraManager", () => {
             planManager = new PlanManager({
                 ...planConfig,
                 growthApplicationStrategy: GrowthApplicationStrategy.Start,
-                rothIras: [
+                rothIra: [
                     {
-                        ...planConfig.rothIras[0],
+                        ...planConfig.rothIra[0],
                         initialBalance: 10_000,
                         contributionFixedAmount: 10_000,
                         growthRate: 10
@@ -204,9 +204,9 @@ describe("RothIraManager", () => {
             planManager = new PlanManager({
                 ...planConfig,
                 growthApplicationStrategy: GrowthApplicationStrategy.End,
-                rothIras: [
+                rothIra: [
                     {
-                        ...planConfig.rothIras[0],
+                        ...planConfig.rothIra[0],
                         initialBalance: 10_000,
                         contributionFixedAmount: 5_000,
                         growthRate: 10
@@ -254,9 +254,9 @@ describe("RothIraManager", () => {
             planManager = new PlanManager({
                 ...planConfig,
                 growthApplicationStrategy: GrowthApplicationStrategy.Start,
-                rothIras: [
+                rothIra: [
                     {
-                        ...planConfig.rothIras[0],
+                        ...planConfig.rothIra[0],
                         initialBalance: 10_000,
                         contributionFixedAmount: 1_000,
                         growthRate: 10

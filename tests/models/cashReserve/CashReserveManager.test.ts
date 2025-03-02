@@ -30,7 +30,7 @@ const planConfig: Plan = {
     retirementAge: 65,
     retirementSavingsAmount: 200000,
     retirementIncomeAdjustedForInflation: true,
-    cashReserves: [
+    cashReserve: [
         {
             id: 1,
             name: 'Emergency Funds',
@@ -40,7 +40,7 @@ const planConfig: Plan = {
             initialAmount: 10_000,
         }
     ],
-    incomes: [
+    income: [
         {
             id: 1,
             name: 'Ordinary Income',
@@ -93,10 +93,10 @@ const planConfig: Plan = {
             growsWithInflation: true,
         }],
     debts: [],
-    taxDeferreds: [],
-    brokerages: [],
-    iras: [],
-    rothIras: [],
+    taxDeferred: [],
+    brokerage: [],
+    ira: [],
+    rothIra: [],
     commandSequences: [],
 }
 
@@ -125,9 +125,9 @@ describe("CashManager", () => {
         it('fixedWithZeroInitial', () => {
             planManager = new PlanManager({
                 ...planConfig,
-                cashReserves: [
+                cashReserve: [
                     {
-                        ...planConfig.cashReserves[0],
+                        ...planConfig.cashReserve[0],
                         cashReserveStrategy: CashReserveStrategy.Fixed,
                         initialAmount: 0,
                         reserveAmount: 20_000,
@@ -142,9 +142,9 @@ describe("CashManager", () => {
         it('fixedWithInitial', () => {
             planManager = new PlanManager({
                 ...planConfig,
-                cashReserves: [
+                cashReserve: [
                     {
-                        ...planConfig.cashReserves[0],
+                        ...planConfig.cashReserve[0],
                         cashReserveStrategy: CashReserveStrategy.Fixed,
                         initialAmount: 10_000,
                         reserveAmount: 20_000,
@@ -159,9 +159,9 @@ describe("CashManager", () => {
         it('variableWithInitial', () => {
             planManager = new PlanManager({
                 ...planConfig,
-                cashReserves: [
+                cashReserve: [
                     {
-                        ...planConfig.cashReserves[0],
+                        ...planConfig.cashReserve[0],
                         cashReserveStrategy: CashReserveStrategy.Variable,
                         initialAmount: 0,
                         reserveMonths: 6,
@@ -176,9 +176,9 @@ describe("CashManager", () => {
         it('variableWithInitial', () => {
             planManager = new PlanManager({
                 ...planConfig,
-                cashReserves: [
+                cashReserve: [
                     {
-                        ...planConfig.cashReserves[0],
+                        ...planConfig.cashReserve[0],
                         cashReserveStrategy: CashReserveStrategy.Variable,
                         initialAmount: 10_000,
                         reserveMonths: 6,
@@ -211,9 +211,9 @@ describe("CashManager", () => {
         it('insufficient funds', () => {
             planManager = new PlanManager({
                 ...planConfig,
-                cashReserves: [
+                cashReserve: [
                     {
-                        ...planConfig.cashReserves[0],
+                        ...planConfig.cashReserve[0],
                         reserveAmount: 500_000,
                     }
                 ]
