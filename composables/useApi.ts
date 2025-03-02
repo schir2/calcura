@@ -1,38 +1,54 @@
-export function useApi<T>(resource: string) {
-    const csrfToken = useCookie("csrftoken");
+export function useApi<T>(tableName: string) {
+    const supabase = useSupabaseClient()
 
+    const get = async (id: number | string) => {
+        const { data, error } = await supabase
+            .from<T>(tableName)
+            .select('*')
+            .eq('id', id)
+            .single()
+        if (error) throw error
+        return data
+    }
 
-    const useCustomFetch = async <R>(url: string, options: any = {}) => {
-        options.credentials = "include";
+    const list = async (params?: Record<string, any>) => {
+        // Apply params if you want to filter or limit, e.g. .eq("status", params?.status)
+        const { data, error } = await supabase
+            .from<T>(tableName)
+            .select('*')
+        if (error) throw error
+        return data
+    }
 
-        if (["POST", "PUT", "PATCH", "DELETE"].includes(options.method)) {
-            options.headers = {
-                ...(options.headers || {}),
-                "X-CSRFToken": csrfToken.value || "",
-            };
-        }
+    const create = async (data: Partial<T>) => {
+        const { data: newData, error } = await supabase
+            .from<T>(tableName)
+            .insert(data)
+            .single()
+        if (error) throw error
+        return newData
+    }
 
-        return $fetch<R>(`/api/${url}`, options);
-    };
+    const update = async (id: number | string, data: Partial<T>) => {
+        const { data: updated, error } = await supabase
+            .from<T>(tableName)
+            .update(data)
+            .eq('id', id)
+            .single()
+        if (error) throw error
+        return updated
+    }
 
-    return {
-        get: (id: number | string, params?: Record<string, any>) => useCustomFetch<T>(`${resource}/${id}/`, { params }),
-        list: (params?: Record<string, any>) => useCustomFetch<T[]>(`${resource}/`, { params }),
-        create: (data: Partial<T>) => useCustomFetch<T>(`${resource}/`, { method: "POST", body: toSnakeCase(data) }),
-        update: (id: number | string, data: Partial<T>) => useCustomFetch<T>(`${resource}/${id}/`, { method: "PUT", body: data }),
-        patch: (id: number | string, data: Partial<T>) => useCustomFetch<T>(`${resource}/${id}/`, { method: "PATCH", body: data }),
-        remove: (id: number | string) => useCustomFetch<void>(`${resource}/${id}/`, { method: "DELETE" }),
+    // With Supabase, `patch` is effectively the same as `update`
+    const patch = update
 
-        addRelatedModel: (id: number, relatedModel: string, relatedId: number | string) =>
-            useCustomFetch<T>(`${resource}/${id}/manage_related_model/`, {
-                method: "POST",
-                body: { related_model: relatedModel, related_id: relatedId, action: "add" },
-            }),
+    const remove = async (id: number | string) => {
+        const { error } = await supabase
+            .from<T>(tableName)
+            .delete()
+            .eq('id', id)
+        if (error) throw error
+    }
 
-        removeRelatedModel: (id: number | string, relatedModel: string, relatedId: number | string) =>
-            useCustomFetch<T>(`${resource}/${id}/manage_related_model/`, {
-                method: "POST",
-                body: { related_model: relatedModel, related_id: relatedId, action: "remove" },
-            }),
-    };
+    return { get, list, create, update, patch, remove }
 }

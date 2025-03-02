@@ -19,10 +19,10 @@
 </template>
 <script lang="ts" setup>
 import type {Plan} from "~/types/Plan";
-import {usePlanService} from "~/composables/api/usePlanService";
 
 
-const planService = usePlanService()
+const planService = useApi('plan')
+
 const {data: plans, refresh: refreshPlans} = useFetch<Plan[]>('api/plans')
 
 const showModal = ref(false)
