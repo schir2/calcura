@@ -1,3 +1,29 @@
+<script setup lang="ts">
+import {ModelName, ModelTextColor} from "~/types/ModelName"
+import type {IconName} from "~/components/base/Ico.vue";
+
+interface Tag {
+  label?: string | number,
+  iconName?: IconName,
+  hide?: boolean
+}
+
+interface Props {
+  modelName?: ModelName,
+  title?: string,
+  summary?: string,
+  tags?: Tag[]
+}
+
+const props = defineProps<Props>()
+
+const textClass = computed<string>(() => {
+  if (!props.modelName) {return ''}
+  const colorClassArray: string[] = []
+  colorClassArray.push(ModelTextColor[props.modelName])
+  return colorClassArray.join(' ')
+})
+</script>
 <template>
   <n-card size="small">
     <div class="flex justify-between">
@@ -5,7 +31,7 @@
         <slot name="header">
           <h3 class="flex items-center gap-2 text-lg font-semibold">
             <base-ico class="text-2xl text-skin-base/20" name="drag"/>
-            <base-ico v-if="modelName" :class="textClass" name="income"/>
+            <base-ico v-if="modelName" :class="textClass" :name="modelName"/>
             <span>{{ title }}</span>
           </h3>
         </slot>
@@ -37,29 +63,3 @@
   </n-card>
 
 </template>
-<script setup lang="ts">
-import {ModelName, ModelTextColor} from "~/types/ModelName"
-import type {IconName} from "~/components/base/Ico.vue";
-
-interface Tag {
-  label?: string | number,
-  iconName?: IconName,
-  hide?: boolean
-}
-
-interface Props {
-  modelName?: ModelName,
-  title?: string,
-  summary?: string,
-  tags?: Tag[]
-}
-
-const props = defineProps<Props>()
-
-const textClass = computed<string>(() => {
-  if (!props.modelName) {return ''}
-  const colorClassArray: string[] = []
-  colorClassArray.push(ModelTextColor[props.modelName])
-  return colorClassArray.join(' ')
-})
-</script>
