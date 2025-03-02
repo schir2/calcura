@@ -1,36 +1,24 @@
 <template>
   <n-modal v-model:show="showModal">
     <CashReserveForm :initialValues="cashReserve" mode="edit"
-                 @delete="handleDelete"
-                 @create="handleCreate"
-                 @update="handleUpdate"
-                 @cancel="handleClose"
+                     @delete="handleDelete"
+                     @create="handleCreate"
+                     @update="handleUpdate"
+                     @cancel="handleClose"
     />
   </n-modal>
-    <n-card size="small">
-      <template #header>
-        <span>{{ cashReserve.name }}</span>
-      </template>
 
-      <ul class="grid grid-cols-2 items-end">
-        <li>
-          <span class="flex">
-            <n-tag>{{ cashReserve.cashReserveStrategy }}</n-tag>
-          </span>
-        </li>
-        <li class="text-end">
-          <span class="text-lg">${{$humanize.intComma(cashReserve.initialAmount)}}</span>
-        </li>
-      </ul>
-      <template #header-extra>
-        <ListItemButtons size="small" @edit="handleEdit" @remove="handleRemove" @delete="handleDelete"/>
-      </template>
-    </n-card>
+  <command-list-item
+      @edit="handleEdit" @remove="handleRemove" @delete="handleDelete"
+      :title="cashReserve.name"
+      :modelName="ModelName.CashReserve">
+  </command-list-item>
 
 </template>
 <script setup lang="ts">
 
 import type {CashReserve} from "~/types/CashReserve";
+import {ModelName} from "~/types/ModelName";
 
 interface Props {
   cashReserve: CashReserve
