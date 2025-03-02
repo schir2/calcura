@@ -33,6 +33,7 @@ const iconMap = {
   frequency: 'mdi-calendar',
   growthRate: 'mdi:trending-up',
   inflation: 'mdi:trending-up',
+  interest: 'mdi:trending-up',
   essential: 'uil:exclamation-circle',
   deductible: 'mdi:cash',
   fixed: 'mdi:lock',
