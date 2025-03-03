@@ -452,7 +452,13 @@ export default class PlanManager extends BaseOrchestrator<Plan, PlanState, PlanM
         return []
     }
 
-    simulate(commands?: Command[], maxIterations: number = 60): PlanState[] {
+    getCommandsForSequence(commandSequenceId: number): Command[] {
+        return this.config.commandSequences.find((commandSequence) => commandSequence.id === commandSequenceId)?.commands ?? []
+    }
+
+    simulate(commandSequenceId?: number, maxIterations: number = 60): PlanState[] {
+        this.reset()
+        const commands = commandSequenceId ? this.getCommandsForSequence(commandSequenceId) : []
         maxIterations = Math.min(maxIterations, this.config.lifeExpectancy - this.config.age + 1)
         for (let i = 0; i < maxIterations; i++) {
             let manager: BaseManager<any, any> | undefined = undefined

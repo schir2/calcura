@@ -26,7 +26,7 @@ async function handleCreatePlanModel(payload: { model: ModelName, data: any }) {
   await loadPlan()
 }
 
-async function handleRemovePlanModel( model: ModelName, id: number ) {
+async function handleRemovePlanModel(model: ModelName, id: number) {
   await useApi(`plans/${planId}/${toKebabCaseKey(model)}s`).remove(id)
   await loadPlan();
 }
@@ -37,7 +37,6 @@ async function handleUpdateModel(model: ModelName, item: any) {
 }
 
 async function handleDeleteModel(model: ModelName, id: number) {
-  console.log(model, id)
   await useApi(`/${toKebabCaseKey(model)}s`).remove(id);
   await loadPlan();
 }
@@ -66,28 +65,22 @@ function handleClose() {
   showModal.value = false;
 }
 
-const activeCommandSequence: CommandSequence | null = null
+const activeCommandSequence = ref<null | number>(null)
 
 const planManager = ref<PlanManager | null>(null);
 const planStates = ref<PlanState[] | null>(null);
 
-watch(() => plan, (newPlan: Plan) => {
-  if (newPlan.value) {
-    planManager.value = new PlanManager(newPlan.value);
-    if (activeCommandSequence && activeCommandSequence.value) {
-      planStates.value = planManager.value.simulate()
+watch(plan, (newPlan) => {
+  if (newPlan) {
+    planManager.value = new PlanManager(newPlan);
+    if (!activeCommandSequence?.value) {
+      activeCommandSequence.value = newPlan.commandSequences[0].id
     }
-    planStates.value = planManager.value.simulate()
+    planStates.value = planManager.value.simulate(activeCommandSequence.value)
   }
 }, {
   deep: true,
   immediate: true,
-})
-
-const finalPlanState = computed<PlanState | undefined>(() => {
-  if (planStates.value) {
-    return planStates.value[planStates.value.length - 1];
-  }
 })
 
 provide('planStates', planStates)
@@ -95,12 +88,15 @@ provide('planStates', planStates)
 async function loadPlan() {
   try {
     await refreshPlan()
+    if (plan) {
+    }
   } catch (error) {
     console.log('Error loading plan:', error);
   } finally {
     loading.value = false;
   }
 }
+
 </script>
 <template>
   <div class="grid plan-container">
@@ -122,65 +118,13 @@ async function loadPlan() {
       </n-card>
 
       <command-tabber
+          v-model:active-tab="activeCommandSequence"
           :plan="plan"
           @update="handleUpdateModel"
           @delete="handleDeleteModel"
           @remove="handleRemovePlanModel"
+          @update-sequence="handleCommandSequenceUpdate"
       />
-
-<!--      <IncomeListItem v-for="income in plan.incomes" :key="income.id" :income="income"-->
-<!--                      @update="handleUpdateModel(ModelName.Income, $event)"-->
-<!--                      @delete="handleDeleteModel(ModelName.Income, $event.id)"-->
-<!--                      @remove="handleRemovePlanModel({...$event, model: ModelName.Income})"-->
-<!--      />-->
-
-<!--      <ExpenseListItem v-for="expense in plan.expenses" :key="expense.id" :expense="expense"-->
-<!--                       @update="handleUpdateModel(ModelName.Expense, $event)"-->
-<!--                       @delete="handleDeleteModel(ModelName.Expense, $event.id)"-->
-<!--                       @remove="handleRemovePlanModel({...$event, model: ModelName.Expense})"-->
-<!--      />-->
-
-<!--      <DebtListItem v-for="debt in plan.debts" :key="debt.id" :debt="debt"-->
-<!--                    @update="handleUpdateModel(ModelName.Debt, $event)"-->
-<!--                    @delete="handleDeleteModel(ModelName.Debt, $event.id)"-->
-<!--                    @remove="handleRemovePlanModel({...$event, model: ModelName.Debt})"/>-->
-
-<!--      <CashReserveListItem v-for="cashReserve in plan.cashReserves" :key="cashReserve.id" :cashReserve="cashReserve"-->
-<!--                           @update="handleUpdateModel(ModelName.CashReserve, $event)"-->
-<!--                           @delete="handleDeleteModel(ModelName.CashReserve, $event.id)"-->
-<!--                           @remove="handleRemovePlanModel({...$event, model: ModelName.CashReserve})"-->
-<!--      />-->
-
-
-<!--      <BrokerageListItem v-for="brokerage in plan.brokerages" :key="brokerage.id" :brokerage="brokerage"-->
-<!--                         @update="handleUpdateModel(ModelName.Brokerage, $event)"-->
-<!--                         @delete="handleDeleteModel(ModelName.Brokerage, $event.id)"-->
-<!--                         @remove="handleRemovePlanModel({...$event, model: ModelName.Brokerage})"-->
-<!--      />-->
-
-
-<!--      <IraListItem v-for="ira in plan.iras" :key="ira.id" :ira="ira"-->
-<!--                   @update="handleUpdateModel(ModelName.Ira, $event)"-->
-<!--                   @delete="handleDeleteModel(ModelName.Ira, $event.id)"-->
-<!--                   @remove="handleRemovePlanModel({...$event, model: ModelName.Ira})"-->
-<!--      />-->
-
-
-<!--      <RothIraListItem v-for="rothIra in plan.rothIras" :key="rothIra.id" :rothIra="rothIra"-->
-<!--                       @update="handleUpdateModel(ModelName.RothIra, $event)"-->
-<!--                       @delete="handleDeleteModel(ModelName.RothIra, $event.id)"-->
-<!--                       @remove="handleRemovePlanModel({...$event, model: ModelName.RothIra})"-->
-<!--      />-->
-
-
-<!--      <TaxDeferredListItem-->
-<!--          v-for="taxDeferred in plan.taxDeferreds"-->
-<!--          :key="taxDeferred.id"-->
-<!--          :taxDeferred="taxDeferred"-->
-<!--          @update="handleUpdateModel(ModelName.TaxDeferred, $event)"-->
-<!--          @delete="handleDeleteModel(ModelName.TaxDeferred, $event.id)"-->
-<!--          @remove="handleRemovePlanModel({...$event, model: ModelName.TaxDeferred})"-->
-<!--      />-->
     </div>
     <div class="space-y-2" style="grid-area:charts">
       <n-button type="primary" @click="handleClickShowMeTheDataButton">
@@ -199,15 +143,11 @@ async function loadPlan() {
       </n-modal>
       <LazyChartExpensePie :expenses="plan?.expenses" :debts="plan?.debts"/>
       <LazyPlanChartGrowth v-if="planStates" :states="planStates"></LazyPlanChartGrowth>
-      <CommandSequence v-if="activeCommandSequence"
-                       :commandSequence="activeCommandSequence"
-                       @update="handleCommandSequenceUpdate"
-      ></CommandSequence>
     </div>
   </div>
 </template>
 <style scoped>
-.plan-container{
+.plan-container {
   gap: .5rem;
   display: grid;
   grid-template-columns:2fr 1fr;

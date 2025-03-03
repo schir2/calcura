@@ -33,7 +33,6 @@ async function handleCreatePlan(planTemplate: Partial<Plan>) {
 }
 
 function handleClickCreatePlan() {
-  console.log("Create Plan")
   showModal.value = true
 }
 

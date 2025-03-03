@@ -13,8 +13,7 @@ export abstract class BaseOrchestrator<TConfig, TState extends BaseState, TManag
     constructor(config: TConfig) {
         this.config = config
         this._managers = this.createManagers()
-        const initialState = this.createInitialState();
-        this.states.push(initialState);
+        this._createInitialState()
     }
 
     get managers(): TManagers {
@@ -22,6 +21,12 @@ export abstract class BaseOrchestrator<TConfig, TState extends BaseState, TManag
     }
 
     protected abstract createManagers(): TManagers
+
+    private _createInitialState(): void {
+
+        const initialState = this.createInitialState();
+        this.states.push(initialState);
+    }
 
     protected abstract createInitialState(): TState;
 
@@ -101,6 +106,15 @@ export abstract class BaseOrchestrator<TConfig, TState extends BaseState, TManag
         });
 
         return allManagers;
+    }
+
+    reset() {
+        this.getAllManagers().forEach(manager => {
+            manager.reset()
+            manager._createInitialState()
+        })
+        this.states = []
+        this._createInitialState()
     }
 
     abstract createNextState(previousState: TState): TState;

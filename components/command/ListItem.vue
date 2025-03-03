@@ -30,7 +30,7 @@ const textClass = computed<string>(() => {
       <div class="flex gap-8 items-center">
         <slot name="header">
           <h3 class="flex items-center gap-2 text-lg font-semibold">
-            <base-ico class="text-2xl text-skin-base/20" name="drag"/>
+            <base-ico class="text-2xl text-skin-base/20 drag-handle" name="drag"/>
             <base-ico v-if="modelName" :class="textClass" :name="modelName"/>
             <span>{{ title }}</span>
           </h3>
@@ -39,11 +39,11 @@ const textClass = computed<string>(() => {
           <span class="flex justify-between gap-0.5">
             <slot name="tags">
               <template v-for="tag in tags" :key="tag.label">
-                <n-tag disabled round v-if="!tag.hide">
+                <n-tag  round v-if="!tag.hide">
                 <template #icon v-if="tag.iconName">
                   <base-ico :name="tag.iconName"></base-ico>
                 </template>
-                <span v-if="tag.label" class="hidden xl2:inline">{{ tag.label }}</span>
+                <span v-if="tag.label" class="hidden xlerer:inline">{{ tag.label }}</span>
                 </n-tag>
               </template>
             </slot>

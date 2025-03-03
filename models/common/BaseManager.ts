@@ -11,6 +11,11 @@ export default abstract class BaseManager<TConfig, TState extends BaseState> {
         this.orchestrator = orchestrator;
         this.config = config
         this.setUp()
+        this._createInitialState()
+
+    }
+
+    protected _createInitialState(): void {
         const initialState = this.createInitialState();
         this.states.push(initialState);
     }
@@ -18,6 +23,11 @@ export default abstract class BaseManager<TConfig, TState extends BaseState> {
     protected abstract createInitialState(): TState;
 
     setUp(): void {
+    }
+
+    reset(): void {
+        this.states = []
+        this.createInitialState()
     }
 
     getInitialState(): TState {
