@@ -38,6 +38,8 @@ const iconMap = {
   deductible: 'mdi:cash',
   fixed: 'mdi:lock',
   variable: 'mdi:tune',
+  darkTheme: 'material-symbols:dark-mode',
+  lightTheme: 'material-symbols:light-mode',
 
 }
 
