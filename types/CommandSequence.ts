@@ -1,11 +1,11 @@
 import type {Command} from "~/types/Command";
 
-export type CommandSequenceOrderingType =  'predefined' | 'custom'
-import type {Plan} from '~/types/Plan'
+export type CommandSequenceOrderingType = 'predefined' | 'custom'
+
 export interface CommandSequence {
     id: number;
     name: string;
-    plan: Plan;
+    plan: number;
     orderingType: CommandSequenceOrderingType;
     commands: Command[];
 }

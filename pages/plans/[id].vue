@@ -43,8 +43,18 @@ async function handleDeleteModel(model: ModelName, id: number) {
 
 const repo = useRepo()
 
-async function handleCommandSequenceUpdate(commandSequence: CommandSequence) {
+async function handleUpdateSequence(commandSequence: CommandSequence) {
   await repo.commandSequence.update(commandSequence.id, commandSequence)
+  await loadPlan()
+}
+
+async function handleCreateSequence(commandSequence: CommandSequence) {
+  await repo.commandSequence.create({name: 'Tester', plan: planId})
+  await loadPlan()
+}
+
+async function handleDeleteSequence(commandSequenceId: number) {
+  await repo.commandSequence.remove(commandSequenceId)
   await loadPlan()
 }
 
@@ -123,7 +133,9 @@ async function loadPlan() {
           @update="handleUpdateModel"
           @delete="handleDeleteModel"
           @remove="handleRemovePlanModel"
-          @update-sequence="handleCommandSequenceUpdate"
+          @update-sequence="handleUpdateSequence"
+          @delete-sequence="handleDeleteSequence"
+          @create-sequence="handleCreateSequence"
       />
     </div>
     <div class="space-y-2" style="grid-area:charts">

@@ -8,13 +8,10 @@ interface Props {
 const props = defineProps<Props>()
 const activeTab = toRef(props.activeTab);
 
-const emit = defineEmits(['update', 'delete', 'remove', 'update-sequence'])
+const emit = defineEmits(['update', 'delete', 'remove', 'update-sequence', 'delete-sequence', 'create-sequence'])
 
-async function handleAdd() {
-
-}
-async function handleClose() {
-
+function handleClickDeleteSequence(commandSequenceId: number){
+  emit('delete-sequence', commandSequenceId);
 }
 
 </script>
@@ -25,8 +22,8 @@ async function handleClose() {
       :addable="true"
       :closable="true"
       tab-style="min-width: 80px;"
-      @close="handleClose"
-      @add="handleAdd"
+      @close="handleClickDeleteSequence"
+      @add="$emit('create-sequence')"
   >
     <n-tab-pane v-for="commandSequence in plan.commandSequences" :key="commandSequence.id" :name="commandSequence.id">
       <template #tab>{{ commandSequence.name }}</template>
