@@ -9,12 +9,13 @@
       </n-button>
       <ul class="flex items-center gap-2">
         <ClientOnly>
-          <n-button v-if="authStore.isAuthenticated" @click="handleLogout()">Logout</n-button>
+          <n-button v-if="isAuthenticated" @click="handleLogout()">Logout</n-button>
           <n-button keyboard v-if="!authStore.user" @click="$router.push('/auth/login')">Login</n-button>
-          <n-avatar circle v-if="authStore.user">
+          <n-avatar circle v-if="user">
             <icon class="text-xl" name="mdi:user"/>
           </n-avatar>
         </ClientOnly>
+        <base-theme-switcher/>
       </ul>
     </nav>
 
@@ -25,6 +26,7 @@
 const router = useRouter()
 const menu = ref({open: false})
 const authStore = useAuthStore()
+const {isAuthenticated, user} = storeToRefs(authStore)
 const message = useMessage()
 
 async function handleLogout() {
