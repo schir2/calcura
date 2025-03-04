@@ -1,19 +1,24 @@
-import {defineStore} from 'pinia'
+import {darkTheme, lightTheme} from "naive-ui";
 
-type Theme = 'light' | 'dark';
+export const useThemeStore = defineStore('themeStore', () => {
+    type Theme = 'light' | 'dark'
+    const theme = ref<Theme>('dark')
 
-export const useThemeStore = defineStore('theme', {
-    state: (): {theme: Theme} => (
-        {theme: 'dark',}),
+    function toggleTheme() {
+        theme.value = theme.value === 'light' ? 'dark' : 'light'
+    }
 
-    actions: {
-        setTheme(newTheme: Theme) {
-            this.theme = newTheme;
-            document.body.setAttribute('data-theme', newTheme);
-        },
-        toggleTheme() {
-            const newTheme = this.theme === 'light' ? 'dark' : 'light';
-            this.setTheme(newTheme);
-        },
-    },
-});
+    function setDarkTheme() {
+        theme.value = 'dark'
+    }
+
+    function setLightTheme() {
+        theme.value = 'light'
+    }
+
+    const naiveTheme = computed(()=>{
+        return theme.value === 'dark' ? darkTheme : lightTheme
+    })
+
+    return {theme, toggleTheme, setDarkTheme, setLightTheme, naiveTheme}
+})

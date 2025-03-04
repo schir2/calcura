@@ -1,19 +1,14 @@
 import {useThemeStore} from '@/stores/themeStore';
+import {storeToRefs} from "pinia";
 
-export default defineNuxtPlugin({
-    name: 'theme',
-    async setup(nuxtApp){
-        const themeStore = useThemeStore();
-        const savedTheme = localStorage.getItem('theme');
-        const initialTheme = savedTheme === 'light' || savedTheme === 'dark' ? savedTheme : themeStore.theme;
-        themeStore.setTheme(initialTheme);
+export default defineNuxtPlugin(() => {
+    const themeStore = useThemeStore();
+    const savedTheme = localStorage.getItem('theme');
+    const {theme} = storeToRefs(themeStore);
 
-        watch(
-            () => themeStore.theme,
-            (newTheme) => {
-                themeStore.setTheme(newTheme);
-                localStorage.setItem('theme', newTheme);
-            }
-        );
-    }
-})
+    watchEffect(() => {
+        document.documentElement.className = theme.value;
+        document.body.setAttribute("data-theme", theme.value);
+        localStorage.setItem('theme', theme.value);
+    });
+});
