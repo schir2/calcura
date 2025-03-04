@@ -2,7 +2,7 @@
   <main>
     <n-scrollbar class="h-screen">
       <n-loading-bar-provider>
-        <n-config-provider :theme="darkTheme">
+        <n-config-provider :theme="naiveTheme">
           <n-message-provider>
               <n-space vertical>
                 <LayoutTheNavbar/>
@@ -21,11 +21,15 @@
   </main>
 </template>
 <script setup lang="ts">
-import {darkTheme, NConfigProvider, NMessageProvider} from 'naive-ui'
+import {darkTheme,lightTheme, NConfigProvider, NMessageProvider} from 'naive-ui'
 import {useTitle} from "~/composables/useTitle";
 
 const {title} = useTitle()
 useHead({
   title: title
 })
+
+const themeStore = useThemeStore()
+const {theme, naiveTheme} = storeToRefs(themeStore)
+
 </script>
