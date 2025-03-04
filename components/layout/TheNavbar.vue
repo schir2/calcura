@@ -1,5 +1,5 @@
 <template>
-  <n-layout-header :inverted="true" class="pt-3 pb-2 px-4">
+  <n-layout-header class="pt-3 pb-2 px-4">
     <nav class="justify-between items-center flex">
       <n-button quaternary @click="router.push('/')">
         <span class="flex gap-2 items-center">
