@@ -159,6 +159,7 @@ async function loadPlan() {
       </n-modal>
       <LazyChartExpensePie :expenses="plan?.expenses" :debts="plan?.debts"/>
       <LazyPlanChartGrowth v-if="planStates" :states="planStates"></LazyPlanChartGrowth>
+      <LazyPlanChartExpensesOverTime v-if="planStates" :states="planStates"/>
     </div>
   </div>
 </template>
