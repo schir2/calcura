@@ -24,6 +24,7 @@ const {formRef, modelRef, rules, handleCreate, handleUpdate, handleCancel} =
 
     <template #default>
       <n-form
+          @submit.prevent="$emit('create')"
           ref="formRef"
           :model="modelRef"
           :rules="rules"

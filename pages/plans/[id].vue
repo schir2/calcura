@@ -3,7 +3,7 @@ import type {Plan} from "~/types/Plan";
 import ChildCreateButtonList from "~/components/plan/ChildCreateButtonList.vue";
 import {ModelName} from "~/types/ModelName";
 import type {CommandSequence} from "~/types/CommandSequence";
-import {toKebabCaseKey} from "~/utils";
+import {camelToKebab, toKebabCaseKey} from "~/utils";
 import PlanManager from "~/models/plan/PlanManager";
 import type {PlanState} from "~/types/PlanState";
 
@@ -22,22 +22,25 @@ useHead({
 })
 
 async function handleCreatePlanModel(payload: { model: ModelName, data: any }) {
-  plan.value = await useApi(`plans/${planId}/${toKebabCaseKey(payload.model)}s`).create(payload.data)
+  plan.value = await useApi(`plans/${planId}/${camelToKebab(payload.model)}s`).create(payload.data)
   await loadPlan()
 }
 
-async function handleRemovePlanModel(model: ModelName, id: number) {
-  await useApi(`plans/${planId}/${toKebabCaseKey(model)}s`).remove(id)
+async function handleRemovePlanModel(payload: { modelName: ModelName, data: any }) {
+  const {modelName, data} = payload;
+  await useApi(`plans/${planId}/${camelToKebab(modelName)}s`).remove(data.id)
   await loadPlan();
 }
 
-async function handleUpdateModel(model: ModelName, item: any) {
-  await useApi(`/${toKebabCaseKey(model)}s`).update(item.id, item);
+async function handleUpdateModel(payload: { modelName: ModelName, data: any }) {
+  const {modelName, data} = payload;
+  await useApi(`/${camelToKebab(modelName)}s`).update(data.id, data);
   await loadPlan();
 }
 
-async function handleDeleteModel(model: ModelName, id: number) {
-  await useApi(`/${toKebabCaseKey(model)}s`).remove(id);
+async function handleDeleteModel(payload: { modelName: ModelName, data: any }) {
+  const {modelName, data} = payload;
+  await useApi(`/${camelToKebab(modelName)}s`).remove(payload.data.id);
   await loadPlan();
 }
 
@@ -84,7 +87,7 @@ watch(plan, (newPlan) => {
   if (newPlan) {
     planManager.value = new PlanManager(newPlan);
     if (!activeCommandSequence?.value) {
-      activeCommandSequence.value = newPlan.commandSequences[0].id
+      activeCommandSequence.value = newPlan.commandSequences[0]?.id
     }
     planStates.value = planManager.value.simulate(activeCommandSequence.value)
   }
@@ -128,6 +131,7 @@ async function loadPlan() {
       </n-card>
 
       <command-tabber
+          v-if="plan"
           v-model:active-tab="activeCommandSequence"
           :plan="plan"
           @update="handleUpdateModel"

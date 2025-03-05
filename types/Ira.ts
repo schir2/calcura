@@ -26,7 +26,7 @@ export interface IraTemplate extends Ira {
 
 export const iraDefaults: IraPartial = {
     name: 'Traditional IRA',
-    growthRate: 0,
+    growthRate: 6,
     initialBalance: 0,
     contributionStrategy: IraContributionStrategy.Fixed,
     contributionPercentage: 0,

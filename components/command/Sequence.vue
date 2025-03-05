@@ -104,6 +104,18 @@ function renderComponent(plan: Plan, modelName: ModelName, modelId: number) {
 }
 
 const drag = ref<boolean>(false)
+
+function handleUpdate(modelName: ModelName, data: Object){
+  emit("update", {modelName: modelName, data:data})
+}
+
+function handleDelete(modelName: ModelName, data: Object){
+  emit("delete", {modelName: modelName, data:data})
+}
+
+function handleRemove(modelName: ModelName, data: Object){
+  emit("remove", {modelName: modelName, data:data})
+}
 </script>
 <template>
   <draggable class="dragArea list-group w-full"
@@ -118,9 +130,9 @@ const drag = ref<boolean>(false)
       <div>
         <component
             :is="renderComponent(plan, command.modelName, command.modelId)"
-            @update="$emit('update', command.modelName, $event)"
-            @delete="$emit('delete', command.modelName, $event.id)"
-            @remove="$emit('remove', command.modelName, $event.id)"
+            @update="handleUpdate(command.modelName, $event)"
+            @delete="handleDelete(command.modelName, $event)"
+            @remove="handleRemove(command.modelName, $event)"
         />
       </div>
     </template>

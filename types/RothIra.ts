@@ -28,7 +28,7 @@ export interface RothIraTemplate extends RothIra {
 
 export const rothIraDefaults: RothIraPartial = {
     name: 'Roth IRA',
-    growthRate: 0,
+    growthRate: 6,
     initialBalance: 0,
     contributionStrategy: RothIraContributionStrategy.Fixed,
     contributionPercentage: 0,

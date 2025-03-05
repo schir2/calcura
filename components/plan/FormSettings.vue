@@ -8,11 +8,6 @@
     <n-form-item class="col-span-2" path="inflationRate" label="Inflation Rate">
       <n-input-number class="w-full" v-model:value="modelRef.inflationRate"/>
     </n-form-item>
-
-    <n-form-item class="col-span-2" path="growthRate" label="Growth Rate">
-      <n-input-number class="w-full" v-model:value="modelRef.growthRate"/>
-    </n-form-item>
-
     <n-form-item  class="col-span-3" path="insufficientFundsStrategy" label="Allow Negative Funds">
       <n-radio-group v-model:value="modelRef.insufficientFundsStrategy">
         <n-radio-button v-for="option in insufficientFundsStrategyOptions" :key="option.value"

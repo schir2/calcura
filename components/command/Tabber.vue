@@ -14,13 +14,22 @@ function handleClickDeleteSequence(commandSequenceId: number){
   emit('delete-sequence', commandSequenceId);
 }
 
+const addable = computed(()=>{
+  return props.plan.commandSequences.length <= 5
+})
+
+
+const closeable = computed(()=>{
+  return props.plan.commandSequences.length > 1
+})
+
 </script>
 <template>
   <n-tabs
       v-model:value="activeTab"
       type="card"
-      :addable="true"
-      :closable="true"
+      :addable="addable"
+      :closable="closeable"
       tab-style="min-width: 80px;"
       @close="handleClickDeleteSequence"
       @add="$emit('create-sequence')"
@@ -30,8 +39,8 @@ function handleClickDeleteSequence(commandSequenceId: number){
       <CommandSequence
           :plan="plan"
           :commandSequence="commandSequence"
-          @update="$emit('update',$event)"
-          @delete="$emit('delete',$event)"
+          @update="$emit('update', $event)"
+          @delete="$emit('delete', $event)"
           @remove="$emit('remove', $event)"
           @update-sequence="$emit('update-sequence', $event)"
       />

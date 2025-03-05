@@ -26,3 +26,9 @@ export function toCamelCase(obj: any): any {
         return acc
     }, {} as any)
 }
+
+export const camelToKebab = (str: string): string => {
+    return str
+        .replace(/([a-z0-9])([A-Z])/g, '$1-$2') 
+        .toLowerCase(); 
+};

@@ -1,5 +1,5 @@
 <template>
-  <n-form v-if="!authStore.user" ref="formRef" :model="credentialsRef" :rules="rules">
+  <n-form v-if="!user" ref="formRef" :model="credentialsRef" :rules="rules">
     <n-form-item path="username" label="Username">
       <n-input ref="usernameRef"  placeholder="Username" v-model:value="credentialsRef.username"></n-input>
     </n-form-item>
@@ -27,6 +27,9 @@ definePageMeta({
 
 const router = useRouter()
 const authStore = useAuthStore()
+
+const {user} = storeToRefs(authStore)
+
 const message = useMessage()
 const loadingBar = useLoading()
 const isLoginLoading = ref<boolean>(false)
