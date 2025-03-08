@@ -25,7 +25,7 @@ const textClass = computed<string>(() => {
 })
 </script>
 <template>
-  <n-card size="small">
+  <div class="w-full">
     <div class="flex justify-between">
       <div class="flex gap-8 items-center">
         <slot name="header">
@@ -59,6 +59,6 @@ const textClass = computed<string>(() => {
         </slot>
       </div>
     </div>
-  </n-card>
+  </div>
 
 </template>

@@ -12,6 +12,7 @@ import type {Income} from "~/types/Income";
 interface Props {
   initialValues?: Partial<TaxDeferred>;
   mode: 'create' | 'edit' | 'view';
+  incomes: Income[]
 }
 
 const {initialValues = taxDeferredDefaults, mode} = defineProps<Props>();

@@ -142,7 +142,6 @@ const activeExpensesAndDebts = computed(() => {
 </script>
 <template>
   <div class="grid plan-container">
-    {{ activeExpensesAndDebts }}
     <div v-if="plan" class="space-y-2" style="grid-area:main">
       <n-modal v-model:show="showModal">
         <LazyPlanForm :initialValues="plan" mode="edit"
@@ -155,7 +154,22 @@ const activeExpensesAndDebts = computed(() => {
         <template #header>
           <h3 class="text-xl flex items-center gap-2">
             <base-ico class="text-skin-success" name="create"/>
-            <span>Add Your Stuff</span></h3>
+            <span>Add Your Stuff</span>
+            <n-button type="primary" @click="handleClickShowMeTheDataButton">
+              <template #icon>
+                <base-ico name="table"/>
+              </template>
+              Show Me the Data
+            </n-button>
+            <n-modal
+                class="max-w-[1800px] h-[720px]"
+                v-model:show="showDataTable"
+                :draggable="true"
+                preset="card">
+              <template #header>Plan Data</template>
+              <LazyPlanTable v-if="plan && planStates" :planStates="planStates"/>
+            </n-modal>
+          </h3>
         </template>
         <ChildCreateButtonList @create-model="handleCreatePlanModel($event)"/>
       </n-card>
@@ -173,23 +187,12 @@ const activeExpensesAndDebts = computed(() => {
       />
     </div>
     <div class="space-y-2" style="grid-area:charts">
-      <n-button type="primary" @click="handleClickShowMeTheDataButton">
-        <template #icon>
-          <base-ico name="table"/>
-        </template>
-        Show Me the Data
-      </n-button>
-      <n-modal
-          class="max-w-[1800px] h-[720px]"
-          v-model:show="showDataTable"
-          :draggable="true"
-          preset="card">
-        <template #header>Plan Data</template>
-        <LazyPlanTable v-if="plan && planStates" :planStates="planStates"/>
-      </n-modal>
-      <LazyChartExpensePie :expenses="activeExpensesAndDebts?.expenses" :debts="activeExpensesAndDebts?.debts"/>
-      <LazyPlanChartGrowth v-if="planStates" :states="planStates"></LazyPlanChartGrowth>
-      <LazyPlanChartExpensesOverTime v-if="planStates" :states="planStates"/>
+      <div class="grid grid-cols-2 gap-2">
+        <LazyChartExpensePie :expenses="activeExpensesAndDebts?.expenses" :debts="activeExpensesAndDebts?.debts"/>
+        <span>Filler</span>
+        <LazyPlanChartGrowth v-if="planStates" :states="planStates"></LazyPlanChartGrowth>
+        <LazyPlanChartExpensesOverTime v-if="planStates" :states="planStates"/>
+      </div>
     </div>
   </div>
 </template>
@@ -197,7 +200,7 @@ const activeExpensesAndDebts = computed(() => {
 .plan-container {
   gap: .5rem;
   display: grid;
-  grid-template-columns:2fr 1fr;
+  grid-template-columns:3fr 3fr;
   grid-template-areas: 'main charts'
 }
 </style>

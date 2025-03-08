@@ -1,6 +1,7 @@
 <template>
   <n-modal v-model:show="showModal">
     <TaxDeferredForm :initialValues="taxDeferred" mode="edit"
+                     :incomes="incomes"
                      @delete="handleDelete"
                      @create="handleCreate"
                      @update="handleUpdate"
@@ -18,7 +19,6 @@
           {label: `Growth ${taxDeferred.growthRate}%`, iconName: 'growthRate', hide: taxDeferred.growthRate === 0},
       ]">
   </command-list-item>
-
 </template>
 <script setup lang="ts">
 
@@ -27,6 +27,7 @@ import {ModelName} from "~/types/ModelName";
 
 interface Props {
   taxDeferred: TaxDeferred
+  incomes: Income[]
 }
 
 const props = defineProps<Props>()

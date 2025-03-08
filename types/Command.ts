@@ -9,4 +9,5 @@ export interface Command {
     modelId: number;
     action: "process";
     isActive: boolean;
+    commandSequenceCommandId: number;
 }
