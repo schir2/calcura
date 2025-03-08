@@ -18,7 +18,9 @@ interface Props {
 const props = defineProps<Props>()
 
 const textClass = computed<string>(() => {
-  if (!props.modelName) {return ''}
+  if (!props.modelName) {
+    return ''
+  }
   const colorClassArray: string[] = []
   colorClassArray.push(ModelTextColor[props.modelName])
   return colorClassArray.join(' ')
@@ -27,23 +29,29 @@ const textClass = computed<string>(() => {
 <template>
   <div class="w-full">
     <div class="flex justify-between">
-      <div class="flex gap-8 items-center">
+      <div class="flex gap-2 items-center">
         <slot name="header">
           <h3 class="flex items-center gap-2 text-lg font-semibold">
-            <base-ico v-if="modelName" :class="textClass" :name="modelName"/>
+            <n-tooltip>
+              <template #trigger>
+                <base-ico v-if="modelName" :class="textClass" :name="modelName"/>
+              </template>
+              <span class="capitalize">{{ modelName}}</span>
+            </n-tooltip>
             <span>{{ title }}</span>
           </h3>
         </slot>
         <span class="flex">
-          <span class="flex justify-between gap-0.5">
+          <span class="flex justify-between items-center gap-0.5">
             <slot name="tags">
               <template v-for="tag in tags" :key="tag.label">
-                <n-tag  round v-if="!tag.hide">
-                <template #icon v-if="tag.iconName">
-                  <base-ico :name="tag.iconName"></base-ico>
-                </template>
-                <span v-if="tag.label" class="hidden xlerer:inline">{{ tag.label }}</span>
-                </n-tag>
+                <span class="rounded-full text-skin-success/50 broder border-skin-success/50" v-if="!tag.hide">
+                  <n-tooltip v-if="tag.iconName">
+                    <template #trigger><base-ico :name="tag.iconName"></base-ico></template>
+                    <span class="capitalize" v-if="tag.label">{{ tag.label }}</span>
+                  </n-tooltip>
+                <span v-else class="hidden l:inline">{{ tag.label }}</span>
+                </span>
               </template>
             </slot>
           </span>

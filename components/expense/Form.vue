@@ -82,11 +82,11 @@ const {formRef, modelRef, rules, handleCreate, handleUpdate, handleCancel} =
     </template>
 
     <template #footer>
-      <n-statistic class="text-end">
+      <base-stat class="text-end">
         <span class="text-skin-error">-${{
           $humanize.intComma(getAnnualAmount(modelRef.amount ?? 0, modelRef.frequency ?? Frequency.Annually))
         }}/year</span>
-      </n-statistic>
+      </base-stat>
     </template>
 
     <template #action>

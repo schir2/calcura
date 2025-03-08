@@ -1,14 +1,12 @@
 <template>
-  <n-card size="small" class="opacity-85">
-    <n-statistic :value="formatValue(totalAnnualCashReserve, FormatType.Currency)">
+    <base-stat :value="formatValue(totalAnnualCashReserve, FormatType.Currency)">
       <template #label>
         <span class="flex gap-2">
           <icon class="text-2xl text-skin-info" name="mdi:bank"></icon>
-          <span class="text- font-bold">Total Cash Reserves</span>
+          <span>Total Cash Reserves</span>
         </span>
       </template>
-    </n-statistic>
-  </n-card>
+    </base-stat>
 </template>
 
 <script setup lang="ts">

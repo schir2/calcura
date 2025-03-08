@@ -6,7 +6,7 @@
                        @remove="handleRemove"></ExpenseListItem>
     </n-list>
     <template #footer>
-      <n-statistic class="text-end">${{ $humanize.intComma(totalExpense) }}/year</n-statistic>
+      <base-stat class="text-end">${{ $humanize.intComma(totalExpense) }}/year</base-stat>
     </template>
   </n-card>
 

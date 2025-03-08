@@ -1,14 +1,12 @@
 <template>
-  <n-card size="small" class="opacity-85">
-  <n-statistic :value="formatValue(totalAnnualExpense, FormatType.Currency)">
+  <base-stat :value="formatValue(totalAnnualExpense, FormatType.Currency)">
     <template #label>
         <span class="flex gap-2">
           <icon class="text-2xl text-skin-error" name="mdi:cash-minus"></icon>
-          <span class="text- font-bold">Annual Expenses</span>
+          <span>Annual Expenses</span>
         </span>
     </template>
-    </n-statistic>
-  </n-card>
+    </base-stat>
 </template>
 
 <script setup lang="ts">

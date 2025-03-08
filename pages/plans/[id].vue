@@ -190,7 +190,7 @@ const activeExpensesAndDebts = computed((): {expenses: Expense[], debts: Debt[]}
     <div class="space-y-2" style="grid-area:charts">
       <div class="grid grid-cols-2 gap-2">
         <LazyChartExpensePie :expenses="activeExpensesAndDebts?.expenses" :debts="activeExpensesAndDebts?.debts"/>
-        <span>Filler</span>
+        <LazyPlanChartGrossSavings v-if="planStates" :states="planStates"></LazyPlanChartGrossSavings>
         <LazyPlanChartGrowth v-if="planStates" :states="planStates"></LazyPlanChartGrowth>
         <LazyPlanChartExpensesOverTime v-if="planStates" :states="planStates"/>
       </div>

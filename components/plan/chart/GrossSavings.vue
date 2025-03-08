@@ -4,11 +4,20 @@
       <p v-if="finalPlanState" class="text-xl text-center">Gross Savings at Age {{ finalPlanState.age }}</p>
     </template>
     <Pie v-if="data" :data="data" :options="options"/>
+    <template #footer>
+      <div class="flex items-center justify-evenly gap-2">
+        <base-stat size="small" class="flex-1" label="Taxable"
+                   :value="`$${$humanize.intcomma(finalPlanState.savingsTaxableEndOfYear)}`"></base-stat>
+        <base-stat size="small" class="flex-1" label="Tax Deferred">${{ $humanize.intcomma(finalPlanState.savingsTaxDeferredEndOfYear) }}</base-stat>
+        <base-stat size="small" class="flex-1" label="Tax Exempt">${{ $humanize.intcomma(finalPlanState.savingsTaxExemptEndOfYear) }}</base-stat>
+      </div>
+    </template>
   </n-card>
 </template>
 
 <script lang="ts" setup>
-import {darkTheme} from "naive-ui";
+
+const {naiveTheme: theme} = storeToRefs(useThemeStore())
 import {ArcElement, Chart as ChartJS, Legend, Tooltip} from 'chart.js'
 import {Pie} from 'vue-chartjs'
 import type {PlanState} from "~/types/PlanState";
@@ -25,7 +34,7 @@ const finalPlanState = computed(() => props.states[props.states.length - 1])
 ChartJS.register(ArcElement, Tooltip, Legend)
 
 const data = computed(() => {
-  if (finalPlanState.value === undefined) {
+  if (!finalPlanState?.value) {
     return
   }
   return {
@@ -33,30 +42,16 @@ const data = computed(() => {
     datasets: [
       {
         backgroundColor: [
-          darkTheme.common.infoColor,
-          darkTheme.common.warningColor,
-          darkTheme.common.errorColor,
-          darkTheme.common.successColor,
+          theme.value.common.infoColor,
+          theme.value.common.warningColor,
+          theme.value.common.errorColor,
+          theme.value.common.successColor,
         ],
         data: [
           finalPlanState.value.savingsTaxDeferredEndOfYear ?? 0,
           finalPlanState.value.savingsTaxableEndOfYear ?? 0,
           finalPlanState.value.savingsTaxExemptEndOfYear ?? 0,
           finalPlanState.value.taxedCapital ?? 0,
-        ]
-      },
-      {
-        backgroundColor: [
-          darkTheme.common.infoColor,
-          darkTheme.common.warningColor,
-          darkTheme.common.errorColor,
-          darkTheme.common.successColor,
-        ],
-        data: [
-          props.states[0].savingsTaxDeferredEndOfYear ?? 0,
-          props.states[0].savingsTaxableEndOfYear ?? 0,
-          props.states[0].savingsTaxExemptEndOfYear ?? 0,
-          props.states[0].taxedCapital ?? 0,
         ]
       },
     ]

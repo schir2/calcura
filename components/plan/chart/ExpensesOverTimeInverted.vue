@@ -6,14 +6,14 @@
     <Bar v-if="data" :data="data" :options="options"/>
     <div class="flex items-center justify-between">
 
-      <n-statistic label="Total">${{ $humanize.intcomma(finalState.expensesTotalLifetime) }}</n-statistic>
-      <n-statistic label="Paid">${{ $humanize.intcomma(finalState.expensesPaidLifetime) }}</n-statistic>
-      <n-statistic label="Shortfall">
+      <base-stat label="Total">${{ $humanize.intcomma(finalState.expensesTotalLifetime) }}</base-stat>
+      <base-stat label="Paid">${{ $humanize.intcomma(finalState.expensesPaidLifetime) }}</base-stat>
+      <base-stat label="Shortfall">
         <template #prefix>
           <base-ico v-if="finalState.expensesShortfallLifetime === 0" class="text-skin-success" name="success"/>
           <base-ico v-else class="text-skin-warning" name="warning"/>
         </template>
-        ${{ $humanize.intcomma(finalState.expensesShortfallLifetime) }}</n-statistic>
+        ${{ $humanize.intcomma(finalState.expensesShortfallLifetime) }}</base-stat>
     </div>
   </n-card>
 </template>

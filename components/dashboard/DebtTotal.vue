@@ -1,14 +1,12 @@
 <template>
-  <n-card size="small" class="opacity-85">
-    <n-statistic :value="formatValue(totalAnnualDebt, FormatType.Currency)">
+    <base-stat :value="formatValue(totalAnnualDebt, FormatType.Currency)">
       <template #label>
         <span class="flex gap-2">
           <icon class="text-2xl text-skin-error" name="mdi:trending-down"></icon>
-          <span class="text- font-bold">Total Debt</span>
+          <span>Total Debt</span>
         </span>
       </template>
-    </n-statistic>
-  </n-card>
+    </base-stat>
 </template>
 
 <script setup lang="ts">

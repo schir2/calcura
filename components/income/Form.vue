@@ -96,11 +96,11 @@ function generateGrowthData(principal: number, growthRate: number = 0) {
       ></Bar>
     </template>
     <template #footer>
-      <n-statistic class="text-end">
+      <base-stat class="text-end">
         <span class="text-skin-success">+${{
             $humanize.intComma(getAnnualAmount(modelRef.grossIncome ?? 0, modelRef.frequency ?? Frequency.Annually))
           }}/year</span>
-      </n-statistic>
+      </base-stat>
     </template>
     <template #action>
       <FormActionButtons :mode="mode" @update="handleUpdate" @create="handleCreate"

@@ -85,7 +85,7 @@ const projections = computed<Record<DebtPaymentStrategy, DebtProjection>>(() => 
 });
 </script>
 <template>
-  <n-card role="dialog" class="max-w-6xl" :bordered="true">
+  <n-card role="dialog" class="max-w-4xl" :bordered="true">
     <template #header>
       <h3 class="text-2xl">Debt: {{ modelRef.name }}</h3>
     </template>
@@ -126,7 +126,7 @@ const projections = computed<Record<DebtPaymentStrategy, DebtProjection>>(() => 
         <n-form-item path="paymentStrategy" label="Payment Strategy"
                      label-placement="top">
           <section class="grid grid-cols-4 gap-3">
-            <DebtProjectionCard :projection="projections.fixed" title="Fixed Payment"
+            <DebtProjectionCard :projection="projections.fixed" title="Fixed"
                                 v-model="modelRef.paymentStrategy" :value="DebtPaymentStrategy.Fixed">
               <template #inputs>
                 <n-form-item
@@ -143,7 +143,7 @@ const projections = computed<Record<DebtPaymentStrategy, DebtProjection>>(() => 
               </template>
             </DebtProjectionCard>
 
-            <DebtProjectionCard :projection="projections.percentage_of_debt" title="Percentage of Debt"
+            <DebtProjectionCard :projection="projections.percentage_of_debt" title="Percentage"
                                 v-model="modelRef.paymentStrategy" :value="DebtPaymentStrategy.PercentageOfDebt">
               <template #inputs>
                 <n-form-item
@@ -159,15 +159,15 @@ const projections = computed<Record<DebtPaymentStrategy, DebtProjection>>(() => 
               </template>
             </DebtProjectionCard>
 
-            <DebtProjectionCard :projection="projections.minimum_payment" title="Minimum Payment"
+            <DebtProjectionCard :projection="projections.minimum_payment" title="Minimum"
                                 v-model="modelRef.paymentStrategy" :value="DebtPaymentStrategy.MinimumPayment">
               <template #inputs>
                 <n-form-item
                     path="paymentMinimum"
-                    label="Minimum Payment (Monthly)"
+                    label="Minimum Payment"
                     label-placement="top">
                   <n-input-number class="w-full" v-model:value="modelRef.paymentMinimum" :precision="2"
-                                  placeholder="Enter minimum monthly payment">
+                                  placeholder="Enter minimum payment">
                     <template #prefix>$</template>
                     <template #suffix>per month</template>
                   </n-input-number>
@@ -175,12 +175,10 @@ const projections = computed<Record<DebtPaymentStrategy, DebtProjection>>(() => 
               </template>
             </DebtProjectionCard>
 
-            <DebtProjectionCard :projection="projections.maximum_payment" title="Maximum Payment"
+            <DebtProjectionCard :projection="projections.maximum_payment" title="Maximum"
                                 v-model="modelRef.paymentStrategy" :value="DebtPaymentStrategy.MaximumPayment"/>
           </section>
         </n-form-item>
-
-        <DebtProjectionChart :projections="projections"/>
       </n-form>
     </template>
 
