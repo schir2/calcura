@@ -1,12 +1,12 @@
 <template>
-  <lazy-n-modal v-model:show="showModal">
+  <n-modal v-model:show="showModal">
     <RothIraForm :initialValues="rothIra" mode="edit"
                            @delete="handleDelete"
                            @create="handleCreate"
                            @update="handleUpdate"
                            @cancel="handleClose"
     />
-  </lazy-n-modal>
+  </n-modal>
 
   <command-list-item
       @edit="handleEdit" @remove="handleRemove" @delete="handleDelete"

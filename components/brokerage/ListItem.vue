@@ -5,9 +5,11 @@ import type {Brokerage} from "~/types/Brokerage";
 import {ModelName} from "~/types/ModelName";
 import {calculateBrokerageContribution} from "~/models/brokerage/BrokerageManager";
 import type {PlanState} from "~/types/PlanState";
+import type {Income} from "~/types/Income";
 
 interface Props {
   brokerage: Brokerage
+  incomes: Income[]
 }
 
 const {brokerage} = defineProps<Props>()
@@ -58,14 +60,14 @@ const annualContribution = computed(() => {
 })
 </script>
 <template>
-  <lazy-n-modal v-model:show="showModal">
+  <n-modal v-model:show="showModal">
     <BrokerageForm :initialValues="brokerage" mode="edit"
                    @delete="handleDelete"
                    @create="handleCreate"
                    @update="handleUpdate"
                    @cancel="handleClose"
     />
-  </lazy-n-modal>
+  </n-modal>
 
   <command-list-item
       @edit="handleEdit" @remove="handleRemove" @delete="handleDelete"

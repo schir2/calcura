@@ -44,7 +44,7 @@ const iconMap = {
   lightTheme: 'material-symbols:light-mode',
 
   // Alert Types
-  success: 'material-symbols:success',
+  success: 'material-symbols-check-circle',
   warning: 'material-symbols:warning',
   error: 'material-symbols:error',
   info: 'material-symbols:info',

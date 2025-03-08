@@ -1,5 +1,5 @@
 <template>
-  <lazy-n-modal v-model:show="showModal">
+  <n-modal v-model:show="showModal">
     <TaxDeferredForm :initialValues="taxDeferred" mode="edit"
                      :incomes="incomes"
                      @delete="handleDelete"
@@ -7,7 +7,7 @@
                      @update="handleUpdate"
                      @cancel="handleClose"
     />
-  </lazy-n-modal>
+  </n-modal>
 
   <command-list-item
       @edit="handleEdit" @remove="handleRemove" @delete="handleDelete"
@@ -24,6 +24,7 @@
 
 import type {TaxDeferred} from "~/types/TaxDeferred";
 import {ModelName} from "~/types/ModelName";
+import type {Income} from "~/types/Income";
 
 interface Props {
   taxDeferred: TaxDeferred

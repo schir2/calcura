@@ -14,13 +14,13 @@
       {{ item.label }}
     </n-button>
   </n-button-group>
-  <lazy-n-modal v-model:show="showModal">
+  <n-modal v-model:show="showModal">
     <component v-if="selectedChildProp"
                :is="selectedChildProp.form" mode="create"
                @create="handleCreate($event)"
                @cancel="handleClose"
     />
-  </lazy-n-modal>
+  </n-modal>
 </template>
 <script setup lang="ts">
 import {ModelName} from "~/types/ModelName";

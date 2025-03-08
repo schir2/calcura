@@ -1,7 +1,7 @@
 <template>
   <n-form v-if="!user" ref="formRef" :model="credentialsRef" :rules="rules">
-    <n-form-item path="username" label="Username">
-      <n-input ref="usernameRef"  placeholder="Username" v-model:value="credentialsRef.username"></n-input>
+    <n-form-item path="email" label="Email">
+      <n-input ref="emailRef"  placeholder="email" v-model:value="credentialsRef.email"></n-input>
     </n-form-item>
     <n-form-item path="password" label="Password">
       <n-input type="password" placeholder="Password" v-model:value="credentialsRef.password"></n-input>
@@ -37,19 +37,19 @@ const isLogoutLoading = ref<boolean>(false)
 
 
 interface Credentials {
-  username: string
+  email: string
   password: string
 }
 
 const formRef = ref<FormInst | null>(null)
 const credentialsRef = ref<Credentials>({
-  username: '',
+  email: '',
   password: ''
 })
 
 const rules: FormRules = {
-  username: [
-    {required: true, message: 'Username is required', trigger: ['blur', 'change']},
+  email: [
+    {required: true, message: 'Email is required', trigger: ['blur', 'change']},
     {min: 5, max: 32, message: 'Password must be at least 8 characters', trigger: ['blur', 'change']},
   ],
   password: [
@@ -80,11 +80,11 @@ async function handleLogin() {
   })
 }
 
-const usernameRef = ref<null | HTMLElement>(null)
+const emailRef = ref<null | HTMLElement>(null)
 
 onMounted(() => {
-  if (usernameRef.value) {
-    usernameRef.value.focus()
+  if (emailRef.value) {
+    emailRef.value.focus()
   }
 })
 

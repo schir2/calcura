@@ -6,6 +6,8 @@ import type {CommandSequence} from "~/types/CommandSequence";
 import {camelToKebab} from "~/utils";
 import PlanManager from "~/models/plan/PlanManager";
 import type {PlanState} from "~/types/PlanState";
+import type {Debt} from "~/types/Debt";
+import type {Expense} from "~/types/Expense";
 
 const planService = usePlanService()
 const route = useRoute()
@@ -107,8 +109,8 @@ async function loadPlan() {
   }
 }
 
-const activeExpensesAndDebts = computed(() => {
-      const result = {
+const activeExpensesAndDebts = computed((): {expenses: Expense[], debts: Debt[]} => {
+      const result: {expenses: Expense[], debts: Debt[]} = {
         expenses: [],
         debts: []
       }
@@ -134,7 +136,6 @@ const activeExpensesAndDebts = computed(() => {
 
         }
       }
-      console.log(result)
       return result
     },
     {deep: true, immediate: true,})
@@ -143,12 +144,12 @@ const activeExpensesAndDebts = computed(() => {
 <template>
   <div class="grid plan-container">
     <div v-if="plan" class="space-y-2" style="grid-area:main">
-      <lazy-n-modal v-model:show="showModal">
+      <n-modal v-model:show="showModal">
         <LazyPlanForm :initialValues="plan" mode="edit"
                       @update="handleUpdatePlan"
                       @cancel="handleClose"
         />
-      </lazy-n-modal>
+      </n-modal>
       <PlanDetailCard :plan="plan" @update="handleUpdatePlan"></PlanDetailCard>
       <n-card>
         <template #header>
@@ -161,14 +162,14 @@ const activeExpensesAndDebts = computed(() => {
               </template>
               Show Me the Data
             </n-button>
-            <lazy-n-modal
+            <n-modal
                 class="max-w-[1800px] h-[720px]"
                 v-model:show="showDataTable"
                 :draggable="true"
                 preset="card">
               <template #header>Plan Data</template>
               <LazyPlanTable v-if="plan && planStates" :planStates="planStates"/>
-            </lazy-n-modal>
+            </n-modal>
           </h3>
         </template>
         <ChildCreateButtonList @create-model="handleCreatePlanModel($event)"/>

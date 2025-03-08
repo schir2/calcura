@@ -1,13 +1,13 @@
 <template>
 
-  <lazy-n-modal v-model:show="showModal">
+  <n-modal v-model:show="showModal">
     <PlanForm :initialValues="plan" mode="edit"
               @delete="handleDelete"
               @create="handleCreate"
               @update="handleUpdate"
               @cancel="handleClose"
     />
-  </lazy-n-modal>
+  </n-modal>
   <n-card>
     <template #header>
       <NuxtLink :to="{name: 'plans-id', params: {id: plan.id}}"><h3 class="text-2xl">Plan {{ plan.id }}:

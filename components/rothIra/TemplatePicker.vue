@@ -1,11 +1,11 @@
 <template>
   <n-thing>
-    <lazy-n-modal v-model:show="showModal">
+    <n-modal v-model:show="showModal">
       <RothIraForm :initialValues="activeRothIraPartial" mode="create"
                                @create="handleCreate"
                                @cancel="handleClose"
       />
-    </lazy-n-modal>
+    </n-modal>
       <n-button size="small" type="info" round v-if="templates" v-for="(rothIraTemplate, index) in templates" :rothIraTemplate="rothIraTemplate"
                 @click="handleOpenModal(rothIraTemplate)"
                 :key="rothIraTemplate.name">

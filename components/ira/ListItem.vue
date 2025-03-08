@@ -43,14 +43,14 @@ function handleEdit() {
 }
 </script>
 <template>
-  <lazy-n-modal v-model:show="showModal">
+  <n-modal v-model:show="showModal">
     <IraForm :initialValues="ira" mode="edit"
                  @delete="handleDelete"
                  @create="handleCreate"
                  @update="handleUpdate"
                  @cancel="handleClose"
     />
-  </lazy-n-modal>
+  </n-modal>
   <command-list-item
       @edit="handleEdit" @remove="handleRemove" @delete="handleDelete"
       :title="ira.name"

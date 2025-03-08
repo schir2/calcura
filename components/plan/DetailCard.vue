@@ -1,13 +1,13 @@
 <template>
 
-  <lazy-n-modal v-model:show="showModal">
+  <n-modal v-model:show="showModal">
     <PlanForm :initialValues="plan" mode="edit"
               @delete="handleDelete"
               @create="handleCreate"
               @update="handleUpdate"
               @cancel="handleClose"
     />
-  </lazy-n-modal>
+  </n-modal>
   <n-card size="small">
     <template #header>
       <div class="flex items-center justify-start gap-2">
