@@ -8,4 +8,5 @@ export interface Command {
     modelName: keyof PlanManagers;
     modelId: number;
     action: "process";
+    isActive: boolean;
 }

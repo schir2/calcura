@@ -103,6 +103,18 @@ function renderComponent(plan: Plan, modelName: ModelName, modelId: number) {
   return h(component, props);
 }
 
+function updateCommandState(command: Command, newValue: boolean) {
+  const index = commandsRef.value.findIndex(c => c.commandSequenceCommandId === command.commandSequenceCommandId);
+  if (index !== -1) {
+    commandsRef.value[index].isActive = newValue;
+    emit('update-sequence', {
+      ...props.commandSequence,
+      commands: commandsRef.value
+    });
+  }
+}
+
+
 const drag = ref<boolean>(false)
 
 function handleUpdate(modelName: ModelName, data: Object){
@@ -127,7 +139,13 @@ function handleRemove(modelName: ModelName, data: Object){
              item-key="id"
              @end="onChange">
     <template #item="{element: command} : {element: Command}">
-      <div>
+      <div class="flex gap-2 items-center">
+        <base-ico class="text-2xl text-skin-primary/80 drag-handle cursor-move" name="drag"/>
+        <n-switch
+            :round="false"
+            :value="command.isActive"
+            @update:value="(newValue) => updateCommandState(command, newValue)"
+        />
         <component
             :is="renderComponent(plan, command.modelName, command.modelId)"
             @update="handleUpdate(command.modelName, $event)"

@@ -3,7 +3,7 @@ import type {Plan} from "~/types/Plan";
 import ChildCreateButtonList from "~/components/plan/ChildCreateButtonList.vue";
 import {ModelName} from "~/types/ModelName";
 import type {CommandSequence} from "~/types/CommandSequence";
-import {camelToKebab, toKebabCaseKey} from "~/utils";
+import {camelToKebab} from "~/utils";
 import PlanManager from "~/models/plan/PlanManager";
 import type {PlanState} from "~/types/PlanState";
 
@@ -78,23 +78,20 @@ function handleClose() {
   showModal.value = false;
 }
 
-const activeCommandSequence = ref<null | number>(null)
+const activeCommandSequenceId = ref<null | number>(null)
 
 const planManager = ref<PlanManager | null>(null);
 const planStates = ref<PlanState[] | null>(null);
 
-watch(plan, (newPlan) => {
-  if (newPlan) {
-    planManager.value = new PlanManager(newPlan);
-    if (!activeCommandSequence?.value) {
-      activeCommandSequence.value = newPlan.commandSequences[0]?.id
+watchEffect(() => {
+  if (plan?.value) {
+    planManager.value = new PlanManager(plan.value);
+    if (!activeCommandSequenceId?.value) {
+      activeCommandSequenceId.value = plan.value.commandSequences[0]?.id
     }
-    planStates.value = planManager.value.simulate(activeCommandSequence.value)
+    planStates.value = planManager.value.simulate(activeCommandSequenceId.value)
   }
-}, {
-  deep: true,
-  immediate: true,
-})
+}, {})
 
 provide('planStates', planStates)
 
@@ -110,9 +107,42 @@ async function loadPlan() {
   }
 }
 
+const activeExpensesAndDebts = computed(() => {
+      const result = {
+        expenses: [],
+        debts: []
+      }
+      if (activeCommandSequenceId?.value && planManager?.value) {
+        const commands = planManager.value.getCommandsForSequence(activeCommandSequenceId.value)
+        const currentPlan = planManager.value.getConfig() as Plan
+        for (const command of commands) {
+          if (command.isActive) {
+            if (command.modelName === 'debt') {
+              for (const debt of currentPlan.debts) {
+                if (command.modelId === debt.id) {
+                  result.debts.push(debt)
+                }
+              }
+            } else if (command.modelName === 'expense') {
+              for (const expense of currentPlan.expenses) {
+                if (command.modelId === expense.id) {
+                  result.expenses.push(expense)
+                }
+              }
+            }
+          }
+
+        }
+      }
+      console.log(result)
+      return result
+    },
+    {deep: true, immediate: true,})
+
 </script>
 <template>
   <div class="grid plan-container">
+    {{ activeExpensesAndDebts }}
     <div v-if="plan" class="space-y-2" style="grid-area:main">
       <n-modal v-model:show="showModal">
         <LazyPlanForm :initialValues="plan" mode="edit"
@@ -132,7 +162,7 @@ async function loadPlan() {
 
       <command-tabber
           v-if="plan"
-          v-model:active-tab="activeCommandSequence"
+          v-model:active-tab="activeCommandSequenceId"
           :plan="plan"
           @update="handleUpdateModel"
           @delete="handleDeleteModel"
@@ -157,7 +187,7 @@ async function loadPlan() {
         <template #header>Plan Data</template>
         <LazyPlanTable v-if="plan && planStates" :planStates="planStates"/>
       </n-modal>
-      <LazyChartExpensePie :expenses="plan?.expenses" :debts="plan?.debts"/>
+      <LazyChartExpensePie :expenses="activeExpensesAndDebts?.expenses" :debts="activeExpensesAndDebts?.debts"/>
       <LazyPlanChartGrowth v-if="planStates" :states="planStates"></LazyPlanChartGrowth>
       <LazyPlanChartExpensesOverTime v-if="planStates" :states="planStates"/>
     </div>

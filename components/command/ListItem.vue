@@ -30,7 +30,6 @@ const textClass = computed<string>(() => {
       <div class="flex gap-8 items-center">
         <slot name="header">
           <h3 class="flex items-center gap-2 text-lg font-semibold">
-            <base-ico class="text-2xl text-skin-base/20 drag-handle" name="drag"/>
             <base-ico v-if="modelName" :class="textClass" :name="modelName"/>
             <span>{{ title }}</span>
           </h3>

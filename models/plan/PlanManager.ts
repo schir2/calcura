@@ -425,14 +425,14 @@ export default class PlanManager extends BaseOrchestrator<Plan, PlanState, PlanM
 
     processImplementation(): void {
         const allManagers = this.getAllManagers()
-        this.managers.income.forEach((manager) => this.processUnprocessed(manager))
-        this.managers.debt.forEach((manager) => this.processUnprocessed(manager))
-        this.managers.expense.forEach((manager) => this.processUnprocessed(manager))
-        this.managers.cashReserve.forEach((manager) => this.processUnprocessed(manager))
-        this.managers.taxDeferred.forEach((manager) => this.processUnprocessed(manager))
-        this.managers.rothIra.forEach((manager) => this.processUnprocessed(manager))
-        this.managers.ira.forEach((manager) => this.processUnprocessed(manager))
-        this.managers.brokerage.forEach((manager) => this.processUnprocessed(manager))
+        // this.managers.income.forEach((manager) => this.processUnprocessed(manager))
+        // this.managers.debt.forEach((manager) => this.processUnprocessed(manager))
+        // this.managers.expense.forEach((manager) => this.processUnprocessed(manager))
+        // this.managers.cashReserve.forEach((manager) => this.processUnprocessed(manager))
+        // this.managers.taxDeferred.forEach((manager) => this.processUnprocessed(manager))
+        // this.managers.rothIra.forEach((manager) => this.processUnprocessed(manager))
+        // this.managers.ira.forEach((manager) => this.processUnprocessed(manager))
+        // this.managers.brokerage.forEach((manager) => this.processUnprocessed(manager))
         // allManagers.forEach(manager => {
         //     this.processUnprocessed(manager)
         // })
@@ -466,8 +466,11 @@ export default class PlanManager extends BaseOrchestrator<Plan, PlanState, PlanM
             let manager: BaseManager<any, any> | undefined = undefined
             if (commands) {
                 commands.forEach(command => {
-                    manager = this.getManagerById(command.modelName, Number(command.modelId))
-                    manager?.process()
+                    if (command.isActive) {
+                        manager = this.getManagerById(command.modelName, Number(command.modelId))
+                        manager?.process()
+                        manager?.advanceTimePeriod()
+                    }
                 })
             }
             this.process()

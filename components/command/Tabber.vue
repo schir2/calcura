@@ -1,12 +1,12 @@
 <script lang="ts" setup>
 import type {Plan} from "~/types/Plan";
+import type {CommandSequence} from "~/types/CommandSequence";
 
 interface Props {
   plan: Plan
-  activeTab: number | null;
 }
 const props = defineProps<Props>()
-const activeTab = toRef(props.activeTab);
+const activeTab = defineModel('activeTab');
 
 const emit = defineEmits(['update', 'delete', 'remove', 'update-sequence', 'delete-sequence', 'create-sequence'])
 
