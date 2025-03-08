@@ -1,10 +1,9 @@
 <template>
   <n-card>
-    <template #header>
-      <p v-if="finalPlanState" class="text-xl text-center">Expenses Over Time</p>
-    </template>
+<!--    <template #header>-->
+<!--      <p v-if="finalPlanState" class="text-xl text-center">Expenses Over Time</p>-->
+<!--    </template>-->
     <Bar v-if="data" :data="data" :options="options"/>
-
     <div class="flex items-center justify-between">
 
       <n-statistic label="Total">${{ $humanize.intcomma(finalState.expensesTotalLifetime) }}</n-statistic>
@@ -57,7 +56,6 @@ const data = computed(() => {
         backgroundColor: darkTheme.common.infoColor,
         data: expensesPaid.value
       },
-
       {
         label: 'ShortFall',
         borderColor: darkTheme.common.errorColorHover,
@@ -72,10 +70,17 @@ const options = {
   responsive: true,
   scales: {
     y: {
+      reverse: true,
       stacked: true,
     },
     x: {
+      display: false,
       stacked: true,
+    }
+  },
+  plugins: {
+    legend: {
+      position: 'bottom'
     }
   }
 }

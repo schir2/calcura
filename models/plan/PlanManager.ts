@@ -202,6 +202,7 @@ export default class PlanManager extends BaseOrchestrator<Plan, PlanState, PlanM
             expensesTotal: 0,
             expensesPaid: 0,
             expensesShortfall: 0,
+            expensesTotalLifetime: previousState.expensesTotalLifetime,
             expensesPaidLifetime: previousState.expensesPaidLifetime,
             expensesShortfallLifetime: previousState.expensesShortfallLifetime,
 
@@ -281,6 +282,7 @@ export default class PlanManager extends BaseOrchestrator<Plan, PlanState, PlanM
             ...currentState,
             expensesPaid: currentState.expensesPaid + amountPaid,
             expensesShortfall: currentState.expensesShortfall + shortfall,
+            expensesTotalLifetime: currentState.expensesTotalLifetime + amountRequested,
             expensesTotal: currentState.expensesTotal + amountRequested,
             expensesPaidLifetime: currentState.expensesPaidLifetime + amountPaid,
             expensesShortfallLifetime: currentState.expensesShortfallLifetime + shortfall,

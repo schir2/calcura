@@ -21,8 +21,8 @@ interface Props {
 
 const props = defineProps<Props>()
 const finalPlanState = computed(() => props.states[props.states.length - 1])
-const taxDeferredSeries = computed(() => props.states.map(state => (state.savingsTaxExemptEndOfYear)))
-const taxExemptSeries = computed(() => props.states.map(state => (state.savingsTaxDeferredEndOfYear)))
+const taxDeferredSeries = computed(() => props.states.map(state => (state.savingsTaxDeferredEndOfYear)))
+const taxExemptSeries = computed(() => props.states.map(state => (state.savingsTaxExemptEndOfYear)))
 const taxableSeries = computed(() => props.states.map(state => (state.savingsTaxableEndOfYear)))
 const taxedCapitalSeries = computed(() => props.states.map(state => (state.taxedCapital)))
 
@@ -44,9 +44,9 @@ const data = computed(() => {
         data: taxDeferredSeries.value
       },
       {
+        borderColor: darkTheme.common.successColorHover,
+        backgroundColor: darkTheme.common.successColor,
         label: 'Tax Exempt',
-        borderColor: darkTheme.common.warningColorHover,
-        backgroundColor: darkTheme.common.warningColor,
         data: taxExemptSeries.value
       },
       {
@@ -57,8 +57,9 @@ const data = computed(() => {
       },
       {
         label: 'Taxable',
-        borderColor: darkTheme.common.successColorHover,
-        backgroundColor: darkTheme.common.successColor,
+
+        borderColor: darkTheme.common.warningColorHover,
+        backgroundColor: darkTheme.common.warningColor,
         data: taxableSeries.value
       },
     ]
