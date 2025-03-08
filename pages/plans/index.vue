@@ -4,7 +4,7 @@
       <icon name="mdi:add"/>
     </template>
   </n-button>
-  <n-modal
+  <lazy-n-modal
       v-model:show="showModal"
       class="max-w-6xl"
   >
@@ -21,7 +21,7 @@
     />
 
 
-  </n-modal>
+  </lazy-n-modal>
   <PlanList :plans="plans"
             @duplicate="handleCreatePlan"
             @update="handleUpdatePlan"

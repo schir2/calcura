@@ -1,11 +1,11 @@
 <template>
   <n-thing>
-    <n-modal v-model:show="showModal">
+    <lazy-n-modal v-model:show="showModal">
       <CashReserveForm :initialValues="activeCashReservePartial" mode="create"
                        @create="handleCreate"
                        @cancel="handleClose"
       />
-    </n-modal>
+    </lazy-n-modal>
     <n-button size="small" type="info" round v-if="templates" v-for="(cashReserveTemplate, index) in templates"
               :cashReserveTemplate="cashReserveTemplate"
               @click="handleOpenModal(cashReserveTemplate)"

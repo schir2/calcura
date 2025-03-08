@@ -143,12 +143,12 @@ const activeExpensesAndDebts = computed(() => {
 <template>
   <div class="grid plan-container">
     <div v-if="plan" class="space-y-2" style="grid-area:main">
-      <n-modal v-model:show="showModal">
+      <lazy-n-modal v-model:show="showModal">
         <LazyPlanForm :initialValues="plan" mode="edit"
                       @update="handleUpdatePlan"
                       @cancel="handleClose"
         />
-      </n-modal>
+      </lazy-n-modal>
       <PlanDetailCard :plan="plan" @update="handleUpdatePlan"></PlanDetailCard>
       <n-card>
         <template #header>
@@ -161,14 +161,14 @@ const activeExpensesAndDebts = computed(() => {
               </template>
               Show Me the Data
             </n-button>
-            <n-modal
+            <lazy-n-modal
                 class="max-w-[1800px] h-[720px]"
                 v-model:show="showDataTable"
                 :draggable="true"
                 preset="card">
               <template #header>Plan Data</template>
               <LazyPlanTable v-if="plan && planStates" :planStates="planStates"/>
-            </n-modal>
+            </lazy-n-modal>
           </h3>
         </template>
         <ChildCreateButtonList @create-model="handleCreatePlanModel($event)"/>

@@ -1,11 +1,11 @@
 <template>
   <n-thing>
-    <n-modal v-model:show="showModal">
+    <lazy-n-modal v-model:show="showModal">
       <IncomeForm :initialValues="activeIncomePartial" mode="create"
                   @create="handleCreate"
                   @cancel="handleClose"
       />
-    </n-modal>
+    </lazy-n-modal>
     <n-button type="success" size="small" round v-if="templates" v-for="(incomeTemplate, index) in templates"
               :incomeTemplate="incomeTemplate"
               @click="handleOpenModal(incomeTemplate)"

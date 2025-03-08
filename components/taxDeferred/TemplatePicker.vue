@@ -1,12 +1,12 @@
 <template>
   <n-thing>
-    <n-modal v-model:show="showModal">
+    <lazy-n-modal v-model:show="showModal">
       <TaxDeferredForm :initialValues="activeTaxDeferredPartial" mode="create"
                                  @create="handleCreate"
                                  @cancel="handleClose"
                                  :incomes="incomes"
       />
-    </n-modal>
+    </lazy-n-modal>
     <n-button size="small" type="info" round v-if="templates"
               v-for="(taxDeferredTemplate, index) in templates"
               :taxDeferredTemplate="taxDeferredTemplate"

@@ -1,11 +1,11 @@
 <template>
   <n-thing>
-    <n-modal v-model:show="showModal">
+    <lazy-n-modal v-model:show="showModal">
       <ExpenseForm :initialValues="activeExpensePartial" mode="create"
                    @create="handleCreate"
                    @cancel="handleClose"
       />
-    </n-modal>
+    </lazy-n-modal>
     <n-button size="small" type="warning" round v-if="templates" v-for="(expenseTemplate, index) in templates"
               :expenseTemplate="expenseTemplate"
               @click="handleOpenModal(expenseTemplate)"

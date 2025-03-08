@@ -58,14 +58,14 @@ const annualContribution = computed(() => {
 })
 </script>
 <template>
-  <n-modal v-model:show="showModal">
+  <lazy-n-modal v-model:show="showModal">
     <BrokerageForm :initialValues="brokerage" mode="edit"
                    @delete="handleDelete"
                    @create="handleCreate"
                    @update="handleUpdate"
                    @cancel="handleClose"
     />
-  </n-modal>
+  </lazy-n-modal>
 
   <command-list-item
       @edit="handleEdit" @remove="handleRemove" @delete="handleDelete"

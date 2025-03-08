@@ -1,12 +1,12 @@
 <template>
-  <n-modal v-model:show="showModal">
+  <lazy-n-modal v-model:show="showModal">
     <ExpenseForm :initialValues="expense" mode="edit"
                  @delete="handleDelete"
                  @create="handleCreate"
                  @update="handleUpdate"
                  @cancel="handleClose"
     />
-  </n-modal>
+  </lazy-n-modal>
   <command-list-item
       @edit="handleEdit" @remove="handleRemove" @delete="handleDelete"
       :title="expense.name"

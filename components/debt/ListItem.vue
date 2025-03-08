@@ -42,14 +42,14 @@ function handleEdit() {
   showModal.value = true;
 }
 </script><template>
-  <n-modal v-model:show="showModal">
+  <lazy-n-modal v-model:show="showModal">
     <DebtForm :initialValues="debt" mode="edit"
               @delete="handleDelete"
               @create="handleCreate"
               @update="handleUpdate"
               @cancel="handleClose"
     />
-  </n-modal>
+  </lazy-n-modal>
   <command-list-item
       @edit="handleEdit" @remove="handleRemove" @delete="handleDelete"
       :title="debt.name"

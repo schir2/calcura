@@ -1,5 +1,5 @@
 <template>
-  <n-modal v-model:show="showModal">
+  <lazy-n-modal v-model:show="showModal">
     <TaxDeferredForm :initialValues="taxDeferred" mode="edit"
                      :incomes="incomes"
                      @delete="handleDelete"
@@ -7,7 +7,7 @@
                      @update="handleUpdate"
                      @cancel="handleClose"
     />
-  </n-modal>
+  </lazy-n-modal>
 
   <command-list-item
       @edit="handleEdit" @remove="handleRemove" @delete="handleDelete"

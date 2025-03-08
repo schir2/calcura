@@ -1,11 +1,11 @@
 <template>
   <n-thing>
-    <n-modal v-model:show="showModal">
+    <lazy-n-modal v-model:show="showModal">
       <BrokerageForm :initialValues="activeBrokeragePartial" mode="create"
                                @create="handleCreate"
                                @cancel="handleClose"
       />
-    </n-modal>
+    </lazy-n-modal>
     <n-button size="small" type="info" round v-if="templates" v-for="(brokerageTemplate, index) in templates"
               :brokerageTemplate="brokerageTemplate"
               @click="handleOpenModal(brokerageTemplate)"

@@ -1,11 +1,11 @@
 <template>
   <n-thing>
-    <n-modal v-model:show="showModal">
+    <lazy-n-modal v-model:show="showModal">
       <DebtForm :initialValues="activeDebtPartial" mode="create"
                 @create="handleCreate"
                 @cancel="handleClose"
       />
-    </n-modal>
+    </lazy-n-modal>
     <n-button size="small" type="error" round v-if="templates" v-for="(debtTemplate, index) in templates"
               :debtTemplate="debtTemplate"
               @click="handleOpenModal(debtTemplate)"
