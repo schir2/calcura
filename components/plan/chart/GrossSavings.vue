@@ -5,11 +5,14 @@
     </template>
     <Pie v-if="data" :data="data" :options="options"/>
     <template #footer>
-      <div class="flex items-center justify-evenly gap-2">
+      <div class="flex items-center justify-evenly gap-2 flex-wrap">
         <base-stat size="small" class="flex-1" label="Taxable"
                    :value="`$${$humanize.intcomma(finalPlanState.savingsTaxableEndOfYear)}`"></base-stat>
         <base-stat size="small" class="flex-1" label="Tax Deferred">${{ $humanize.intcomma(finalPlanState.savingsTaxDeferredEndOfYear) }}</base-stat>
         <base-stat size="small" class="flex-1" label="Tax Exempt">${{ $humanize.intcomma(finalPlanState.savingsTaxExemptEndOfYear) }}</base-stat>
+        <base-stat size="small" class="flex-1" label="Not Invested">${{ $humanize.intcomma(finalPlanState.taxedCapital) }}</base-stat>
+        <base-stat size="small" class="flex-1" label="Cash Reserves">${{ $humanize.intcomma(finalPlanState.cashReservesTotal) }}</base-stat>
+        <base-stat size="small" class="flex-1" label="Gross Investments">${{ $humanize.intcomma(finalPlanState.savingsEndOfYear) }}</base-stat>
       </div>
     </template>
   </n-card>
@@ -28,7 +31,7 @@ interface Props {
 
 
 const props = defineProps<Props>()
-const finalPlanState = computed(() => props.states[props.states.length - 1])
+const finalPlanState = computed(():PlanState => props.states[props.states.length - 1])
 
 
 ChartJS.register(ArcElement, Tooltip, Legend)
@@ -38,14 +41,14 @@ const data = computed(() => {
     return
   }
   return {
-    labels: ['Tax Deferred', 'Brokerage', 'Tax Exempt', 'Taxed Capital'],
+    labels: ['Tax Deferred', 'Brokerage', 'Tax Exempt', 'Not Invested'],
     datasets: [
       {
         backgroundColor: [
-          theme.value.common.infoColor,
           theme.value.common.warningColor,
-          theme.value.common.errorColor,
+          theme.value.common.infoColor,
           theme.value.common.successColor,
+          theme.value.common.errorColor,
         ],
         data: [
           finalPlanState.value.savingsTaxDeferredEndOfYear ?? 0,

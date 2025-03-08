@@ -58,7 +58,7 @@ const valueClass = computed(() => {
 </script>
 
 <template>
-  <div class="stat px-2 py-1 border border-skin-base rounded-xl" :class="statClass">
+  <div class="stat px-2 py-1 border border-skin-base rounded-xl whitespace-nowrap" :class="statClass">
     <span :class="labelClass" class="flex items-center gap-1" v-if="label">
     <slot name="label">
       <slot name="label-prefix">

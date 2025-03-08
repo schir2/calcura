@@ -26,8 +26,7 @@ export default class DebtManager extends BaseManager<Debt, DebtState> {
         }
         const paymentRequest = this.calculatePayment(currentState)
         const payment = this.orchestrator.requestFunds(paymentRequest, FundType.Taxed, this.config.paymentMinimum)
-        this.orchestrator.withdraw(payment, FundType.Taxed, this.config.paymentMinimum)
-        this.orchestrator.payDebt(payment)
+        this.orchestrator.payDebt(payment, this.config.paymentMinimum)
 
         const principalEndOfYear = currentState.principalStartOfYear - payment;
         const interestAmount = this.calculateInterest(principalEndOfYear)

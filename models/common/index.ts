@@ -4,4 +4,5 @@ export enum ContributionType {
     Taxable = 'taxable',
     Elective = 'elective',
     Ira = 'ira',
+    CashReserve = 'cash_reserve',
 }

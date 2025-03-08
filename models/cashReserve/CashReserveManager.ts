@@ -3,6 +3,7 @@ import type {CashReserve} from "~/types/CashReserve";
 import {CashReserveStrategy} from "~/types/CashReserve";
 import type CashReserveState from "~/types/CashReserveState";
 import {FundType} from "~/models/plan/PlanManager";
+import {ContributionType} from "~/models/common";
 
 export class CashReserveManager extends BaseManager<CashReserve, CashReserveState> {
     protected createInitialState(): CashReserveState {
@@ -47,6 +48,7 @@ export class CashReserveManager extends BaseManager<CashReserve, CashReserveStat
         const contribution = this.orchestrator.requestFunds(contributionRequested, FundType.Taxed)
         const cashReserveEndOfYear = currentState.cashReserveStartOfYear + contribution;
         this.orchestrator.withdraw(contribution, FundType.Taxed)
+        this.orchestrator.contribute(cashReserveEndOfYear, ContributionType.CashReserve)
         this.updateCurrentState({
             ...currentState,
             amountPaid: contribution,

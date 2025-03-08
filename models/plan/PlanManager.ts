@@ -141,6 +141,8 @@ export default class PlanManager extends BaseOrchestrator<Plan, PlanState, PlanM
             expensesShortfallLifetime: 0,
             expensesTotalLifetime: 0,
 
+            cashReservesTotal: 0,
+
             retirementIncomeProjected: 0,
             retirementIncomeGoal: retirementIncomeGoal,
 
@@ -208,6 +210,8 @@ export default class PlanManager extends BaseOrchestrator<Plan, PlanState, PlanM
 
             savingsStartOfYear: previousState.savingsEndOfYear,
             savingsEndOfYear: 0,
+
+            cashReservesTotal: 0,
 
             retirementIncomeProjected: 0,
             retirementIncomeGoal: retirementIncomeGoal,
@@ -291,8 +295,9 @@ export default class PlanManager extends BaseOrchestrator<Plan, PlanState, PlanM
 
     }
 
-    payDebt(amount: number) {
+    payDebt(amount: number, minimum: number) {
         const currentState = this.getCurrentState()
+        this.withdraw(amount, FundType.Taxed, minimum)
         this.updateCurrentState({
                 ...currentState,
                 debtPayments: currentState.debtPayments + amount,
@@ -358,6 +363,10 @@ export default class PlanManager extends BaseOrchestrator<Plan, PlanState, PlanM
                 this.adjustContributionLimit(contribution, ContributionLimitType.Ira);
                 currentState.taxDeferredContributions += contribution;
                 currentState.taxDeferredContributionsLifetime += contribution;
+                break;
+            case ContributionType.CashReserve:
+                currentState.cashReservesTotal += contribution
+                break;
         }
         this.updateCurrentState(currentState);
     }
