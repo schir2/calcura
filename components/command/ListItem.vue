@@ -58,7 +58,7 @@ const textClass = computed<string>(() => {
         </span>
       </div>
       <div class="flex gap-2 items-center">
-        <span class="text-lg" :class="textClass">
+        <span class="text-md" :class="textClass">
           <slot name="summary">
           </slot>
         </span>

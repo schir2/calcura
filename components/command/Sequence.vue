@@ -161,7 +161,7 @@ function handleRemove(modelName: ModelName, data: Object) {
              item-key="id"
              @end="onChange">
     <template #item="{element: command} : {element: Command}">
-      <div class="flex gap-2 items-center border-skin-base/30 bg-skin-surface rounded-md border p-1">
+      <div class="flex gap-2 items-center border-skin-base/30 bg-skin-surface rounded border p-1">
         <base-ico class="text-2xl text-skin-primary/80 drag-handle cursor-move" name="drag"/>
         <n-switch
             :round="false"

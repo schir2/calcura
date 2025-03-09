@@ -30,7 +30,7 @@ export function adjustForInsufficientFunds(
 ): number {
     switch (insufficientFundsStrategy) {
         case InsufficientFundsStrategy.None:
-            return Math.min(availableFunds, requestedAmount);
+            return Math.max(Math.min(availableFunds, requestedAmount),0);
         case InsufficientFundsStrategy.MinimumOnly:
             return Math.max(Math.min(availableFunds, requestedAmount), minimum);
         case InsufficientFundsStrategy.Full:

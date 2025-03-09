@@ -25,7 +25,7 @@ export class RothIraManager extends BaseManager<RothIra, RothIraState> {
 
     get incomeManager(): IncomeManager | undefined {
         if (this.config.income) {
-            return this.orchestrator.getManagerById('income', this.config.income.id)
+            return this.orchestrator.getManagerById<IncomeManager>('income', this.config.income.id)
         }
         eventBus.emit('warning', {scope: 'rothIraManager:missingIncomeManager', message: 'Missing income manager'})
         return undefined;

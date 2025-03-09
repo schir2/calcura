@@ -40,6 +40,6 @@ const collapsed = ref<boolean>(false)
 const menuOptions: MenuOption[] = [
   {label: renderLabel('Home', '/'), key: 'home', icon: renderIcon('uil:home'),},
   {label: renderLabel('Dashboard', '/dashboard'), key: 'dashboard', icon: renderIcon('uil:create-dashboard'),},
-  {label: renderLabel('Plans', '/plans'), key: 'plans', icon: renderIcon('mdi:flower-poppy'),},
+  {label: renderLabel('Plan', '/plans'), key: 'plans', icon: renderIcon('mdi:flower-poppy'),},
 ]
 </script>

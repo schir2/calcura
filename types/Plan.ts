@@ -66,5 +66,7 @@ export interface Plan {
     iras: Ira[];
     rothIras: RothIra[];
     commandSequences: CommandSequence[];
+    editedAt: Date
+    createdAt: Date
 
 }

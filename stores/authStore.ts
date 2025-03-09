@@ -1,10 +1,12 @@
 import type {User} from "~/types/User";
 import type {Credentials} from "~/types/Auth";
+import type {UserProfile} from "~/types/UserProfile";
 
 const auth = useAuth()
 
 export const useAuthStore = defineStore('auth', () => {
     const user = ref<User | null>(null)
+    const profile = ref<UserProfile | null>(null)
     const isAuthenticated = computed((): boolean => {
         return !!user.value;
 
@@ -42,7 +44,11 @@ export const useAuthStore = defineStore('auth', () => {
 
     async function fetchUser() {
         try {
-            user.value = await $fetch("/api/users/me/");
+            const fetchedUser = await $fetch<User>("/api/users/me/");
+            profile.value = fetchedUser.profile
+            delete fetchedUser.profile
+            user.value = fetchedUser
+
         } catch (error) {
             console.debug("Failed to fetch user", error);
         }
@@ -59,5 +65,5 @@ export const useAuthStore = defineStore('auth', () => {
         }
     }
 
-    return {user, login, logout, register, verify, isAuthenticated, fetchUser};
+    return {user, profile, login, logout, register, verify, isAuthenticated, fetchUser};
 },)

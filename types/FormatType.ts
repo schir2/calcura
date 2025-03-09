@@ -6,4 +6,6 @@ export enum FormatType {
     DateShort = 'date',
     DateLong = 'date:long',
     Number = 'number',
+    Time = 'time',
+    DateTime = 'datetime',
 }
