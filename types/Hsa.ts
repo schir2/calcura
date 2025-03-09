@@ -8,7 +8,6 @@ export interface Hsa {
     growthRate: number;
     initialBalance: number;
     contributionStrategy: HsaContributionStrategy;
-    contributionPercentage: number;
     contributionFixedAmount: number;
 }
 
@@ -19,6 +18,5 @@ export const hsaDefaults: HsaPartial = {
     growthRate: 6,
     initialBalance: 0,
     contributionStrategy: HsaContributionStrategy.Fixed,
-    contributionPercentage: 0,
     contributionFixedAmount: 0,
 }
