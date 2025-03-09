@@ -27,6 +27,7 @@ const iconMap = {
   income: 'mdi:currency-usd',
   plan: 'mdi:flower-poppy',
   roth: 'mdi:finance',
+  hsa: 'material-symbols-health-metrics',
   dashboard: 'uil:create-dashboard',
   table: 'material-symbols:table-view',
   drag: 'mdi:drag',

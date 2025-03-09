@@ -7,7 +7,8 @@ export enum ModelName {
     Income = 'income',
     Ira = 'ira',
     Plan = 'plan',
-    RothIra = 'rothIra'
+    RothIra = 'rothIra',
+    Hsa = 'hsa'
 }
 
 export enum ModelNameUpperCase{
@@ -19,7 +20,8 @@ export enum ModelNameUpperCase{
     Income = 'Income',
     Ira = 'Ira',
     Plan = 'Plan',
-    RothIra = 'RothIra'
+    RothIra = 'RothIra',
+    Hsa = 'Hsa'
 }
 
 
@@ -32,6 +34,7 @@ export enum ModelTextColor {
     income = 'text-skin-success',
     ira = 'text-skin-info',
     plan = 'text-skin-success',
-    rothIra = 'text-skin-info'
+    rothIra = 'text-skin-info',
+    hsa = 'text-skin-info',
 
 }
