@@ -6,7 +6,7 @@ import type {IncomeManager} from "~/models/income/IncomeManager";
 import {FundType} from "~/models/plan/PlanManager";
 import {ContributionType} from "~/models/common";
 import eventBus from "~/services/eventBus";
-import {IRA_CONTRIBUTION_LIMIT_2024} from "~/constants/IraIConstants";
+import {IRA_CONTRIBUTION_LIMIT_2024} from "~/constants/IraConstants";
 
 export class RothIraManager extends BaseManager<RothIra, RothIraState> {
 

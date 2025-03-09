@@ -21,6 +21,7 @@ import {ContributionError} from "~/utils/errors/ContributionError";
 import {RothIraManager} from "~/models/rothIra/RothIraManager";
 import eventBus from "~/services/eventBus";
 import type {Command} from "~/types/Command";
+import {HsaManager} from "~/models/hsa/hsaManager";
 
 export enum FundType {
     Taxable = "taxable",
@@ -36,6 +37,7 @@ export type PlanManagers = {
     rothIra: RothIraManager[];
     ira: IraIManager[];
     brokerage: BrokerageManager[];
+    hsa: HsaManager[];
 };
 
 
@@ -50,7 +52,8 @@ export default class PlanManager extends BaseOrchestrator<Plan, PlanState, PlanM
             brokerage: this.config.brokerages.map((brokerage) => new BrokerageManager(this, brokerage)),
             ira: this.config.iras.map((ira) => new IraIManager(this, ira)),
             rothIra: this.config.rothIras.map((rothIra) => new RothIraManager(this, rothIra)),
-            taxDeferred: this.config.taxDeferreds.map((taxDeferred) => new TaxDeferredManager(this, taxDeferred))
+            taxDeferred: this.config.taxDeferreds.map((taxDeferred) => new TaxDeferredManager(this, taxDeferred)),
+            hsa: this.config.hsas.map((hsa) => new HsaManager(this, hsa))
         }
     }
 
@@ -112,8 +115,10 @@ export default class PlanManager extends BaseOrchestrator<Plan, PlanState, PlanM
 
             taxDeferredContributions: 0,
             taxableContributions: 0,
+            hsaContributions: 0,
             taxExemptContributionsLifetime: 0,
             taxDeferredContributionsLifetime: 0,
+            hsaContributionsLifetime: 0,
             taxExemptContributions: 0,
             taxableContributionsLifetime: 0,
             debtPayments: 0,
@@ -191,6 +196,9 @@ export default class PlanManager extends BaseOrchestrator<Plan, PlanState, PlanM
 
             taxExemptContributions: 0,
             taxExemptContributionsLifetime: previousState.taxExemptContributionsLifetime,
+
+            hsaContributions: 0,
+            hsaContributionsLifetime: previousState.hsaContributionsLifetime,
 
             savingsTaxDeferredStartOfYear: previousState.savingsTaxDeferredEndOfYear,
 
@@ -367,6 +375,9 @@ export default class PlanManager extends BaseOrchestrator<Plan, PlanState, PlanM
             case ContributionType.CashReserve:
                 currentState.cashReservesTotal += contribution
                 break;
+            case ContributionType.Hsa:
+                currentState.hsaContributions += contribution
+                currentState.hsaContributionsLifetime += contribution
         }
         this.updateCurrentState(currentState);
     }

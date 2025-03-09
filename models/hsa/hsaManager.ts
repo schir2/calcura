@@ -1,17 +1,14 @@
-import {type Ira, IraContributionStrategy} from '~/types/Ira';
+import {type Hsa, HsaContributionStrategy} from '~/types/Hsa';
 import {assertDefined, calculateGrowthAmount} from "~/utils";
-import type IraState from "~/types/IraState";
+import type HsaState from "~/types/HsaState";
 import BaseManager from "~/models/common/BaseManager";
-import type {IncomeManager} from "~/models/income/IncomeManager";
 import {FundType} from "~/models/plan/PlanManager";
 import {ContributionType} from "~/models/common";
-import eventBus from "~/services/eventBus";
-import {IRA_CONTRIBUTION_LIMIT_2024} from "~/constants/IraConstants";
 
-export class IraIManager extends BaseManager<Ira, IraState> {
+export class HsaManager extends BaseManager<Hsa, HsaState> {
 
 
-    protected createInitialState(): IraState {
+    protected createInitialState(): HsaState {
         return {
             contribution: undefined,
             contributionLifetime: 0,
@@ -23,23 +20,13 @@ export class IraIManager extends BaseManager<Ira, IraState> {
         }
     }
 
-    get incomeManager(): IncomeManager | undefined {
-        if (this.config.income) {
-            return this.orchestrator.getManagerById('income', this.config.income.id)
-        }
-        eventBus.emit('warning', {scope: 'iraManager:missingIncomeManager', message: 'Missing income manager'})
-        return undefined;
-    }
-
     calculateContribution(): number {
-        return calculateIraContribution(
+        return calculateHsaContribution(
             this.config,
-            this.incomeManager?.getCurrentState().grossIncome,
-            this.orchestrator.getCurrentState().iraLimit
         );
     }
 
-    createNextState(previousState: IraState): IraState {
+    createNextState(previousState: HsaState): HsaState {
         assertDefined(previousState.balanceEndOfYear, 'balanceEndOfYear')
         return {
             contribution: undefined,
@@ -63,8 +50,8 @@ export class IraIManager extends BaseManager<Ira, IraState> {
             this.orchestrator.getConfig().growthApplicationStrategy,
             contribution
         )
-        this.orchestrator.contribute(contribution, ContributionType.Ira)
-        this.orchestrator.invest(growthAmount + contribution, ContributionType.Ira)
+        this.orchestrator.contribute(contribution, ContributionType.Hsa)
+        this.orchestrator.invest(growthAmount + contribution, ContributionType.Hsa)
         const balanceEndOfYear = currentState.balanceStartOfYear + growthAmount + contribution
         this.updateCurrentState(
             {
@@ -81,26 +68,12 @@ export class IraIManager extends BaseManager<Ira, IraState> {
 }
 
 
-export function calculateIraContribution(iraConfig: Ira, incomeAmount?: number, iraLimit: number = IRA_CONTRIBUTION_LIMIT_2024): number {
+export function calculateHsaContribution(hsaConfig: Hsa): number {
     let contribution = 0
-    switch (iraConfig.contributionStrategy) {
-        case IraContributionStrategy.Fixed:
-            contribution = iraConfig.contributionFixedAmount
-            break
-        case IraContributionStrategy.PercentageOfIncome:
-            if (incomeAmount === undefined) {
-
-                eventBus.emit('warning', {
-                    scope: 'iraManager:missingIncomeManager',
-                    message: 'Cannot perform percentage of income without a lined income manager'
-                })
-                return 0
-            }
-            contribution = incomeAmount * iraConfig.contributionPercentage / 100
-            break
-        case IraContributionStrategy.Max:
-            contribution = iraLimit
+    switch (hsaConfig.contributionStrategy) {
+        case HsaContributionStrategy.Fixed:
+            contribution = hsaConfig.contributionFixedAmount
             break
     }
-    return Math.min(contribution, iraLimit)
+    return Math.min(contribution)
 }

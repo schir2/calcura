@@ -25,10 +25,12 @@ export interface PlanState extends BaseState {
     taxDeferredContributions: number;
     taxableContributions: number;
     taxExemptContributions: number;
+    hsaContributions: number;
 
     taxDeferredContributionsLifetime: number;
     taxableContributionsLifetime: number;
     taxExemptContributionsLifetime: number;
+    hsaContributionsLifetime: number;
 
 
     /* Savings */

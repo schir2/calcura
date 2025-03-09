@@ -7,6 +7,7 @@ import type {Ira} from "~/types/Ira";
 import type {CashReserve} from "~/types/CashReserve";
 import type {RothIra} from "~/types/RothIra";
 import type {CommandSequence} from "~/types/CommandSequence";
+import type {Hsa} from "~/types/Hsa";
 
 
 export enum InsufficientFundsStrategy {
@@ -38,7 +39,7 @@ export enum ContributionLimitType {
 
 }
 
-export type PlanModels = 'taxDeferred' | 'brokerage' | 'cashReserve' | 'debt' | 'expense' | 'income' | 'ira' | 'plan' | 'rothIra';
+export type PlanModels = 'taxDeferred' | 'brokerage' | 'cashReserve' | 'debt' | 'expense' | 'income' | 'ira' | 'rothIra' | 'hsa';
 
 export interface Plan {
     id: number;
@@ -66,6 +67,7 @@ export interface Plan {
     iras: Ira[];
     rothIras: RothIra[];
     commandSequences: CommandSequence[];
+    hsas: Hsa[];
     editedAt: Date
     createdAt: Date
 
