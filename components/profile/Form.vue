@@ -2,7 +2,7 @@
 
 import {type UserProfile} from "~/types/UserProfile";
 import {useCrudFormWithValidation} from "~/composables/useCrudFormWithValidation";
-import {FORM_LABEL_ALIGN, FORM_LABEL_PLACEMENT} from "~/constants/FormConstants";
+import {FORM_LABEL_ALIGN, FORM_LABEL_PLACEMENT, FORM_MODAL_WIDTH_CLASS} from "~/constants/FormConstants";
 
 interface Props {
   initialValues?: Partial<UserProfile>;
@@ -18,9 +18,9 @@ const {formRef, modelRef, rules, handleCreate, handleUpdate, handleCancel} =
 
 </script>
 <template>
-  <n-card role="dialog" class="max-w-4xl" :bordered="true">
+  <n-card :class=FORM_MODAL_WIDTH_CLASS :bordered="true">
     <template #header>
-      <h3 class="text-2xl">Profile: {{ modelRef.name }}</h3>
+      <h3 class="text-2xl">Profile</h3>
     </template>
 
     <template #default>
@@ -43,7 +43,7 @@ const {formRef, modelRef, rules, handleCreate, handleUpdate, handleCancel} =
 
 
         <n-form-item path="birthday" label="Birthday">
-          <n-date-picker v-model:value="modelRef.birthday" placeholder="Enter your birthday"/>
+          <n-date-picker v-model="modelRef.birthday" placeholder="Enter your birthday"/>
         </n-form-item>
 
 
