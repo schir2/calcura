@@ -3,7 +3,7 @@
     <n-config-provider :theme="darkTheme">
       <n-message-provider>
         <LayoutTheNavbar/>
-        <aurora-background>
+        <aurora-background class="h-screen">
           <div class="container mx-auto my-2">
               <slot/>
           </div>
