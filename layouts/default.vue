@@ -22,12 +22,9 @@
 <script setup lang="ts">
 import {NConfigProvider, NMessageProvider} from 'naive-ui'
 import {useTitle} from "~/composables/useTitle";
-import {useAuthStore} from "~/stores/authStore";
 
 const {title} = useTitle()
 
-const authStore = useAuthStore()
-const router = useRouter()
 
 useHead({
   title: title
