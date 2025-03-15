@@ -21,7 +21,7 @@ const {theme, naiveTheme} = storeToRefs(themeStore)
         <layout-the-navbar style="grid-area:topnav"/>
         <layout-the-left-sidebar style="grid-area:left-side-menu"/>
         <n-scrollbar style="grid-area:content">
-          <main class="m-2">
+          <main class="p-8 content mx-auto max-w-2xl">
             <slot name="default"/>
           </main>
         </n-scrollbar>

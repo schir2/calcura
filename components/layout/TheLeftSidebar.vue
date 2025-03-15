@@ -2,10 +2,10 @@
     <div class="mr-2">
       <n-layout-sider
           class="min-h-nav-offset"
+          style="width:12rem;"
           bordered
           collapse-mode="width"
           :collapsed-width="64"
-          :width="240"
           :collapsed="collapsed"
           show-trigger
           @collapse="collapsed = true"

@@ -201,7 +201,7 @@ module.exports = {
                         '--tw-prose-td-borders': `rgb(var(--border-base))`,
 
                         // Invert colors
-                        '--tw-prose-invert-body': `rgb(var(--text-base))`,
+                        '--tw-prose-invert-body': `rgb(var(--text-muted))`,
                         '--tw-prose-invert-headings': `rgb(var(--text-base))`,
                         '--tw-prose-invert-lead': `rgb(var(--text-muted))`,
                         '--tw-prose-invert-links': `rgb(var(--text-link))`,
