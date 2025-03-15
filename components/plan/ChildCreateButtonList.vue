@@ -1,5 +1,5 @@
 <template>
-  <n-button-group>
+  <div class="flex gap-2 items-center flex-wrap">
     <n-button
         v-for="item in items"
         :key="item.name"
@@ -7,13 +7,14 @@
         :type="item.buttonType"
         secondary
         round
+        size="small"
     >
       <template #icon>
         <BaseIco :name="item.name"/>
       </template>
       {{ item.label }}
     </n-button>
-  </n-button-group>
+  </div>
   <n-modal v-model:show="showModal">
     <component v-if="selectedChildProp"
                :is="selectedChildProp.form" mode="create"
@@ -28,14 +29,16 @@ import {
   BrokerageForm,
   CashReserveForm,
   DebtForm,
-  ExpenseForm, HsaForm,
+  ExpenseForm,
+  HsaForm,
   IncomeForm,
   IraForm,
   RothIraForm,
   TaxDeferredForm,
 } from "#components";
+import type {Type} from "naive-ui/es/button/src/interface";
 
-type CreateButtonProps = { name: ModelName, label: string, form: Component, buttonType: string };
+type CreateButtonProps = { name: ModelName, label: string, form: Component, buttonType: Type };
 
 const items: CreateButtonProps[] = [
   {name: ModelName.Income, label: 'Income', form: IncomeForm, buttonType: 'primary'},

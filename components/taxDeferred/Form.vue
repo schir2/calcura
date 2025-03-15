@@ -29,13 +29,18 @@ const {
 
 </script>
 <template>
-  <n-card role="dialog" class="max-w-6xl" :bordered="true">
+  <n-card role="dialog" class="max-w-4xl" :bordered="true">
     <template #header>
       <h3 class="text-2xl">Tax Deferred : {{ modelRef.name }}</h3>
     </template>
 
     <template #default>
-      <n-form ref="formRef" :model="modelRef" :rules="rules" class="space-y-3">
+      <n-form ref="formRef"
+              :model="modelRef"
+              :rules="rules"
+              class="space-y-3"
+              label-placement="left"
+      >
         <n-collapse>
           <n-collapse-item>
             <template #arrow>
@@ -110,7 +115,6 @@ const {
             </section>
           </n-collapse-item>
         </n-collapse>
-        <section class="grid grid-cols-3 gap-3">
           <n-form-item path="name" label="Name">
             <n-input v-model:value="modelRef.name" placeholder="ABC Corp 401K"/>
           </n-form-item>
@@ -121,7 +125,6 @@ const {
           <n-form-item path="growthRate" label="Annual Growth Rate">
             <n-input-number class="w-full" v-model:value="modelRef.growthRate" placeholder="Annual Growth Rate"/>
           </n-form-item>
-        </section>
         <n-form-item path="income" label="Income">
           <IncomeSelector :incomes="incomes" v-model="modelRef.income"/>
         </n-form-item>

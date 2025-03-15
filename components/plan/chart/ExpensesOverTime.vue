@@ -6,10 +6,10 @@
     <Bar v-if="data" :data="data" :options="options"/>
 
     <div class="flex items-center justify-evenly gap-2">
-      <base-stat class="flex-1" label="Total"
+      <base-stat size="small" class="flex-1" label="Total"
                  :value="`$${$humanize.intcomma(finalState.expensesTotalLifetime)}`"></base-stat>
-      <base-stat class="flex-1" label="Paid">${{ $humanize.intcomma(finalState.expensesPaidLifetime) }}</base-stat>
-      <base-stat class="flex-1" label="Shortfall">
+      <base-stat size="small" class="flex-1" label="Paid">${{ $humanize.intcomma(finalState.expensesPaidLifetime) }}</base-stat>
+      <base-stat size="small" class="flex-1" label="Shortfall">
         <template #label-suffix>
           <base-ico v-if="finalState.expensesShortfallLifetime === 0" class="text-skin-success" name="success"/>
           <base-ico v-else class="text-skin-warning" name="warning"/>

@@ -5,8 +5,8 @@
         <n-card class="opacity-85" v-if="isAuthenticated" size="huge">
           <h1 class="text-4xl mb-4">Welcome Back
             <span v-if="user">
-        <span v-if="user.first_name">{{ user.first_name }}</span> <span
-                v-if="user.last_name">{{ user.last_name }}</span></span></h1>
+        <span v-if="user.firstName">{{ user.firstName }}</span> <span
+                v-if="user.lastName">{{ user.lastName }}</span></span></h1>
           <n-button size="large" type="primary" @click="$router.push('/dashboard')">My Dashboard</n-button>
 
         </n-card>
@@ -39,7 +39,7 @@
       </n-card>
       <n-card class="opacity-85" size="medium">
         <template #header>
-          FAQ
+          <nuxt-link to="/faq">FAQ</nuxt-link>
         </template>
       </n-card>
       <n-card class="opacity-85" size="medium">

@@ -2,6 +2,7 @@
 import type {PluginAPI} from "tailwindcss/types/config";
 import animate from "tailwindcss-animate";
 import { setupInspiraUI } from "@inspira-ui/plugins";
+import tailwindTypography from '@tailwindcss/typography'
 
 function withOpacity(variableName: string) {
     return ({opacityValue}: { opacityValue?: number }): string => {
@@ -226,7 +227,8 @@ module.exports = {
         animate,
         setupInspiraUI,
         require('@tailwindcss/forms'),
-        require('@tailwindcss/typography'),
+
+        tailwindTypography,
         require('@tailwindcss/aspect-ratio'),
         function (api: PluginAPI) {
             const {addUtilities} = api;
