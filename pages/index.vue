@@ -39,7 +39,7 @@
       </n-card>
       <n-card class="opacity-85" size="medium">
         <template #header>
-          <nuxt-link to="/faq">FAQ</nuxt-link>
+          <nuxt-link to="/(content)/Faq">FAQ</nuxt-link>
         </template>
       </n-card>
       <n-card class="opacity-85" size="medium">
