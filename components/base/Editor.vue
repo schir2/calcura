@@ -1,7 +1,16 @@
-<script setup>
+<script setup lang="ts">
+interface Props {
+  modelValue: string
+}
+const props = defineProps<Props>()
+
+const emit = defineEmits(['update:modelValue'])
 const editor = useEditor({
-  content: "<p>I'm running Tiptap with Vue.js. 🎉</p>",
+  content: "",
   extensions: [TiptapStarterKit],
+  onUpdate: ({ editor }) => {
+    emit('update:modelValue', editor.getHTML()) // Sync changes
+  }
 });
 
 onBeforeUnmount(() => {
