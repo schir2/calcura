@@ -27,6 +27,7 @@
     "motion-v": "^0.10.0",
     "nuxt": "^3.14.159",
     "nuxt-mdi": "^2.1.1",
+    "nuxt-tiptap-editor": "^2.1.4",
     "nuxtjs-naive-ui": "^1.0.2",
     "pinia": "^2.2.6",
     "vue": "latest",

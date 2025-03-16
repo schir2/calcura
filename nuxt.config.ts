@@ -1,5 +1,5 @@
 import AutoImport from 'unplugin-auto-import/vite'
-import { NaiveUiResolver } from 'unplugin-vue-components/resolvers'
+import {NaiveUiResolver} from 'unplugin-vue-components/resolvers'
 import Components from 'unplugin-vue-components/vite'
 
 export default defineNuxtConfig({
@@ -14,12 +14,13 @@ export default defineNuxtConfig({
     },
     devtools: {enabled: true},
     modules: [
-      '@vee-validate/nuxt',
-      '@nuxt/test-utils/module',
-      '@pinia/nuxt',
-      '@vueuse/nuxt',
-      '@nuxt/icon',
-      'nuxtjs-naive-ui',
+        '@vee-validate/nuxt',
+        '@nuxt/test-utils/module',
+        '@pinia/nuxt',
+        '@vueuse/nuxt',
+        '@nuxt/icon',
+        'nuxtjs-naive-ui',
+        'nuxt-tiptap-editor',
     ],
     imports: {
         dirs: [
@@ -27,9 +28,9 @@ export default defineNuxtConfig({
             'composables/**'
         ]
     },
-    icon:{
+    icon: {
         serverBundle: {
-            collections: ['uil','mdi',]
+            collections: ['uil', 'mdi',]
         }
     },
     postcss: {
@@ -41,12 +42,15 @@ export default defineNuxtConfig({
     app: {
         head: {
             link: [
-                { rel: 'icon', type: 'image/svg+xml', href: '/favicon.svg' }
+                {rel: 'icon', type: 'image/svg+xml', href: '/favicon.svg'}
             ],
             bodyAttrs: {
                 class: 'bg-skin-base text-skin-base'
             }
         }
+    },
+    tiptap: {
+        prefix: 'Tiptap',
     },
     runtimeConfig: {
         public: {
