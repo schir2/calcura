@@ -41,6 +41,7 @@
     "@iconify/icons-material-symbols": "^1.2.58",
     "@inspira-ui/plugins": "^0.0.1",
     "@nuxt/test-utils": "^3.14.4",
+    "@originjs/vite-plugin-commonjs": "^1.0.3",
     "@tailwindcss/aspect-ratio": "^0.4.2",
     "@tailwindcss/forms": "^0.5.9",
     "@tailwindcss/typography": "^0.5.15",
