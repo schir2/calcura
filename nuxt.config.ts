@@ -55,6 +55,9 @@ export default defineNuxtConfig({
         }
     },
     vite: {
+        server: {
+            allowedHosts: ['calcura.org'],
+        },
         plugins: [
             AutoImport({
                 imports: [
