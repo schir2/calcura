@@ -32,6 +32,9 @@ export default defineNuxtConfig({
             collections: ['uil','mdi',]
         }
     },
+    build: {
+        transpile: ['vueuc'],
+    },
     postcss: {
         plugins: {
             tailwindcss: {},
