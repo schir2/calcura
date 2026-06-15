@@ -1,7 +1,7 @@
 <template>
-  <n-form v-if="!user" ref="formRef" :model="credentialsRef" :rules="rules">
+  <n-form v-if="!authStore.isAuthenticated" ref="formRef" :model="credentialsRef" :rules="rules">
     <n-form-item path="email" label="Email">
-      <n-input ref="emailRef"  placeholder="email" v-model:value="credentialsRef.email"></n-input>
+      <n-input ref="emailRef" placeholder="email" v-model:value="credentialsRef.email"></n-input>
     </n-form-item>
     <n-form-item path="password" label="Password">
       <n-input type="password" placeholder="Password" v-model:value="credentialsRef.password"></n-input>
@@ -12,9 +12,17 @@
         <n-button @click="$router.push('/auth/register/')">Register</n-button>
       </div>
     </n-form-item>
-    <n-button quaternary type="primary" y>Forgot Password?</n-button>
+    <n-form-item>
+      <n-button class="w-full" @click="handleGoogleLogin" :loading="isGoogleLoading">
+        <template #icon>
+          <Icon name="mdi:google" />
+        </template>
+        Sign in with Google
+      </n-button>
+    </n-form-item>
+    <n-button quaternary type="primary">Forgot Password?</n-button>
   </n-form>
-  <n-button v-if="authStore.user" @click="authStore.logout()" :loading="isLogoutLoading">Log Out</n-button>
+  <n-button v-if="authStore.isAuthenticated" @click="authStore.logout()" :loading="isLogoutLoading">Log Out</n-button>
 </template>
 <script lang="ts" setup>
 
@@ -28,13 +36,11 @@ definePageMeta({
 const router = useRouter()
 const authStore = useAuthStore()
 
-const {user} = storeToRefs(authStore)
-
 const message = useMessage()
-const loadingBar = useLoading()
+const loadingBar = useLoadingBar()
 const isLoginLoading = ref<boolean>(false)
 const isLogoutLoading = ref<boolean>(false)
-
+const isGoogleLoading = ref<boolean>(false)
 
 interface Credentials {
   email: string
@@ -50,12 +56,11 @@ const credentialsRef = ref<Credentials>({
 const rules: FormRules = {
   email: [
     {required: true, message: 'Email is required', trigger: ['blur', 'change']},
-    {min: 5, max: 32, message: 'Password must be at least 8 characters', trigger: ['blur', 'change']},
+    {min: 5, max: 254, message: 'Email must be at least 5 characters', trigger: ['blur', 'change']},
   ],
   password: [
     {required: true, message: 'Password is required', trigger: ['blur', 'change']},
-    {min: 5, max: 32, message: 'Password must be at least 8 characters', trigger: ['blur', 'change']},
-
+    {min: 8, max: 128, message: 'Password must be at least 8 characters', trigger: ['blur', 'change']},
   ]
 }
 
@@ -65,19 +70,29 @@ async function handleLogin() {
       isLoginLoading.value = true;
       loadingBar.start()
       try {
-        await authStore.login(credentialsRef.value)
+        await authStore.login(credentialsRef.value.email, credentialsRef.value.password)
         message.success('Login Successful')
+        loadingBar.finish()
         await router.push('/')
-      } catch (error) {
-        if (error.response) {
-          message.error(error.response._data.error)
-          loadingBar.error()
-        }
+      } catch (error: any) {
+        message.error(error?.message ?? 'Login failed')
+        loadingBar.error()
+      } finally {
+        isLoginLoading.value = false;
       }
-      isLoginLoading.value = false;
-      loadingBar.finish()
     }
   })
+}
+
+async function handleGoogleLogin() {
+  isGoogleLoading.value = true
+  try {
+    await authStore.loginWithGoogle()
+  } catch (error: any) {
+    message.error(error?.message ?? 'Google login failed')
+  } finally {
+    isGoogleLoading.value = false
+  }
 }
 
 const emailRef = ref<null | HTMLElement>(null)
@@ -87,6 +102,4 @@ onMounted(() => {
     emailRef.value.focus()
   }
 })
-
-
 </script>

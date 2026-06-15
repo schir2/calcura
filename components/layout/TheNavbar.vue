@@ -10,8 +10,8 @@
       <ul class="flex items-center gap-2">
         <ClientOnly>
           <n-button v-if="isAuthenticated" @click="handleLogout()">Logout</n-button>
-          <n-button keyboard v-if="!authStore.user" @click="$router.push('/auth/login')">Login</n-button>
-          <n-avatar circle v-if="user">
+          <n-button keyboard v-if="!isAuthenticated" @click="$router.push('/auth/login')">Login</n-button>
+          <n-avatar circle v-if="isAuthenticated">
             <icon class="text-xl" name="mdi:user"/>
           </n-avatar>
         </ClientOnly>
@@ -40,9 +40,7 @@ const toggleMenu = () => {
   menu.value.open = !menu.value.open;
 }
 
-onMounted(async () => {
-  if (!authStore.user) {
-    await authStore.fetchUser()
-  }
+onMounted(() => {
+  authStore.initialize()
 })
 </script>

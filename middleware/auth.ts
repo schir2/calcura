@@ -1,10 +1,6 @@
-import { defineNuxtRouteMiddleware } from 'nuxt/app';
-
-
-export default defineNuxtRouteMiddleware((to, from) => {
-    const authStore = useAuthStore()
-
-    if (!authStore.isAuthenticated){
+export default defineNuxtRouteMiddleware(async (to) => {
+    const user = useSupabaseUser()
+    if (!user.value) {
         return navigateTo('/auth/login')
     }
 })

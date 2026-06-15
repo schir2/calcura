@@ -1,38 +1,60 @@
-<!-- pages/verify/[key].vue (Nuxt 3) -->
+<!-- Supabase handles email verification via a link in the email. When the user
+     clicks the link they are redirected back to the app with a session cookie set.
+     This page simply waits for the Supabase session to resolve and redirects. -->
 <template>
-  <div>
-    <h1>Email Verification</h1>
+  <div class="text-center">
     <p v-if="loading">Verifying your email...</p>
     <p v-else-if="error">{{ error }}</p>
-    <p v-else-if="success">Your account has been verified! You can now log in.</p>
+    <p v-else>Verification successful! Redirecting...</p>
   </div>
 </template>
 
 <script setup lang="ts">
-const {verify, } = useAuthStore()
+definePageMeta({
+  layout: 'auth',
+  title: 'Verify Email',
+})
 
-const route = useRoute()
-const verificationKey = route.query.key as string
-const loadingBar = useLoading()
+const user = useSupabaseUser()
 const router = useRouter()
+const loadingBar = useLoadingBar()
 const message = useMessage()
 
 const loading = ref(true)
 const error = ref('')
-const success = ref(false)
 
 onMounted(async () => {
-  try {
-    loadingBar.start()
-    await verify(verificationKey)
-    message.success(`You have been verified!`)
+  loadingBar.start()
+  // Give Supabase a moment to process the auth callback tokens from the URL
+  // (the @nuxtjs/supabase module handles the token exchange automatically)
+  await nextTick()
+
+  if (user.value) {
+    message.success('Email verified! Welcome.')
     loadingBar.finish()
-    router.push('/')
-  } catch (err) {
-    error.value = 'Verification failed or link invalid.'
-    loadingBar.error()
-  } finally {
-    loading.value = false
+    await router.push('/')
+  } else {
+    // Watch for the user to be set after Supabase processes the callback
+    const stop = watch(user, (newUser) => {
+      if (newUser) {
+        stop()
+        message.success('Email verified! Welcome.')
+        loadingBar.finish()
+        router.push('/')
+      }
+    })
+
+    // Timeout after 5 seconds if no session is established
+    setTimeout(() => {
+      if (!user.value) {
+        stop()
+        error.value = 'Verification failed or link has expired. Please try registering again.'
+        loadingBar.error()
+        loading.value = false
+      }
+    }, 5000)
   }
+
+  loading.value = false
 })
 </script>
