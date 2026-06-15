@@ -1,79 +1,74 @@
-# Setting up Authentication
+# Authentication — Supabase Auth
 
-## HTTPOnly
+Calcura uses [Supabase Auth](https://supabase.com/docs/guides/auth) for all authentication. The old Django session/CSRF flow has been removed entirely.
 
-```shell
-pip install djangorestframework
-pip install django-cors-headers
-```
-
-### Django Rest Framework settings
-
-```python
-REST_FRAMEWORK = {
-    'DEFAULT_PERMISSION_CLASSES': [
-        'rest_framework.permissions.DjangoModelPermissions'
-    ],
-    'DEFAULT_AUTHENTICATION_CLASSES': (
-   
-        'rest_framework.authentication.SessionAuthentication',
-    )
-}
-```
-
-### Django Rest Framework Views
-
-```python
-import json
-
-from django.contrib.auth import authenticate, login, logout
-from django.http import JsonResponse
-from django.middleware.csrf import get_token
-from django.utils.decorators import method_decorator
-from django.views.decorators.csrf import csrf_protect
-from django.views.decorators.http import require_POST
-from rest_framework.decorators import api_view, authentication_classes, permission_classes
-from rest_framework.permissions import AllowAny
-
-
-@require_POST
-@csrf_protect
-def login_view(request):
-    """Authenticate user and create a session."""
-    data = json.loads(request.body)
-    username = data.get("username")
-    password = data.get("password")
-
-    user = authenticate(request, username=username, password=password)
-    if user is not None:
-        login(request, user)
-        return JsonResponse({"message": "Login successful", "user": {"username": user.username, "email": user.email}})
-    else:
-        return JsonResponse({"error": "Invalid credentials"}, status=400)
-
-
-@api_view(['POST'])
-def logout_view(request):
-    """Logout user and remove session."""
-    logout(request)
-    return JsonResponse({"message": "Logged out successfully"})
-
-
-@api_view(['GET'])
-@authentication_classes([])
-@permission_classes([AllowAny])
-def get_csrf_token(request):
-    """Return CSRF token so frontend can include it in requests."""
-    return JsonResponse({"csrfToken": get_token(request)})
+## Flow overview
 
 ```
-
-### Django Rest Framework **urls.py**
-
-```python
-urlpatters = [
-    path("api/login/", login_view, name="login"),
-    path("api/logout/", logout_view, name="logout"),
-    path("api/csrf/", get_csrf_token, name="csrf"),
-]
+User fills login form
+  → authStore.login(email, password)
+  → useAuth.signInWithPassword(email, password)
+  → supabase.auth.signInWithPassword(...)
+  → Supabase returns Session (JWT) + User
+  → authStore.onAuthStateChange fires → stores session + user
+  → middleware/auth.ts: useSupabaseUser() is now populated → route allowed
 ```
+
+## Key files
+
+| File | Role |
+|------|------|
+| `composables/useAuth.ts` | Thin wrapper around `supabase.auth.*` |
+| `stores/authStore.ts` | Holds reactive `Session` and `User` state |
+| `middleware/auth.ts` | Redirects unauthenticated users to `/auth/login` |
+| `pages/auth/login.vue` | Login form (email/password + Google OAuth button) |
+| `pages/auth/register.vue` | Registration form |
+| `pages/auth/verify.vue` | Waits for Supabase email verification redirect |
+| `supabase/migrations/20260615000003_auth_trigger.sql` | Postgres trigger: auto-creates `profiles` on signup |
+
+## Profile auto-creation
+
+When a user signs up, the `on_user_created` Postgres trigger fires on `auth.users` INSERT and inserts a row into `public.profiles` with default values (`is_admin = false`). This trigger runs as `SECURITY DEFINER` (bypasses RLS), because the `profiles` INSERT policy is intentionally blocked for the `authenticated` role — only the trigger can insert profiles.
+
+## Google OAuth
+
+Google OAuth requires a one-time manual step in the Supabase Dashboard:
+1. Go to **Authentication → Providers → Google**
+2. Enable the Google provider
+3. Add your Google OAuth client ID and secret from [Google Cloud Console](https://console.cloud.google.com)
+4. Add the Supabase redirect URL to your Google OAuth app's authorized redirect URIs
+
+The frontend code in `composables/useAuth.ts` (`signInWithGoogle`) is already implemented.
+
+## Supabase Auth settings
+
+Configure in the Supabase dashboard under **Authentication → Settings**:
+- **Email confirmations:** enabled (users must verify before logging in)
+- **Site URL:** your production URL (e.g., `https://calcura.org`)
+- **Additional redirect URLs:** `http://localhost:3000` for local dev
+
+## Session management
+
+`authStore.initialize()` should be called once on app startup. It:
+1. Calls `supabase.auth.getSession()` to restore an existing session from localStorage
+2. Sets up `supabase.auth.onAuthStateChange()` to keep the store in sync with Supabase
+
+Call this in `app.vue` `onMounted` or a Nuxt plugin.
+
+## No CSRF tokens
+
+There are no CSRF tokens. The old `plugins/api.ts` plugin has been deleted. Supabase uses JWT-based auth via the `Authorization` header, which the `@nuxtjs/supabase` module handles automatically.
+
+## Environment variables
+
+| Variable | Purpose |
+|----------|---------|
+| `SUPABASE_URL` | Supabase project URL |
+| `SUPABASE_KEY` | Supabase anon/public key |
+| `NUXT_SUPABASE_SECRET_KEY` | Service role key (server-side only, not exposed to browser) |
+
+See `.env.example` for the full list.
+
+## Auth middleware
+
+`middleware/auth.ts` uses `useSupabaseUser()` (provided by `@nuxtjs/supabase`) to check for an authenticated user. The module's built-in redirect middleware is disabled (`supabase.redirect: false` in `nuxt.config.ts`) — this custom middleware is the only auth gate. See [ADR 007](adr/007-supabase-redirect-false.md).

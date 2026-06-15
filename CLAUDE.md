@@ -19,6 +19,15 @@ Run a single test file:
 npx vitest run tests/models/plan/PlanManager.test.ts
 ```
 
+Supabase:
+```bash
+supabase start                    # Start local Supabase (Docker)
+supabase stop                     # Stop local Supabase
+supabase db reset                 # Replay all migrations on local DB
+supabase migration new <name>     # Create a timestamped migration file
+supabase gen types typescript --local > types/database.types.ts  # Regenerate TS types
+```
+
 ## Tech Stack
 
 - **Framework:** Nuxt 3 + Vue 3
@@ -27,7 +36,9 @@ npx vitest run tests/models/plan/PlanManager.test.ts
 - **Forms:** Vee-Validate + Yup
 - **Charts:** Chart.js via vue-chartjs
 - **Testing:** Vitest + @vue/test-utils + happy-dom
-- **Backend:** Django REST API (`localhost:8000/api/`) with Supabase
+- **Backend:** Supabase (Postgres + PostgREST + Auth)
+
+The Django REST backend has been fully replaced by Supabase. There is no server to run.
 
 ## Architecture
 
@@ -39,17 +50,38 @@ Business logic lives in `models/`, not in components or stores.
 - **`BaseOrchestrator`** (`models/common/BaseOrchestrator.ts`) — Coordinates multiple managers, drives the year-by-year simulation loop, and handles inter-manager fund flows.
 - **`PlanManager`** (`models/plan/PlanManager.ts`) — The central orchestrator. It instantiates all financial managers (income, expense, debt, brokerage, tax-deferred, IRA, Roth IRA, cash reserve), runs the simulation forward until retirement criteria are met, and tracks tax/contribution limits per year.
 
-Financial managers live in `models/[domain]/` and mirror the same pattern. Each domain also has constants in `constants/`, types in `types/`, and utility functions in `utils/`.
+**The simulation engine is pure frontend logic and must not be coupled to any API or store.**
 
-### API Layer
+### API Layer (Supabase)
 
-`composables/useApi.ts` is the generic CRUD wrapper used by every domain service composable in `composables/api/`. It handles:
-- CSRF token injection
-- Cookie-based sessions
-- Automatic snake_case ↔ camelCase conversion
-- Standard operations: `get`, `list`, `create`, `update`, `patch`, `delete`, plus relationship helpers `addRelated`/`removeRelated`
+The app queries Supabase directly from the frontend via `@supabase/supabase-js`. There is no intermediate server.
 
-Domain service composables (`usePlanService`, `useIncomeService`, etc.) call `useApi` with the appropriate endpoint path.
+- `useSupabaseClient()` — provided by `@nuxtjs/supabase`, available in any composable or component
+- `useSupabaseUser()` — reactive current user from Supabase Auth
+- Domain service composables in `composables/api/` wrap Supabase queries for each domain (plans, incomes, expenses, etc.)
+
+**Field names are snake_case throughout** — PostgREST returns column names as defined in the schema. Do not add camelCase conversions. See [ADR 005](docs/adr/005-snake-case-field-names.md).
+
+### Auth
+
+Auth uses Supabase Auth (email/password + Google OAuth). See [ADR 001](docs/adr/001-supabase-over-django.md).
+
+- `composables/useAuth.ts` — wraps `supabase.auth.*` methods
+- `stores/authStore.ts` — holds `Session` and `User` from `@supabase/supabase-js`
+- `middleware/auth.ts` — protects private routes using `useSupabaseUser()`
+- `supabase.redirect: false` in `nuxt.config.ts` — the module's built-in redirect is disabled; `middleware/auth.ts` is the only auth gate (see [ADR 007](docs/adr/007-supabase-redirect-false.md))
+- Profiles auto-created via Postgres trigger on `auth.users` INSERT
+
+**No CSRF tokens.** The old `plugins/api.ts` CSRF plugin has been deleted.
+
+### Database
+
+Migrations live in `supabase/migrations/`. See `supabase/CLAUDE.md` for migration conventions.
+
+- All PKs: `BIGINT GENERATED ALWAYS AS IDENTITY` (see [ADR 002](docs/adr/002-bigint-identity-primary-keys.md))
+- All financial columns: `NUMERIC` (see [ADR 003](docs/adr/003-numeric-for-financial-values.md))
+- All automation: Postgres triggers (see [ADR 004](docs/adr/004-postgres-triggers-over-edge-functions.md))
+- All data isolation: Row-Level Security policies
 
 ### Routing & Layouts
 
@@ -66,10 +98,40 @@ Plans support four retirement triggers (defined in `types/Plan.ts`): age-based, 
 
 ### Component Organization
 
-94 components under `components/` are grouped by domain (`brokerage/`, `debt/`, `income/`, `expense/`, `ira/`, `rothIra/`, `taxDeferred/`, `plan/`) plus `base/` for primitive inputs, `chart/` for visualizations, `common/` for shared UI, and `layout/` for structural chrome.
+Components under `components/` are grouped by domain (`brokerage/`, `debt/`, `income/`, `expense/`, `ira/`, `rothIra/`, `taxDeferred/`, `plan/`) plus `base/` for primitive inputs, `chart/` for visualizations, `common/` for shared UI, and `layout/` for structural chrome.
 
 ### Key Type Files
 
+- `types/database.types.ts` — **auto-generated** by `supabase gen types typescript --local`. Do not edit by hand.
 - `types/Plan.ts` — core plan interface and strategy/limit enums
-- `types/[Domain]*.ts` — config and state types per financial entity
-- `types/Auth.ts`, `types/User.ts` — authentication types
+- `types/[Domain].ts` — config and state types per financial entity; all snake_case
+- `types/Auth.ts` — auth-related types (Supabase session, credentials)
+
+## Architecture Decisions
+
+Key decisions are documented in `docs/adr/`. Read these before making changes that touch:
+- Primary keys → ADR 002
+- Financial column types → ADR 003
+- Automation (triggers) → ADR 004
+- Field naming → ADR 005
+- IRA income association → ADR 006
+- Auth redirect → ADR 007
+
+## Conventions
+
+### Do
+- Keep business logic in `models/`, not in components or stores
+- Use `useSupabaseClient()` in composables for all DB access
+- Write field names in snake_case to match the DB schema
+- Create a migration file for any schema change; never edit the DB directly
+- Run `supabase gen types typescript --local > types/database.types.ts` after any migration
+- Use `SECURITY DEFINER` + `SET search_path = public` on all trigger functions
+- Wrap `auth.uid()` in `(select auth.uid())` in RLS policies to prevent per-row re-evaluation
+
+### Don't
+- Add camelCase ↔ snake_case conversion utilities
+- Call `$fetch` with CSRF headers (the Django API is gone)
+- Put API calls directly in components — use composables
+- Modify the simulation engine in `models/` when doing API migration work
+- Edit `types/database.types.ts` by hand
+- Add `supabase.redirect: true` — the custom middleware handles redirects
