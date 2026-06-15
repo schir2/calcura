@@ -1,5 +1,10 @@
 <template>
-  <n-form v-if="!authStore.user" ref="registrationForm" :model="registration" :rules="rules">
+  <div v-if="registrationSuccess" class="text-center">
+    <h2 class="text-xl font-semibold mb-2">Check your email</h2>
+    <p>We sent a verification link to <strong>{{ registeredEmail }}</strong>. Please click the link in the email to activate your account before logging in.</p>
+    <n-button class="mt-4" @click="$router.push('/auth/login/')">Go to Login</n-button>
+  </div>
+  <n-form v-else-if="!authStore.isAuthenticated" ref="registrationForm" :model="registration" :rules="rules">
     <n-form-item path="email" label="Email">
       <n-input placeholder="Email" v-model:value="registration.email"></n-input>
     </n-form-item>
@@ -18,7 +23,7 @@
       </div>
     </n-form-item>
   </n-form>
-  <n-button v-if="authStore.user" @click="authStore.logout()" :loading="isLogoutLoading">Log Out</n-button>
+  <n-button v-if="authStore.isAuthenticated" @click="authStore.logout()" :loading="isLogoutLoading">Log Out</n-button>
 </template>
 <script lang="ts" setup>
 
@@ -32,10 +37,11 @@ definePageMeta({
 const router = useRouter()
 const authStore = useAuthStore()
 const message = useMessage()
-const loadingBar = useLoading()
+const loadingBar = useLoadingBar()
 const isRegisterLoading = ref<boolean>(false)
 const isLogoutLoading = ref<boolean>(false)
-const {emailExists} = useAuth()
+const registrationSuccess = ref<boolean>(false)
+const registeredEmail = ref<string>('')
 
 interface Registration {
   email: string
@@ -55,20 +61,6 @@ function validateEmail(rule: FormItemRule, value: string): boolean {
   return emailRegex.test(value);
 }
 
-function validateEmailAlreadyExists(rule: FormItemRule, value: string): Promise<void> {
-  return new Promise((resolve, reject) => {
-    emailExists(value).then(exists => {
-      if (exists) {
-        reject(new Error('Email already exists'));
-      } else {
-        resolve();
-      }
-    }).catch(error => {
-      reject(new Error('Validation failed'));
-    });
-  });
-}
-
 function validatePasswordSame(rule: FormItemRule, value: string): boolean {
   return value === registration.value.password
 }
@@ -76,17 +68,16 @@ function validatePasswordSame(rule: FormItemRule, value: string): boolean {
 const rules: FormRules = {
   email: [
     {required: true, message: 'Email is required', trigger: ['blur', 'change']},
-    {min: 5, max: 32, message: 'Password must be at least 8 characters', trigger: ['blur', 'change']},
+    {min: 5, max: 254, message: 'Email must be at least 5 characters', trigger: ['blur', 'change']},
     {validator: validateEmail, message: 'Email is invalid', trigger: ['blur', 'change']},
-    {validator: validateEmailAlreadyExists, message: 'An Account with this email already exists.', trigger: ['change']}
   ],
   password: [
     {required: true, message: 'Password is required', trigger: ['blur', 'change']},
-    {min: 5, max: 32, message: 'Password must be at least 8 characters', trigger: ['blur', 'change']},
+    {min: 8, max: 128, message: 'Password must be at least 8 characters', trigger: ['blur', 'change']},
   ],
   passwordConfirmation: [
     {required: true, message: 'Password Confirmation is required', trigger: ['blur', 'change']},
-    {min: 5, max: 32, message: 'Password must be at least 8 characters', trigger: ['blur', 'change']},
+    {min: 8, max: 128, message: 'Password must be at least 8 characters', trigger: ['blur', 'change']},
     {
       validator: validatePasswordSame, message: 'Passwords must match', trigger: ['blur', 'password-input']
     }
@@ -99,20 +90,17 @@ async function handleRegister() {
       isRegisterLoading.value = true;
       loadingBar.start()
       try {
-        const response = await authStore.register(registration.value)
-        message.success(`Registration Successful. Email has been sent to ${registration.value.email}`)
-        await router.push('/')
-      } catch (error) {
-        if (error.response) {
-          message.error(error.response._data.error)
-          loadingBar.error()
-        }
+        await authStore.register(registration.value.email, registration.value.password)
+        registeredEmail.value = registration.value.email
+        registrationSuccess.value = true
+        loadingBar.finish()
+      } catch (error: any) {
+        message.error(error?.message ?? 'Registration failed')
+        loadingBar.error()
+      } finally {
+        isRegisterLoading.value = false;
       }
-      isRegisterLoading.value = false;
-      loadingBar.finish()
     }
   })
 }
-
-
 </script>

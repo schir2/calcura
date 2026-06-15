@@ -1,8 +1,11 @@
 export interface UserProfile {
     id: number;
-    firstName: string;
-    lastName: string;
-    birthday: Date;
-    lifeExpectancy: number;
-    email: string;
+    user_id: string;
+    first_name: string | null;
+    last_name: string | null;
+    birthday: string | null;
+    life_expectancy: number | null;
+    is_admin: boolean;
+    created_at: string;
+    edited_at: string;
 }

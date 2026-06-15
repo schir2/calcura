@@ -1,69 +1,47 @@
-import type {User} from "~/types/User";
-import type {Credentials} from "~/types/Auth";
-import type {UserProfile} from "~/types/UserProfile";
-
-const auth = useAuth()
+import type { Session, User } from '@supabase/supabase-js'
 
 export const useAuthStore = defineStore('auth', () => {
+    const session = ref<Session | null>(null)
     const user = ref<User | null>(null)
-    const profile = ref<UserProfile | null>(null)
-    const isAuthenticated = computed((): boolean => {
-        return !!user.value;
 
-    })
+    const isAuthenticated = computed(() => session.value !== null)
 
-    async function login(credentials: Credentials) {
-        try {
-            const response = await auth.login(credentials)
-            await fetchUser()
-            return response
-        } catch (error) {
-            console.debug("Login failed:", error);
-            throw error
-        }
+    // Initialize from Supabase onAuthStateChange
+    function initialize() {
+        const supabase = useSupabaseClient()
+        supabase.auth.getSession().then(({ data }) => {
+            session.value = data.session
+            user.value = data.session?.user ?? null
+        })
+        supabase.auth.onAuthStateChange((_event, newSession) => {
+            session.value = newSession
+            user.value = newSession?.user ?? null
+        })
     }
 
-    async function register(credentials: Credentials) {
-        try {
-            return await auth.register(credentials)
-        } catch (error) {
-            console.debug("Registration failed:", error);
-            throw error
-        }
+    async function login(email: string, password: string) {
+        const auth = useAuth()
+        const data = await auth.signInWithPassword(email, password)
+        session.value = data.session
+        user.value = data.user
+    }
+
+    async function loginWithGoogle() {
+        const auth = useAuth()
+        await auth.signInWithGoogle()
+    }
+
+    async function register(email: string, password: string) {
+        const auth = useAuth()
+        return await auth.signUp(email, password)
     }
 
     async function logout() {
-        try {
-            const response = await auth.logout();
-            user.value = null;
-            return response
-        } catch (error) {
-            console.debug("Logout failed:", error);
-        }
+        const auth = useAuth()
+        await auth.signOut()
+        session.value = null
+        user.value = null
     }
 
-    async function fetchUser() {
-        try {
-            const fetchedUser = await $fetch<User>("/api/users/me/");
-            profile.value = fetchedUser.profile
-            delete fetchedUser.profile
-            user.value = fetchedUser
-
-        } catch (error) {
-            console.debug("Failed to fetch user", error);
-        }
-    }
-
-    async function verify(key: string){
-        try {
-            const response = await auth.verify(key)
-            await fetchUser()
-            return response
-        } catch (error) {
-            console.debug("Verification failed:", error);
-            throw error
-        }
-    }
-
-    return {user, profile, login, logout, register, verify, isAuthenticated, fetchUser};
-},)
+    return { session, user, isAuthenticated, initialize, login, loginWithGoogle, register, logout }
+})
