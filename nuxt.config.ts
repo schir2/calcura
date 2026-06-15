@@ -14,6 +14,7 @@ export default defineNuxtConfig({
     },
     devtools: {enabled: true},
     modules: [
+      '@nuxtjs/supabase',
       '@vee-validate/nuxt',
       '@nuxt/test-utils/module',
       '@pinia/nuxt',
@@ -21,6 +22,9 @@ export default defineNuxtConfig({
       '@nuxt/icon',
       'nuxtjs-naive-ui',
     ],
+    supabase: {
+      redirect: false,
+    },
     imports: {
         dirs: [
             'constants',
