@@ -30,7 +30,7 @@ import type {RothIra} from "~/types/RothIra";
 import {ModelName} from "~/types/ModelName";
 import {calculateIraContribution} from "~/models/ira/IraIManager";
 
-interface Props {
+type Props = {
   rothIra: RothIra
 }
 

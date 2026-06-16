@@ -13,7 +13,7 @@
 <script lang="ts" setup>
 import type {Debt, DebtTemplate} from "~/types/Debt";
 
-interface Props {
+type Props = {
   debts: Debt[]
 }
 

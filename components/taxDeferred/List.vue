@@ -15,7 +15,7 @@ import type {
 } from "~/types/TaxDeferred";
 import type {Income} from "~/types/Income";
 
-interface Props {
+type Props = {
   taxDeferreds: TaxDeferred[]
   incomes: Income[] | undefined
 }

@@ -6,7 +6,7 @@ import {Doughnut} from 'vue-chartjs'
 import type {Debt} from "~/types/Debt";
 import {calculateDebtPayment} from "~/models/debt/DebtManager";
 
-interface Props {
+type Props = {
   expenses?: Expense[]
   debts?: Debt[]
 }
@@ -29,21 +29,21 @@ const expenseMap = computed(() => {
 
   for (const expense of expenses) {
     const annualExpense = getAnnualAmount(expense.amount, expense.frequency)
-    if (expense.isEssential && expense.expenseType === ExpenseType.fixed) {
+    if (expense.is_essential && expense.expense_type === ExpenseType.fixed) {
       expenseMap.essentialFixed += annualExpense
-    } else if (expense.isEssential && expense.expenseType === ExpenseType.variable) {
+    } else if (expense.is_essential && expense.expense_type === ExpenseType.variable) {
       expenseMap.essentialVariable += annualExpense
-    } else if (!expense.isEssential && expense.expenseType === ExpenseType.fixed) {
+    } else if (!expense.is_essential && expense.expense_type === ExpenseType.fixed) {
       expenseMap.discretionaryFixed += annualExpense
-    } else if (!expense.isEssential && expense.expenseType === ExpenseType.variable) {
+    } else if (!expense.is_essential && expense.expense_type === ExpenseType.variable) {
       expenseMap.discretionaryVariable += annualExpense
     }
   }
 
   for (const debt of debts) {
-    if (debt.interestRate <= 6) {
+    if (debt.interest_rate <= 6) {
       expenseMap.lowInterestDebt = calculateDebtPayment(debt, debt.principal)
-    } else if (debt.interestRate < 8) {
+    } else if (debt.interest_rate < 8) {
       expenseMap.mediumInterestDebt = calculateDebtPayment(debt, debt.principal)
     } else {
       expenseMap.highInterestDebt = calculateDebtPayment(debt, debt.principal)

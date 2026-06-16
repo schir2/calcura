@@ -1,4 +1,4 @@
-import type {Plan} from "~/types/Plan";
+﻿import type {Plan} from "~/types/Plan";
 import {
     GrowthApplicationStrategy,
     IncomeTaxStrategy,
@@ -114,10 +114,10 @@ describe("CashManager", () => {
         it('constructor', () => {
             assertDefined(cashReserveManager, 'cashReserve')
             const currentState = cashReserveManager.getCurrentState()
-            expect(currentState.amountRequested).toBe(undefined)
-            expect(currentState.amountPaid).toBe(undefined)
-            expect(currentState.cashReserveStartOfYear).toBe(10_000)
-            expect(currentState.cashReserveEndOfYear).toBe(undefined)
+            expect(currentState.amount_requested).toBe(undefined)
+            expect(currentState.amount_paid).toBe(undefined)
+            expect(currentState.cash_reserve_start_of_year).toBe(10_000)
+            expect(currentState.cash_reserve_end_of_year).toBe(undefined)
         })
     })
 
@@ -200,10 +200,10 @@ describe("CashManager", () => {
             cashReserveManager.process()
             const currentState = cashReserveManager.getCurrentState()
             const planState = planManager.getCurrentState()
-            expect(currentState.amountRequested).toBe(20_000)
-            expect(currentState.amountPaid).toBe(20_000)
-            expect(currentState.cashReserveStartOfYear).toBe(10_000)
-            expect(currentState.cashReserveEndOfYear).toBe(30_000)
+            expect(currentState.amount_requested).toBe(20_000)
+            expect(currentState.amount_paid).toBe(20_000)
+            expect(currentState.cash_reserve_start_of_year).toBe(10_000)
+            expect(currentState.cash_reserve_end_of_year).toBe(30_000)
             expect(planState.taxed_capital).toBe(85_000)
             expect(planState.taxed_withdrawals).toBe(20_000)
 
@@ -223,10 +223,10 @@ describe("CashManager", () => {
             cashReserveManager.process()
             const currentState = cashReserveManager.getCurrentState()
             const planState = planManager.getCurrentState()
-            expect(currentState.amountRequested).toBe(490_000)
-            expect(currentState.amountPaid).toBe(105_000)
-            expect(currentState.cashReserveStartOfYear).toBe(10_000)
-            expect(currentState.cashReserveEndOfYear).toBe(115_000)
+            expect(currentState.amount_requested).toBe(490_000)
+            expect(currentState.amount_paid).toBe(105_000)
+            expect(currentState.cash_reserve_start_of_year).toBe(10_000)
+            expect(currentState.cash_reserve_end_of_year).toBe(115_000)
             expect(planState.taxed_capital).toBe(0)
             expect(planState.taxed_withdrawals).toBe(105_000)
 

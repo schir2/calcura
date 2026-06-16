@@ -6,15 +6,15 @@
     >
       <span>{{planState.age}}</span>
       <span>{{planState.year}}</span>
-      <span>{{planState.taxableIncome}}</span>
-      <span>{{planState.grossIncome}}</span>
+      <span>{{planState.taxable_income}}</span>
+      <span>{{planState.gross_income}}</span>
     </CommonListItem>
   </CommonList>
 </template>
 <script lang="ts" setup>
-import type PlanState from "~/types/PlanState";
+import type {PlanState} from "~/types/PlanState";
 
-interface Props {
+type Props = {
   planStates: PlanState[]
 }
 

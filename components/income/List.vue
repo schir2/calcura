@@ -14,7 +14,7 @@
 <script lang="ts" setup>
 import type {Income} from "~/types/Income";
 
-interface Props {
+type Props = {
   incomes: Income[]
 }
 

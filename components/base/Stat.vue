@@ -2,7 +2,7 @@
 type Size = 'small' | 'medium' | 'large'
 type LabelPosition = 'top' | 'left'
 
-interface Props {
+type Props = {
   labelPrefix?: string
   labelSuffix?: string
   label?: string,

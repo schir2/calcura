@@ -35,7 +35,7 @@ import {ArcElement, Chart as ChartJS, Legend, Tooltip} from 'chart.js'
 import {Pie} from 'vue-chartjs'
 import type {PlanState} from "~/types/PlanState";
 
-interface Props {
+type Props = {
   states: PlanState[]
 }
 

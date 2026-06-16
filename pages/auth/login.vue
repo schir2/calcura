@@ -43,7 +43,7 @@ const isLoginLoading = ref<boolean>(false)
 const isLogoutLoading = ref<boolean>(false)
 const isGoogleLoading = ref<boolean>(false)
 
-interface Credentials {
+type Credentials = {
   email: string
   password: string
 }

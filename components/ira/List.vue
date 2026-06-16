@@ -9,7 +9,7 @@
 <script lang="ts" setup>
 import type {Ira, IraTemplate} from "~/types/Ira";
 
-interface Props {
+type Props = {
   iras: Ira[]
 }
 

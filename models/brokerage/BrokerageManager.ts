@@ -11,7 +11,7 @@ export class BrokerageManager extends BaseManager<Brokerage, BrokerageState> {
         const planState = this.orchestrator.getCurrentState()
         return calculateBrokerageContribution(
             this.config,
-            planState.grossIncome,
+            planState.gross_income,
             planState.taxed_capital,
         )
     }

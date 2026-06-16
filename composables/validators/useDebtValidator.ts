@@ -12,7 +12,7 @@ import {
 
 export function useDebtValidation(modelRef: Ref<Partial<Debt>>) {
     function validatePaymentFixedAmount(rule: FormItemRule, value: number | undefined) {
-        if (modelRef.value.paymentStrategy === DebtPaymentStrategy.Fixed) {
+        if (modelRef.value.payment_strategy === DebtPaymentStrategy.Fixed) {
             if (value === null || value === undefined) {
                 return new Error("Fixed payment amount is required when 'Fixed Payment' strategy is selected.");
             }
@@ -21,7 +21,7 @@ export function useDebtValidation(modelRef: Ref<Partial<Debt>>) {
     }
 
     function validatePaymentPercentage(rule: FormItemRule, value: number | undefined) {
-        if (modelRef.value.paymentStrategy === DebtPaymentStrategy.PercentageOfDebt) {
+        if (modelRef.value.payment_strategy === DebtPaymentStrategy.PercentageOfDebt) {
             if (value === null || value === undefined) {
                 return new Error("Payment percentage is required when 'Percentage of Debt' strategy is selected.");
             }
@@ -30,7 +30,7 @@ export function useDebtValidation(modelRef: Ref<Partial<Debt>>) {
     }
 
     function validatePaymentMinimum(rule: FormItemRule, value: number | undefined) {
-        if (modelRef.value.paymentStrategy === DebtPaymentStrategy.MinimumPayment){
+        if (modelRef.value.payment_strategy === DebtPaymentStrategy.MinimumPayment){
             if (value === null || value === undefined) {
                 return new Error("Fixed payment amount is required if Fixed Payment Strategy is selected")
             }
@@ -66,7 +66,7 @@ export function useDebtValidation(modelRef: Ref<Partial<Debt>>) {
                 trigger: ["blur", "change"]
             }
         ],
-        interestRate: [
+        interest_rate: [
             {required: true, type: "number", message: "Interest rate is required", trigger: ["blur", "change"]},
             {
                 type: "number",
@@ -81,7 +81,7 @@ export function useDebtValidation(modelRef: Ref<Partial<Debt>>) {
                 trigger: ["blur", "change"]
             }
         ],
-        paymentMinimum: [
+        payment_minimum: [
             {
                 type: "number",
                 min: MIN_PAYMENT,
@@ -98,10 +98,10 @@ export function useDebtValidation(modelRef: Ref<Partial<Debt>>) {
                 validator: validatePaymentMinimum, trigger: ["blur", "change"],
             }
         ],
-        paymentStrategy: [
+        payment_strategy: [
             {required: true, message: "Payment strategy is required", trigger: ["blur", "change"]}
         ],
-        paymentFixedAmount: [
+        payment_fixed_amount: [
             {validator: validatePaymentFixedAmount, trigger: ["blur", "change"]},
             {
                 type: "number",
@@ -110,7 +110,7 @@ export function useDebtValidation(modelRef: Ref<Partial<Debt>>) {
                 trigger: ["blur", "change"]
             },
         ],
-        paymentPercentage: [
+        payment_percentage: [
             {validator: validatePaymentPercentage, trigger: ["blur", "change"]},
             {type: "number", min: 0, message: "Payment percentage must be at least 0%.", trigger: ["blur", "change"]},
             {type: "number", max: 100, message: "Payment percentage must not exceed 100%.", trigger: ["blur", "change"]}

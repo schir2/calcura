@@ -14,12 +14,12 @@ import type {CashReserve} from "~/types/CashReserve";
 import {formatValue} from "~/utils/formatValue";
 import {FormatType} from "~/types/FormatType";
 
-interface Props {
+type Props = {
   cashReserves: CashReserve[],
 }
 
 const {cashReserves = []} = defineProps<Props>()
 const totalAnnualCashReserve = computed(() => {
-  return cashReserves.reduce((acc, cashReserve) => acc + cashReserve.initialAmount, 0);
+  return cashReserves.reduce((acc, cashReserve) => acc + cashReserve.initial_amount, 0);
 })
 </script>

@@ -29,7 +29,7 @@ import type {Income} from "~/types/Income";
 import {getAnnualAmount} from "~/utils";
 import {ModelName} from "~/types/ModelName";
 
-interface Props {
+type Props = {
   income: Income
 }
 

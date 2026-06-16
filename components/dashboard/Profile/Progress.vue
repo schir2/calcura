@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import type {UserProfile} from "~/types/UserProfile";
 
-interface Props {
+type Props = {
   profile: UserProfile
 }
 

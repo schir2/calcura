@@ -24,7 +24,7 @@
 <script setup lang="ts">
 import { Motion } from "motion-v";
 
-interface Props {
+type Props = {
   duration?: number;
   delay?: number;
   blur?: string;

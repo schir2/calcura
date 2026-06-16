@@ -3,7 +3,7 @@ import type {BrokeragePartial} from "~/types/Brokerage";
 
 export function useBrokerageValidator(modelRef: Ref<BrokeragePartial>) {
     function validateContributionFixedAmount(rule: FormItemRule, value: number | undefined) {
-        if (modelRef.value.contributionStrategy === "fixed") {
+        if (modelRef.value.contribution_strategy === "fixed") {
             if (value === null || value === undefined) {
                 return new Error("Fixed contribution amount is required when Fixed Contribution strategy is selected");
             }
@@ -12,7 +12,7 @@ export function useBrokerageValidator(modelRef: Ref<BrokeragePartial>) {
     }
 
     function validateContributionPercentage(rule: FormItemRule, value: number | undefined) {
-        if (modelRef.value.contributionStrategy === "percentage_of_income") {
+        if (modelRef.value.contribution_strategy === "percentage_of_income") {
             if (value === null || value === undefined) {
                 return new Error("Contribution Percentage is required when Percentage of Income Contribution strategy is selected");
             }
@@ -26,7 +26,7 @@ export function useBrokerageValidator(modelRef: Ref<BrokeragePartial>) {
             {min: 3, message: " name must be at least 3 characters long", trigger: ["blur", "change"]},
             {max: 50, message: " name must be at most 50 characters long", trigger: ["blur", "change"]}
         ],
-        growthRate: [
+        growth_rate: [
             {required: true, type: "number", message: "Growth rate is required", trigger: ["blur", "change"]},
             {type: "number", min: 0, message: "Growth rate cannot be negative", trigger: ["blur", "change"]},
             {
@@ -36,14 +36,14 @@ export function useBrokerageValidator(modelRef: Ref<BrokeragePartial>) {
                 trigger: ["blur", "change"]
             }
         ],
-        initialBalance: [
+        initial_balance: [
             {required: true, type: "number", message: "Initial balance is required", trigger: ["blur", "change"]},
             {type: "number", min: 0, message: "Initial balance cannot be negative", trigger: ["blur", "change"]}
         ],
-        contributionStrategy: [
+        contribution_strategy: [
             {required: true, message: "Contribution strategy is required", trigger: ["blur", "change"]}
         ],
-        contributionPercentage: [
+        contribution_percentage: [
             {validator: validateContributionPercentage, trigger: ["blur", "change"]},
             {
                 type: "number",
@@ -58,7 +58,7 @@ export function useBrokerageValidator(modelRef: Ref<BrokeragePartial>) {
                 trigger: ["blur", "change"]
             }
         ],
-        contributionFixedAmount: [
+        contribution_fixed_amount: [
             {validator: validateContributionFixedAmount, trigger: ["blur", "change"]},
             {type: "number", message: "Fixed contribution amount is required", trigger: ["blur", "change"]},
             {type: "number", min: 0, message: "Contribution amount cannot be negative", trigger: ["blur", "change"]}

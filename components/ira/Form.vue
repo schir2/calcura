@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import {type Ira, iraDefaults} from "~/types/Ira";
 
-interface Props {
+type Props = {
   initialValues?: Partial<Ira>;
   mode: 'create' | 'edit'
 }
@@ -69,22 +69,22 @@ const {formRef, modelRef, rules, handleCreate, handleUpdate, handleCancel} =
             <n-input v-model:value="modelRef.name" placeholder="Enter the name of the investment"/>
           </n-form-item>
 
-          <n-form-item path="initialBalance" label="Current Savings">
-            <n-input-number class="w-full" v-model:value="modelRef.initialBalance"
+          <n-form-item path="initial_balance" label="Current Savings">
+            <n-input-number class="w-full" v-model:value="modelRef.initial_balance"
                             placeholder="Enter your current savings balance"/>
           </n-form-item>
 
-          <n-form-item path="growthRate" label="Growth Rate">
-            <n-input-number class="w-full" v-model:value="modelRef.growthRate"
+          <n-form-item path="growth_rate" label="Growth Rate">
+            <n-input-number class="w-full" v-model:value="modelRef.growth_rate"
                             placeholder="Enter expected growth rate"/>
           </n-form-item>
         </section>
 
-        <n-form-item path="contributionStrategy" label="Contribution Strategy">
+        <n-form-item path="contribution_strategy" label="Contribution Strategy">
           <div class="grid grid-cols-3 gap-3">
-            <CommonRadioCard v-model="modelRef.contributionStrategy" value="fixed" title="Fixed Payment">
-              <n-form-item path="contributionFixedAmount" label="Elective Contribution Fixed Amount">
-                <n-input-number class="w-full" v-model:value="modelRef.contributionFixedAmount" :precision="2" :min="0"
+            <CommonRadioCard v-model="modelRef.contribution_strategy" value="fixed" title="Fixed Payment">
+              <n-form-item path="contribution_fixed_amount" label="Elective Contribution Fixed Amount">
+                <n-input-number class="w-full" v-model:value="modelRef.contribution_fixed_amount" :precision="2" :min="0"
                                 :max="8000">
                   <template #prefix>$</template>
                   <template #suffix>per year</template>
@@ -99,10 +99,10 @@ const {formRef, modelRef, rules, handleCreate, handleUpdate, handleCancel} =
               </section>
             </CommonRadioCard>
 
-            <CommonRadioCard v-model="modelRef.contributionStrategy" value="percentage_of_income"
+            <CommonRadioCard v-model="modelRef.contribution_strategy" value="percentage_of_income"
                              title="Percentage of Income">
-              <n-form-item path="contributionPercentage" label="Elective Contribution Percentage">
-                <n-input-number class="w-full" v-model:value="modelRef.contributionPercentage" :precision="2">
+              <n-form-item path="contribution_percentage" label="Elective Contribution Percentage">
+                <n-input-number class="w-full" v-model:value="modelRef.contribution_percentage" :precision="2">
                   <template #prefix>%</template>
                   <template #suffix>per year</template>
                 </n-input-number>
@@ -118,7 +118,7 @@ const {formRef, modelRef, rules, handleCreate, handleUpdate, handleCancel} =
               </section>
             </CommonRadioCard>
 
-            <CommonRadioCard v-model="modelRef.contributionStrategy" value="max" title="Maximum">
+            <CommonRadioCard v-model="modelRef.contribution_strategy" value="max" title="Maximum">
               <section class="p-3">
                 <h3 class="text-lg font-semibold">What it means:</h3>
                 <p>You aim to contribute the maximum allowed by the IRS every year.</p>

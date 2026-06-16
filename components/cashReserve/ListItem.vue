@@ -20,7 +20,7 @@
 import type {CashReserve} from "~/types/CashReserve";
 import {ModelName} from "~/types/ModelName";
 
-interface Props {
+type Props = {
   cashReserve: CashReserve
 }
 

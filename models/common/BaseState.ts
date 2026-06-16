@@ -1,3 +1,3 @@
-export interface BaseState {
+export type BaseState = {
     processed: boolean;
 }

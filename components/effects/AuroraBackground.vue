@@ -34,7 +34,7 @@
 <script setup lang="ts">
 import {cn} from "@/lib/utils";
 
-interface AuroraBackgroundProps {
+type AuroraBackgroundProps = {
   radialGradient?: boolean;
   class?: string;
 }

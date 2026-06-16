@@ -4,8 +4,8 @@
     <client-only><p class="content text-lg text-center">{{ currentDateTimeString }}</p></client-only>
     <p class="content text-lg text-center">Welcome back {{ user?.email }}</p>
     <div class="breakout grid grid-cols-2 gap-2">
-      <dashboard-plans :plans="plans"/>
-      <dashboard-profile :profile="profile" />
+      <dashboard-plans v-if="plans" :plans="plans"/>
+      <dashboard-profile v-if="profile" :profile="profile"/>
     </div>
   </div>
 </template>
@@ -18,7 +18,8 @@ definePageMeta({
       layout: 'default',
     }
 )
-const {data: plans, refresh} = useFetch<Plan[]>('api/plans')
+const {list} = usePlanService()
+const {data: plans,  refresh, error} = useAsyncData('plans', () => list())
 const user = useSupabaseUser()
 const {profile} = storeToRefs(useProfileStore())
 const {currentDateTimeString} = storeToRefs(useCurrentTime())

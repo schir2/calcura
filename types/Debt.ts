@@ -8,7 +8,7 @@ export enum DebtPaymentStrategy {
 }
 
 
-export interface Debt {
+export type Debt = {
     id: number;
     name: string;
     principal: number;
@@ -21,7 +21,7 @@ export interface Debt {
 }
 
 export type DebtPartial = Partial<Omit<Debt, 'id'>>
-export interface DebtTemplate extends Debt{
+export type DebtTemplate = Debt & {
     description: string;
 }
 

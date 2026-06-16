@@ -7,7 +7,7 @@ import {useIncomeValidation} from "~/composables/validators/useIncomeValidator";
 import {Frequency} from "~/types/Frequency";
 import {FORM_LABEL_ALIGN, FORM_LABEL_PLACEMENT, FORM_MODAL_WIDTH_CLASS} from "~/constants/FormConstants";
 
-interface Props {
+type Props = {
   initialValues?: Partial<Income>;
   mode: 'create' | 'edit'
 }
@@ -32,7 +32,7 @@ const chartData = computed(() => ({
     label: 'Projection',
 
     backgroundColor: "#1355FF",
-    data: generateGrowthData(getAnnualAmount(modelRef.value.grossIncome ?? 0, modelRef.value.frequency as Frequency), modelRef.value.growthRate),
+    data: generateGrowthData(getAnnualAmount(modelRef.value.gross_income ?? 0, modelRef.value.frequency as Frequency), modelRef.value.growth_rate),
   }]
 }));
 
@@ -64,17 +64,17 @@ function generateGrowthData(principal: number, growthRate: number = 0) {
           <n-input v-model:value="modelRef.name" placeholder="Enter income name"/>
         </n-form-item>
 
-        <n-form-item path="grossIncome" label="Gross Income">
+        <n-form-item path="gross_income" label="Gross Income">
           <n-input-number
-              v-model:value="modelRef.grossIncome"
+              v-model:value="modelRef.gross_income"
               placeholder="Enter gross income amount"
               class="w-full"
           />
         </n-form-item>
 
-        <n-form-item path="growthRate" label="Growth Rate (%)">
+        <n-form-item path="growth_rate" label="Growth Rate (%)">
           <n-space vertical class="w-full">
-            <n-input-number class="w-full" v-model:value="modelRef.growthRate"/>
+            <n-input-number class="w-full" v-model:value="modelRef.growth_rate"/>
           </n-space>
         </n-form-item>
 
@@ -98,7 +98,7 @@ function generateGrowthData(principal: number, growthRate: number = 0) {
     <template #footer>
       <base-stat class="text-end">
         <span class="text-skin-success">+${{
-            $humanize.intComma(getAnnualAmount(modelRef.grossIncome ?? 0, modelRef.frequency ?? Frequency.Annually))
+            $humanize.intComma(getAnnualAmount(modelRef.gross_income ?? 0, modelRef.frequency ?? Frequency.Annually))
           }}/year</span>
       </base-stat>
     </template>

@@ -4,7 +4,7 @@ import {usePlanValidator} from "~/composables/validators/usePlanValidator";
 import {planDefaults} from "~/constants/planConstants";
 import {FORM_MODAL_WIDTH_CLASS} from "~/constants/FormConstants";
 
-interface Props {
+type Props = {
   initialValues?: Partial<Plan>;
   mode?: 'create' | 'edit'
 }

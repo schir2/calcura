@@ -9,7 +9,7 @@
 <script lang="ts" setup>
 import type {CashReserve, CashReserveTemplate} from "~/types/CashReserve";
 
-interface Props {
+type Props = {
   cashReserves: CashReserve[]
 }
 

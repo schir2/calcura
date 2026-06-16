@@ -6,7 +6,7 @@ export enum RothIraContributionStrategy {
     Max = 'max'
 }
 
-export interface RothIra {
+export type RothIra = {
     id: number;
     name: string;
 
@@ -22,7 +22,7 @@ export interface RothIra {
 
 export type RothIraPartial = Partial<Omit<RothIra, 'id'>>
 
-export interface RothIraTemplate extends RothIra {
+export type RothIraTemplate = RothIra & {
     description: string;
 }
 

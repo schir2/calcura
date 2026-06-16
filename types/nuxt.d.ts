@@ -1,11 +1,11 @@
 // types/nuxt.d.ts
-export interface NuxtApp {
+export type NuxtApp = {
     $api: <T>(url: string, options?: any) => Promise<T>;
 }
 
 // Extending the NuxtApp type
 declare module "#app" {
-    interface NuxtApp {
+    type NuxtApp = {
         $api: <T>(url: string, options?: any) => Promise<T>;
     }
 }

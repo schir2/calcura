@@ -73,7 +73,7 @@ import {type Expense} from "~/types/Expense";
 
 import {getAnnualAmount} from "~/utils";
 
-interface Props {
+type Props = {
   expenses: Expense[]
 }
 

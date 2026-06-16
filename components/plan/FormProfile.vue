@@ -11,8 +11,8 @@
       <n-input-number class="w-full" v-model:value="modelRef.year"/>
     </n-form-item>
 
-    <n-form-item path="lifeExpectancy" label="Life Expectancy">
-      <n-input-number class="w-full" v-model:value="modelRef.lifeExpectancy"/>
+    <n-form-item path="life_expectancy" label="Life Expectancy">
+      <n-input-number class="w-full" v-model:value="modelRef.life_expectancy"/>
     </n-form-item>
 </template>
 <script lang="ts" setup>

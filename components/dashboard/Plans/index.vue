@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import type {Plan} from '~/types/Plan'
 
-interface Props {
+type Props = {
   plans?: Plan[]
 }
 

@@ -5,7 +5,7 @@ import {RothIraContributionStrategy} from "~/types/RothIra";
 export function useRothIraValidation(modelRef: Ref<Partial<RothIra>>) {
 
     function validateContributionFixedAmount(rule: FormItemRule, value: number | undefined) {
-        if (modelRef.value.contributionStrategy === RothIraContributionStrategy.Fixed) {
+        if (modelRef.value.contribution_strategy === RothIraContributionStrategy.Fixed) {
             if (value === null || value === undefined) {
                 return new Error("Fixed contribution amount is required when 'Fixed Payment' strategy is selected.");
             }
@@ -14,7 +14,7 @@ export function useRothIraValidation(modelRef: Ref<Partial<RothIra>>) {
     }
 
     function validateContributionPercentage(rule: FormItemRule, value: number | undefined) {
-        if (modelRef.value.contributionStrategy === RothIraContributionStrategy.PercentageOfIncome) {
+        if (modelRef.value.contribution_strategy === RothIraContributionStrategy.PercentageOfIncome) {
             if (value === null || value === undefined) {
                 return new Error("Contribution percentage is required when 'Percentage of Income' strategy is selected.");
             }
@@ -28,7 +28,7 @@ export function useRothIraValidation(modelRef: Ref<Partial<RothIra>>) {
             {min: 3, message: " name must be at least 3 characters long.", trigger: ["blur", "change"]},
             {max: 32, message: " name must be at most 32 characters long.", trigger: ["blur", "change"]},
         ],
-        growthRate: [
+        growth_rate: [
             {required: true, type: "number", message: "Growth rate is required", trigger: ["blur", "change"]},
             {type: "number", min: 0, message: "Growth rate cannot be negative", trigger: ["blur", "change"]},
             {
@@ -38,14 +38,14 @@ export function useRothIraValidation(modelRef: Ref<Partial<RothIra>>) {
                 trigger: ["blur", "change"]
             },
         ],
-        initialBalance: [
+        initial_balance: [
             {required: true, type: "number", message: "Initial balance is required", trigger: ["blur", "change"]},
             {type: "number", min: 0, message: "Initial balance cannot be negative", trigger: ["blur", "change"]},
         ],
-        contributionStrategy: [
+        contribution_strategy: [
             {required: true, message: "Contribution strategy is required", trigger: ["blur", "change"]},
         ],
-        contributionPercentage: [
+        contribution_percentage: [
             {validator: validateContributionPercentage, trigger: ["blur", "change"]},
             {
                 type: "number",
@@ -60,7 +60,7 @@ export function useRothIraValidation(modelRef: Ref<Partial<RothIra>>) {
                 trigger: ["blur", "change"]
             },
         ],
-        contributionFixedAmount: [
+        contribution_fixed_amount: [
             {validator: validateContributionFixedAmount, trigger: ["blur", "change"]},
             {
                 type: "number",

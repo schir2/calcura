@@ -4,7 +4,7 @@
     <ul v-if="debts">
       <li v-for="(debt, index) in debts" :Key="index" class="grid grid-cols-5">
         <span class="col-span-3">{{ debt.name }}</span>
-        <span>{{ debt.interestRate }}%</span>
+        <span>{{ debt.interest_rate }}%</span>
         <span class="text-end">${{ debt.principal }}</span>
       </li>
       <li class="grid grid-cols-2">
@@ -18,9 +18,9 @@
 
 <script setup lang="ts">
 
-import type Debt from "~/types/Debt";
+import type {Debt} from "~/types/Debt";
 
-interface Props {
+type Props = {
   debts: Debt[]
 }
 

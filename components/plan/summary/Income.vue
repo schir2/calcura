@@ -40,7 +40,7 @@
 
 import type {Income, IncomeType} from "~/types/Income";
 
-interface Props {
+type Props = {
   incomes: Income[]
 }
 

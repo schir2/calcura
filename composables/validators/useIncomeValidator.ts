@@ -20,11 +20,11 @@ export function useIncomeValidation(modelRef: Ref<Partial<Income>>) {
         frequency: [
             {required: true, message: "Frequency is required", trigger: ["blur", "change"]}
         ],
-        grossIncome: [
+        gross_income: [
             {required: true, type: "number", message: "Gross income is required", trigger: ["blur", "change"]},
             {type: "number", min: 0, message: "Gross income must be at least $0.", trigger: ["blur", "change"]}
         ],
-        growthRate: [
+        growth_rate: [
             {required: true, type: "number", message: "Growth rate is required", trigger: ["blur", "change"]},
             {
                 type: "number",
@@ -39,7 +39,7 @@ export function useIncomeValidation(modelRef: Ref<Partial<Income>>) {
                 trigger: ["blur", "change"]
             }
         ],
-        incomeType: [
+        income_type: [
             {required: true, message: "Income type is required", trigger: ["blur", "change"]}
         ]
     };

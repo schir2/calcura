@@ -9,10 +9,8 @@
 <script setup lang="ts">
 import type {Income, IncomePartial} from "~/types/Income";
 
-import {useApi} from "~/composables/useApi";
-
 const incomes = ref<Income[]>([]);
-const {get, create, update, list, remove} = useApi<Income>('incomes');
+const {create, update, list, remove} = useIncomeService();
 const loading = ref<boolean>(false);
 
 

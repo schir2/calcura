@@ -1,4 +1,4 @@
-import {beforeEach, describe, expect, it} from "vitest";
+﻿import {beforeEach, describe, expect, it} from "vitest";
 import {BrokerageManager} from "~/models/brokerage/BrokerageManager";
 import type {Brokerage} from "~/types/Brokerage";
 import {BrokerageContributionStrategy} from "~/types/Brokerage";
@@ -127,9 +127,9 @@ describe("BrokerageManager", () => {
         it("should process brokerage and update state correctly for start of year application strategy", () => {
             const brokerageConfig = {
                 ...brokerage,
-                initialBalance: 10_000,
-                contributionFixedAmount: 1_000,
-                growthRate: 10
+                initial_balance: 10_000,
+                contribution_fixed_amount: 1_000,
+                growth_rate: 10
             }
             planManager = new PlanManager({...planConfig, growth_application_strategy: GrowthApplicationStrategy.Start, brokerages: [brokerageConfig]})
             const brokerageManager = new BrokerageManager(planManager, brokerageConfig)
@@ -155,9 +155,9 @@ describe("BrokerageManager", () => {
         it("should process brokerage and update state correctly for end of of year application strategy", () => {
             const brokerageConfig = {
                 ...brokerage,
-                initialBalance: 10_000,
-                contributionFixedAmount: 1_000,
-                growthRate: 10
+                initial_balance: 10_000,
+                contribution_fixed_amount: 1_000,
+                growth_rate: 10
             }
             planManager = new PlanManager({...planConfig, growth_application_strategy: GrowthApplicationStrategy.End, brokerages: [brokerageConfig]})
             const brokerageManager = new BrokerageManager(planManager, brokerageConfig)
@@ -197,9 +197,9 @@ describe("BrokerageManager", () => {
         it("should process brokerage create the next state", () => {
             const brokerageConfig = {
                 ...brokerage,
-                initialBalance: 10_000,
-                contributionFixedAmount: 1_000,
-                growthRate: 10
+                initial_balance: 10_000,
+                contribution_fixed_amount: 1_000,
+                growth_rate: 10
             }
             planManager = new PlanManager({...planConfig, growth_application_strategy: GrowthApplicationStrategy.Start, brokerages: [brokerageConfig]})
             const brokerageManager = new BrokerageManager(planManager, brokerageConfig)

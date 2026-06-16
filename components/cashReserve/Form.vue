@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import {type CashReserve, cashReserveDefaults, CashReserveStrategy} from "~/types/CashReserve";
 
-interface Props {
+type Props = {
   initialValues?: Partial<CashReserve>;
   mode: 'create' | 'edit'
 }
@@ -37,8 +37,8 @@ function parse(input: string) {
           <n-input v-model:value="modelRef.name" show-count placeholder="eg: Emergency Funds"/>
         </n-form-item>
 
-        <n-form-item path="initialAmount" label="Initial Amount">
-          <n-input-number v-model:value="modelRef.initialAmount"
+        <n-form-item path="initial_amount" label="Initial Amount">
+          <n-input-number v-model:value="modelRef.initial_amount"
                           :parse="parse"
                           :format="$humanize.intComma"
                           placeholder="Enter the amount currently in your cash reserve">
@@ -46,26 +46,26 @@ function parse(input: string) {
           </n-input-number>
         </n-form-item>
 
-        <n-form-item path="cashReserveStrategy" label="Cash Reserve Strategy">
-          <n-radio-group v-model:value="modelRef.cashReserveStrategy">
+        <n-form-item path="cash_reserve_strategy" label="Cash Reserve Strategy">
+          <n-radio-group v-model:value="modelRef.cash_reserve_strategy">
             <n-radio-button v-for="option in cashReserveStrategyOptions" :key="option.value" :value="option.value"
                             :label="option.label"/>
           </n-radio-group>
         </n-form-item>
 
-        <n-form-item :required="modelRef.cashReserveStrategy===CashReserveStrategy.Fixed" path="reserveAmount"
+        <n-form-item :required="modelRef.cash_reserve_strategy===CashReserveStrategy.Fixed" path="reserve_amount"
                      label="Reserve Amount">
           <n-input-number
-              v-model:value="modelRef.reserveAmount"
+              v-model:value="modelRef.reserve_amount"
               :precision="2"
               :parse="parse"
               :format="$humanize.intComma"
               placeholder="Enter reserve amount"/>
         </n-form-item>
 
-        <n-form-item :required="modelRef.cashReserveStrategy===CashReserveStrategy.Variable" path="reserveMonths"
+        <n-form-item :required="modelRef.cash_reserve_strategy===CashReserveStrategy.Variable" path="reserve_months"
                      label="Reserve Months">
-          <n-input-number v-model:value="modelRef.reserveMonths" :precision="2"
+          <n-input-number v-model:value="modelRef.reserve_months" :precision="2"
                           placeholder="Enter reserve months"/>
         </n-form-item>
       </n-form>

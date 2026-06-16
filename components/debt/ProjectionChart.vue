@@ -16,7 +16,7 @@ ChartJS.register(
 )
 
 
-interface Props {
+type Props = {
   projections: Record<DebtPaymentStrategy, DebtProjection>
 }
 const props = defineProps<Props>()

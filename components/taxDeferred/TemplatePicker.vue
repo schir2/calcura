@@ -30,7 +30,7 @@ import {
 } from "~/types/TaxDeferred";
 import type {Income} from "~/types/Income";
 
-interface Props {
+type Props = {
   incomes: undefined | Income[]
 }
 const props = defineProps<Props>()

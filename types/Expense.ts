@@ -6,7 +6,7 @@ export enum ExpenseType {
     variable = 'variable',
 }
 
-export interface Expense {
+export type Expense = {
     id: number;
     name: string,
     amount: number,
@@ -20,7 +20,7 @@ export interface Expense {
 
 export type ExpensePartial = Partial<Omit<Expense, 'id'>>
 
-export interface ExpenseTemplate extends Income {
+export type ExpenseTemplate = Income & {
     description: string
 }
 

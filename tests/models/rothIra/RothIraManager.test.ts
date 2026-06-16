@@ -1,4 +1,4 @@
-import {beforeEach, describe, expect, it} from "vitest";
+﻿import {beforeEach, describe, expect, it} from "vitest";
 import {RothIraManager} from "~/models/rothIra/RothIraManager";
 import {RothIraContributionStrategy} from "~/types/RothIra";
 import PlanManager from "~/models/plan/PlanManager";
@@ -93,11 +93,11 @@ describe("RothIraManager", () => {
             assertDefined(rothIraManager, 'RothIraManager')
             const state = rothIraManager.getCurrentState();
             expect(state.contribution).toBe(undefined);
-            expect(state.contributionLifetime).toBe(0);
-            expect(state.growthAmount).toBe(undefined);
-            expect(state.growthLifetime).toBe(0);
-            expect(state.balanceStartOfYear).toBe(10_000);
-            expect(state.balanceEndOfYear).toBe(undefined);
+            expect(state.contribution_lifetime).toBe(0);
+            expect(state.growth_amount).toBe(undefined);
+            expect(state.growth_lifetime).toBe(0);
+            expect(state.balance_start_of_year).toBe(10_000);
+            expect(state.balance_end_of_year).toBe(undefined);
             expect(state.processed).toBe(false);
         });
     })

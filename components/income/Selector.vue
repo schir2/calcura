@@ -46,7 +46,7 @@ import {getAnnualAmount} from "~/utils";
 
 const incomeService = useIncomeService()
 
-interface Props {
+type Props = {
   incomes: Income[] | undefined
 }
 

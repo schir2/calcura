@@ -1,4 +1,4 @@
-export default interface DebtState {
+type DebtState = {
     payment: number;
     payment_lifetime: number;
     interest_lifetime: number;
@@ -7,3 +7,5 @@ export default interface DebtState {
     principal_end_of_year?: number;
     processed: boolean,
 }
+
+export default DebtState

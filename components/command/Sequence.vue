@@ -15,7 +15,7 @@ import {
   TaxDeferredListItem
 } from "#components";
 
-interface Props {
+type Props = {
   commandSequence: CommandSequence,
   plan: Plan,
 }

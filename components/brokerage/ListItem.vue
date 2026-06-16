@@ -7,7 +7,7 @@ import {calculateBrokerageContribution} from "~/models/brokerage/BrokerageManage
 import type {PlanState} from "~/types/PlanState";
 import type {Income} from "~/types/Income";
 
-interface Props {
+type Props = {
   brokerage: Brokerage
   incomes: Income[]
 }
@@ -52,8 +52,8 @@ const annualContribution = computed(() => {
   if (planStates?.value && planStates.value.length > 1) {
     return calculateBrokerageContribution(
         brokerage,
-        planStates.value[0].grossIncome,
-        planStates.value[0].taxableContributionsLifetime ?? 0
+        planStates.value[0].gross_income,
+        planStates.value[0].taxable_contributions_lifetime ?? 0
     )
   }
   return 0

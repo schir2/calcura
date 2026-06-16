@@ -56,7 +56,7 @@
   </n-button-group>
 </template>
 <script setup lang="ts">
-interface Props {
+type Props = {
   size: "tiny" | "small" | "medium" | "large"
 }
 

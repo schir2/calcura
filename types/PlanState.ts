@@ -1,10 +1,10 @@
 import type {BaseState} from "~/models/common/BaseState";
 
-export interface PlanState extends BaseState {
+export type PlanState = BaseState & {
     age: number;
     year: number;
 
-    grossIncome: number;
+    gross_income: number;
     taxable_income: number;
     taxed_income: number;
     AGI: number;
@@ -64,5 +64,4 @@ export interface PlanState extends BaseState {
     retirement_income_goal: number;
     retired: boolean;
 
-    processed: boolean;
 }

@@ -2,7 +2,7 @@
 import type {PlanState} from "~/types/PlanState";
 import humanize from "humanize-plus"
 
-interface Props {
+type Props = {
   planStates: PlanState[]
 }
 
@@ -70,7 +70,7 @@ const props = defineProps<Props>()
 const formattedPlanStates = computed(() => {
   return props.planStates.map(state => ({
     age: state.age,
-    grossIncome: `$${humanize.intComma(state.grossIncome)}`,
+    grossIncome: `$${humanize.intComma(state.gross_income)}`,
     taxableIncome: `$${humanize.intComma(state.taxable_income)}`,
     taxedIncome: `$${humanize.intComma(state.taxed_income)}`,
     retirementIncomeProjected: `$${humanize.intComma(state.retirement_income_projected)}`,

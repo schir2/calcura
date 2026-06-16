@@ -33,7 +33,7 @@ ChartJS.register(
     Legend
 )
 
-interface Props {
+type Props = {
   states: PlanState[]
 }
 

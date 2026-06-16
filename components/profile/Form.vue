@@ -4,7 +4,7 @@ import {type UserProfile} from "~/types/UserProfile";
 import {useCrudFormWithValidation} from "~/composables/useCrudFormWithValidation";
 import {FORM_LABEL_ALIGN, FORM_LABEL_PLACEMENT, FORM_MODAL_WIDTH_CLASS} from "~/constants/FormConstants";
 
-interface Props {
+type Props = {
   initialValues?: Partial<UserProfile>;
   mode: 'create' | 'edit'
 }
@@ -32,13 +32,13 @@ const {formRef, modelRef, rules, handleCreate, handleUpdate, handleCancel} =
           :label-align="FORM_LABEL_ALIGN"
       >
 
-        <n-form-item path="firstName" label="First Name">
-          <n-input v-model:value="modelRef.firstName" placeholder="Enter your first name"/>
+        <n-form-item path="first_name" label="First Name">
+          <n-input v-model:value="modelRef.first_name" placeholder="Enter your first name"/>
         </n-form-item>
 
 
-        <n-form-item path="lastName" label="Last Name">
-          <n-input v-model:value="modelRef.lastName" placeholder="Enter your last name"/>
+        <n-form-item path="last_name" label="Last Name">
+          <n-input v-model:value="modelRef.last_name" placeholder="Enter your last name"/>
         </n-form-item>
 
 
@@ -47,8 +47,8 @@ const {formRef, modelRef, rules, handleCreate, handleUpdate, handleCancel} =
         </n-form-item>
 
 
-        <n-form-item path="lifeExpectancy" label="First Name">
-          <n-input-number v-model:value="modelRef.lifeExpectancy" placeholder="Enter your life expectancy"/>
+        <n-form-item path="life_expectancy" label="Life Expectancy">
+          <n-input-number v-model:value="modelRef.life_expectancy" placeholder="Enter your life expectancy"/>
         </n-form-item>
 
       </n-form>

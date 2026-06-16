@@ -93,7 +93,7 @@ export default class PlanManager extends BaseOrchestrator<Plan, PlanState, PlanM
             age: this.config.age,
             year: this.config.year,
 
-            grossIncome: grossIncome,
+            gross_income: grossIncome,
             taxable_income: grossIncome,
             taxed_income: taxedIncome,
             AGI: 0,
@@ -166,7 +166,7 @@ export default class PlanManager extends BaseOrchestrator<Plan, PlanState, PlanM
             age: age,
             year: year,
 
-            grossIncome: grossIncome,
+            gross_income: grossIncome,
             taxable_income: grossIncome,
             taxed_income: taxedIncome,
             AGI: 0,

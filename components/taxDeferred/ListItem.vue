@@ -26,7 +26,7 @@ import type {TaxDeferred} from "~/types/TaxDeferred";
 import {ModelName} from "~/types/ModelName";
 import type {Income} from "~/types/Income";
 
-interface Props {
+type Props = {
   taxDeferred: TaxDeferred
   incomes: Income[]
 }

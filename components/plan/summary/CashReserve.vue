@@ -19,7 +19,7 @@
 
 import type {CashReserve} from "~/types/CashReserve";
 
-interface Props {
+type Props = {
   cashReserves: CashReserve[]
 }
 

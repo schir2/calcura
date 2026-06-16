@@ -26,7 +26,7 @@ describe("PlanManager", () => {
             id: 1,
             name: "Blank Plan",
             age: 30,
-            year: new Date().getFullYear(),
+            year: 2025,
             inflation_rate: 3,
             insufficient_funds_strategy: InsufficientFundsStrategy.None,
             growth_application_strategy: GrowthApplicationStrategy.Start,
@@ -197,8 +197,8 @@ describe("PlanManager", () => {
         it("should create an initial state with correct defaults", () => {
             const state = planManager.getCurrentState();
             expect(state.age).toBe(30)
-            expect(state.year).toBe(new Date().getFullYear())
-            expect(state.grossIncome).toBe(150_000)
+            expect(state.year).toBe(2025)
+            expect(state.gross_income).toBe(150_000)
             expect(state.taxable_income).toBe(150_000)
             expect(state.taxed_income).toBe(105_000)
             expect(state.AGI).toBe(0)
@@ -222,7 +222,7 @@ describe("PlanManager", () => {
             expect(state.savings_tax_exempt_end_of_year).toBe(10_000)
             expect(state.savings_taxable_start_of_year).toBe(10_000)
             expect(state.savings_taxable_end_of_year).toBe(10_000)
-            expect(state.savings_start_of_year).toBe(0)
+            expect(state.savings_start_of_year).toBe(40_000)
             expect(state.savings_end_of_year).toBe(0)
             expect(state.retirement_income_projected).toBe(0)
             expect(state.retired).toBe(false)

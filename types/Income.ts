@@ -3,7 +3,7 @@ import {Frequency} from "~/types/Frequency";
 export type IncomeType = 'ordinary'
 
 
-export interface Income {
+export type Income = {
     id: number;
     name: string;
     frequency: Frequency;

@@ -1,38 +1,46 @@
-export function useApi<T>(resource: string) {
-    const csrfToken = useCookie("csrftoken");
+import type {Database} from '~/types/database.types'
 
+type Tables = Database['public']['Tables']
+type TableName = keyof Tables
 
-    const useCustomFetch = async <R>(url: string, options: any = {}) => {
-        options.credentials = "include";
+export function useApi<
+    T extends TableName = TableName,
+    Row = Tables[T]['Row'],
+    Insert = Tables[T]['Insert'],
+    Update = Tables[T]['Update']
 
-        if (["POST", "PUT", "PATCH", "DELETE"].includes(options.method)) {
-            options.headers = {
-                ...(options.headers || {}),
-                "X-CSRFToken": csrfToken.value || "",
-            };
-        }
+>(table: T,) {
+    const client = useSupabaseClient<Database>()
 
-        return $fetch<R>(`/api/${url}`, options);
-    };
 
     return {
-        get: (id: number | string, params?: Record<string, any>) => useCustomFetch<T>(`${resource}/${id}/`, { params }),
-        list: (params?: Record<string, any>) => useCustomFetch<T[]>(`${resource}/`, { params }),
-        create: (data: Partial<T>) => useCustomFetch<T>(`${resource}/`, { method: "POST", body: toSnakeCase(data) }),
-        update: (id: number | string, data: Partial<T>) => useCustomFetch<T>(`${resource}/${id}/`, { method: "PUT", body: data }),
-        patch: (id: number | string, data: Partial<T>) => useCustomFetch<T>(`${resource}/${id}/`, { method: "PATCH", body: data }),
-        remove: (id: number | string) => useCustomFetch<void>(`${resource}/${id}/`, { method: "DELETE" }),
+        async list(): Promise<Row[]> {
+            const {data, error} = await client.from(table).select('*')
+            if (error) throw error
+            return data as Row[]
+        },
 
-        addRelatedModel: (id: number, relatedModel: string, relatedId: number | string) =>
-            useCustomFetch<T>(`${resource}/${id}/manage_related_model/`, {
-                method: "POST",
-                body: { related_model: relatedModel, related_id: relatedId, action: "add" },
-            }),
+        async get(id: number): Promise<Row> {
+            const {data, error} = await client.from(table).select('*').eq('id', id).single()
+            if (error) throw error
+            return data as Row
+        },
 
-        removeRelatedModel: (id: number | string, relatedModel: string, relatedId: number | string) =>
-            useCustomFetch<T>(`${resource}/${id}/manage_related_model/`, {
-                method: "POST",
-                body: { related_model: relatedModel, related_id: relatedId, action: "remove" },
-            }),
-    };
+        async create(payload: Insert): Promise<Row> {
+            const {data, error} = await client.from(table).insert(payload as any).select().single()
+            if (error) throw error
+            return data as Row
+        },
+
+        async update(id: number, payload: Update): Promise<Row> {
+            const {data, error} = await client.from(table).update(payload as any).eq('id', id).select().single()
+            if (error) throw error
+            return data as Row
+        },
+
+        async remove(id: number): Promise<void> {
+            const {error} = await client.from(table).delete().eq('id', id)
+            if (error) throw error
+        },
+    }
 }

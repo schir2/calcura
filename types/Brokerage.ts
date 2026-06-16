@@ -21,7 +21,7 @@ export type Brokerage = {
 
 export type BrokeragePartial = Partial<Omit<Brokerage, 'id'>>
 
-export interface BrokerageTemplate extends Brokerage {
+export type BrokerageTemplate = Brokerage & {
     description: string
 }
 

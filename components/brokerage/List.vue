@@ -9,7 +9,7 @@
 <script lang="ts" setup>
 import type {Brokerage, BrokerageTemplate} from "~/types/Brokerage";
 
-interface Props {
+type Props = {
   brokerages: Brokerage[]
 }
 

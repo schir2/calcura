@@ -1,4 +1,4 @@
-import {beforeEach, describe, expect, it} from "vitest";
+﻿import {beforeEach, describe, expect, it} from "vitest";
 import {TaxDeferredManager} from "~/models/taxDeferred/TaxDeferredManager";
 import {EmployerContributionStrategy, TaxDeferredContributionStrategy} from "~/types/TaxDeferred";
 import PlanManager from "~/models/plan/PlanManager";
@@ -98,15 +98,15 @@ describe("TaxDeferredManager", () => {
             assertDefined(taxDeferredManager, 'TaxDeferredManager')
             const state = taxDeferredManager.getCurrentState();
             expect(state.contribution).toBe(undefined);
-            expect(state.contributionLifetime).toBe(0);
-            expect(state.electiveContribution).toBe(undefined);
-            expect(state.electiveContributionLifetime).toBe(0);
-            expect(state.employerContribution).toBe(undefined);
-            expect(state.employerContributionLifetime).toBe(0);
-            expect(state.growthAmount).toBe(undefined);
-            expect(state.growthLifetime).toBe(0);
-            expect(state.balanceStartOfYear).toBe(10_000);
-            expect(state.balanceEndOfYear).toBe(undefined);
+            expect(state.contribution_lifetime).toBe(0);
+            expect(state.elective_contribution).toBe(undefined);
+            expect(state.elective_contribution_lifetime).toBe(0);
+            expect(state.employer_contribution).toBe(undefined);
+            expect(state.employer_contribution_lifetime).toBe(0);
+            expect(state.growth_amount).toBe(undefined);
+            expect(state.growth_lifetime).toBe(0);
+            expect(state.balance_start_of_year).toBe(10_000);
+            expect(state.balance_end_of_year).toBe(undefined);
             expect(state.processed).toBe(false);
         });
     })
@@ -340,20 +340,20 @@ describe("TaxDeferredManager", () => {
             const taxDeferredState = taxDeferredManager.getCurrentState();
 
             expect(taxDeferredState.contribution).toBe(18_000);
-            expect(taxDeferredState.contributionLifetime).toBe(18_000);
-            expect(taxDeferredState.electiveContribution).toBe(12_000);
-            expect(taxDeferredState.electiveContributionLifetime).toBe(12_000);
-            expect(taxDeferredState.employerContribution).toBe(6_000);
-            expect(taxDeferredState.employerContributionLifetime).toBe(6_000);
-            expect(taxDeferredState.growthAmount).toBe(600);
-            expect(taxDeferredState.growthLifetime).toBe(600);
-            expect(taxDeferredState.balanceStartOfYear).toBe(10_000);
-            expect(taxDeferredState.balanceEndOfYear).toBe(28_600);
+            expect(taxDeferredState.contribution_lifetime).toBe(18_000);
+            expect(taxDeferredState.elective_contribution).toBe(12_000);
+            expect(taxDeferredState.elective_contribution_lifetime).toBe(12_000);
+            expect(taxDeferredState.employer_contribution).toBe(6_000);
+            expect(taxDeferredState.employer_contribution_lifetime).toBe(6_000);
+            expect(taxDeferredState.growth_amount).toBe(600);
+            expect(taxDeferredState.growth_lifetime).toBe(600);
+            expect(taxDeferredState.balance_start_of_year).toBe(10_000);
+            expect(taxDeferredState.balance_end_of_year).toBe(28_600);
             expect(taxDeferredState.processed).toBe(true);
-            expect(planState.savingsTaxDeferredEndOfYear).toBe(28_600);
-            expect(planState.taxedIncome).toBe(96_600);
-            expect(planState.taxedCapital).toBe(96_600);
-            expect(planState.taxedWithdrawals).toBe(0);
+            expect(planState.savings_tax_deferred_end_of_year).toBe(28_600);
+            expect(planState.taxed_income).toBe(96_600);
+            expect(planState.taxed_capital).toBe(96_600);
+            expect(planState.taxed_withdrawals).toBe(0);
         });
 
         it("should process taxDeferred and update state correctly for end of of year application strategy", () => {
@@ -379,20 +379,20 @@ describe("TaxDeferredManager", () => {
             const planState = taxDeferredManager.orchestrator.getCurrentState();
             const taxDeferredState = taxDeferredManager.getCurrentState();
 
-            expect(taxDeferredState.electiveContribution).toBe(12_000);
-            expect(taxDeferredState.electiveContributionLifetime).toBe(12_000);
-            expect(taxDeferredState.employerContribution).toBe(6_000);
-            expect(taxDeferredState.employerContributionLifetime).toBe(6_000);
-            expect(taxDeferredState.growthAmount).toBe(1680);
-            expect(taxDeferredState.growthLifetime).toBe(1680);
-            expect(taxDeferredState.balanceStartOfYear).toBe(10_000);
+            expect(taxDeferredState.elective_contribution).toBe(12_000);
+            expect(taxDeferredState.elective_contribution_lifetime).toBe(12_000);
+            expect(taxDeferredState.employer_contribution).toBe(6_000);
+            expect(taxDeferredState.employer_contribution_lifetime).toBe(6_000);
+            expect(taxDeferredState.growth_amount).toBe(1680);
+            expect(taxDeferredState.growth_lifetime).toBe(1680);
+            expect(taxDeferredState.balance_start_of_year).toBe(10_000);
             +
-                expect(taxDeferredState.balanceEndOfYear).toBe(29_680);
+                expect(taxDeferredState.balance_end_of_year).toBe(29_680);
             expect(taxDeferredState.processed).toBe(true);
-            expect(planState.savingsTaxDeferredEndOfYear).toBe(29_680);
-            expect(planState.taxedIncome).toBe(96_600);
-            expect(planState.taxedCapital).toBe(96_600);
-            expect(planState.taxedWithdrawals).toBe(0);
+            expect(planState.savings_tax_deferred_end_of_year).toBe(29_680);
+            expect(planState.taxed_income).toBe(96_600);
+            expect(planState.taxed_capital).toBe(96_600);
+            expect(planState.taxed_withdrawals).toBe(0);
         });
 
         it("should throw error if processing already processed state", () => {
@@ -414,14 +414,14 @@ describe("TaxDeferredManager", () => {
             taxDeferredManager.process();
             const taxDeferredState = taxDeferredManager.getCurrentState();
             const newState = taxDeferredManager.createNextState(taxDeferredState);
-            expect(newState.electiveContribution).toBe(undefined);
-            expect(newState.electiveContributionLifetime).toBe(10_000);
-            expect(newState.employerContribution).toBe(undefined);
-            expect(newState.employerContributionLifetime).toBe(5_000);
-            expect(newState.growthAmount).toBe(undefined);
-            expect(newState.growthLifetime).toBe(600);
-            expect(newState.balanceStartOfYear).toBe(25_600);
-            expect(newState.balanceEndOfYear).toBe(undefined);
+            expect(newState.elective_contribution).toBe(undefined);
+            expect(newState.elective_contribution_lifetime).toBe(10_000);
+            expect(newState.employer_contribution).toBe(undefined);
+            expect(newState.employer_contribution_lifetime).toBe(5_000);
+            expect(newState.growth_amount).toBe(undefined);
+            expect(newState.growth_lifetime).toBe(600);
+            expect(newState.balance_start_of_year).toBe(25_600);
+            expect(newState.balance_end_of_year).toBe(undefined);
             expect(newState.processed).toBe(false);
         });
 

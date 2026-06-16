@@ -5,7 +5,7 @@
 <script setup lang="ts">
 import {ModelName} from "~/types/ModelName";
 
-interface Props {
+type Props = {
   name: IconName;
 }
 

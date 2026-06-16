@@ -18,7 +18,7 @@
 <script lang="ts" setup>
 import {darkTheme} from 'naive-ui'
 
-interface Props {
+type Props = {
   title: string
   value: string | number | boolean
 

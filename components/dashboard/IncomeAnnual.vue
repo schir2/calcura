@@ -15,12 +15,12 @@ import {getAnnualAmount} from "~/utils";
 import {formatValue} from "~/utils/formatValue";
 import {FormatType} from "~/types/FormatType";
 
-interface Props {
+type Props = {
   incomes: Income[],
 }
 
 const {incomes = []} = defineProps<Props>()
 const totalAnnualIncome = computed(() => {
-  return incomes.reduce((acc, income) => acc + getAnnualAmount(income.grossIncome, income.frequency), 0);
+  return incomes.reduce((acc, income) => acc + getAnnualAmount(income.gross_income, income.frequency), 0);
 })
 </script>

@@ -2,7 +2,7 @@
 import type {Plan} from "~/types/Plan";
 import {FormatType} from "~/types/FormatType";
 
-interface Props {
+type Props = {
   plan: Plan
 }
 const props = defineProps<Props>()

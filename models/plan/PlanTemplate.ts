@@ -1,5 +1,5 @@
 import type {Plan} from "~/types/Plan";
 
-export interface PlanTemplate extends Plan{
+export type PlanTemplate = Plan & {
     description: string;
 }

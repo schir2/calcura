@@ -15,7 +15,7 @@ export enum TaxDeferredContributionStrategy {
     Max = 'max',
 }
 
-export interface TaxDeferred {
+export type TaxDeferred = {
     id: number;
     name: string;
     income?: Income;
@@ -32,12 +32,11 @@ export interface TaxDeferred {
     employer_contribution_fixed_amount: number;
     employer_match_percentage: number;
     employer_match_percentage_limit: number;
-
 }
 
 export type TaxDeferredPartial = Partial<Omit<TaxDeferred, 'id'>>
 
-export interface TaxDeferredTemplate extends TaxDeferred {
+export type TaxDeferredTemplate = TaxDeferred & {
     description: string
 }
 

@@ -7,7 +7,7 @@ import {
 import type {FormInst} from "naive-ui";
 import {useBrokerageValidator} from "~/composables/validators/useBrokerageValidator";
 
-interface Props {
+type Props = {
   initialValues?: Partial<Brokerage>;
   mode: 'create' | 'edit' | 'view'
 }

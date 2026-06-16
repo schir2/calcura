@@ -2,13 +2,13 @@
 import {ModelName, ModelTextColor} from "~/types/ModelName"
 import type {IconName} from "~/components/base/Ico.vue";
 
-interface Tag {
+type Tag = {
   label?: string | number,
   iconName?: IconName,
   hide?: boolean
 }
 
-interface Props {
+type Props = {
   modelName?: ModelName,
   title?: string,
   summary?: string,

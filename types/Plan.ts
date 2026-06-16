@@ -40,7 +40,7 @@ export enum ContributionLimitType {
 
 export type PlanModels = 'taxDeferred' | 'brokerage' | 'cashReserve' | 'debt' | 'expense' | 'income' | 'ira' | 'plan' | 'rothIra';
 
-export interface Plan {
+export type Plan = {
     id: number;
     name: string;
     age: number;
@@ -68,5 +68,4 @@ export interface Plan {
     command_sequences: CommandSequence[];
     edited_at: Date
     created_at: Date
-
 }

@@ -5,7 +5,7 @@
 <script setup lang="ts">
 import type {CommandSequence} from "~/types/CommandSequence";
 
-interface Props {
+type Props = {
   commandSequence: CommandSequence
 }
 

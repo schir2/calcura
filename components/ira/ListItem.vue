@@ -4,7 +4,7 @@ import type {Ira} from "~/types/Ira";
 import {ModelName} from "~/types/ModelName";
 import {calculateIraContribution} from "~/models/ira/IraIManager";
 
-interface Props {
+type Props = {
   ira: Ira
 }
 

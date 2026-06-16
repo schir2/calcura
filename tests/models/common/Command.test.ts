@@ -14,7 +14,7 @@ describe("compareAndSyncCommands", () => {
 
         const result = compareAndSyncCommands(prevCommands, newCommands);
         expect(result).toHaveLength(2);
-        expect(result).toContainEqual({name: "cmd2", commandId: 2, order: 2,  label: "Command 2", modelName: "debt", modelId: 2, action: "process"});
+        expect(result).toContainEqual({name: "cmd2", id: 2, order: 2,  label: "Command 2", item_type: "debt", model_id: 2, action: "process"});
     });
 
     it("should remove a command from the list", () => {
@@ -63,7 +63,7 @@ describe("compareAndSyncCommands", () => {
 
         const result = compareAndSyncCommands(prevCommands, newCommands);
         expect(result).toHaveLength(1);
-        expect(result).toContainEqual({name: "cmd1", commandId: 1, order: 1,  label: "Command 1", modelName: "income", modelId: 1, action: "process"});
+        expect(result).toContainEqual({name: "cmd1", id: 1, order: 1,  label: "Command 1", item_type: "income", model_id: 1, action: "process"});
     });
 
     it("should handle an empty newCommands array and remove the old command", () => {
@@ -87,7 +87,7 @@ describe("compareAndSyncCommands", () => {
 
         const result = compareAndSyncCommands(prevCommands, newCommands);
         expect(result).toHaveLength(1);
-        expect(result).toContainEqual({name: "cmd2", commandId: 1, order: 2,  label: "Command 2", modelName: "debt", modelId: 2, action: "process"});
-        expect(result).not.toContainEqual({name: "cmd1", commandId: 1, order: 1,  label: "Command 1", modelName: "income", modelId: 1, action: "process"});
+        expect(result).toContainEqual({name: "cmd2", id: 1, order: 2,  label: "Command 2", item_type: "debt", model_id: 2, action: "process"});
+        expect(result).not.toContainEqual({name: "cmd1", id: 1, order: 1,  label: "Command 1", item_type: "income", model_id: 1, action: "process"});
     });
 });

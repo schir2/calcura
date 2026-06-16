@@ -44,7 +44,7 @@ const isLogoutLoading = ref<boolean>(false)
 const registrationSuccess = ref<boolean>(false)
 const registeredEmail = ref<string>('')
 
-interface Registration {
+type Registration = {
   email: string
   password: string
   passwordConfirmation: string

@@ -12,7 +12,7 @@
 <script lang="ts" setup>
 import type {Command} from "~/types/Command";
 
-interface Props {
+type Props = {
   command: Command
 }
 

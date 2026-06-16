@@ -15,7 +15,7 @@ import {getAnnualAmount} from "~/utils";
 import {formatValue} from "~/utils/formatValue";
 import {FormatType} from "~/types/FormatType";
 
-interface Props {
+type Props = {
   expenses: Expense[],
 }
 const {expenses = []} = defineProps<Props>()

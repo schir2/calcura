@@ -1,4 +1,4 @@
-export default interface ExpenseState {
+type ExpenseState = {
     base_amount: number;
     amount_requested: number;
     amount_paid: number;
@@ -6,3 +6,5 @@ export default interface ExpenseState {
     growth_amount: number;
     processed: boolean;
 }
+
+export default ExpenseState

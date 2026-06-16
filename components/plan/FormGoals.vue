@@ -1,37 +1,37 @@
 <template>
-  <n-form-item path="retirementStrategy" label="Retirement Strategy">
+  <n-form-item path="retirement_strategy" label="Retirement Strategy">
     <div class="grid grid-cols-4 gap-3 w-full">
-      <CommonRadioCard v-model="modelRef.retirementStrategy" :value="RetirementStrategy.Age"
+      <CommonRadioCard v-model="modelRef.retirement_strategy" :value="RetirementStrategy.Age"
                        title="Retire by a certain age">
-        <n-form-item path="retirementAge" label="Retirement Age">
-          <n-input-number class="w-full" v-model:value="modelRef.retirementAge"/>
+        <n-form-item path="retirement_age" label="Retirement Age">
+          <n-input-number class="w-full" v-model:value="modelRef.retirement_age"/>
         </n-form-item>
       </CommonRadioCard>
 
-      <CommonRadioCard v-model="modelRef.retirementStrategy" :value="RetirementStrategy.TargetSavings"
+      <CommonRadioCard v-model="modelRef.retirement_strategy" :value="RetirementStrategy.TargetSavings"
                        title="Reach a savings goal">
-        <n-form-item path="retirementSavingsAmount" label="Retirement Savings Amount">
-          <n-input-number class="w-full" v-model:value="modelRef.retirementSavingsAmount"/>
+        <n-form-item path="retirement_savings_amount" label="Retirement Savings Amount">
+          <n-input-number class="w-full" v-model:value="modelRef.retirement_savings_amount"/>
         </n-form-item>
       </CommonRadioCard>
 
-      <CommonRadioCard v-model="modelRef.retirementStrategy" :value="RetirementStrategy.DebtFree"
+      <CommonRadioCard v-model="modelRef.retirement_strategy" :value="RetirementStrategy.DebtFree"
                        title="Retire when all debts are paid">
       </CommonRadioCard>
 
-      <CommonRadioCard v-model="modelRef.retirementStrategy" :value="RetirementStrategy.PercentRule"
+      <CommonRadioCard v-model="modelRef.retirement_strategy" :value="RetirementStrategy.PercentRule"
                        title="Percent Rule">
-        <n-form-item path="retirementWithdrawalRate" label="Retirement Withdrawal Rate (%)">
-          <n-input-number class="w-full" v-model:value="modelRef.retirementWithdrawalRate"/>
+        <n-form-item path="retirement_withdrawal_rate" label="Retirement Withdrawal Rate (%)">
+          <n-input-number class="w-full" v-model:value="modelRef.retirement_withdrawal_rate"/>
         </n-form-item>
 
-        <n-form-item path="retirementIncomeGoal" label="Retirement Income Goal">
-          <n-input-number class="w-full" v-model:value="modelRef.retirementIncomeGoal"/>
+        <n-form-item path="retirement_income_goal" label="Retirement Income Goal">
+          <n-input-number class="w-full" v-model:value="modelRef.retirement_income_goal"/>
         </n-form-item>
 
-        <n-form-item path="retirementIncomeAdjustedForInflation"
+        <n-form-item path="retirement_income_adjusted_for_inflation"
                      label="Retirement Income Goal Adjusted For Inflation">
-          <n-switch class="w-full" v-model:value="modelRef.retirementIncomeAdjustedForInflation"/>
+          <n-switch class="w-full" v-model:value="modelRef.retirement_income_adjusted_for_inflation"/>
         </n-form-item>
       </CommonRadioCard>
     </div>

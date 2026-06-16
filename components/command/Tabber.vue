@@ -2,7 +2,7 @@
 import type {Plan} from "~/types/Plan";
 import type {CommandSequence} from "~/types/CommandSequence";
 
-interface Props {
+type Props = {
   plan: Plan
 }
 const props = defineProps<Props>()

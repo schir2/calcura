@@ -6,7 +6,7 @@ export enum IraContributionStrategy {
     Max = 'max'
 }
 
-export interface Ira {
+export type Ira = {
     id: number;
     name: string;
     growth_rate: number;
@@ -20,7 +20,7 @@ export interface Ira {
 
 export type IraPartial = Partial<Omit<Ira, 'id'>>
 
-export interface IraTemplate extends Ira {
+export type IraTemplate = Ira & {
     description: string;
 }
 

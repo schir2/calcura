@@ -30,7 +30,7 @@
 
 import type {FormValidationError} from 'naive-ui'
 
-interface Props {
+type Props = {
   mode: 'edit' | 'create' | 'view'
   errors?: FormValidationError[]
 }

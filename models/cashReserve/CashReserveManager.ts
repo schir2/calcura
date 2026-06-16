@@ -10,7 +10,7 @@ export class CashReserveManager extends BaseManager<CashReserve, CashReserveStat
         return {
             amount_requested: undefined,
             amount_paid: undefined,
-            chas_reserve_start_of_year: this.config.initial_amount,
+            cash_reserve_start_of_year: this.config.initial_amount,
             cash_reserve_end_of_year: undefined,
             processed: false,
         }
@@ -21,7 +21,7 @@ export class CashReserveManager extends BaseManager<CashReserve, CashReserveStat
         return {
             amount_requested: undefined,
             amount_paid: undefined,
-            chas_reserve_start_of_year: previousState.cash_reserve_end_of_year,
+            cash_reserve_start_of_year: previousState.cash_reserve_end_of_year,
             cash_reserve_end_of_year: undefined,
             processed: false,
         }
@@ -32,11 +32,11 @@ export class CashReserveManager extends BaseManager<CashReserve, CashReserveStat
         let contribution = 0
         switch (this.config.contribution_strategy) {
             case CashReserveStrategy.Fixed:
-                contribution = Math.max(this.config.reserve_amount - currentState.chas_reserve_start_of_year, 0);
+                contribution = Math.max(this.config.reserve_amount - currentState.cash_reserve_start_of_year, 0);
                 break
             case CashReserveStrategy.Variable:
                 const annualExpenseTotal = this.orchestrator.getAnnualExpenseTotal()
-                contribution = Math.max(annualExpenseTotal * (this.config.reserve_months / 12) - currentState.chas_reserve_start_of_year, 0);
+                contribution = Math.max(annualExpenseTotal * (this.config.reserve_months / 12) - currentState.cash_reserve_start_of_year, 0);
                 break
         }
         return contribution
@@ -46,7 +46,7 @@ export class CashReserveManager extends BaseManager<CashReserve, CashReserveStat
         const currentState = this.getCurrentState();
         const contributionRequested = this.calculateContribution()
         const contribution = this.orchestrator.requestFunds(contributionRequested, FundType.Taxed)
-        const cashReserveEndOfYear = currentState.chas_reserve_start_of_year + contribution;
+        const cashReserveEndOfYear = currentState.cash_reserve_start_of_year + contribution;
         this.orchestrator.withdraw(contribution, FundType.Taxed)
         this.orchestrator.contribute(cashReserveEndOfYear, ContributionType.CashReserve)
         this.updateCurrentState({

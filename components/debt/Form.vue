@@ -6,7 +6,7 @@ import {useCrudFormWithValidation} from "~/composables/useCrudFormWithValidation
 import {FORM_LABEL_ALIGN, FORM_LABEL_PLACEMENT} from "~/constants/FormConstants";
 import {Frequency} from "~/types/Frequency";
 
-interface Props {
+type Props = {
   initialValues?: Partial<Debt>;
   mode: 'create' | 'edit'
 }

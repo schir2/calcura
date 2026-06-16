@@ -14,7 +14,7 @@ import type {Debt} from "~/types/Debt";
 import {formatValue} from "~/utils/formatValue";
 import {FormatType} from "~/types/FormatType";
 
-interface Props {
+type Props = {
   debts: Debt[],
 }
 

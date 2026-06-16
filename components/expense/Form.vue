@@ -5,7 +5,7 @@ import {getAnnualAmount} from "~/utils";
 import {Frequency} from "~/types/Frequency";
 import {FORM_LABEL_ALIGN, FORM_LABEL_PLACEMENT, FORM_MODAL_WIDTH_CLASS} from "~/constants/FormConstants";
 
-interface Props {
+type Props = {
   initialValues?: Partial<Expense>;
   mode: "create" | "edit";
 }
@@ -40,10 +40,10 @@ const {formRef, modelRef, rules, handleCreate, handleUpdate, handleCancel} =
           <n-input-number v-model:value="modelRef.amount" placeholder="Enter amount"/>
         </n-form-item>
 
-        <n-form-item path="growthRate" label="Growth Rate">
+        <n-form-item path="growth_rate" label="Growth Rate">
           <n-space vertical>
-            <n-input-number v-model:value="modelRef.growthRate"
-                            :disabled="modelRef.growsWithInflation"/>
+            <n-input-number v-model:value="modelRef.growth_rate"
+                            :disabled="modelRef.grows_with_inflation"/>
           </n-space>
         </n-form-item>
 
@@ -58,8 +58,8 @@ const {formRef, modelRef, rules, handleCreate, handleUpdate, handleCancel} =
             ]" :key="option.value" :label="option.label" :value="option.value"/>
           </n-radio-group>
         </n-form-item>
-        <n-form-item path="expenseType" label="Expense Type">
-          <n-radio-group v-model:value="modelRef.expenseType">
+        <n-form-item path="expense_type" label="Expense Type">
+          <n-radio-group v-model:value="modelRef.expense_type">
             <n-radio-button v-for="option in [
                 { label: 'Fixed', value: 'fixed' },
                 { label: 'Variable', value: 'variable' }
@@ -67,16 +67,16 @@ const {formRef, modelRef, rules, handleCreate, handleUpdate, handleCancel} =
           </n-radio-group>
         </n-form-item>
 
-        <n-form-item class="justify-center" path="isEssential" label="Essential Expense">
-          <n-switch v-model:value="modelRef.isEssential"/>
+        <n-form-item class="justify-center" path="is_essential" label="Essential Expense">
+          <n-switch v-model:value="modelRef.is_essential"/>
         </n-form-item>
 
-        <n-form-item path="isTaxDeductible" label="Tax Deductible">
-          <n-switch v-model:value="modelRef.isTaxDeductible" suffix="%"/>
+        <n-form-item path="is_tax_deductible" label="Tax Deductible">
+          <n-switch v-model:value="modelRef.is_tax_deductible" suffix="%"/>
         </n-form-item>
 
-        <n-form-item path="growsWithInflation" label="Grows With Inflation">
-          <n-switch v-model:value="modelRef.growsWithInflation" suffix="%"/>
+        <n-form-item path="grows_with_inflation" label="Grows With Inflation">
+          <n-switch v-model:value="modelRef.grows_with_inflation" suffix="%"/>
         </n-form-item>
       </n-form>
     </template>

@@ -4,7 +4,7 @@ import type {Debt} from "~/types/Debt";
 import {ModelName} from "~/types/ModelName";
 import {calculateDebtPayment} from "~/models/debt/DebtManager";
 
-interface Props {
+type Props = {
   debt: Debt
 }
 

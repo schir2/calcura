@@ -3,7 +3,7 @@ import {type Plan, RetirementStrategy} from '~/types/Plan'
 
 export function usePlanValidator(modelRef: Ref<Partial<Plan>>) {
     function validateRetirementAge(rule: FormItemRule, value: number | undefined) {
-        if (modelRef.value.retirementStrategy === RetirementStrategy.Age) {
+        if (modelRef.value.retirement_strategy === RetirementStrategy.Age) {
             if (value === null || value === undefined) {
                 return new Error("Retirement age is required when Age Retirement strategy is selected");
             }
@@ -12,7 +12,7 @@ export function usePlanValidator(modelRef: Ref<Partial<Plan>>) {
     }
 
     function validateTargetSavingsAmount(rule: FormItemRule, value: number | undefined) {
-        if (modelRef.value.retirementStrategy === RetirementStrategy.TargetSavings) {
+        if (modelRef.value.retirement_strategy === RetirementStrategy.TargetSavings) {
             if (value === null || value === undefined) {
                 return new Error("Target Savings Amount is required when Target Savings Retirement strategy is selected");
             }
@@ -21,7 +21,7 @@ export function usePlanValidator(modelRef: Ref<Partial<Plan>>) {
     }
 
     function validateWithdrawalRate(rule: FormItemRule, value: number | undefined) {
-        if (modelRef.value.retirementStrategy === RetirementStrategy.PercentRule) {
+        if (modelRef.value.retirement_strategy === RetirementStrategy.PercentRule) {
             if (value === null || value === undefined) {
                 return new Error("Withdrawal Rate is required when Percent Rule Retirement strategy is selected");
             }
@@ -30,7 +30,7 @@ export function usePlanValidator(modelRef: Ref<Partial<Plan>>) {
     }
 
     function validateRetirementIncomeGoal(rule: FormItemRule, value: number | undefined) {
-        if (modelRef.value.retirementStrategy === RetirementStrategy.PercentRule) {
+        if (modelRef.value.retirement_strategy === RetirementStrategy.PercentRule) {
             if (value === null || value === undefined) {
                 return new Error("Retirement Income Goal is required when Percent Rule Retirement strategy is selected");
             }
@@ -57,23 +57,20 @@ export function usePlanValidator(modelRef: Ref<Partial<Plan>>) {
             {type: "number", min: MIN_AGE, message: `Age must be at least ${MIN_AGE}`, trigger: ["blur", "change"]},
             {type: "number", max: MAX_AGE, message: `Age must be at most ${MAX_AGE}`, trigger: ["blur", "change"]}
         ],
-        inflationRate: [
+        inflation_rate: [
             {required: true, type: "number", message: "Inflation rate is required", trigger: ["blur", "change"]}
         ],
-        insufficientFundsStrategy: [
+        insufficient_funds_strategy: [
             {required: true, message: "Insufficient funds strategy is required", trigger: ["blur", "change"]}
         ],
-        growthRate: [
-            {required: true, type: "number", message: "Growth rate is required", trigger: ["blur", "change"]}
-        ],
-        growthApplicationStrategy: [
+        growth_application_strategy: [
             {required: true, message: "Growth application strategy is required", trigger: ["blur", "change"]}
         ],
         year: [
             {required: true, type: "number", message: "Year is required", trigger: ["blur", "change"]},
             {type: "number", min: 2000, message: "Year must be at least 2000", trigger: ["blur", "change"]}
         ],
-        lifeExpectancy: [
+        life_expectancy: [
             {required: true, type: "number", message: "Life expectancy is required", trigger: ["blur", "change"]},
             {
                 type: "number",
@@ -88,10 +85,10 @@ export function usePlanValidator(modelRef: Ref<Partial<Plan>>) {
                 trigger: ["blur", "change"]
             }
         ],
-        retirementStrategy: [
+        retirement_strategy: [
             {required: true, message: "Retirement strategy is required", trigger: ["blur", "change"]}
         ],
-        retirementWithdrawalRate: [
+        retirement_withdrawal_rate: [
             {validator: validateWithdrawalRate, message: "Withdrawal rate is required", trigger: ["blur", "change"]},
             {
                 type: "number",
@@ -106,7 +103,7 @@ export function usePlanValidator(modelRef: Ref<Partial<Plan>>) {
                 trigger: ["blur", "change"]
             }
         ],
-        retirementIncomeGoal: [
+        retirement_income_goal: [
             {
                 validator: validateRetirementIncomeGoal,
                 message: "Retirement income goal is required",
@@ -125,7 +122,7 @@ export function usePlanValidator(modelRef: Ref<Partial<Plan>>) {
                 trigger: ["blur", "change"]
             }
         ],
-        retirementAge: [
+        retirement_age: [
             {
                 validator: validateRetirementAge,
                 message: "Retirement age is required for Age Retirement Strategy",
@@ -144,7 +141,7 @@ export function usePlanValidator(modelRef: Ref<Partial<Plan>>) {
                 trigger: ["blur", "change"]
             }
         ],
-        retirementSavingsAmount: [
+        retirement_savings_amount: [
             {
                 validator: validateTargetSavingsAmount,
                 message: "Retirement savings amount is required for Target Retirement Savings Retirement Strategy",
@@ -158,17 +155,17 @@ export function usePlanValidator(modelRef: Ref<Partial<Plan>>) {
                 trigger: ["blur", "change"]
             }
         ],
-        retirementIncomeAdjustedForInflation: [
+        retirement_income_adjusted_for_inflation: [
             {
                 type: "boolean",
                 message: "Please select if income should be adjusted for inflation",
                 trigger: ["blur", "change"]
             }
         ],
-        taxStrategy: [
+        tax_strategy: [
             {required: true, message: "Tax strategy is required", trigger: ["blur", "change"]}
         ],
-        taxRate: [
+        tax_rate: [
             {required: true, type: "number", message: "Tax rate is required", trigger: ["blur", "change"]},
             {type: "number", min: MIN_TAX_RATE, message: "Tax rate cannot be negative.", trigger: ["blur", "change"]},
             {type: "number", max: MAX_TAX_RATE, message: "Tax rate must be 100% or less.", trigger: ["blur", "change"]}

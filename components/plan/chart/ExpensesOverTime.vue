@@ -27,7 +27,7 @@ import {BarElement, CategoryScale, Chart as ChartJS, Legend, LinearScale, Title,
 
 import type {PlanState} from "~/types/PlanState";
 
-interface Props {
+type Props = {
   states: PlanState[]
 }
 

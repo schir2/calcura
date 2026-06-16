@@ -9,7 +9,7 @@
 <script lang="ts" setup>
 import type {RothIra, RothIraTemplate} from "~/types/RothIra";
 
-interface Props {
+type Props = {
   rothIras: RothIra[]
 }
 
