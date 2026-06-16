@@ -10,5 +10,5 @@ const props = defineProps<Props>()
 </script>
 
 <template>
-  {{ plan.name}}{{formatValue(plan.editedAt, FormatType.DateTime)}}
+  {{ plan.name }}{{ formatValue(plan.edited_at, FormatType.DateTime) }}
 </template>

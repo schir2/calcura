@@ -9,7 +9,7 @@
   <PlanSummaryIncome v-if="plan.incomes.length !== 0" :incomes="plan.incomes"/>
   <PlanSummaryDebt v-if="plan.debts.length !== 0" :debts="plan.debts"/>
   <PlanSummaryExpense v-if="plan.expenses.length !== 0" :expenses="plan.expenses"/>
-  <PlanSummaryCashReserve v-if="plan.cashReserves.length !== 0" :cashReserves="plan.cashReserves"/>
+  <PlanSummaryCashReserve v-if="plan.cash_reserves.length !== 0" :cashReserves="plan.cash_reserves"/>
 
 </template>
 <script setup lang="ts">

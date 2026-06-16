@@ -33,10 +33,10 @@
       <span>ID: {{ plan.id }}</span>
       <span>Age: {{ plan.age }}</span>
       <span>Year: {{ plan.year }}</span>
-      <span>Life Expectancy: {{ plan.lifeExpectancy }}</span>
-      <span>Tax Rate: {{ plan.taxRate }}</span>
-      <span>Strategy: {{ plan.retirementStrategy }}</span>
-      <span>Retirement Age: {{ plan.retirementAge }}</span>
+      <span>Life Expectancy: {{ plan.life_expectancy }}</span>
+      <span>Tax Rate: {{ plan.tax_rate }}</span>
+      <span>Strategy: {{ plan.retirement_strategy }}</span>
+      <span>Retirement Age: {{ plan.retirement_age }}</span>
     </div>
   </n-card>
 

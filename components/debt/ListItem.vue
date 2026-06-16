@@ -56,7 +56,7 @@ function handleEdit() {
       :modelName="ModelName.Debt"
       :tags="[
           {label: debt.frequency, iconName: 'frequency'},
-          {label: `Interest ${debt.interestRate}%`, iconName: 'interest', hide: debt.interestRate === 0},
+          {label: `Interest ${debt.interest_rate}%`, iconName: 'interest', hide: debt.interest_rate === 0},
       ]"
   >
     <template #summary>

@@ -1,12 +1,12 @@
 export enum CashReserveStrategy {Fixed = 'fixed', Variable = 'variable'}
 
-export interface CashReserve {
-    id: number;
-    name: string,
-    initialAmount: number,
-    cashReserveStrategy: CashReserveStrategy
-    reserveAmount: number,
-    reserveMonths: number,
+export type CashReserve = {
+    id: number
+    name: string
+    initial_amount: number
+    contribution_strategy: CashReserveStrategy
+    reserve_amount: number
+    reserve_months: number
 }
 
 export type CashReservePartial = Partial<Omit<CashReserve, 'id'>>
@@ -17,8 +17,8 @@ export interface CashReserveTemplate extends CashReserve {
 
 export const cashReserveDefaults: CashReservePartial = {
     name: 'Blank Reserve',
-    initialAmount: 0,
-    cashReserveStrategy: CashReserveStrategy.Fixed,
-    reserveAmount: 0,
-    reserveMonths: 0,
+    initial_amount: 0,
+    contribution_strategy: CashReserveStrategy.Fixed,
+    reserve_amount: 0,
+    reserve_months: 0,
 }

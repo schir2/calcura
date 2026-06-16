@@ -56,12 +56,14 @@ function handleEdit() {
       :title="ira.name"
       :modelName="ModelName.Ira"
       :tags="[
-          {label: ira.contributionStrategy, },
-          {label: `Growth ${ira.growthRate}%`, iconName: 'growthRate', hide: ira.growthRate === 0},
+          {label: ira.contribution_strategy, },
+          {label: `Growth ${ira.growth_rate}%`, iconName: 'growthRate', hide: ira.growth_rate === 0},
       ]"
   >
     <template #summary>
-      -${{ $humanize.intComma(calculateIraContribution(ira, ira.income?.grossIncome, IRA_CONTRIBUTION_LIMIT_2024 )) }}/year
+      -${{
+        $humanize.intComma(calculateIraContribution(ira, ira.income?.gross_income, IRA_CONTRIBUTION_LIMIT_2024))
+      }}/year
     </template>
   </command-list-item>
 </template>

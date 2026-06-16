@@ -40,7 +40,7 @@ interface Props {
 
 const props = defineProps<Props>()
 const finalPlanState = computed(() => props.states[props.states.length - 1])
-const series = computed(() => props.states.map(state => (state.savingsTaxDeferredEndOfYear)))
+const series = computed(() => props.states.map(state => (state.savings_tax_deferred_end_of_year)))
 
 
 ChartJS.register(ArcElement, Tooltip, Legend)

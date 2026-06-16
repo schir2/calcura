@@ -17,44 +17,44 @@ const planConfig: Plan = {
     name: "Blank Plan",
     age: 30,
     year: new Date().getFullYear(),
-    inflationRate: 3,
+    inflation_rate: 3,
     growthRate: 6,
-    insufficientFundsStrategy: InsufficientFundsStrategy.None,
-    growthApplicationStrategy: GrowthApplicationStrategy.Start,
-    taxStrategy: IncomeTaxStrategy.Simple,
-    taxRate: 30,
-    lifeExpectancy: 85,
-    retirementStrategy: RetirementStrategy.Age,
-    retirementWithdrawalRate: 4,
-    retirementIncomeGoal: 50000,
-    retirementAge: 65,
-    retirementSavingsAmount: 200000,
-    retirementIncomeAdjustedForInflation: true,
-    cashReserves: [
+    insufficient_funds_strategy: InsufficientFundsStrategy.None,
+    growth_application_strategy: GrowthApplicationStrategy.Start,
+    tax_strategy: IncomeTaxStrategy.Simple,
+    tax_rate: 30,
+    life_expectancy: 85,
+    retirement_strategy: RetirementStrategy.Age,
+    retirement_withdrawal_rate: 4,
+    retirement_income_goal: 50000,
+    retirement_age: 65,
+    retirement_savings_amount: 200000,
+    retirement_income_adjusted_for_inflation: true,
+    cash_reserves: [
         {
             id: 1,
             name: 'Emergency Funds',
-            cashReserveStrategy: CashReserveStrategy.Fixed,
-            reserveMonths: 0,
-            reserveAmount: 30_000,
-            initialAmount: 10_000,
+            contribution_strategy: CashReserveStrategy.Fixed,
+            reserve_months: 0,
+            reserve_amount: 30_000,
+            initial_amount: 10_000,
         }
     ],
     incomes: [
         {
             id: 1,
             name: 'Ordinary Income',
-            grossIncome: 100_000,
-            growthRate: 0,
-            incomeType: "ordinary",
+            gross_income: 100_000,
+            growth_rate: 0,
+            income_type: "ordinary",
             frequency: Frequency.Annually
         },
         {
             id: 1,
             name: 'Ordinary Income',
-            grossIncome: 50_000,
-            growthRate: 0,
-            incomeType: "ordinary",
+            gross_income: 50_000,
+            growth_rate: 0,
+            income_type: "ordinary",
             frequency: Frequency.Annually
         }
     ],
@@ -64,40 +64,40 @@ const planConfig: Plan = {
             name: 'Rent',
             frequency: Frequency.Monthly,
             amount: 1_800,
-            expenseType: ExpenseType.fixed,
-            growthRate: 0,
-            isEssential: true,
-            isTaxDeductible: false,
-            growsWithInflation: true,
+            expense_type: ExpenseType.fixed,
+            growth_rate: 0,
+            is_essential: true,
+            is_tax_deductible: false,
+            grows_with_inflation: true,
         },
         {
             id: 2,
             name: 'Gym',
             frequency: Frequency.Monthly,
             amount: 70,
-            expenseType: ExpenseType.fixed,
-            growthRate: 0,
-            isEssential: false,
-            isTaxDeductible: false,
-            growsWithInflation: true,
+            expense_type: ExpenseType.fixed,
+            growth_rate: 0,
+            is_essential: false,
+            is_tax_deductible: false,
+            grows_with_inflation: true,
         },
         {
             id: 3,
             name: 'Climbing',
             frequency: Frequency.Annually,
             amount: 1450,
-            expenseType: ExpenseType.fixed,
-            growthRate: 0,
-            isEssential: false,
-            isTaxDeductible: false,
-            growsWithInflation: true,
+            expense_type: ExpenseType.fixed,
+            growth_rate: 0,
+            is_essential: false,
+            is_tax_deductible: false,
+            grows_with_inflation: true,
         }],
     debts: [],
-    taxDeferreds: [],
+    tax_deferreds: [],
     brokerages: [],
     iras: [],
-    rothIras: [],
-    commandSequences: [],
+    roth_iras: [],
+    command_sequences: [],
 }
 
 let planManager: PlanManager
@@ -125,12 +125,12 @@ describe("CashManager", () => {
         it('fixedWithZeroInitial', () => {
             planManager = new PlanManager({
                 ...planConfig,
-                cashReserves: [
+                cash_reserves: [
                     {
-                        ...planConfig.cashReserves[0],
-                        cashReserveStrategy: CashReserveStrategy.Fixed,
-                        initialAmount: 0,
-                        reserveAmount: 20_000,
+                        ...planConfig.cash_reserves[0],
+                        contribution_strategy: CashReserveStrategy.Fixed,
+                        initial_amount: 0,
+                        reserve_amount: 20_000,
                     }
                 ]
             })
@@ -142,12 +142,12 @@ describe("CashManager", () => {
         it('fixedWithInitial', () => {
             planManager = new PlanManager({
                 ...planConfig,
-                cashReserves: [
+                cash_reserves: [
                     {
-                        ...planConfig.cashReserves[0],
-                        cashReserveStrategy: CashReserveStrategy.Fixed,
-                        initialAmount: 10_000,
-                        reserveAmount: 20_000,
+                        ...planConfig.cash_reserves[0],
+                        contribution_strategy: CashReserveStrategy.Fixed,
+                        initial_amount: 10_000,
+                        reserve_amount: 20_000,
                     }
                 ]
             })
@@ -159,12 +159,12 @@ describe("CashManager", () => {
         it('variableWithInitial', () => {
             planManager = new PlanManager({
                 ...planConfig,
-                cashReserves: [
+                cash_reserves: [
                     {
-                        ...planConfig.cashReserves[0],
-                        cashReserveStrategy: CashReserveStrategy.Variable,
-                        initialAmount: 0,
-                        reserveMonths: 6,
+                        ...planConfig.cash_reserves[0],
+                        contribution_strategy: CashReserveStrategy.Variable,
+                        initial_amount: 0,
+                        reserve_months: 6,
                     }
                 ]
             })
@@ -176,12 +176,12 @@ describe("CashManager", () => {
         it('variableWithInitial', () => {
             planManager = new PlanManager({
                 ...planConfig,
-                cashReserves: [
+                cash_reserves: [
                     {
-                        ...planConfig.cashReserves[0],
-                        cashReserveStrategy: CashReserveStrategy.Variable,
-                        initialAmount: 10_000,
-                        reserveMonths: 6,
+                        ...planConfig.cash_reserves[0],
+                        contribution_strategy: CashReserveStrategy.Variable,
+                        initial_amount: 10_000,
+                        reserve_months: 6,
                     }
                 ]
             })
@@ -204,17 +204,17 @@ describe("CashManager", () => {
             expect(currentState.amountPaid).toBe(20_000)
             expect(currentState.cashReserveStartOfYear).toBe(10_000)
             expect(currentState.cashReserveEndOfYear).toBe(30_000)
-            expect(planState.taxedCapital).toBe(85_000)
-            expect(planState.taxedWithdrawals).toBe(20_000)
+            expect(planState.taxed_capital).toBe(85_000)
+            expect(planState.taxed_withdrawals).toBe(20_000)
 
         })
         it('insufficient funds', () => {
             planManager = new PlanManager({
                 ...planConfig,
-                cashReserves: [
+                cash_reserves: [
                     {
-                        ...planConfig.cashReserves[0],
-                        reserveAmount: 500_000,
+                        ...planConfig.cash_reserves[0],
+                        reserve_amount: 500_000,
                     }
                 ]
             })
@@ -227,8 +227,8 @@ describe("CashManager", () => {
             expect(currentState.amountPaid).toBe(105_000)
             expect(currentState.cashReserveStartOfYear).toBe(10_000)
             expect(currentState.cashReserveEndOfYear).toBe(115_000)
-            expect(planState.taxedCapital).toBe(0)
-            expect(planState.taxedWithdrawals).toBe(105_000)
+            expect(planState.taxed_capital).toBe(0)
+            expect(planState.taxed_withdrawals).toBe(105_000)
 
         })
     })

@@ -9,11 +9,11 @@ export enum IraContributionStrategy {
 export interface Ira {
     id: number;
     name: string;
-    growthRate: number;
-    initialBalance: number;
-    contributionStrategy: IraContributionStrategy;
-    contributionPercentage: number;
-    contributionFixedAmount: number;
+    growth_rate: number;
+    initial_balance: number;
+    contribution_strategy: IraContributionStrategy;
+    contribution_percentage: number;
+    contribution_fixed_amount: number;
 
     income?: Income;
 }
@@ -26,9 +26,9 @@ export interface IraTemplate extends Ira {
 
 export const iraDefaults: IraPartial = {
     name: 'Traditional IRA',
-    growthRate: 6,
-    initialBalance: 0,
-    contributionStrategy: IraContributionStrategy.Fixed,
-    contributionPercentage: 0,
-    contributionFixedAmount: 0,
+    growth_rate: 6,
+    initial_balance: 0,
+    contribution_strategy: IraContributionStrategy.Fixed,
+    contribution_percentage: 0,
+    contribution_fixed_amount: 0,
 }

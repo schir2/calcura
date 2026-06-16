@@ -5,63 +5,63 @@ export interface PlanState extends BaseState {
     year: number;
 
     grossIncome: number;
-    taxableIncome: number;
-    taxedIncome: number;
+    taxable_income: number;
+    taxed_income: number;
     AGI: number;
 
-    taxableCapital: number;
-    taxedCapital: number;
-    taxedWithdrawals: number;
+    taxable_capital: number;
+    taxed_capital: number;
+    taxed_withdrawals: number;
 
     deductions: number;
 
-    electiveLimit: number;
-    deferredLimit: number;
-    iraLimit: number;
+    elective_limit: number;
+    deferred_limit: number;
+    ira_limit: number;
 
-    inflationRate: number;
+    inflation_rate: number;
 
     /* Contributions */
-    taxDeferredContributions: number;
-    taxableContributions: number;
-    taxExemptContributions: number;
+    tax_deferred_contributions: number;
+    taxable_contributions: number;
+    tax_exempt_contributions: number;
 
-    taxDeferredContributionsLifetime: number;
-    taxableContributionsLifetime: number;
-    taxExemptContributionsLifetime: number;
+    tax_deferred_contributions_lifetime: number;
+    taxable_contributions_lifetime: number;
+    tax_exempt_contributions_lifetime: number;
 
 
     /* Savings */
-    savingsTaxDeferredStartOfYear: number;
-    savingsTaxDeferredEndOfYear: number;
+    savings_tax_deferred_start_of_year: number;
+    savings_tax_deferred_end_of_year: number;
 
-    savingsTaxExemptStartOfYear: number;
-    savingsTaxExemptEndOfYear: number;
+    savings_tax_exempt_start_of_year: number;
+    savings_tax_exempt_end_of_year: number;
 
-    savingsTaxableStartOfYear: number;
-    savingsTaxableEndOfYear: number;
+    savings_taxable_start_of_year: number;
+    savings_taxable_end_of_year: number;
 
-    savingsStartOfYear: number;
-    savingsEndOfYear: number;
+    savings_start_of_year: number;
+    savings_end_of_year: number;
 
-    debtStartOfYear: number;
-    debtEndOfYear: number;
+    debt_start_of_year: number;
+    dept_end_of_year: number;
 
-    debtPayments: number;
-    debtPaymentsLifetime: number;
+    debt_payments: number;
+    debt_payments_lifetime: number;
 
-    expensesTotal: number;
-    expensesPaid: number;
-    expensesShortfall: number;
+    expenses_total: number;
+    expenses_paid: number;
+    expenses_shortfall: number;
 
-    expensesTotalLifetime: number;
-    expensesPaidLifetime: number;
-    expensesShortfallLifetime: number;
+    expenses_total_lifetime: number;
+    expenses_paid_lifetime: number;
+    expenses_shortfall_lifetime: number;
 
-    cashReservesTotal: number;
+    cash_reserves_total: number;
 
-    retirementIncomeProjected: number;
-    retirementIncomeGoal: number;
+    retirement_income_projected: number;
+    retirement_income_goal: number;
     retired: boolean;
 
     processed: boolean;

@@ -27,43 +27,43 @@ describe("PlanManager", () => {
             name: "Blank Plan",
             age: 30,
             year: new Date().getFullYear(),
-            inflationRate: 3,
-            insufficientFundsStrategy: InsufficientFundsStrategy.None,
-            growthApplicationStrategy: GrowthApplicationStrategy.Start,
-            taxStrategy: IncomeTaxStrategy.Simple,
-            taxRate: 30,
-            lifeExpectancy: 85,
-            retirementStrategy: RetirementStrategy.Age,
-            retirementWithdrawalRate: 4,
-            retirementIncomeGoal: 50000,
-            retirementAge: 65,
-            retirementSavingsAmount: 200000,
-            retirementIncomeAdjustedForInflation: true,
-            cashReserves: [
+            inflation_rate: 3,
+            insufficient_funds_strategy: InsufficientFundsStrategy.None,
+            growth_application_strategy: GrowthApplicationStrategy.Start,
+            tax_strategy: IncomeTaxStrategy.Simple,
+            tax_rate: 30,
+            life_expectancy: 85,
+            retirement_strategy: RetirementStrategy.Age,
+            retirement_withdrawal_rate: 4,
+            retirement_income_goal: 50000,
+            retirement_age: 65,
+            retirement_savings_amount: 200000,
+            retirement_income_adjusted_for_inflation: true,
+            cash_reserves: [
                 {
                     id: 10,
                     name: 'Cash Reserve',
-                    cashReserveStrategy: CashReserveStrategy.Fixed,
-                    reserveMonths: 0,
-                    reserveAmount: 10_000,
-                    initialAmount: 15_000,
+                    contribution_strategy: CashReserveStrategy.Fixed,
+                    reserve_months: 0,
+                    reserve_amount: 10_000,
+                    initial_amount: 15_000,
                 }
             ],
             incomes: [
                 {
                     id: 1,
                     name: 'Ordinary Income',
-                    grossIncome: 100000,
-                    growthRate: 0,
-                    incomeType: "ordinary",
+                    gross_income: 100000,
+                    growth_rate: 0,
+                    income_type: "ordinary",
                     frequency: Frequency.Annually
                 },
                 {
                     id: 2,
                     name: 'Ordinary Income',
-                    grossIncome: 50000,
-                    growthRate: 0,
-                    incomeType: "ordinary",
+                    gross_income: 50000,
+                    growth_rate: 0,
+                    income_type: "ordinary",
                     frequency: Frequency.Annually
                 }
             ],
@@ -73,67 +73,67 @@ describe("PlanManager", () => {
                     name: 'Rent',
                     frequency: Frequency.Monthly,
                     amount: 1_800,
-                    expenseType: ExpenseType.fixed,
-                    growthRate: 0,
-                    isEssential: true,
-                    isTaxDeductible: false,
-                    growsWithInflation: true,
+                    expense_type: ExpenseType.fixed,
+                    growth_rate: 0,
+                    is_essential: true,
+                    is_tax_deductible: false,
+                    grows_with_inflation: true,
                 },
                 {
                     id: 2,
                     name: 'Gym',
                     frequency: Frequency.Monthly,
                     amount: 70,
-                    expenseType: ExpenseType.fixed,
-                    growthRate: 0,
-                    isEssential: false,
-                    isTaxDeductible: false,
-                    growsWithInflation: true,
+                    expense_type: ExpenseType.fixed,
+                    growth_rate: 0,
+                    is_essential: false,
+                    is_tax_deductible: false,
+                    grows_with_inflation: true,
                 },
                 {
                     id: 3,
                     name: 'Climbing',
                     frequency: Frequency.Annually,
                     amount: 1450,
-                    expenseType: ExpenseType.fixed,
-                    growthRate: 0,
-                    isEssential: false,
-                    isTaxDeductible: false,
-                    growsWithInflation: true,
+                    expense_type: ExpenseType.fixed,
+                    growth_rate: 0,
+                    is_essential: false,
+                    is_tax_deductible: false,
+                    grows_with_inflation: true,
                 }],
             debts: [
                 {
                     id: 1,
                     name: 'School Loan',
-                    interestRate: 8,
+                    interest_rate: 8,
                     principal: 100_000,
-                    paymentFixedAmount: 600,
-                    paymentMinimum: 600,
-                    paymentStrategy: DebtPaymentStrategy.MinimumPayment,
-                    paymentPercentage: 0,
+                    payment_fixed_amount: 600,
+                    payment_minimum: 600,
+                    payment_strategy: DebtPaymentStrategy.MinimumPayment,
+                    payment_percentage: 0,
                     frequency: Frequency.Annually,
                 }
             ],
-            taxDeferreds: [
+            tax_deferreds: [
                 {
                     id: 1,
                     name: 'Test TaxDeferred ',
-                    growthRate: 6,
-                    initialBalance: 10_000,
-                    electiveContributionStrategy: TaxDeferredContributionStrategy.PercentageOfIncome,
-                    electiveContributionPercentage: 6,
-                    electiveContributionFixedAmount: 0,
-                    employerContributionStrategy: EmployerContributionStrategy.PercentageOfContribution,
-                    employerCompensationMatchPercentage: 100,
-                    employerContributionFixedAmount: 0,
-                    employerMatchPercentageLimit: 3,
-                    employerMatchPercentage: 100,
+                    growth_rate: 6,
+                    initial_balance: 10_000,
+                    elective_contribution_strategy: TaxDeferredContributionStrategy.PercentageOfIncome,
+                    elective_contribution_percentage: 6,
+                    elective_contribution_fixed_amount: 0,
+                    employer_contribution_strategy: EmployerContributionStrategy.PercentageOfContribution,
+                    employer_contribution_match_percentage: 100,
+                    employer_contribution_fixed_amount: 0,
+                    employer_match_percentage_limit: 3,
+                    employer_match_percentage: 100,
                     income: {
                         id: 1,
                         name: 'Ordinary Income',
-                        grossIncome: 100_000,
-                        growthRate: 0,
-                        incomeType: "ordinary",
+                        gross_income: 100_000,
+                        growth_rate: 0,
+                        income_type: "ordinary",
                         frequency: Frequency.Annually
                     }
 
@@ -143,11 +143,11 @@ describe("PlanManager", () => {
                 {
                     id: 1,
                     name: 'Test Brokerage ',
-                    growthRate: 6,
-                    initialBalance: 10_000,
-                    contributionStrategy: BrokerageContributionStrategy.Fixed,
-                    contributionPercentage: 0,
-                    contributionFixedAmount: 0,
+                    growth_rate: 6,
+                    initial_balance: 10_000,
+                    contribution_strategy: BrokerageContributionStrategy.Fixed,
+                    contribution_percentage: 0,
+                    contribution_fixed_amount: 0,
 
                 }
             ],
@@ -155,41 +155,41 @@ describe("PlanManager", () => {
                 {
                     id: 1,
                     name: 'Test Brokerage ',
-                    growthRate: 6,
-                    initialBalance: 10_000,
-                    contributionStrategy: IraContributionStrategy.Fixed,
-                    contributionPercentage: 0,
-                    contributionFixedAmount: 3_500,
+                    growth_rate: 6,
+                    initial_balance: 10_000,
+                    contribution_strategy: IraContributionStrategy.Fixed,
+                    contribution_percentage: 0,
+                    contribution_fixed_amount: 3_500,
                     income:
                         {
                             id: 1,
                             name: 'Ordinary Income',
-                            grossIncome: 100_000,
-                            growthRate: 0,
-                            incomeType: "ordinary",
+                            gross_income: 100_000,
+                            growth_rate: 0,
+                            income_type: "ordinary",
                             frequency: Frequency.Annually
                         },
                 }],
-            rothIras: [
+            roth_iras: [
                 {
                     id: 1,
                     name: 'Test Brokerage ',
-                    growthRate: 6,
-                    initialBalance: 10_000,
-                    contributionStrategy: RothIraContributionStrategy.Fixed,
-                    contributionPercentage: 0,
-                    contributionFixedAmount: 3_500,
+                    growth_rate: 6,
+                    initial_balance: 10_000,
+                    contribution_strategy: RothIraContributionStrategy.Fixed,
+                    contribution_percentage: 0,
+                    contribution_fixed_amount: 3_500,
                     income:
                         {
                             id: 1,
                             name: 'Ordinary Income',
-                            grossIncome: 100_000,
-                            growthRate: 0,
-                            incomeType: "ordinary",
+                            gross_income: 100_000,
+                            growth_rate: 0,
+                            income_type: "ordinary",
                             frequency: Frequency.Annually
                         },
                 }],
-            commandSequences: []
+            command_sequences: []
         }
         planManager = new PlanManager(planConfig);
     })
@@ -199,32 +199,32 @@ describe("PlanManager", () => {
             expect(state.age).toBe(30)
             expect(state.year).toBe(new Date().getFullYear())
             expect(state.grossIncome).toBe(150_000)
-            expect(state.taxableIncome).toBe(150_000)
-            expect(state.taxedIncome).toBe(105_000)
+            expect(state.taxable_income).toBe(150_000)
+            expect(state.taxed_income).toBe(105_000)
             expect(state.AGI).toBe(0)
-            expect(state.taxableCapital).toBe(150_000)
-            expect(state.taxedCapital).toBe(105_000)
-            expect(state.taxedWithdrawals).toBe(0)
+            expect(state.taxable_capital).toBe(150_000)
+            expect(state.taxed_capital).toBe(105_000)
+            expect(state.taxed_withdrawals).toBe(0)
             expect(state.deductions).toBe(0)
-            expect(state.electiveLimit).toBe(23_500)
-            expect(state.deferredLimit).toBe(70_000)
-            expect(state.iraLimit).toBe(7_000)
-            expect(state.inflationRate).toBe(3)
-            expect(state.taxDeferredContributions).toBe(0)
-            expect(state.taxDeferredContributionsLifetime).toBe(0)
-            expect(state.taxExemptContributions).toBe(0)
-            expect(state.taxExemptContributionsLifetime).toBe(0)
-            expect(state.taxableContributions).toBe(0)
-            expect(state.taxableContributionsLifetime).toBe(0)
-            expect(state.savingsTaxDeferredStartOfYear).toBe(20_000)
-            expect(state.savingsTaxDeferredEndOfYear).toBe(20_000)
-            expect(state.savingsTaxExemptStartOfYear).toBe(10_000)
-            expect(state.savingsTaxExemptEndOfYear).toBe(10_000)
-            expect(state.savingsTaxableStartOfYear).toBe(10_000)
-            expect(state.savingsTaxableEndOfYear).toBe(10_000)
-            expect(state.savingsStartOfYear).toBe(0)
-            expect(state.savingsEndOfYear).toBe(0)
-            expect(state.retirementIncomeProjected).toBe(0)
+            expect(state.elective_limit).toBe(23_500)
+            expect(state.deferred_limit).toBe(70_000)
+            expect(state.ira_limit).toBe(7_000)
+            expect(state.inflation_rate).toBe(3)
+            expect(state.tax_deferred_contributions).toBe(0)
+            expect(state.tax_deferred_contributions_lifetime).toBe(0)
+            expect(state.tax_exempt_contributions).toBe(0)
+            expect(state.tax_exempt_contributions_lifetime).toBe(0)
+            expect(state.taxable_contributions).toBe(0)
+            expect(state.taxable_contributions_lifetime).toBe(0)
+            expect(state.savings_tax_deferred_start_of_year).toBe(20_000)
+            expect(state.savings_tax_deferred_end_of_year).toBe(20_000)
+            expect(state.savings_tax_exempt_start_of_year).toBe(10_000)
+            expect(state.savings_tax_exempt_end_of_year).toBe(10_000)
+            expect(state.savings_taxable_start_of_year).toBe(10_000)
+            expect(state.savings_taxable_end_of_year).toBe(10_000)
+            expect(state.savings_start_of_year).toBe(0)
+            expect(state.savings_end_of_year).toBe(0)
+            expect(state.retirement_income_projected).toBe(0)
             expect(state.retired).toBe(false)
             expect(state.processed).toBe(false)
 
@@ -233,7 +233,7 @@ describe("PlanManager", () => {
     describe('requestFunds', () => {
         it("should correctly request funds from taxable capital", () => {
             const currentState = planManager.getCurrentState();
-            currentState.taxableCapital = 50_000;
+            currentState.taxable_capital = 50_000;
 
             expect(planManager.requestFunds(20000, FundType.Taxable)).toBe(20_000);
             expect(planManager.requestFunds(60000, FundType.Taxable)).toBe(50_000);
@@ -241,15 +241,15 @@ describe("PlanManager", () => {
 
         it("should correctly request funds from taxed capital", () => {
             const currentState = planManager.getCurrentState();
-            currentState.taxedCapital = 30_000;
+            currentState.taxed_capital = 30_000;
 
             expect(planManager.requestFunds(10_000, FundType.Taxed)).toBe(10_000);
             expect(planManager.requestFunds(40_000, FundType.Taxed)).toBe(30_000);
         });
         it("should allow minimum negative funds for taxable capital", () => {
             const currentState = planManager.getCurrentState();
-            currentState.taxableCapital = 1_000;
-            planManager.getConfig().insufficientFundsStrategy = InsufficientFundsStrategy.MinimumOnly;
+            currentState.taxable_capital = 1_000;
+            planManager.getConfig().insufficient_funds_strategy = InsufficientFundsStrategy.MinimumOnly;
 
             expect(planManager.requestFunds(2_000, FundType.Taxable, 1_000)).toBe(1_000);
             expect(planManager.requestFunds(2_000, FundType.Taxable, 2_000)).toBe(2_000);
@@ -257,8 +257,8 @@ describe("PlanManager", () => {
 
         it("should allow full negative funds for taxable capital", () => {
             const currentState = planManager.getCurrentState();
-            currentState.taxableCapital = 500;
-            planManager.getConfig().insufficientFundsStrategy = InsufficientFundsStrategy.Full;
+            currentState.taxable_capital = 500;
+            planManager.getConfig().insufficient_funds_strategy = InsufficientFundsStrategy.Full;
 
             expect(planManager.requestFunds(1_000, FundType.Taxable)).toBe(1_000);
             expect(planManager.requestFunds(2_000, FundType.Taxable)).toBe(2_000);
@@ -266,8 +266,8 @@ describe("PlanManager", () => {
 
         it("should handle minimum parameter correctly with InsufficientFundsStrategy.None", () => {
             const currentState = planManager.getCurrentState();
-            currentState.taxableCapital = 1000;
-            planManager.getConfig().insufficientFundsStrategy = InsufficientFundsStrategy.None;
+            currentState.taxable_capital = 1000;
+            planManager.getConfig().insufficient_funds_strategy = InsufficientFundsStrategy.None;
 
             expect(planManager.requestFunds(2000, FundType.Taxable, -500)).toBe(1000); // Minimum ignored
         });
@@ -281,37 +281,37 @@ describe("PlanManager", () => {
     describe('contribute', () => {
         it("should correctly contribute to tax-deferred savings", () => {
             const currentState = planManager.getCurrentState();
-            currentState.savingsTaxDeferredEndOfYear = 0;
+            currentState.savings_tax_deferred_end_of_year = 0;
 
             planManager.contribute(5000, ContributionType.TaxDeferred);
 
-            expect(currentState.taxDeferredContributions).toBe(5000);
-            expect(currentState.taxDeferredContributionsLifetime).toBe(5000);
+            expect(currentState.tax_deferred_contributions).toBe(5000);
+            expect(currentState.tax_deferred_contributions_lifetime).toBe(5000);
         });
 
         it("should correctly contribute to tax-exempt savings", () => {
             const currentState = planManager.getCurrentState();
-            currentState.savingsTaxExemptEndOfYear = 0;
+            currentState.savings_tax_exempt_end_of_year = 0;
 
             planManager.contribute(3000, ContributionType.RothIra);
 
-            expect(currentState.taxExemptContributions).toBe(3000);
-            expect(currentState.taxExemptContributionsLifetime).toBe(3000);
+            expect(currentState.tax_exempt_contributions).toBe(3000);
+            expect(currentState.tax_exempt_contributions_lifetime).toBe(3000);
         });
 
         it("should correctly contribute to taxable savings", () => {
             const currentState = planManager.getCurrentState();
-            currentState.savingsTaxableEndOfYear = 0;
+            currentState.savings_taxable_end_of_year = 0;
 
             planManager.contribute(7000, ContributionType.Taxable);
 
-            expect(currentState.taxableContributions).toBe(7000);
-            expect(currentState.taxableContributionsLifetime).toBe(7000);
+            expect(currentState.taxable_contributions).toBe(7000);
+            expect(currentState.taxable_contributions_lifetime).toBe(7000);
         });
     })
     describe('calculateTaxes', () => {
         it("should correctly calculate taxes based on AGI and tax rate", () => {
-            planConfig.taxRate = 30; // Set tax rate to 30%
+            planConfig.tax_rate = 30; // Set tax rate to 30%
             planManager = new PlanManager(planConfig);
 
             const agi = 100000;
@@ -321,7 +321,7 @@ describe("PlanManager", () => {
         });
 
         it("should return 0 for a 0% tax rate", () => {
-            planConfig.taxRate = 0;
+            planConfig.tax_rate = 0;
             planManager = new PlanManager(planConfig);
 
             const agi = 100000;
@@ -331,7 +331,7 @@ describe("PlanManager", () => {
         });
 
         it("should return 0 taxes for an AGI of 0", () => {
-            planConfig.taxRate = 30;
+            planConfig.tax_rate = 30;
             planManager = new PlanManager(planConfig);
 
             const agi = 0;
@@ -344,7 +344,7 @@ describe("PlanManager", () => {
     describe('getAGI', () => {
         it("should correctly calculate AGI based on taxable income and deductions", () => {
             const currentState = planManager.getCurrentState();
-            currentState.taxableIncome = 100000;
+            currentState.taxable_income = 100000;
             currentState.deductions = 20000;
 
             const agi = planManager.getAGI(currentState);
@@ -354,7 +354,7 @@ describe("PlanManager", () => {
 
         it("should return taxable income as AGI when deductions are 0", () => {
             const currentState = planManager.getCurrentState();
-            currentState.taxableIncome = 50000;
+            currentState.taxable_income = 50000;
             currentState.deductions = 0;
 
             const agi = planManager.getAGI(currentState);
@@ -364,7 +364,7 @@ describe("PlanManager", () => {
 
         it("should handle negative AGI when deductions exceed taxable income", () => {
             const currentState = planManager.getCurrentState();
-            currentState.taxableIncome = 30000;
+            currentState.taxable_income = 30000;
             currentState.deductions = 40000;
 
             const agi = planManager.getAGI(currentState);
@@ -375,53 +375,53 @@ describe("PlanManager", () => {
 
     describe("invest", () => {
         it("taxDeferred", () => {
-            planManager.getCurrentState().savingsTaxDeferredEndOfYear = 0
+            planManager.getCurrentState().savings_tax_deferred_end_of_year = 0
             planManager.invest(5_000, ContributionType.TaxDeferred)
-            expect(planManager.getCurrentState().savingsTaxDeferredEndOfYear).toBe(5_000)
+            expect(planManager.getCurrentState().savings_tax_deferred_end_of_year).toBe(5_000)
         })
         it("ira", () => {
-            planManager.getCurrentState().savingsTaxDeferredEndOfYear = 0
+            planManager.getCurrentState().savings_tax_deferred_end_of_year = 0
             planManager.invest(5_000, ContributionType.Ira)
-            expect(planManager.getCurrentState().savingsTaxDeferredEndOfYear).toBe(5_000)
+            expect(planManager.getCurrentState().savings_tax_deferred_end_of_year).toBe(5_000)
         })
         it("rothIra", () => {
-            planManager.getCurrentState().savingsTaxDeferredEndOfYear = 0
+            planManager.getCurrentState().savings_tax_deferred_end_of_year = 0
             planManager.invest(5_000, ContributionType.RothIra)
-            expect(planManager.getCurrentState().savingsTaxExemptEndOfYear).toBe(15_000)
+            expect(planManager.getCurrentState().savings_tax_exempt_end_of_year).toBe(15_000)
         })
         it("taxable", () => {
-            planManager.getCurrentState().savingsTaxDeferredEndOfYear = 0
+            planManager.getCurrentState().savings_tax_deferred_end_of_year = 0
             planManager.invest(5_000, ContributionType.Taxable)
-            expect(planManager.getCurrentState().savingsTaxableEndOfYear).toBe(15_000)
+            expect(planManager.getCurrentState().savings_taxable_end_of_year).toBe(15_000)
         })
         it("elective", () => {
-            planManager.getCurrentState().savingsTaxDeferredEndOfYear = 0
+            planManager.getCurrentState().savings_tax_deferred_end_of_year = 0
             planManager.invest(5_000, ContributionType.Elective)
-            expect(planManager.getCurrentState().savingsTaxDeferredEndOfYear).toBe(5_000)
+            expect(planManager.getCurrentState().savings_tax_deferred_end_of_year).toBe(5_000)
         })
     })
 
     describe("withdraw", () => {
         it("should correctly withdraw from taxable capital and update state", () => {
             const currentState = planManager.getCurrentState();
-            currentState.taxableCapital = 50000;
-            currentState.taxableIncome = 50000;
-            currentState.taxedWithdrawals = 10000;
+            currentState.taxable_capital = 50000;
+            currentState.taxable_income = 50000;
+            currentState.taxed_withdrawals = 10000;
 
             planManager.withdraw(20000, FundType.Taxable);
 
-            expect(currentState.taxableCapital).toBe(30000); // Deducted
-            expect(currentState.taxableIncome).toBe(30000); // Adjusted
+            expect(currentState.taxable_capital).toBe(30000); // Deducted
+            expect(currentState.taxable_income).toBe(30000); // Adjusted
             const agi = planManager.getAGI(currentState);
             expect(agi).toBe(30000);
             const calculatedTaxes = planManager.calculateTaxes(agi);
-            expect(currentState.taxedIncome).toBe(30000 - calculatedTaxes);
-            expect(currentState.taxedCapital).toBe(currentState.taxedIncome - currentState.taxedWithdrawals);
+            expect(currentState.taxed_income).toBe(30000 - calculatedTaxes);
+            expect(currentState.taxed_capital).toBe(currentState.taxed_income - currentState.taxed_withdrawals);
         });
 
         it("should throw an error if taxable withdrawal exceeds available capital", () => {
             const currentState = planManager.getCurrentState();
-            currentState.taxableCapital = 10000;
+            currentState.taxable_capital = 10000;
 
             expect(() => planManager.withdraw(20000, FundType.Taxable)).toThrow(
                 "Insufficient taxable capital for withdrawal"
@@ -430,18 +430,18 @@ describe("PlanManager", () => {
 
         it("should correctly withdraw from taxed capital and update state", () => {
             const currentState = planManager.getCurrentState();
-            currentState.taxedCapital = 30000;
-            currentState.taxedWithdrawals = 5000;
+            currentState.taxed_capital = 30000;
+            currentState.taxed_withdrawals = 5000;
 
             planManager.withdraw(10000, FundType.Taxed);
 
-            expect(currentState.taxedCapital).toBe(20000); // Deducted
-            expect(currentState.taxedWithdrawals).toBe(15000); // Increased
+            expect(currentState.taxed_capital).toBe(20000); // Deducted
+            expect(currentState.taxed_withdrawals).toBe(15000); // Increased
         });
 
         it("should throw an error if taxed withdrawal exceeds available capital", () => {
             const currentState = planManager.getCurrentState();
-            currentState.taxedCapital = 5000;
+            currentState.taxed_capital = 5000;
 
             expect(() => planManager.withdraw(10000, FundType.Taxed)).toThrow(
                 "Insufficient taxed capital for tax-exempt contribution"

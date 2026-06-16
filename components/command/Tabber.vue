@@ -15,12 +15,12 @@ function handleClickDeleteSequence(commandSequenceId: number){
 }
 
 const addable = computed(()=>{
-  return props.plan.commandSequences.length <= 5
+  return props.plan.command_sequences.length <= 5
 })
 
 
 const closeable = computed(()=>{
-  return props.plan.commandSequences.length > 1
+  return props.plan.command_sequences.length > 1
 })
 
 </script>
@@ -34,7 +34,7 @@ const closeable = computed(()=>{
       @close="handleClickDeleteSequence"
       @add="$emit('create-sequence')"
   >
-    <n-tab-pane v-for="commandSequence in plan.commandSequences" :key="commandSequence.id" :name="commandSequence.id">
+    <n-tab-pane v-for="commandSequence in plan.command_sequences" :key="commandSequence.id" :name="commandSequence.id">
       <template #tab>{{ commandSequence.name }}</template>
       <CommandSequence
           :plan="plan"

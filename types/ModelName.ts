@@ -24,14 +24,14 @@ export enum ModelNameUpperCase{
 
 
 export enum ModelTextColor {
-    taxDeferred = 'text-skin-info',
+    tax_deferred = 'text-skin-info',
     brokerage = 'text-skin-info',
-    cashReserve = 'text-skin-info',
+    cash_reserve = 'text-skin-info',
     debt = 'text-skin-error',
     expense = 'text-skin-error',
     income = 'text-skin-success',
     ira = 'text-skin-info',
     plan = 'text-skin-success',
-    rothIra = 'text-skin-info'
+    roth_ira = 'text-skin-info'
 
 }

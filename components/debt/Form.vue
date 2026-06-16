@@ -41,7 +41,7 @@ function generateDebtProjection(debtConfig: Debt, maxIterations: number = 20): D
   const data: number[] = [debtConfig.principal]
   while (i < maxIterations && data[i] > 0) {
     const payment = calculateDebtPayment(debtConfig, data[i]);
-    const interest = (data[i] - payment) * (debtConfig.interestRate / 100)
+    const interest = (data[i] - payment) * (debtConfig.interest_rate / 100)
     const principal = data[i] - payment + interest
     totalPaymentsMade += payment
     totalInterestAccrued += interest
@@ -61,13 +61,13 @@ function generateDebtProjection(debtConfig: Debt, maxIterations: number = 20): D
 
 
 const projections = computed<Record<DebtPaymentStrategy, DebtProjection>>(() => {
-  const debtPartial: Partial<Omit<Debt, 'paymentStrategy'>> = {
-    interestRate: modelRef.value.interestRate,
+  const debtPartial: Partial<Omit<Debt, 'payment_strategy'>> = {
+    interest_rate: modelRef.value.interest_rate,
     principal: modelRef.value.principal,
     name: modelRef.value.name,
-    paymentFixedAmount: modelRef.value.paymentFixedAmount,
-    paymentMinimum: modelRef.value.paymentMinimum,
-    paymentPercentage: modelRef.value.paymentPercentage,
+    payment_fixed_amount: modelRef.value.payment_fixed_amount,
+    payment_minimum: modelRef.value.payment_minimum,
+    payment_percentage: modelRef.value.payment_percentage,
     frequency: modelRef.value.frequency,
   };
 
@@ -76,7 +76,7 @@ const projections = computed<Record<DebtPaymentStrategy, DebtProjection>>(() => 
   for (const paymentStrategy of Object.values(DebtPaymentStrategy)) {
     const debtConfig: Debt = {
       ...debtPartial,
-      paymentStrategy: paymentStrategy as DebtPaymentStrategy,
+      payment_strategy: paymentStrategy as DebtPaymentStrategy,
     } as Debt;
 
     result[paymentStrategy as DebtPaymentStrategy] = generateDebtProjection(debtConfig, 30);
@@ -108,7 +108,7 @@ const projections = computed<Record<DebtPaymentStrategy, DebtProjection>>(() => 
         </n-form-item>
 
         <n-form-item path="interestRate" label="Interest Rate (%)">
-          <n-input-number class="w-full" v-model:value="modelRef.interestRate" size="small"
+          <n-input-number class="w-full" v-model:value="modelRef.interest_rate" size="small"
                           placeholder="Enter interest rate"/>
         </n-form-item>
         <n-form-item path="frequency" label="Payment Frequency">
@@ -127,14 +127,14 @@ const projections = computed<Record<DebtPaymentStrategy, DebtProjection>>(() => 
                      label-placement="top">
           <section class="grid grid-cols-4 gap-3">
             <DebtProjectionCard :projection="projections.fixed" title="Fixed"
-                                v-model="modelRef.paymentStrategy" :value="DebtPaymentStrategy.Fixed">
+                                v-model="modelRef.payment_strategy" :value="DebtPaymentStrategy.Fixed">
               <template #inputs>
                 <n-form-item
                     path="paymentFixedAmount"
                     label="Fixed Payment Amount"
                     label-placement="top"
                 >
-                  <n-input-number class="w-full" v-model:value="modelRef.paymentFixedAmount" :step="100" :precision="2"
+                  <n-input-number class="w-full" v-model:value="modelRef.payment_fixed_amount" :step="100" :precision="2"
                                   :max="modelRef.principal"
                                   placeholder="Enter fixed payment amount">
                     <template #prefix>$</template>
@@ -144,14 +144,14 @@ const projections = computed<Record<DebtPaymentStrategy, DebtProjection>>(() => 
             </DebtProjectionCard>
 
             <DebtProjectionCard :projection="projections.percentage_of_debt" title="Percentage"
-                                v-model="modelRef.paymentStrategy" :value="DebtPaymentStrategy.PercentageOfDebt">
+                                v-model="modelRef.payment_strategy" :value="DebtPaymentStrategy.PercentageOfDebt">
               <template #inputs>
                 <n-form-item
                     path="paymentPercentage"
                     label="Payment Percentage"
                     label-placement="top"
                 >
-                  <n-input-number class="w-full" v-model:value="modelRef.paymentPercentage" :precision="2"
+                  <n-input-number class="w-full" v-model:value="modelRef.payment_percentage" :precision="2"
                                   placeholder="Enter payment percentage">
                     <template #suffix>%</template>
                   </n-input-number>
@@ -160,13 +160,13 @@ const projections = computed<Record<DebtPaymentStrategy, DebtProjection>>(() => 
             </DebtProjectionCard>
 
             <DebtProjectionCard :projection="projections.minimum_payment" title="Minimum"
-                                v-model="modelRef.paymentStrategy" :value="DebtPaymentStrategy.MinimumPayment">
+                                v-model="modelRef.payment_strategy" :value="DebtPaymentStrategy.MinimumPayment">
               <template #inputs>
                 <n-form-item
                     path="paymentMinimum"
                     label="Minimum Payment"
                     label-placement="top">
-                  <n-input-number class="w-full" v-model:value="modelRef.paymentMinimum" :precision="2"
+                  <n-input-number class="w-full" v-model:value="modelRef.payment_minimum" :precision="2"
                                   placeholder="Enter minimum payment">
                     <template #prefix>$</template>
                     <template #suffix>per month</template>
@@ -176,7 +176,7 @@ const projections = computed<Record<DebtPaymentStrategy, DebtProjection>>(() => 
             </DebtProjectionCard>
 
             <DebtProjectionCard :projection="projections.maximum_payment" title="Maximum"
-                                v-model="modelRef.paymentStrategy" :value="DebtPaymentStrategy.MaximumPayment"/>
+                                v-model="modelRef.payment_strategy" :value="DebtPaymentStrategy.MaximumPayment"/>
           </section>
         </n-form-item>
       </n-form>

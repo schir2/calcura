@@ -15,10 +15,10 @@
 
             <n-tag size="small">
               <template #icon>
-                <Icon v-if="expense.expenseType==='fixed'" name="mdi-lock"/>
-                <Icon v-else-if="expense.expenseType==='variable'" name="mdi-tune"/>
+                <Icon v-if="expense.expense_type==='fixed'" name="mdi-lock"/>
+                <Icon v-else-if="expense.expense_type==='variable'" name="mdi-tune"/>
               </template>
-              {{ expense.expenseType }}
+              {{ expense.expense_type }}
             </n-tag>
             <n-tag size="small" type="info">
               <template #icon>
@@ -26,25 +26,25 @@
               </template>
               {{ expense.frequency }}
             </n-tag>
-            <n-tag size="small" v-if="expense.growthRate && !expense.growsWithInflation">
+            <n-tag size="small" v-if="expense.growth_rate && !expense.grows_with_inflation">
               <template #icon>
                 <Icon name="mdi:trending-up"></Icon>
               </template>
-              {{ expense.growthRate }}%
+              {{ expense.growth_rate }}%
             </n-tag>
-            <n-tag size="small" type="warning" v-if="expense.growsWithInflation">
+            <n-tag size="small" type="warning" v-if="expense.grows_with_inflation">
               <template #icon>
                 <Icon name="mdi:trending-up"/>
               </template>
               Inflation
             </n-tag>
-            <n-tag size="small" type="success" v-if="expense.isTaxDeductible">
+            <n-tag size="small" type="success" v-if="expense.is_tax_deductible">
               <template #icon>
                 <Icon name="mdi:cash"/>
               </template>
               Tax Deductible
             </n-tag>
-            <n-tag size="small" type="error" v-if="expense.isEssential">
+            <n-tag size="small" type="error" v-if="expense.is_essential">
               <template #icon>
                 <Icon name="uil:exclamation-circle"></Icon>
               </template>

@@ -17,64 +17,64 @@ const planConfig: Plan = {
     name: "Blank Plan",
     age: 30,
     year: new Date().getFullYear(),
-    inflationRate: 3,
-    insufficientFundsStrategy: InsufficientFundsStrategy.None,
-    growthApplicationStrategy: GrowthApplicationStrategy.Start,
-    taxStrategy: IncomeTaxStrategy.Simple,
-    taxRate: 30,
-    lifeExpectancy: 85,
-    retirementStrategy: RetirementStrategy.Age,
-    retirementWithdrawalRate: 4,
-    retirementIncomeGoal: 50000,
-    retirementAge: 65,
-    retirementSavingsAmount: 200000,
-    retirementIncomeAdjustedForInflation: true,
-    cashReserves: [],
+    inflation_rate: 3,
+    insufficient_funds_strategy: InsufficientFundsStrategy.None,
+    growth_application_strategy: GrowthApplicationStrategy.Start,
+    tax_strategy: IncomeTaxStrategy.Simple,
+    tax_rate: 30,
+    life_expectancy: 85,
+    retirement_strategy: RetirementStrategy.Age,
+    retirement_withdrawal_rate: 4,
+    retirement_income_goal: 50000,
+    retirement_age: 65,
+    retirement_savings_amount: 200000,
+    retirement_income_adjusted_for_inflation: true,
+    cash_reserves: [],
     incomes: [
         {
             id: 1,
             name: 'Ordinary Income',
-            grossIncome: 100_000,
-            growthRate: 0,
-            incomeType: "ordinary",
+            gross_income: 100_000,
+            growth_rate: 0,
+            income_type: "ordinary",
             frequency: Frequency.Annually
         },
         {
             id: 1,
             name: 'Ordinary Income',
-            grossIncome: 50_000,
-            growthRate: 0,
-            incomeType: "ordinary",
+            gross_income: 50_000,
+            growth_rate: 0,
+            income_type: "ordinary",
             frequency: Frequency.Annually
         }
     ],
     expenses: [],
     debts: [],
-    taxDeferreds: [],
+    tax_deferreds: [],
     iras: [
         {
             id: 1,
             name: 'Test Brokerage ',
-            growthRate: 6,
-            initialBalance: 10_000,
-            contributionStrategy: IraContributionStrategy.Fixed,
-            contributionPercentage: 0,
-            contributionFixedAmount: 0,
+            growth_rate: 6,
+            initial_balance: 10_000,
+            contribution_strategy: IraContributionStrategy.Fixed,
+            contribution_percentage: 0,
+            contribution_fixed_amount: 0,
             income:
                 {
                     id: 1,
                     name: 'Ordinary Income',
-                    grossIncome: 100_000,
-                    growthRate: 0,
-                    incomeType: "ordinary",
+                    gross_income: 100_000,
+                    growth_rate: 0,
+                    income_type: "ordinary",
                     frequency: Frequency.Annually
                 },
 
         }
     ],
     brokerages: [],
-    rothIras: [],
-    commandSequences: [],
+    roth_iras: [],
+    command_sequences: [],
 }
 
 let planManager: PlanManager;
@@ -91,11 +91,11 @@ describe("IraManager", () => {
         it("should initialize with correct state", () => {
             const state = iraManager.getCurrentState();
             expect(state.contribution).toBe(undefined);
-            expect(state.contributionLifetime).toBe(0);
-            expect(state.growthAmount).toBe(undefined);
-            expect(state.growthLifetime).toBe(0);
-            expect(state.balanceStartOfYear).toBe(10_000);
-            expect(state.balanceEndOfYear).toBe(undefined);
+            expect(state.contribution_lifetime).toBe(0);
+            expect(state.growth_amount).toBe(undefined);
+            expect(state.growth_lifetime).toBe(0);
+            expect(state.balance_start_of_year).toBe(10_000);
+            expect(state.balance_end_of_year).toBe(undefined);
             expect(state.processed).toBe(false);
         });
     })
@@ -107,8 +107,8 @@ describe("IraManager", () => {
                 iras: [
                     {
                         ...planConfig.iras[0],
-                        contributionStrategy: IraContributionStrategy.Fixed,
-                        contributionFixedAmount: 100,
+                        contribution_strategy: IraContributionStrategy.Fixed,
+                        contribution_fixed_amount: 100,
                     }
                 ]
             })
@@ -123,8 +123,8 @@ describe("IraManager", () => {
                 iras: [
                     {
                         ...planConfig.iras[0],
-                        contributionStrategy: IraContributionStrategy.PercentageOfIncome,
-                        contributionPercentage: 10,
+                        contribution_strategy: IraContributionStrategy.PercentageOfIncome,
+                        contribution_percentage: 10,
                     }
                 ]
             })
@@ -140,7 +140,7 @@ describe("IraManager", () => {
                 iras: [
                     {
                         ...planConfig.iras[0],
-                        contributionStrategy: IraContributionStrategy.Max,
+                        contribution_strategy: IraContributionStrategy.Max,
                     }
                 ]
             })
@@ -155,13 +155,13 @@ describe("IraManager", () => {
         it("should process ira and update state correctly for start of year application strategy", () => {
             planManager = new PlanManager({
                 ...planConfig,
-                growthApplicationStrategy: GrowthApplicationStrategy.Start,
+                growth_application_strategy: GrowthApplicationStrategy.Start,
                 iras: [
                     {
                         ...planConfig.iras[0],
-                        initialBalance: 10_000,
-                        contributionFixedAmount: 10_000,
-                        growthRate: 10
+                        initial_balance: 10_000,
+                        contribution_fixed_amount: 10_000,
+                        growth_rate: 10
                     }
                 ]
             })
@@ -171,35 +171,35 @@ describe("IraManager", () => {
             const iraState = iraManager.getCurrentState();
 
             expect(iraState.contribution).toBe(7_000);
-            expect(iraState.contributionLifetime).toBe(7_000);
-            expect(iraState.growthAmount).toBe(1_000);
-            expect(iraState.growthLifetime).toBe(1_000);
-            expect(iraState.balanceStartOfYear).toBe(10_000);
-            expect(iraState.balanceEndOfYear).toBe(18_000);
+            expect(iraState.contribution_lifetime).toBe(7_000);
+            expect(iraState.growth_amount).toBe(1_000);
+            expect(iraState.growth_lifetime).toBe(1_000);
+            expect(iraState.balance_start_of_year).toBe(10_000);
+            expect(iraState.balance_end_of_year).toBe(18_000);
             expect(iraState.processed).toBe(true);
-            expect(planState.taxableIncome).toBe(143_000);
-            expect(planState.taxableCapital).toBe(143_000);
-            expect(planState.taxedIncome).toBe(100_100);
-            expect(planState.taxedCapital).toBe(100_100);
-            expect(planState.taxDeferredContributions).toBe(7_000);
-            expect(planState.taxDeferredContributionsLifetime).toBe(7_000);
-            expect(planState.iraLimit).toBe(0);
-            expect(planState.savingsTaxableEndOfYear).toBe(0);
-            expect(planState.savingsTaxDeferredEndOfYear).toBe(18_000);
-            expect(planState.savingsTaxExemptEndOfYear).toBe(0);
-            expect(planState.taxedWithdrawals).toBe(0);
+            expect(planState.taxable_income).toBe(143_000);
+            expect(planState.taxable_capital).toBe(143_000);
+            expect(planState.taxed_income).toBe(100_100);
+            expect(planState.taxed_capital).toBe(100_100);
+            expect(planState.tax_deferred_contributions).toBe(7_000);
+            expect(planState.tax_deferred_contributions_lifetime).toBe(7_000);
+            expect(planState.ira_limit).toBe(0);
+            expect(planState.savings_taxable_end_of_year).toBe(0);
+            expect(planState.savings_tax_deferred_end_of_year).toBe(18_000);
+            expect(planState.savings_tax_exempt_end_of_year).toBe(0);
+            expect(planState.taxed_withdrawals).toBe(0);
         });
 
         it("should process ira and update state correctly for end of of year application strategy", () => {
             planManager = new PlanManager({
                 ...planConfig,
-                growthApplicationStrategy: GrowthApplicationStrategy.End,
+                growth_application_strategy: GrowthApplicationStrategy.End,
                 iras: [
                     {
                         ...planConfig.iras[0],
-                        initialBalance: 10_000,
-                        contributionFixedAmount: 5_000,
-                        growthRate: 10
+                        initial_balance: 10_000,
+                        contribution_fixed_amount: 5_000,
+                        growth_rate: 10
                     }
                 ]
             })
@@ -211,19 +211,19 @@ describe("IraManager", () => {
             const iraState = iraManager.getCurrentState();
 
             expect(iraState.contribution).toBe(5_000);
-            expect(iraState.contributionLifetime).toBe(5_000);
-            expect(iraState.growthAmount).toBe(1500);
-            expect(iraState.growthLifetime).toBe(1500);
-            expect(iraState.balanceStartOfYear).toBe(10_000);
-            expect(iraState.balanceEndOfYear).toBe(16_500);
+            expect(iraState.contribution_lifetime).toBe(5_000);
+            expect(iraState.growth_amount).toBe(1500);
+            expect(iraState.growth_lifetime).toBe(1500);
+            expect(iraState.balance_start_of_year).toBe(10_000);
+            expect(iraState.balance_end_of_year).toBe(16_500);
             expect(iraState.processed).toBe(true);
-            expect(planState.taxedIncome).toBe(101_500);
-            expect(planState.taxedCapital).toBe(101_500);
-            expect(planState.savingsTaxableEndOfYear).toBe(0);
-            expect(planState.iraLimit).toBe(2_000);
-            expect(planState.savingsTaxDeferredEndOfYear).toBe(16_500);
-            expect(planState.savingsTaxExemptEndOfYear).toBe(0);
-            expect(planState.taxedWithdrawals).toBe(0);
+            expect(planState.taxed_income).toBe(101_500);
+            expect(planState.taxed_capital).toBe(101_500);
+            expect(planState.savings_taxable_end_of_year).toBe(0);
+            expect(planState.ira_limit).toBe(2_000);
+            expect(planState.savings_tax_deferred_end_of_year).toBe(16_500);
+            expect(planState.savings_tax_exempt_end_of_year).toBe(0);
+            expect(planState.taxed_withdrawals).toBe(0);
         });
 
         it("should throw error if processing already processed state", () => {
@@ -241,13 +241,13 @@ describe("IraManager", () => {
 
             planManager = new PlanManager({
                 ...planConfig,
-                growthApplicationStrategy: GrowthApplicationStrategy.Start,
+                growth_application_strategy: GrowthApplicationStrategy.Start,
                 iras: [
                     {
                         ...planConfig.iras[0],
-                        initialBalance: 10_000,
-                        contributionFixedAmount: 1_000,
-                        growthRate: 10
+                        initial_balance: 10_000,
+                        contribution_fixed_amount: 1_000,
+                        growth_rate: 10
                     }
                 ]
             })
@@ -257,11 +257,11 @@ describe("IraManager", () => {
             const newState = iraManager.createNextState(iraState);
 
             expect(newState.contribution).toBe(undefined);
-            expect(newState.contributionLifetime).toBe(1_000);
-            expect(newState.growthAmount).toBe(undefined);
-            expect(newState.growthLifetime).toBe(1_000);
-            expect(newState.balanceStartOfYear).toBe(12_000);
-            expect(newState.balanceEndOfYear).toBe(undefined);
+            expect(newState.contribution_lifetime).toBe(1_000);
+            expect(newState.growth_amount).toBe(undefined);
+            expect(newState.growth_lifetime).toBe(1_000);
+            expect(newState.balance_start_of_year).toBe(12_000);
+            expect(newState.balance_end_of_year).toBe(undefined);
             expect(newState.processed).toBe(false);
         });
 

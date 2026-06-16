@@ -12,11 +12,11 @@ export interface Debt {
     id: number;
     name: string;
     principal: number;
-    interestRate: number;
-    paymentMinimum: number;
-    paymentStrategy: DebtPaymentStrategy;
-    paymentFixedAmount: number;
-    paymentPercentage: number;
+    interest_rate: number;
+    payment_minimum: number;
+    payment_strategy: DebtPaymentStrategy;
+    payment_fixed_amount: number;
+    payment_percentage: number;
     frequency: Frequency
 }
 
@@ -28,10 +28,10 @@ export interface DebtTemplate extends Debt{
 export const debtDefaults: DebtPartial = {
     name: 'Debt',
     principal: 0,
-    interestRate: 0,
-    paymentMinimum: 0,
-    paymentStrategy: DebtPaymentStrategy.Fixed,
-    paymentFixedAmount: 0,
-    paymentPercentage: 0,
+    interest_rate: 0,
+    payment_minimum: 0,
+    payment_strategy: DebtPaymentStrategy.Fixed,
+    payment_fixed_amount: 0,
+    payment_percentage: 0,
     frequency: Frequency.Monthly
 }

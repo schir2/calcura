@@ -89,30 +89,30 @@ export type BrokerageProjection = {
           </n-form-item>
 
           <n-form-item label="Initial Balance" path="initialBalance">
-            <n-input-number class="w-full" v-model:value="modelRef.initialBalance" placeholder="Enter initial balance"/>
+            <n-input-number class="w-full" v-model:value="modelRef.initial_balance" placeholder="Enter initial balance"/>
           </n-form-item>
 
           <n-form-item label="Growth Rate (%)" path="growthRate">
-            <n-input-number class="w-full" v-model:value="modelRef.growthRate" placeholder="Enter growth rate"/>
+            <n-input-number class="w-full" v-model:value="modelRef.growth_rate" placeholder="Enter growth rate"/>
           </n-form-item>
         </section>
         <n-form-item label="Contribution Strategy" path="contributionStrategy">
           <div class="grid grid-cols-3 gap-3 w-full">
-            <CommonRadioCard v-model="modelRef.contributionStrategy" :value="BrokerageContributionStrategy.Fixed"
+            <CommonRadioCard v-model="modelRef.contribution_strategy" :value="BrokerageContributionStrategy.Fixed"
                              title="Fixed">
               <n-form-item label="Fixed Contribution Amount" path="contributionFixedAmount">
-                <n-input-number class="w-full" v-model:value="modelRef.contributionFixedAmount"
+                <n-input-number class="w-full" v-model:value="modelRef.contribution_fixed_amount"
                                 placeholder="Enter fixed amount"/>
               </n-form-item>
             </CommonRadioCard>
-            <CommonRadioCard v-model="modelRef.contributionStrategy"
+            <CommonRadioCard v-model="modelRef.contribution_strategy"
                              :value="BrokerageContributionStrategy.PercentageOfIncome" title="Percentage of Income">
               <n-form-item label="Contribution Percentage (%)" path="contributionPercentage">
-                <n-input-number class="w-full" v-model:value="modelRef.contributionPercentage"
+                <n-input-number class="w-full" v-model:value="modelRef.contribution_percentage"
                                 placeholder="Enter percentage"/>
               </n-form-item>
             </CommonRadioCard>
-            <CommonRadioCard v-model="modelRef.contributionStrategy" :value="BrokerageContributionStrategy.Max"
+            <CommonRadioCard v-model="modelRef.contribution_strategy" :value="BrokerageContributionStrategy.Max"
                              title="Max Out"/>
           </div>
         </n-form-item>

@@ -12,31 +12,31 @@ export class BrokerageManager extends BaseManager<Brokerage, BrokerageState> {
         return calculateBrokerageContribution(
             this.config,
             planState.grossIncome,
-            planState.taxedCapital,
+            planState.taxed_capital,
         )
     }
 
     protected createInitialState(): BrokerageState {
         return {
             contribution: 0,
-            contributionLifetime: 0,
-            growthAmount: 0,
-            growthLifetime: 0,
-            balanceStartOfYear: this.config.initialBalance,
-            balanceEndOfYear: undefined,
+            contribution_lifetime: 0,
+            growth_amount: 0,
+            growth_lifetime: 0,
+            balance_start_of_year: this.config.initial_balance,
+            balance_end_of_year: undefined,
             processed: false
         }
     }
 
     createNextState(previousState: BrokerageState): BrokerageState {
-        assertDefined(previousState.balanceEndOfYear, 'balanceEndOfYear')
+        assertDefined(previousState.balance_end_of_year, 'balanceEndOfYear')
         return {
             contribution: 0,
-            contributionLifetime: previousState.contributionLifetime,
-            growthAmount: 0,
-            growthLifetime: previousState.growthLifetime,
-            balanceStartOfYear: previousState.balanceEndOfYear,
-            balanceEndOfYear: undefined,
+            contribution_lifetime: previousState.contribution_lifetime,
+            growth_amount: 0,
+            growth_lifetime: previousState.growth_lifetime,
+            balance_start_of_year: previousState.balance_end_of_year,
+            balance_end_of_year: undefined,
             processed: false,
         };
     }
@@ -47,22 +47,22 @@ export class BrokerageManager extends BaseManager<Brokerage, BrokerageState> {
         const contribution = this.orchestrator.requestFunds(contributionRequest, FundType.Taxed)
         this.orchestrator.withdraw(contribution, FundType.Taxed)
         const growthAmount = calculateGrowthAmount(
-            currentState.balanceStartOfYear,
-            this.config.growthRate,
-            this.orchestrator.getConfig().growthApplicationStrategy,
+            currentState.balance_start_of_year,
+            this.config.growth_rate,
+            this.orchestrator.getConfig().growth_application_strategy,
             contribution
         )
         this.orchestrator.contribute(contribution, ContributionType.Taxable)
         this.orchestrator.invest(growthAmount + contribution, ContributionType.Taxable)
-        const balanceEndOfYear = currentState.balanceStartOfYear + growthAmount + contribution
+        const balanceEndOfYear = currentState.balance_start_of_year + growthAmount + contribution
         this.updateCurrentState(
             {
                 ...currentState,
                 contribution: contribution,
-                contributionLifetime: currentState.contributionLifetime + contribution,
-                balanceEndOfYear: balanceEndOfYear,
-                growthAmount: growthAmount,
-                growthLifetime: currentState.growthLifetime + growthAmount
+                contribution_lifetime: currentState.contribution_lifetime + contribution,
+                balance_end_of_year: balanceEndOfYear,
+                growth_amount: growthAmount,
+                growth_lifetime: currentState.growth_lifetime + growthAmount
 
             }
         )
@@ -71,12 +71,12 @@ export class BrokerageManager extends BaseManager<Brokerage, BrokerageState> {
 
 export function calculateBrokerageContribution(brokerageConfig: Brokerage, grossIncome: number, taxedCapital: number): number {
     let contribution = 0
-    switch (brokerageConfig.contributionStrategy) {
+    switch (brokerageConfig.contribution_strategy) {
         case BrokerageContributionStrategy.Fixed:
-            contribution = brokerageConfig.contributionFixedAmount
+            contribution = brokerageConfig.contribution_fixed_amount
             break
         case BrokerageContributionStrategy.PercentageOfIncome:
-            contribution = grossIncome * (brokerageConfig.contributionPercentage / 100)
+            contribution = grossIncome * (brokerageConfig.contribution_percentage / 100)
             break
         case BrokerageContributionStrategy.Max:
             contribution = taxedCapital

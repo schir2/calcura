@@ -10,22 +10,22 @@
           <div class="space-y-1">
             <span class="col-span-3">{{ income.name }}</span>
             <div class="flex gap-1 items-end">
-              <n-tag size="small" type="info">{{ income.incomeType }}</n-tag>
+              <n-tag size="small" type="info">{{ income.income_type }}</n-tag>
               <n-tag size="small" type="info">
                 <template #icon>
                   <Icon name="mdi-calendar"></Icon>
                 </template>
                 {{ income.frequency }}
               </n-tag>
-              <n-tag size="small" v-if="income.growthRate">
+              <n-tag size="small" v-if="income.growth_rate">
                 <template #icon>
                   <Icon name="mdi:trending-up"></Icon>
                 </template>
-                {{ income.growthRate }}%
+                {{ income.growth_rate }}%
               </n-tag>
             </div>
           </div>
-          <span class="text-end text-lg">${{ $humanize.intComma(income.grossIncome) }}</span>
+          <span class="text-end text-lg">${{ $humanize.intComma(income.gross_income) }}</span>
         </div>
       </n-list-item>
       <n-list-item>
@@ -50,10 +50,10 @@ const incomeSummary = computed(() => {
     ordinary: 0
   }
   props.incomes.forEach((income) => {
-    result[income.incomeType] += income.grossIncome
+    result[income.income_type] += income.gross_income
   })
   return result
 })
-const totalIncome = computed(() => props.incomes.reduce((total, income) => total + income.grossIncome, 0))
+const totalIncome = computed(() => props.incomes.reduce((total, income) => total + income.gross_income, 0))
 
 </script>

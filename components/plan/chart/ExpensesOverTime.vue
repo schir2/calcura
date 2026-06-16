@@ -7,14 +7,14 @@
 
     <div class="flex items-center justify-evenly gap-2">
       <base-stat class="flex-1" label="Total"
-                 :value="`$${$humanize.intcomma(finalState.expensesTotalLifetime)}`"></base-stat>
-      <base-stat class="flex-1" label="Paid">${{ $humanize.intcomma(finalState.expensesPaidLifetime) }}</base-stat>
+                 :value="`$${$humanize.intcomma(finalState.expenses_total_lifetime)}`"></base-stat>
+      <base-stat class="flex-1" label="Paid">${{ $humanize.intcomma(finalState.expenses_paid_lifetime) }}</base-stat>
       <base-stat class="flex-1" label="Shortfall">
         <template #label-suffix>
-          <base-ico v-if="finalState.expensesShortfallLifetime === 0" class="text-skin-success" name="success"/>
+          <base-ico v-if="finalState.expenses_shortfall_lifetime === 0" class="text-skin-success" name="success"/>
           <base-ico v-else class="text-skin-warning" name="warning"/>
         </template>
-        ${{ $humanize.intcomma(finalState.expensesShortfallLifetime) }}
+        ${{ $humanize.intcomma(finalState.expenses_shortfall_lifetime) }}
       </base-stat>
     </div>
   </n-card>
@@ -34,8 +34,8 @@ interface Props {
 
 const props = defineProps<Props>()
 const finalPlanState = computed(() => props.states[props.states.length - 1])
-const expensesPaid = computed(() => props.states.map(state => (state.expensesPaid)))
-const expensesShortfall = computed(() => props.states.map(state => (state.expensesShortfall)))
+const expensesPaid = computed(() => props.states.map(state => (state.expenses_paid)))
+const expensesShortfall = computed(() => props.states.map(state => (state.expenses_shortfall)))
 const finalState = computed(() => {
   return props.states[props.states.length - 1]
 })

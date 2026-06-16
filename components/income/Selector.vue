@@ -18,7 +18,7 @@
           <input type="radio" v-model="model" :value="income"/>
           <span class="text-lg">{{ income.name }}</span>
           <n-tag>
-            {{ income.incomeType }}
+            {{ income.income_type }}
           </n-tag>
           <n-tag>
             <template #icon>
@@ -26,15 +26,15 @@
             </template>
             {{ income.frequency }}
           </n-tag>
-          <n-tag v-if="income.growthRate">
+          <n-tag v-if="income.growth_rate">
             <template #icon>
               <Icon name="mdi:trending-up"></Icon>
             </template>
-            {{ income.growthRate }}%
+            {{ income.growth_rate }}%
           </n-tag>
         </span>
         <span class="text-lg">${{
-            $humanize.intComma(getAnnualAmount(income.grossIncome, income.frequency))
+            $humanize.intComma(getAnnualAmount(income.gross_income, income.frequency))
           }}/year</span>
       </label>
     </template>

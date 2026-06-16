@@ -125,9 +125,9 @@ function renderComponent(plan: Plan, modelName: ModelName, modelId: number) {
 }
 
 function updateCommandState(command: Command, newValue: boolean) {
-  const index = commandsRef.value.findIndex(c => c.commandSequenceCommandId === command.commandSequenceCommandId);
+  const index = commandsRef.value.findIndex(c => c.item_id === command.item_id);
   if (index !== -1) {
-    commandsRef.value[index].isActive = newValue;
+    commandsRef.value[index].is_active = newValue;
     emit('update-sequence', {
       ...props.commandSequence,
       commands: commandsRef.value
@@ -166,14 +166,14 @@ function handleRemove(modelName: ModelName, data: Object) {
         <n-switch
             :round="false"
             size="small"
-            :value="command.isActive"
+            :value="command.is_active"
             @update:value="(newValue) => updateCommandState(command, newValue)"
         />
         <component
-            :is="renderComponent(plan, command.modelName, command.modelId)"
-            @update="handleUpdate(command.modelName, $event)"
-            @delete="handleDelete(command.modelName, $event)"
-            @remove="handleRemove(command.modelName, $event)"
+            :is="renderComponent(plan, command.item_type, command.model_id)"
+            @update="handleUpdate(command.item_type, $event)"
+            @delete="handleDelete(command.item_type, $event)"
+            @remove="handleRemove(command.item_type, $event)"
         />
       </div>
     </template>

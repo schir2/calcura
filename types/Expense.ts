@@ -10,12 +10,12 @@ export interface Expense {
     id: number;
     name: string,
     amount: number,
-    expenseType: ExpenseType,
+    expense_type: ExpenseType,
     frequency: Frequency,
-    isEssential: boolean,
-    isTaxDeductible: boolean,
-    growsWithInflation: boolean,
-    growthRate: number,
+    is_essential: boolean,
+    is_tax_deductible: boolean,
+    grows_with_inflation: boolean,
+    growth_rate: number,
 }
 
 export type ExpensePartial = Partial<Omit<Expense, 'id'>>
@@ -27,10 +27,10 @@ export interface ExpenseTemplate extends Income {
 export const expenseDefaults: ExpensePartial = {
     name: '',
     amount: 0,
-    expenseType: ExpenseType.fixed,
+    expense_type: ExpenseType.fixed,
     frequency: Frequency.Annually,
-    isEssential: true,
-    isTaxDeductible: false,
-    growsWithInflation: false,
-    growthRate: 0,
+    is_essential: true,
+    is_tax_deductible: false,
+    grows_with_inflation: false,
+    growth_rate: 0,
 }

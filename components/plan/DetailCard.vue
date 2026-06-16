@@ -44,30 +44,30 @@
           <template #header>Profile</template>
           <p class="flex justify-between"><span>Year </span><span>{{ plan.year }}</span></p>
           <p class="flex justify-between"><span>Age</span><span>{{ plan.age }}</span></p>
-          <p class="flex justify-between"><span>Retirement Age </span><span>{{ plan.retirementAge }}</span></p>
-          <p class="flex justify-between"><span>Life Expectancy </span><span>{{ plan.lifeExpectancy }}</span></p>
+          <p class="flex justify-between"><span>Retirement Age </span><span>{{ plan.retirement_age }}</span></p>
+          <p class="flex justify-between"><span>Life Expectancy </span><span>{{ plan.life_expectancy }}</span></p>
         </n-card>
         <n-card size="small">
           <template #header>Rates/Settings</template>
-          <p class="flex justify-between"><span>Inflation Rate </span><span>{{ plan.inflationRate }}</span></p>
-          <p class="flex justify-between"><span>Tax Rate </span><span>{{ plan.taxRate }}</span></p>
+          <p class="flex justify-between"><span>Inflation Rate </span><span>{{ plan.inflation_rate }}</span></p>
+          <p class="flex justify-between"><span>Tax Rate </span><span>{{ plan.tax_rate }}</span></p>
           <p class="flex justify-between">
-            <span>Insufficient Funds Strategy </span><span>{{ plan.insufficientFundsStrategy }}</span></p>
+            <span>Insufficient Funds Strategy </span><span>{{ plan.insufficient_funds_strategy }}</span></p>
           <p class="flex justify-between">
-            <span>Growth Strategy</span><span>{{ plan.growthApplicationStrategy }}</span></p>
+            <span>Growth Strategy</span><span>{{ plan.growth_application_strategy }}</span></p>
         </n-card>
         <n-card size="small">
           <template #header>Retirement</template>
           <p class="flex justify-between"><span>Retirement Strategy </span><span>{{
-              plan.retirementStrategy
+              plan.retirement_strategy
             }}</span></p>
           <p class="flex justify-between">
-            <span>Withdrawal Rate </span><span>{{ plan.retirementWithdrawalRate }}%</span></p>
+            <span>Withdrawal Rate </span><span>{{ plan.retirement_withdrawal_rate }}%</span></p>
           <p class="flex justify-between"><span>Income Goal </span><span>${{
-              $humanize.intComma(plan.retirementIncomeGoal)
+              $humanize.intComma(plan.retirement_income_goal)
             }}</span></p>
           <p class="flex justify-between">
-            <span>Retirement Savings Amount</span><span>${{ $humanize.intComma(plan.retirementSavingsAmount) }}</span>
+            <span>Retirement Savings Amount</span><span>${{ $humanize.intComma(plan.retirement_savings_amount) }}</span>
           </p>
         </n-card>
       </section>

@@ -5,20 +5,20 @@ import type {Income} from "~/types/Income";
 export class IncomeManager extends BaseManager<Income, IncomeState> {
     protected createInitialState(): IncomeState {
         return {
-            grossIncome: this.config.grossIncome,
+            gross_income: this.config.gross_income,
             processed: false,
         }
     }
 
     createNextState(previousState: IncomeState): IncomeState {
         return {
-            grossIncome: previousState.grossIncome + this.getGrowthAmount(previousState.grossIncome),
+            gross_income: previousState.gross_income + this.getGrowthAmount(previousState.gross_income),
             processed: false,
         }
     }
 
     protected getGrowthAmount(grossIncome: number): number {
-        return grossIncome * this.config.growthRate / 100
+        return grossIncome * this.config.growth_rate / 100
     }
 
     processImplementation(): void {

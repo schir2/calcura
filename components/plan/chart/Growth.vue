@@ -21,10 +21,10 @@ interface Props {
 
 const props = defineProps<Props>()
 const finalPlanState = computed(() => props.states[props.states.length - 1])
-const taxDeferredSeries = computed(() => props.states.map(state => (state.savingsTaxDeferredEndOfYear)))
-const taxExemptSeries = computed(() => props.states.map(state => (state.savingsTaxExemptEndOfYear)))
-const taxableSeries = computed(() => props.states.map(state => (state.savingsTaxableEndOfYear)))
-const taxedCapitalSeries = computed(() => props.states.map(state => (state.taxedCapital)))
+const taxDeferredSeries = computed(() => props.states.map(state => (state.savings_tax_deferred_end_of_year)))
+const taxExemptSeries = computed(() => props.states.map(state => (state.savings_tax_exempt_end_of_year)))
+const taxableSeries = computed(() => props.states.map(state => (state.savings_taxable_end_of_year)))
+const taxedCapitalSeries = computed(() => props.states.map(state => (state.taxed_capital)))
 
 
 ChartJS.register(Title, Tooltip, Legend, BarElement, CategoryScale, LinearScale)

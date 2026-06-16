@@ -44,31 +44,31 @@ export default class PlanManager extends BaseOrchestrator<Plan, PlanState, PlanM
     createManagers(): PlanManagers {
         return {
             income: this.config.incomes.map((income) => new IncomeManager(this, income)),
-            cashReserve: this.config.cashReserves.map((cashReserve) => new CashReserveManager(this, cashReserve)),
+            cashReserve: this.config.cash_reserves.map((cashReserve) => new CashReserveManager(this, cashReserve)),
             expense: this.config.expenses.map((expense) => new ExpenseManager(this, expense)),
             debt: this.config.debts.map((debt) => new DebtManager(this, debt)),
             brokerage: this.config.brokerages.map((brokerage) => new BrokerageManager(this, brokerage)),
             ira: this.config.iras.map((ira) => new IraIManager(this, ira)),
-            rothIra: this.config.rothIras.map((rothIra) => new RothIraManager(this, rothIra)),
-            taxDeferred: this.config.taxDeferreds.map((taxDeferred) => new TaxDeferredManager(this, taxDeferred))
+            rothIra: this.config.roth_iras.map((rothIra) => new RothIraManager(this, rothIra)),
+            taxDeferred: this.config.tax_deferreds.map((taxDeferred) => new TaxDeferredManager(this, taxDeferred))
         }
     }
 
     getSavingsTaxableInitial(): number {
         // TODO Test this function
-        return this.config.brokerages.reduce((savingsTaxableStartOfYear, brokerage) => savingsTaxableStartOfYear + brokerage.initialBalance, 0)
+        return this.config.brokerages.reduce((savingsTaxableStartOfYear, brokerage) => savingsTaxableStartOfYear + brokerage.initial_balance, 0)
     }
 
     getSavingsTaxDeferredInitial(): number {
         // TODO Test this function
-        const taxDeferreds = this.config.taxDeferreds.reduce((total, taxDeferred) => total + taxDeferred.initialBalance, 0)
-        const iras = this.config.iras.reduce((total, ira) => total + ira.initialBalance, 0)
+        const taxDeferreds = this.config.tax_deferreds.reduce((total, taxDeferred) => total + taxDeferred.initial_balance, 0)
+        const iras = this.config.iras.reduce((total, ira) => total + ira.initial_balance, 0)
         return taxDeferreds + iras
     }
 
     getSavingsTaxExemptInitial(): number {
         // TODO Test this function
-        return this.config.rothIras.reduce((total, brokerage) => total + brokerage.initialBalance, 0)
+        return this.config.roth_iras.reduce((total, brokerage) => total + brokerage.initial_balance, 0)
     }
 
     getDebtInitial(): number {
@@ -88,63 +88,63 @@ export default class PlanManager extends BaseOrchestrator<Plan, PlanState, PlanM
         const savingsTaxDeferredInitial = this.getSavingsTaxDeferredInitial()
         const debtInitial = this.getDebtInitial()
         const savingsStartOfYear = savingsTaxDeferredInitial + savingsTaxExemptInitial + savingsTaxableInitial;
-        const retirementIncomeGoal = this.config.retirementIncomeGoal
+        const retirementIncomeGoal = this.config.retirement_income_goal
         return {
             age: this.config.age,
             year: this.config.year,
 
             grossIncome: grossIncome,
-            taxableIncome: grossIncome,
-            taxedIncome: taxedIncome,
+            taxable_income: grossIncome,
+            taxed_income: taxedIncome,
             AGI: 0,
 
-            taxableCapital: grossIncome,
-            taxedCapital: taxedIncome,
-            taxedWithdrawals: 0,
+            taxable_capital: grossIncome,
+            taxed_capital: taxedIncome,
+            taxed_withdrawals: 0,
 
             deductions: 0,
 
-            inflationRate: this.config.inflationRate,
+            inflation_rate: this.config.inflation_rate,
 
-            electiveLimit: getTaxDeferredElectiveContributionLimit(this.config.year, this.config.age),
-            deferredLimit: getTaxDeferredContributionLimit(this.config.year, this.config.age),
-            iraLimit: getIraLimit(this.config.year, this.config.age),
+            elective_limit: getTaxDeferredElectiveContributionLimit(this.config.year, this.config.age),
+            deferred_limit: getTaxDeferredContributionLimit(this.config.year, this.config.age),
+            ira_limit: getIraLimit(this.config.year, this.config.age),
 
-            taxDeferredContributions: 0,
-            taxableContributions: 0,
-            taxExemptContributionsLifetime: 0,
-            taxDeferredContributionsLifetime: 0,
-            taxExemptContributions: 0,
-            taxableContributionsLifetime: 0,
-            debtPayments: 0,
-            debtPaymentsLifetime: 0,
+            tax_deferred_contributions: 0,
+            taxable_contributions: 0,
+            tax_exempt_contributions_lifetime: 0,
+            tax_deferred_contributions_lifetime: 0,
+            tax_exempt_contributions: 0,
+            taxable_contributions_lifetime: 0,
+            debt_payments: 0,
+            debt_payments_lifetime: 0,
 
-            savingsTaxDeferredStartOfYear: savingsTaxDeferredInitial,
-            savingsTaxDeferredEndOfYear: savingsTaxDeferredInitial,
+            savings_tax_deferred_start_of_year: savingsTaxDeferredInitial,
+            savings_tax_deferred_end_of_year: savingsTaxDeferredInitial,
 
-            savingsTaxExemptStartOfYear: savingsTaxExemptInitial,
-            savingsTaxExemptEndOfYear: savingsTaxExemptInitial,
+            savings_tax_exempt_start_of_year: savingsTaxExemptInitial,
+            savings_tax_exempt_end_of_year: savingsTaxExemptInitial,
 
-            savingsTaxableStartOfYear: savingsTaxableInitial,
-            savingsTaxableEndOfYear: savingsTaxableInitial,
+            savings_taxable_start_of_year: savingsTaxableInitial,
+            savings_taxable_end_of_year: savingsTaxableInitial,
 
-            debtStartOfYear: debtInitial,
-            debtEndOfYear: 0,
+            debt_start_of_year: debtInitial,
+            dept_end_of_year: 0,
 
-            savingsStartOfYear: savingsStartOfYear,
-            savingsEndOfYear: 0,
+            savings_start_of_year: savingsStartOfYear,
+            savings_end_of_year: 0,
 
-            expensesPaidLifetime: 0,
-            expensesTotal: 0,
-            expensesPaid: 0,
-            expensesShortfall: 0,
-            expensesShortfallLifetime: 0,
-            expensesTotalLifetime: 0,
+            expenses_paid_lifetime: 0,
+            expenses_total: 0,
+            expenses_paid: 0,
+            expenses_shortfall: 0,
+            expenses_shortfall_lifetime: 0,
+            expenses_total_lifetime: 0,
 
-            cashReservesTotal: 0,
+            cash_reserves_total: 0,
 
-            retirementIncomeProjected: 0,
-            retirementIncomeGoal: retirementIncomeGoal,
+            retirement_income_projected: 0,
+            retirement_income_goal: retirementIncomeGoal,
 
             retired: false,
             processed: false,
@@ -158,8 +158,8 @@ export default class PlanManager extends BaseOrchestrator<Plan, PlanState, PlanM
         const inflationRate = this.getInflationRate()
         const grossIncome = this.getGrossIncome()
         const taxedIncome = grossIncome - this.calculateTaxes(grossIncome)
-        const taxedCapital = previousState.taxedCapital + taxedIncome
-        const retirementIncomeGoal = this.config.retirementIncomeAdjustedForInflation ? previousState.retirementIncomeGoal * (1 + inflationRate / 100) : this.config.retirementIncomeGoal
+        const taxedCapital = previousState.taxed_capital + taxedIncome
+        const retirementIncomeGoal = this.config.retirement_income_adjusted_for_inflation ? previousState.retirement_income_goal * (1 + inflationRate / 100) : this.config.retirement_income_goal
 
         return {
             ...previousState,
@@ -167,54 +167,54 @@ export default class PlanManager extends BaseOrchestrator<Plan, PlanState, PlanM
             year: year,
 
             grossIncome: grossIncome,
-            taxableIncome: grossIncome,
-            taxedIncome: taxedIncome,
+            taxable_income: grossIncome,
+            taxed_income: taxedIncome,
             AGI: 0,
 
-            taxableCapital: grossIncome,
-            taxedCapital: taxedCapital,
-            taxedWithdrawals: 0,
+            taxable_capital: grossIncome,
+            taxed_capital: taxedCapital,
+            taxed_withdrawals: 0,
 
             deductions: 0,
 
-            electiveLimit: getTaxDeferredElectiveContributionLimit(year, age),
-            deferredLimit: getTaxDeferredContributionLimit(year, age),
-            iraLimit: getIraLimit(year, age),
+            elective_limit: getTaxDeferredElectiveContributionLimit(year, age),
+            deferred_limit: getTaxDeferredContributionLimit(year, age),
+            ira_limit: getIraLimit(year, age),
 
-            inflationRate: inflationRate,
+            inflation_rate: inflationRate,
 
-            taxableContributions: 0,
-            taxableContributionsLifetime: previousState.taxableContributionsLifetime,
+            taxable_contributions: 0,
+            taxable_contributions_lifetime: previousState.taxable_contributions_lifetime,
 
-            taxDeferredContributions: 0,
-            taxDeferredContributionsLifetime: previousState.taxDeferredContributionsLifetime,
+            tax_deferred_contributions: 0,
+            tax_deferred_contributions_lifetime: previousState.tax_deferred_contributions_lifetime,
 
-            taxExemptContributions: 0,
-            taxExemptContributionsLifetime: previousState.taxExemptContributionsLifetime,
+            tax_exempt_contributions: 0,
+            tax_exempt_contributions_lifetime: previousState.tax_exempt_contributions_lifetime,
 
-            savingsTaxDeferredStartOfYear: previousState.savingsTaxDeferredEndOfYear,
+            savings_tax_deferred_start_of_year: previousState.savings_tax_deferred_end_of_year,
 
-            savingsTaxExemptStartOfYear: previousState.savingsTaxExemptEndOfYear,
+            savings_tax_exempt_start_of_year: previousState.savings_tax_exempt_end_of_year,
 
-            savingsTaxableStartOfYear: previousState.savingsTaxableEndOfYear,
+            savings_taxable_start_of_year: previousState.savings_taxable_end_of_year,
 
-            debtStartOfYear: previousState.debtEndOfYear,
-            debtEndOfYear: 0,
+            debt_start_of_year: previousState.dept_end_of_year,
+            dept_end_of_year: 0,
 
-            expensesTotal: 0,
-            expensesPaid: 0,
-            expensesShortfall: 0,
-            expensesTotalLifetime: previousState.expensesTotalLifetime,
-            expensesPaidLifetime: previousState.expensesPaidLifetime,
-            expensesShortfallLifetime: previousState.expensesShortfallLifetime,
+            expenses_total: 0,
+            expenses_paid: 0,
+            expenses_shortfall: 0,
+            expenses_total_lifetime: previousState.expenses_total_lifetime,
+            expenses_paid_lifetime: previousState.expenses_paid_lifetime,
+            expenses_shortfall_lifetime: previousState.expenses_shortfall_lifetime,
 
-            savingsStartOfYear: previousState.savingsEndOfYear,
-            savingsEndOfYear: 0,
+            savings_start_of_year: previousState.savings_end_of_year,
+            savings_end_of_year: 0,
 
-            cashReservesTotal: 0,
+            cash_reserves_total: 0,
 
-            retirementIncomeProjected: 0,
-            retirementIncomeGoal: retirementIncomeGoal,
+            retirement_income_projected: 0,
+            retirement_income_goal: retirementIncomeGoal,
 
             processed: false,
         }
@@ -225,15 +225,15 @@ export default class PlanManager extends BaseOrchestrator<Plan, PlanState, PlanM
         let availableFunds = 0
         switch (fundType) {
             case FundType.Taxable:
-                availableFunds = Math.min(currentState.taxableCapital, requestedAmount)
+                availableFunds = Math.min(currentState.taxable_capital, requestedAmount)
                 break
             case FundType.Taxed:
-                availableFunds = Math.min(currentState.taxedCapital, requestedAmount)
+                availableFunds = Math.min(currentState.taxed_capital, requestedAmount)
                 break
             default:
                 throw new Error(`Unsupported fund type: ${fundType}`);
         }
-        return adjustForInsufficientFunds(requestedAmount, availableFunds, this.config.insufficientFundsStrategy, minimum)
+        return adjustForInsufficientFunds(requestedAmount, availableFunds, this.config.insufficient_funds_strategy, minimum)
 
     }
 
@@ -243,9 +243,9 @@ export default class PlanManager extends BaseOrchestrator<Plan, PlanState, PlanM
             throw new ContributionError(`Adjustment must be a positive value. Received: ${adjustment}`);
         }
         const limits: Record<ContributionLimitType, number> = {
-            [ContributionLimitType.Deferred]: currentState.deferredLimit,
-            [ContributionLimitType.Elective]: currentState.electiveLimit,
-            [ContributionLimitType.Ira]: currentState.iraLimit,
+            [ContributionLimitType.Deferred]: currentState.deferred_limit,
+            [ContributionLimitType.Elective]: currentState.elective_limit,
+            [ContributionLimitType.Ira]: currentState.ira_limit,
         }
 
         if (contributionLimitType === undefined) {
@@ -258,14 +258,14 @@ export default class PlanManager extends BaseOrchestrator<Plan, PlanState, PlanM
 
         switch (contributionLimitType) {
             case ContributionLimitType.Ira:
-                currentState.iraLimit -= adjustment;
+                currentState.ira_limit -= adjustment;
                 break;
             case ContributionLimitType.Elective:
-                currentState.electiveLimit -= adjustment;
-                currentState.deferredLimit -= adjustment;
+                currentState.elective_limit -= adjustment;
+                currentState.deferred_limit -= adjustment;
                 break;
             case ContributionLimitType.Deferred:
-                currentState.deferredLimit -= adjustment;
+                currentState.deferred_limit -= adjustment;
                 break;
         }
         return currentState
@@ -284,12 +284,12 @@ export default class PlanManager extends BaseOrchestrator<Plan, PlanState, PlanM
         this.withdraw(amountPaid, FundType.Taxed)
         this.updateCurrentState({
             ...currentState,
-            expensesPaid: currentState.expensesPaid + amountPaid,
-            expensesShortfall: currentState.expensesShortfall + shortfall,
-            expensesTotalLifetime: currentState.expensesTotalLifetime + amountRequested,
-            expensesTotal: currentState.expensesTotal + amountRequested,
-            expensesPaidLifetime: currentState.expensesPaidLifetime + amountPaid,
-            expensesShortfallLifetime: currentState.expensesShortfallLifetime + shortfall,
+            expenses_paid: currentState.expenses_paid + amountPaid,
+            expenses_shortfall: currentState.expenses_shortfall + shortfall,
+            expenses_total_lifetime: currentState.expenses_total_lifetime + amountRequested,
+            expenses_total: currentState.expenses_total + amountRequested,
+            expenses_paid_lifetime: currentState.expenses_paid_lifetime + amountPaid,
+            expenses_shortfall_lifetime: currentState.expenses_shortfall_lifetime + shortfall,
         })
         return amountPaid
 
@@ -300,18 +300,18 @@ export default class PlanManager extends BaseOrchestrator<Plan, PlanState, PlanM
         this.withdraw(amount, FundType.Taxed, minimum)
         this.updateCurrentState({
                 ...currentState,
-                debtPayments: currentState.debtPayments + amount,
-                debtPaymentsLifetime: currentState.debtPaymentsLifetime + amount
+                debt_payments: currentState.debt_payments + amount,
+                debt_payments_lifetime: currentState.debt_payments_lifetime + amount
             }
         )
     }
 
     adjustDebt(amount: number) {
         const currentState = this.getCurrentState()
-        const debtEndOfYear = currentState.debtEndOfYear + amount;
+        const debtEndOfYear = currentState.dept_end_of_year + amount;
         this.updateCurrentState({
             ...currentState,
-            debtEndOfYear: debtEndOfYear
+            dept_end_of_year: debtEndOfYear
         })
     }
 
@@ -319,19 +319,19 @@ export default class PlanManager extends BaseOrchestrator<Plan, PlanState, PlanM
         let currentState = this.getCurrentState();
         switch (contributionType) {
             case ContributionType.TaxDeferred:
-                currentState.savingsTaxDeferredEndOfYear += amount;
+                currentState.savings_tax_deferred_end_of_year += amount;
                 break;
             case ContributionType.RothIra:
-                currentState.savingsTaxExemptEndOfYear += amount;
+                currentState.savings_tax_exempt_end_of_year += amount;
                 break;
             case ContributionType.Taxable:
-                currentState.savingsTaxableEndOfYear += amount;
+                currentState.savings_taxable_end_of_year += amount;
                 break;
             case ContributionType.Elective:
-                currentState.savingsTaxDeferredEndOfYear += amount;
+                currentState.savings_tax_deferred_end_of_year += amount;
                 break;
             case ContributionType.Ira:
-                currentState.savingsTaxDeferredEndOfYear += amount;
+                currentState.savings_tax_deferred_end_of_year += amount;
         }
         this.updateCurrentState(currentState);
     }
@@ -342,30 +342,30 @@ export default class PlanManager extends BaseOrchestrator<Plan, PlanState, PlanM
         switch (contributionType) {
             case ContributionType.TaxDeferred:
                 this.adjustContributionLimit(contribution, ContributionLimitType.Deferred);
-                currentState.taxDeferredContributions += contribution;
-                currentState.taxDeferredContributionsLifetime += contribution;
+                currentState.tax_deferred_contributions += contribution;
+                currentState.tax_deferred_contributions_lifetime += contribution;
                 break;
             case ContributionType.RothIra:
                 this.adjustContributionLimit(contribution, ContributionLimitType.Ira);
-                currentState.taxExemptContributions += contribution;
-                currentState.taxExemptContributionsLifetime += contribution;
+                currentState.tax_exempt_contributions += contribution;
+                currentState.tax_exempt_contributions_lifetime += contribution;
                 break;
             case ContributionType.Taxable:
-                currentState.taxableContributions += contribution;
-                currentState.taxableContributionsLifetime += contribution;
+                currentState.taxable_contributions += contribution;
+                currentState.taxable_contributions_lifetime += contribution;
                 break;
             case ContributionType.Elective:
                 this.adjustContributionLimit(contribution, ContributionLimitType.Elective);
-                currentState.taxDeferredContributions += contribution;
-                currentState.taxDeferredContributionsLifetime += contribution;
+                currentState.tax_deferred_contributions += contribution;
+                currentState.tax_deferred_contributions_lifetime += contribution;
                 break;
             case ContributionType.Ira:
                 this.adjustContributionLimit(contribution, ContributionLimitType.Ira);
-                currentState.taxDeferredContributions += contribution;
-                currentState.taxDeferredContributionsLifetime += contribution;
+                currentState.tax_deferred_contributions += contribution;
+                currentState.tax_deferred_contributions_lifetime += contribution;
                 break;
             case ContributionType.CashReserve:
-                currentState.cashReservesTotal += contribution
+                currentState.cash_reserves_total += contribution
                 break;
         }
         this.updateCurrentState(currentState);
@@ -375,20 +375,20 @@ export default class PlanManager extends BaseOrchestrator<Plan, PlanState, PlanM
         const currentState = this.getCurrentState();
         switch (fundType) {
             case FundType.Taxable:
-                currentState.taxableCapital -= amount;
-                currentState.taxableIncome -= amount;
+                currentState.taxable_capital -= amount;
+                currentState.taxable_income -= amount;
                 const agi = this.getAGI(currentState)
-                const taxedIncome = currentState.taxableIncome - this.calculateTaxes(agi)
-                const taxedCapital = currentState.taxedCapital - currentState.taxedIncome + taxedIncome
-                currentState.taxedIncome = taxedIncome
-                currentState.taxedCapital = taxedCapital
+                const taxedIncome = currentState.taxable_income - this.calculateTaxes(agi)
+                const taxedCapital = currentState.taxed_capital - currentState.taxed_income + taxedIncome
+                currentState.taxed_income = taxedIncome
+                currentState.taxed_capital = taxedCapital
                 this.updateCurrentState(currentState)
                 return
             case FundType.Taxed:
-                const taxRate = currentState.taxedCapital / currentState.taxableCapital
-                currentState.taxedCapital -= amount;
-                currentState.taxableCapital = taxRate > 0 ? currentState.taxedCapital / taxRate : 0
-                currentState.taxedWithdrawals += amount;
+                const taxRate = currentState.taxed_capital / currentState.taxable_capital
+                currentState.taxed_capital -= amount;
+                currentState.taxable_capital = taxRate > 0 ? currentState.taxed_capital / taxRate : 0
+                currentState.taxed_withdrawals += amount;
                 this.updateCurrentState(currentState)
                 return
             default:
@@ -398,38 +398,38 @@ export default class PlanManager extends BaseOrchestrator<Plan, PlanState, PlanM
     }
 
     getAGI(planState: PlanState): number {
-        return planState.taxableIncome - planState.deductions
+        return planState.taxable_income - planState.deductions
     }
 
     calculateTaxes(agi: number): number {
-        return agi * (this.config.taxRate / 100)
+        return agi * (this.config.tax_rate / 100)
     }
 
     canRetire(): boolean {
         const currentState = this.getCurrentState()
 
-        switch (this.config.retirementStrategy) {
+        switch (this.config.retirement_strategy) {
             case RetirementStrategy.Age:
-                return this.getCurrentState().age === this.config.retirementAge;
+                return this.getCurrentState().age === this.config.retirement_age;
             case RetirementStrategy.DebtFree:
                 return this.getCurrentDebt() <= 0
             case RetirementStrategy.PercentRule:
-                return currentState.retirementIncomeGoal <= currentState.retirementIncomeProjected
+                return currentState.retirement_income_goal <= currentState.retirement_income_projected
             case RetirementStrategy.TargetSavings:
-                return this.config.retirementSavingsAmount <= currentState.savingsEndOfYear
+                return this.config.retirement_savings_amount <= currentState.savings_end_of_year
         }
     }
 
     getCurrentDebt(): number {
-        return this._managers.debt.reduce((total, debtManager) => total + debtManager.getCurrentState().principalStartOfYear, 0)
+        return this._managers.debt.reduce((total, debtManager) => total + debtManager.getCurrentState().principal_start_of_year, 0)
     }
 
     getGrossIncome() {
-        return this._managers.income.reduce((grossIncome, incomeManager) => grossIncome + incomeManager.getCurrentState().grossIncome, 0)
+        return this._managers.income.reduce((grossIncome, incomeManager) => grossIncome + incomeManager.getCurrentState().gross_income, 0)
     }
 
     getInflationRate(): number {
-        return this.config.inflationRate
+        return this.config.inflation_rate
     }
 
     processImplementation(): void {
@@ -447,36 +447,36 @@ export default class PlanManager extends BaseOrchestrator<Plan, PlanState, PlanM
         // })
         const previousState = this.getCurrentState()
 
-        const savingsEndOfYear = previousState.savingsTaxDeferredEndOfYear + previousState.savingsTaxExemptEndOfYear + previousState.savingsTaxableEndOfYear + previousState.taxedCapital;
-        const projectedIncome = savingsEndOfYear * (this.config.retirementWithdrawalRate / 100)
+        const savingsEndOfYear = previousState.savings_tax_deferred_end_of_year + previousState.savings_tax_exempt_end_of_year + previousState.savings_taxable_end_of_year + previousState.taxed_capital;
+        const projectedIncome = savingsEndOfYear * (this.config.retirement_withdrawal_rate / 100)
         this.updateCurrentState({
             ...previousState,
-            savingsEndOfYear: savingsEndOfYear,
-            retirementIncomeProjected: projectedIncome,
+            savings_end_of_year: savingsEndOfYear,
+            retirement_income_projected: projectedIncome,
         })
     }
 
     getCommands(): Command[] {
-        if (this.config.commandSequences.length > 0) {
-            return this.config.commandSequences[0].commands
+        if (this.config.command_sequences.length > 0) {
+            return this.config.command_sequences[0].commands
         }
         return []
     }
 
     getCommandsForSequence(commandSequenceId: number): Command[] {
-        return this.config.commandSequences.find((commandSequence) => commandSequence.id === commandSequenceId)?.commands ?? []
+        return this.config.command_sequences.find((commandSequence) => commandSequence.id === commandSequenceId)?.commands ?? []
     }
 
     simulate(commandSequenceId?: number, maxIterations: number = 60): PlanState[] {
         this.reset()
         const commands = commandSequenceId ? this.getCommandsForSequence(commandSequenceId) : []
-        maxIterations = Math.min(maxIterations, this.config.lifeExpectancy - this.config.age + 1)
+        maxIterations = Math.min(maxIterations, this.config.life_expectancy - this.config.age + 1)
         for (let i = 0; i < maxIterations; i++) {
             let manager: BaseManager<any, any> | undefined = undefined
             if (commands) {
                 commands.forEach(command => {
-                    if (command.isActive) {
-                        manager = this.getManagerById(command.modelName, Number(command.modelId))
+                    if (command.is_active) {
+                        manager = this.getManagerById(command.item_type, Number(command.model_id))
                         manager?.process()
                         manager?.advanceTimePeriod()
                     }
@@ -517,11 +517,11 @@ export default class PlanManager extends BaseOrchestrator<Plan, PlanState, PlanM
         const currentState = this.getCurrentState()
         switch (contributionLimitType) {
             case ContributionLimitType.Ira:
-                return currentState.iraLimit
+                return currentState.ira_limit
             case ContributionLimitType.Elective:
-                return currentState.electiveLimit
+                return currentState.elective_limit
             case ContributionLimitType.Deferred:
-                return currentState.deferredLimit
+                return currentState.deferred_limit
         }
     }
 }

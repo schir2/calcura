@@ -5,31 +5,31 @@ export enum BrokerageContributionStrategy {
 }
 
 
-export interface Brokerage {
+export type Brokerage = {
     id: number
-    name: string;
+    name: string
 
-    growthRate: number;
-    initialBalance: number;
+    growth_rate: number
+    initial_balance: number
 
-    contributionStrategy: BrokerageContributionStrategy;
-    contributionPercentage: number;
-    contributionFixedAmount: number;
+    contribution_strategy: BrokerageContributionStrategy
+    contribution_percentage: number
+    contribution_fixed_amount: number
 
 
 }
 
 export type BrokeragePartial = Partial<Omit<Brokerage, 'id'>>
 
-export interface  BrokerageTemplate extends Brokerage {
+export interface BrokerageTemplate extends Brokerage {
     description: string
 }
 
 export const brokerageDefaults: BrokeragePartial = {
     name: 'Brokerage ',
-    growthRate: DEFAULT_GROWTH_RATE,
-    initialBalance: 0,
-    contributionStrategy: BrokerageContributionStrategy.Fixed,
-    contributionPercentage: 0,
-    contributionFixedAmount: 0,
+    growth_rate: DEFAULT_GROWTH_RATE,
+    initial_balance: 0,
+    contribution_strategy: BrokerageContributionStrategy.Fixed,
+    contribution_percentage: 0,
+    contribution_fixed_amount: 0,
 }

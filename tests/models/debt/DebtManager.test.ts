@@ -18,55 +18,55 @@ const planConfig: Plan = {
     name: "Blank Plan",
     age: 30,
     year: new Date().getFullYear(),
-    inflationRate: 3,
-    insufficientFundsStrategy: InsufficientFundsStrategy.None,
-    growthApplicationStrategy: GrowthApplicationStrategy.Start,
-    taxStrategy: IncomeTaxStrategy.Simple,
-    taxRate: 30,
-    lifeExpectancy: 85,
-    retirementStrategy: RetirementStrategy.Age,
-    retirementWithdrawalRate: 4,
-    retirementIncomeGoal: 50000,
-    retirementAge: 65,
-    retirementSavingsAmount: 200000,
-    retirementIncomeAdjustedForInflation: true,
-    cashReserves: [],
+    inflation_rate: 3,
+    insufficient_funds_strategy: InsufficientFundsStrategy.None,
+    growth_application_strategy: GrowthApplicationStrategy.Start,
+    tax_strategy: IncomeTaxStrategy.Simple,
+    tax_rate: 30,
+    life_expectancy: 85,
+    retirement_strategy: RetirementStrategy.Age,
+    retirement_withdrawal_rate: 4,
+    retirement_income_goal: 50000,
+    retirement_age: 65,
+    retirement_savings_amount: 200000,
+    retirement_income_adjusted_for_inflation: true,
+    cash_reserves: [],
     incomes: [
         {
             id: 1,
             name: 'Ordinary Income',
-            grossIncome: 100_000,
-            growthRate: 0,
-            incomeType: "ordinary",
+            gross_income: 100_000,
+            growth_rate: 0,
+            income_type: "ordinary",
             frequency: Frequency.Annually
         },
         {
             id: 1,
             name: 'Ordinary Income',
-            grossIncome: 50_000,
-            growthRate: 0,
-            incomeType: "ordinary",
+            gross_income: 50_000,
+            growth_rate: 0,
+            income_type: "ordinary",
             frequency: Frequency.Annually
         }
     ],
     expenses: [],
     debts: [],
-    taxDeferreds: [],
+    tax_deferreds: [],
     brokerages: [],
     iras: [],
-    rothIras: [],
-    commandSequences: [],
+    roth_iras: [],
+    command_sequences: [],
 }
 
 const debt: Debt = {
     id: 1,
     name: "Test Debt",
     principal: 1000,
-    interestRate: 5,
-    paymentMinimum: 50,
-    paymentStrategy: DebtPaymentStrategy.Fixed,
-    paymentFixedAmount: 100,
-    paymentPercentage: 20,
+    interest_rate: 5,
+    payment_minimum: 50,
+    payment_strategy: DebtPaymentStrategy.Fixed,
+    payment_fixed_amount: 100,
+    payment_percentage: 20,
     frequency: Frequency.Annually
 
 };
@@ -84,11 +84,11 @@ describe("DebtManager", () => {
             const debtManager = new DebtManager(planManager, debt);
             const state = debtManager.getCurrentState();
             expect(state.payment).toBe(0);
-            expect(state.paymentLifetime).toBe(0);
-            expect(state.interestLifetime).toBe(0);
-            expect(state.principalStartOfYear).toBe(1_000);
-            expect(state.interestAmount).toBe(undefined);
-            expect(state.principalEndOfYear).toBe(undefined);
+            expect(state.payment_lifetime).toBe(0);
+            expect(state.interest_lifetime).toBe(0);
+            expect(state.principal_start_of_year).toBe(1_000);
+            expect(state.interest_amount).toBe(undefined);
+            expect(state.principal_end_of_year).toBe(undefined);
             expect(state.processed).toBe(false);
         });
     })
@@ -97,9 +97,9 @@ describe("DebtManager", () => {
         it("should calculate fixed payment correctly", () => {
             const debtManager = new DebtManager(planManager, {
                 ...debt,
-                paymentStrategy: DebtPaymentStrategy.Fixed,
+                payment_strategy: DebtPaymentStrategy.Fixed,
                 principal: 1000,
-                paymentPercentage: 10,
+                payment_percentage: 10,
             })
             const debtState = debtManager.getCurrentState();
             const payment = debtManager.calculatePayment(debtState);
@@ -109,9 +109,9 @@ describe("DebtManager", () => {
         it("should calculate percentage payment correctly", () => {
             const debtManager = new DebtManager(planManager, {
                 ...debt,
-                paymentStrategy: DebtPaymentStrategy.PercentageOfDebt,
+                payment_strategy: DebtPaymentStrategy.PercentageOfDebt,
                 principal: 1000,
-                paymentPercentage: 10,
+                payment_percentage: 10,
             })
             const debtState = debtManager.getCurrentState();
             const payment = debtManager.calculatePayment(debtState);
@@ -121,7 +121,7 @@ describe("DebtManager", () => {
         it("should calculate max payment correctly", () => {
             const debtManager = new DebtManager(planManager, {
                 ...debt,
-                paymentStrategy: DebtPaymentStrategy.MaximumPayment,
+                payment_strategy: DebtPaymentStrategy.MaximumPayment,
                 principal: 1000,
             })
             const debtState = debtManager.getCurrentState();
@@ -132,9 +132,9 @@ describe("DebtManager", () => {
         it("should calculate minimum payment correctly", () => {
             const debtManager = new DebtManager(planManager, {
                 ...debt,
-                paymentStrategy: DebtPaymentStrategy.MinimumPayment,
+                payment_strategy: DebtPaymentStrategy.MinimumPayment,
                 principal: 2000,
-                paymentMinimum: 100,
+                payment_minimum: 100,
             })
             const debtState = debtManager.getCurrentState();
             const payment = debtManager.calculatePayment(debtState);
@@ -148,29 +148,29 @@ describe("DebtManager", () => {
             const debtManager = new DebtManager(planManager, {
                 ...debt,
                 principal: 10_000,
-                paymentFixedAmount: 1_000,
-                interestRate: 10,
+                payment_fixed_amount: 1_000,
+                interest_rate: 10,
             })
             debtManager.process();
             const planState = debtManager.orchestrator.getCurrentState();
             const currentState = debtManager.getCurrentState();
 
             expect(currentState.payment).toBe(1_000);
-            expect(currentState.paymentLifetime).toBe(1_000);
-            expect(currentState.interestAmount).toBeCloseTo(900);
-            expect(currentState.interestLifetime).toBe(900);
-            expect(currentState.principalEndOfYear).toBeCloseTo(9900);
+            expect(currentState.payment_lifetime).toBe(1_000);
+            expect(currentState.interest_amount).toBeCloseTo(900);
+            expect(currentState.interest_lifetime).toBe(900);
+            expect(currentState.principal_end_of_year).toBeCloseTo(9900);
             expect(currentState.processed).toBe(true);
-            expect(planState.taxedIncome).toBe(105_000);
-            expect(planState.taxedCapital).toBe(104_000);
+            expect(planState.taxed_income).toBe(105_000);
+            expect(planState.taxed_capital).toBe(104_000);
         });
 
         it("should process debt and update state correctly", () => {
             const debtManager = new DebtManager(planManager, {
                 ...debt,
                 principal: 10_000,
-                paymentFixedAmount: 1_000,
-                interestRate: 10,
+                payment_fixed_amount: 1_000,
+                interest_rate: 10,
             })
             debtManager.process();
             debtManager.advanceTimePeriod()
@@ -179,13 +179,13 @@ describe("DebtManager", () => {
             const currentState = debtManager.getCurrentState();
 
             expect(currentState.payment).toBe(1_000);
-            expect(currentState.paymentLifetime).toBe(2_000);
-            expect(currentState.interestAmount).toBe(890);
-            expect(currentState.interestLifetime).toBe(900+890);
-            expect(currentState.principalEndOfYear).toBeCloseTo(9790);
+            expect(currentState.payment_lifetime).toBe(2_000);
+            expect(currentState.interest_amount).toBe(890);
+            expect(currentState.interest_lifetime).toBe(900+890);
+            expect(currentState.principal_end_of_year).toBeCloseTo(9790);
             expect(currentState.processed).toBe(true);
-            expect(planState.taxedIncome).toBe(105_000);
-            expect(planState.taxedCapital).toBe(103_000);
+            expect(planState.taxed_income).toBe(105_000);
+            expect(planState.taxed_capital).toBe(103_000);
         });
 
         it("should throw error if processing already processed state", () => {
@@ -204,7 +204,7 @@ describe("DebtManager", () => {
         it('should calculate interest correctly for non-zero principal', () => {
             const debtManager = new DebtManager(planManager, {
                 ...debt,
-                interestRate: 5,
+                interest_rate: 5,
             });
             expect(debtManager.calculateInterest(1000)).toBeCloseTo(50); // 5% of 1000
         });
@@ -212,7 +212,7 @@ describe("DebtManager", () => {
         it('should return 0 interest for a 0 interest rate', () => {
             const debtManager = new DebtManager(planManager, {
                 ...debt,
-                interestRate: 0,
+                interest_rate: 0,
             });
             expect(debtManager.calculateInterest(1000)).toBe(0);
         });
@@ -225,19 +225,19 @@ describe("DebtManager", () => {
             const debtManager = new DebtManager(planManager, {
                 ...debt,
                 principal: 10_000,
-                paymentFixedAmount: 1_000,
-                interestRate: 10,
+                payment_fixed_amount: 1_000,
+                interest_rate: 10,
             })
             debtManager.process();
             const debtState = debtManager.getCurrentState();
             const newState = debtManager.createNextState(debtState);
 
             expect(newState.payment).toBe(0);
-            expect(newState.paymentLifetime).toBe(1_000);
-            expect(newState.interestAmount).toBe(undefined);
-            expect(newState.interestLifetime).toBe(900);
-            expect(newState.principalStartOfYear).toBe(debtState.principalEndOfYear);
-            expect(newState.principalEndOfYear).toBe(undefined);
+            expect(newState.payment_lifetime).toBe(1_000);
+            expect(newState.interest_amount).toBe(undefined);
+            expect(newState.interest_lifetime).toBe(900);
+            expect(newState.principal_start_of_year).toBe(debtState.principal_end_of_year);
+            expect(newState.principal_end_of_year).toBe(undefined);
             expect(newState.processed).toBe(false);
         });
 

@@ -10,7 +10,7 @@ import {
 
 export function useCashReserveValidation(modelRef: Ref<Partial<CashReserve>>) {
     function validateReserveAmount(rule: FormItemRule, value: number | undefined) {
-        if (modelRef.value.cashReserveStrategy === "fixed") {
+        if (modelRef.value.contribution_strategy === "fixed") {
             if (value === null || value === undefined) {
                 return new Error("Reserve amount is required when using a Fixed Cash Reserve strategy.");
             }
@@ -19,7 +19,7 @@ export function useCashReserveValidation(modelRef: Ref<Partial<CashReserve>>) {
     }
 
     function validateReserveMonths(rule: FormItemRule, value: number | undefined) {
-        if (modelRef.value.cashReserveStrategy === "variable") {
+        if (modelRef.value.contribution_strategy === "variable") {
             if (value === null || value === undefined) {
                 return new Error("Reserve months is required when using a Variable Cash Reserve strategy.");
             }

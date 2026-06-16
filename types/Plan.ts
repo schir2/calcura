@@ -45,28 +45,28 @@ export interface Plan {
     name: string;
     age: number;
     year: number;
-    inflationRate: number;
-    insufficientFundsStrategy: InsufficientFundsStrategy;
-    growthApplicationStrategy: GrowthApplicationStrategy;
-    taxStrategy: IncomeTaxStrategy
-    taxRate: number
-    lifeExpectancy: number;
-    retirementStrategy: RetirementStrategy;
-    retirementWithdrawalRate: number;
-    retirementIncomeGoal: number;
-    retirementAge: number;
-    retirementSavingsAmount: number;
-    retirementIncomeAdjustedForInflation: boolean;
-    cashReserves: CashReserve[]
+    inflation_rate: number;
+    insufficient_funds_strategy: InsufficientFundsStrategy;
+    growth_application_strategy: GrowthApplicationStrategy;
+    tax_strategy: IncomeTaxStrategy
+    tax_rate: number
+    life_expectancy: number;
+    retirement_strategy: RetirementStrategy;
+    retirement_withdrawal_rate: number;
+    retirement_income_goal: number;
+    retirement_age: number;
+    retirement_savings_amount: number;
+    retirement_income_adjusted_for_inflation: boolean;
+    cash_reserves: CashReserve[]
     incomes: Income[]
     expenses: Expense[]
     debts: Debt[]
-    taxDeferreds: TaxDeferred[];
+    tax_deferreds: TaxDeferred[];
     brokerages: Brokerage[];
     iras: Ira[];
-    rothIras: RothIra[];
-    commandSequences: CommandSequence[];
-    editedAt: Date
-    createdAt: Date
+    roth_iras: RothIra[];
+    command_sequences: CommandSequence[];
+    edited_at: Date
+    created_at: Date
 
 }

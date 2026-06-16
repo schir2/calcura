@@ -1,8 +1,8 @@
 export default interface ExpenseState {
-    baseAmount: number;
-    amountRequested: number;
-    amountPaid: number;
+    base_amount: number;
+    amount_requested: number;
+    amount_paid: number;
     shortfall: number;
-    growthAmount: number;
+    growth_amount: number;
     processed: boolean;
 }

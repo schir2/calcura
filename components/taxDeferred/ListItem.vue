@@ -14,9 +14,9 @@
       :title="taxDeferred.name"
       :modelName="ModelName.Ira"
       :tags="[
-          {label: taxDeferred.electiveContributionStrategy, },
-          {label: taxDeferred.employerContributionStrategy, },
-          {label: `Growth ${taxDeferred.growthRate}%`, iconName: 'growthRate', hide: taxDeferred.growthRate === 0},
+          {label: taxDeferred.elective_contribution_strategy, },
+          {label: taxDeferred.employer_contribution_strategy, },
+          {label: `Growth ${taxDeferred.growth_rate}%`, iconName: 'growthRate', hide: taxDeferred.growth_rate === 0},
       ]">
   </command-list-item>
 </template>

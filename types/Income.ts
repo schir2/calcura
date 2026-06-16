@@ -7,9 +7,9 @@ export interface Income {
     id: number;
     name: string;
     frequency: Frequency;
-    grossIncome: number;
-    growthRate: number;
-    incomeType: IncomeType;
+    gross_income: number;
+    growth_rate: number;
+    income_type: IncomeType;
 }
 
 export type IncomePartial = Partial<Omit<Income, 'id'>>
@@ -17,7 +17,7 @@ export type IncomePartial = Partial<Omit<Income, 'id'>>
 export const incomeDefaults: IncomePartial = {
     name: "Income",
     frequency: Frequency.Annually,
-    grossIncome: 0,
-    growthRate: 0,
-    incomeType: "ordinary",
+    gross_income: 0,
+    growth_rate: 0,
+    income_type: "ordinary",
 }

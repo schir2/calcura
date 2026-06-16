@@ -1,13 +1,13 @@
 import type {PlanManagers} from "~/models/plan/PlanManager";
 
 export interface Command {
-    commandId: number;
+    id: number;
     order: number;
     name: string;
     label: string;
-    modelName: keyof PlanManagers;
-    modelId: number;
+    item_type: keyof PlanManagers;
+    model_id: number;
     action: "process";
-    isActive: boolean;
-    commandSequenceCommandId: number;
+    is_active: boolean;
+    item_id: number;
 }

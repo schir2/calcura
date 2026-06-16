@@ -12,13 +12,13 @@
       :title="income.name"
       :modelName="ModelName.Income"
       :tags="[
-          {label: income.incomeType},
+          {label: income.income_type},
           {label: income.frequency, iconName: 'frequency'},
-          {label: `Growth ${income.growthRate}%`, iconName: 'growthRate', hide: income.growthRate === 0},
+          {label: `Growth ${income.growth_rate}%`, iconName: 'growthRate', hide: income.growth_rate === 0},
       ]"
   >
     <template #summary>
-      ${{ $humanize.intComma(getAnnualAmount(income.grossIncome, income.frequency)) }}/year
+      ${{ $humanize.intComma(getAnnualAmount(income.gross_income, income.frequency)) }}/year
     </template>
   </command-list-item>
 

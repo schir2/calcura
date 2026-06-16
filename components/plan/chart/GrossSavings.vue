@@ -7,12 +7,22 @@
     <template #footer>
       <div class="flex items-center justify-evenly gap-2 flex-wrap">
         <base-stat size="small" class="flex-1" label="Taxable"
-                   :value="`$${$humanize.intcomma(finalPlanState.savingsTaxableEndOfYear)}`"></base-stat>
-        <base-stat size="small" class="flex-1" label="Tax Deferred">${{ $humanize.intcomma(finalPlanState.savingsTaxDeferredEndOfYear) }}</base-stat>
-        <base-stat size="small" class="flex-1" label="Tax Exempt">${{ $humanize.intcomma(finalPlanState.savingsTaxExemptEndOfYear) }}</base-stat>
-        <base-stat size="small" class="flex-1" label="Not Invested">${{ $humanize.intcomma(finalPlanState.taxedCapital) }}</base-stat>
-        <base-stat size="small" class="flex-1" label="Cash Reserves">${{ $humanize.intcomma(finalPlanState.cashReservesTotal) }}</base-stat>
-        <base-stat size="small" class="flex-1" label="Gross Investments">${{ $humanize.intcomma(finalPlanState.savingsEndOfYear) }}</base-stat>
+                   :value="`$${$humanize.intcomma(finalPlanState.savings_taxable_end_of_year)}`"></base-stat>
+        <base-stat size="small" class="flex-1" label="Tax Deferred">${{
+            $humanize.intcomma(finalPlanState.savings_tax_deferred_end_of_year)
+          }}</base-stat>
+        <base-stat size="small" class="flex-1" label="Tax Exempt">${{
+            $humanize.intcomma(finalPlanState.savings_tax_exempt_end_of_year)
+          }}</base-stat>
+        <base-stat size="small" class="flex-1" label="Not Invested">${{
+            $humanize.intcomma(finalPlanState.taxed_capital)
+          }}</base-stat>
+        <base-stat size="small" class="flex-1" label="Cash Reserves">${{
+            $humanize.intcomma(finalPlanState.cash_reserves_total)
+          }}</base-stat>
+        <base-stat size="small" class="flex-1" label="Gross Investments">${{
+            $humanize.intcomma(finalPlanState.savings_end_of_year)
+          }}</base-stat>
       </div>
     </template>
   </n-card>
@@ -51,10 +61,10 @@ const data = computed(() => {
           theme.value.common.errorColor,
         ],
         data: [
-          finalPlanState.value.savingsTaxDeferredEndOfYear ?? 0,
-          finalPlanState.value.savingsTaxableEndOfYear ?? 0,
-          finalPlanState.value.savingsTaxExemptEndOfYear ?? 0,
-          finalPlanState.value.taxedCapital ?? 0,
+          finalPlanState.value.savings_tax_deferred_end_of_year ?? 0,
+          finalPlanState.value.savings_taxable_end_of_year ?? 0,
+          finalPlanState.value.savings_tax_exempt_end_of_year ?? 0,
+          finalPlanState.value.taxed_capital ?? 0,
         ]
       },
     ]

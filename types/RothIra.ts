@@ -10,12 +10,12 @@ export interface RothIra {
     id: number;
     name: string;
 
-    growthRate: number;
-    initialBalance: number;
+    growth_rate: number;
+    initial_balance: number;
 
-    contributionStrategy: RothIraContributionStrategy;
-    contributionPercentage: number;
-    contributionFixedAmount: number;
+    contribution_strategy: RothIraContributionStrategy;
+    contribution_percentage: number;
+    contribution_fixed_amount: number;
 
     income?: Income;
 }
@@ -28,9 +28,9 @@ export interface RothIraTemplate extends RothIra {
 
 export const rothIraDefaults: RothIraPartial = {
     name: 'Roth IRA',
-    growthRate: 6,
-    initialBalance: 0,
-    contributionStrategy: RothIraContributionStrategy.Fixed,
-    contributionPercentage: 0,
-    contributionFixedAmount: 0,
+    growth_rate: 6,
+    initial_balance: 0,
+    contribution_strategy: RothIraContributionStrategy.Fixed,
+    contribution_percentage: 0,
+    contribution_fixed_amount: 0,
 }

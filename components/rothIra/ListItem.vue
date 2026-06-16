@@ -13,12 +13,14 @@
       :title="rothIra.name"
       :modelName="ModelName.Ira"
       :tags="[
-          {label: rothIra.contributionStrategy, },
-          {label: `Growth ${rothIra.growthRate}%`, iconName: 'growthRate', hide: rothIra.growthRate === 0},
+          {label: rothIra.contribution_strategy, },
+          {label: `Growth ${rothIra.growth_rate}%`, iconName: 'growthRate', hide: rothIra.growth_rate === 0},
       ]"
   >
     <template #summary>
-      -${{ $humanize.intComma(calculateIraContribution(rothIra, rothIra.income?.grossIncome, IRA_CONTRIBUTION_LIMIT_2024 )) }}/year
+      -${{
+        $humanize.intComma(calculateIraContribution(rothIra, rothIra.income?.gross_income, IRA_CONTRIBUTION_LIMIT_2024))
+      }}/year
     </template>
   </command-list-item>
 </template>

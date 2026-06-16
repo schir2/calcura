@@ -6,40 +6,40 @@ import {Frequency} from "~/types/Frequency";
 export class ExpenseManager extends BaseManager<Expense, ExpenseState> {
     protected createInitialState(): ExpenseState {
         return {
-            baseAmount: this.config.amount,
-            amountRequested: 0,
-            amountPaid: 0,
+            base_amount: this.config.amount,
+            amount_requested: 0,
+            amount_paid: 0,
             shortfall: 0,
             processed: false,
-            growthAmount: 0,
+            growth_amount: 0,
         };
     }
 
     createNextState(currentState: ExpenseState): ExpenseState {
-        const growthAmount = this.calculateGrowthAmount(currentState.baseAmount)
-        const baseAmount = currentState.baseAmount + growthAmount
+        const growthAmount = this.calculateGrowthAmount(currentState.base_amount)
+        const baseAmount = currentState.base_amount + growthAmount
         return {
-            baseAmount: baseAmount,
-            amountRequested: 0,
+            base_amount: baseAmount,
+            amount_requested: 0,
             shortfall: 0,
-            amountPaid: 0,
+            amount_paid: 0,
             processed: false,
-            growthAmount: growthAmount,
+            growth_amount: growthAmount,
 
         };
     }
 
     calculateGrowthAmount(amount: number): number {
-        if (this.config.growsWithInflation) {
-            return amount * this.orchestrator.getConfig().inflationRate / 100;
+        if (this.config.grows_with_inflation) {
+            return amount * this.orchestrator.getConfig().inflation_rate / 100;
         }
-        return amount * this.config.growthRate / 100
+        return amount * this.config.growth_rate / 100
 
     }
 
     calculatePayment(): number {
         const currentState = this.getCurrentState()
-        return this._calculatePayment(currentState.baseAmount);
+        return this._calculatePayment(currentState.base_amount);
     }
 
     private _calculatePayment(baseAmount: number): number {
@@ -63,8 +63,8 @@ export class ExpenseManager extends BaseManager<Expense, ExpenseState> {
         const amountPaid = this.orchestrator.requestAndPayExpense(amountRequested)
         this.updateCurrentState({
             ...currentState,
-            amountRequested: amountRequested,
-            amountPaid: amountPaid,
+            amount_requested: amountRequested,
+            amount_paid: amountPaid,
             shortfall: amountRequested - amountPaid
 
         })

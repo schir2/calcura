@@ -14,11 +14,11 @@ export class IraIManager extends BaseManager<Ira, IraState> {
     protected createInitialState(): IraState {
         return {
             contribution: undefined,
-            contributionLifetime: 0,
-            growthAmount: undefined,
-            growthLifetime: 0,
-            balanceStartOfYear: this.config.initialBalance,
-            balanceEndOfYear: undefined,
+            contribution_lifetime: 0,
+            growth_amount: undefined,
+            growth_lifetime: 0,
+            balance_start_of_year: this.config.initial_balance,
+            balance_end_of_year: undefined,
             processed: false,
         }
     }
@@ -34,20 +34,20 @@ export class IraIManager extends BaseManager<Ira, IraState> {
     calculateContribution(): number {
         return calculateIraContribution(
             this.config,
-            this.incomeManager?.getCurrentState().grossIncome,
-            this.orchestrator.getCurrentState().iraLimit
+            this.incomeManager?.getCurrentState().gross_income,
+            this.orchestrator.getCurrentState().ira_limit
         );
     }
 
     createNextState(previousState: IraState): IraState {
-        assertDefined(previousState.balanceEndOfYear, 'balanceEndOfYear')
+        assertDefined(previousState.balance_end_of_year, 'balanceEndOfYear')
         return {
             contribution: undefined,
-            contributionLifetime: previousState.contributionLifetime,
-            growthAmount: undefined,
-            growthLifetime: previousState.growthLifetime,
-            balanceStartOfYear: previousState.balanceEndOfYear,
-            balanceEndOfYear: undefined,
+            contribution_lifetime: previousState.contribution_lifetime,
+            growth_amount: undefined,
+            growth_lifetime: previousState.growth_lifetime,
+            balance_start_of_year: previousState.balance_end_of_year,
+            balance_end_of_year: undefined,
             processed: false,
         };
     }
@@ -58,22 +58,22 @@ export class IraIManager extends BaseManager<Ira, IraState> {
         const contribution = this.orchestrator.requestFunds(contributionRequest, FundType.Taxable)
         this.orchestrator.withdraw(contribution, FundType.Taxable)
         const growthAmount = calculateGrowthAmount(
-            currentState.balanceStartOfYear,
-            this.config.growthRate,
-            this.orchestrator.getConfig().growthApplicationStrategy,
+            currentState.balance_start_of_year,
+            this.config.growth_rate,
+            this.orchestrator.getConfig().growth_application_strategy,
             contribution
         )
         this.orchestrator.contribute(contribution, ContributionType.Ira)
         this.orchestrator.invest(growthAmount + contribution, ContributionType.Ira)
-        const balanceEndOfYear = currentState.balanceStartOfYear + growthAmount + contribution
+        const balanceEndOfYear = currentState.balance_start_of_year + growthAmount + contribution
         this.updateCurrentState(
             {
                 ...currentState,
                 contribution: contribution,
-                contributionLifetime: currentState.contributionLifetime + contribution,
-                balanceEndOfYear: balanceEndOfYear,
-                growthAmount: growthAmount,
-                growthLifetime: currentState.growthLifetime + growthAmount
+                contribution_lifetime: currentState.contribution_lifetime + contribution,
+                balance_end_of_year: balanceEndOfYear,
+                growth_amount: growthAmount,
+                growth_lifetime: currentState.growth_lifetime + growthAmount
 
             }
         )
@@ -83,9 +83,9 @@ export class IraIManager extends BaseManager<Ira, IraState> {
 
 export function calculateIraContribution(iraConfig: Ira, incomeAmount?: number, iraLimit: number = IRA_CONTRIBUTION_LIMIT_2024): number {
     let contribution = 0
-    switch (iraConfig.contributionStrategy) {
+    switch (iraConfig.contribution_strategy) {
         case IraContributionStrategy.Fixed:
-            contribution = iraConfig.contributionFixedAmount
+            contribution = iraConfig.contribution_fixed_amount
             break
         case IraContributionStrategy.PercentageOfIncome:
             if (incomeAmount === undefined) {
@@ -96,7 +96,7 @@ export function calculateIraContribution(iraConfig: Ira, incomeAmount?: number, 
                 })
                 return 0
             }
-            contribution = incomeAmount * iraConfig.contributionPercentage / 100
+            contribution = incomeAmount * iraConfig.contribution_percentage / 100
             break
         case IraContributionStrategy.Max:
             contribution = iraLimit

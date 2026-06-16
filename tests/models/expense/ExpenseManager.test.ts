@@ -17,34 +17,34 @@ const planConfig: Plan = {
     name: "Blank Plan",
     age: 30,
     year: new Date().getFullYear(),
-    inflationRate: 3,
-    insufficientFundsStrategy: InsufficientFundsStrategy.None,
-    growthApplicationStrategy: GrowthApplicationStrategy.Start,
-    taxStrategy: IncomeTaxStrategy.Simple,
-    taxRate: 30,
-    lifeExpectancy: 85,
-    retirementStrategy: RetirementStrategy.Age,
-    retirementWithdrawalRate: 4,
-    retirementIncomeGoal: 50000,
-    retirementAge: 65,
-    retirementSavingsAmount: 200000,
-    retirementIncomeAdjustedForInflation: true,
-    cashReserves: [],
+    inflation_rate: 3,
+    insufficient_funds_strategy: InsufficientFundsStrategy.None,
+    growth_application_strategy: GrowthApplicationStrategy.Start,
+    tax_strategy: IncomeTaxStrategy.Simple,
+    tax_rate: 30,
+    life_expectancy: 85,
+    retirement_strategy: RetirementStrategy.Age,
+    retirement_withdrawal_rate: 4,
+    retirement_income_goal: 50000,
+    retirement_age: 65,
+    retirement_savings_amount: 200000,
+    retirement_income_adjusted_for_inflation: true,
+    cash_reserves: [],
     incomes: [
         {
             id: 1,
             name: 'Ordinary Income',
-            grossIncome: 100_000,
-            growthRate: 0,
-            incomeType: "ordinary",
+            gross_income: 100_000,
+            growth_rate: 0,
+            income_type: "ordinary",
             frequency: Frequency.Annually
         },
         {
             id: 1,
             name: 'Ordinary Income',
-            grossIncome: 50_000,
-            growthRate: 0,
-            incomeType: "ordinary",
+            gross_income: 50_000,
+            growth_rate: 0,
+            income_type: "ordinary",
             frequency: Frequency.Annually
         }
     ],
@@ -54,19 +54,19 @@ const planConfig: Plan = {
             name: 'Rent',
             frequency: Frequency.Monthly,
             amount: 1_800,
-            expenseType: ExpenseType.fixed,
-            growthRate: 0,
-            isEssential: true,
-            isTaxDeductible: false,
-            growsWithInflation: false,
+            expense_type: ExpenseType.fixed,
+            growth_rate: 0,
+            is_essential: true,
+            is_tax_deductible: false,
+            grows_with_inflation: false,
         }
     ],
     debts: [],
-    taxDeferreds: [],
+    tax_deferreds: [],
     brokerages: [],
     iras: [],
-    rothIras: [],
-    commandSequences: [],
+    roth_iras: [],
+    command_sequences: [],
 }
 
 let planManager: PlanManager;
@@ -82,9 +82,9 @@ describe("ExpenseManager", () => {
 
         it("should initialize with correct state", () => {
             const state = expenseManager.getCurrentState();
-            expect(state.baseAmount).toBe(1800);
-            expect(state.amountRequested).toBe(0);
-            expect(state.amountPaid).toBe(0);
+            expect(state.base_amount).toBe(1800);
+            expect(state.amount_requested).toBe(0);
+            expect(state.amount_paid).toBe(0);
             expect(state.processed).toBe(false);
         });
     })
@@ -149,9 +149,9 @@ describe("ExpenseManager", () => {
         it('sufficient funds', () => {
             expenseManager.process()
             const currentState: ExpenseState = expenseManager.getCurrentState()
-            expect(currentState.baseAmount).toBe(1_800)
-            expect(currentState.amountRequested).toBe(21_600)
-            expect(currentState.amountPaid).toBe(21_600)
+            expect(currentState.base_amount).toBe(1_800)
+            expect(currentState.amount_requested).toBe(21_600)
+            expect(currentState.amount_paid).toBe(21_600)
             expect(currentState.processed).toBe(true)
         })
         it('insufficient funds', () => {
@@ -167,9 +167,9 @@ describe("ExpenseManager", () => {
 
             expenseManager.process()
             const currentState: ExpenseState = expenseManager.getCurrentState()
-            expect(currentState.baseAmount).toBe(100_000)
-            expect(currentState.amountRequested).toBe(400_000)
-            expect(currentState.amountPaid).toBe(105_000)
+            expect(currentState.base_amount).toBe(100_000)
+            expect(currentState.amount_requested).toBe(400_000)
+            expect(currentState.amount_paid).toBe(105_000)
             expect(currentState.processed).toBe(true)
         })
         it('growth at 10%', () => {
@@ -179,49 +179,49 @@ describe("ExpenseManager", () => {
                     ...planConfig.expenses[0],
                     amount: 100_000,
                     frequency: Frequency.Annually,
-                    growthRate: 10,
+                    growth_rate: 10,
                 }]
             })
             expenseManager = planManager.getManagerById('expense', 1)
 
             expenseManager.process()
             const currentState: ExpenseState = expenseManager.getCurrentState()
-            expect(currentState.baseAmount).toBe(100_000)
-            expect(currentState.amountRequested).toBe(100_000)
-            expect(currentState.amountPaid).toBe(100_000)
-            expect(currentState.growthAmount).toBe(0)
+            expect(currentState.base_amount).toBe(100_000)
+            expect(currentState.amount_requested).toBe(100_000)
+            expect(currentState.amount_paid).toBe(100_000)
+            expect(currentState.growth_amount).toBe(0)
             expect(currentState.processed).toBe(true)
             expenseManager.advanceTimePeriod()
             const newState = expenseManager.getCurrentState()
-            expect(newState.baseAmount).toBe(110_000)
-            expect(newState.growthAmount).toBe(10_000)
+            expect(newState.base_amount).toBe(110_000)
+            expect(newState.growth_amount).toBe(10_000)
             expenseManager.process()
         })
         it('grows with inflation', () => {
             planManager = new PlanManager({
                 ...planConfig,
-                inflationRate: 5,
+                inflation_rate: 5,
                 expenses: [{
                     ...planConfig.expenses[0],
                     amount: 100_000,
                     frequency: Frequency.Annually,
-                    growthRate: 10,
-                    growsWithInflation: true,
+                    growth_rate: 10,
+                    grows_with_inflation: true,
                 }]
             })
             expenseManager = planManager.getManagerById('expense', 1)
 
             expenseManager.process()
             const currentState: ExpenseState = expenseManager.getCurrentState()
-            expect(currentState.baseAmount).toBe(100_000)
-            expect(currentState.amountRequested).toBe(100_000)
-            expect(currentState.amountPaid).toBe(100_000)
-            expect(currentState.growthAmount).toBe(0)
+            expect(currentState.base_amount).toBe(100_000)
+            expect(currentState.amount_requested).toBe(100_000)
+            expect(currentState.amount_paid).toBe(100_000)
+            expect(currentState.growth_amount).toBe(0)
             expect(currentState.processed).toBe(true)
             expenseManager.advanceTimePeriod()
             const newState = expenseManager.getCurrentState()
-            expect(newState.baseAmount).toBe(105_000)
-            expect(newState.growthAmount).toBe(5_000)
+            expect(newState.base_amount).toBe(105_000)
+            expect(newState.growth_amount).toBe(5_000)
             expenseManager.process()
         })
 

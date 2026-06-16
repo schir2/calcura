@@ -20,18 +20,18 @@ export interface TaxDeferred {
     name: string;
     income?: Income;
 
-    growthRate: number;
-    initialBalance: number;
+    growth_rate: number;
+    initial_balance: number;
 
-    electiveContributionStrategy: TaxDeferredContributionStrategy;
-    electiveContributionPercentage: number;
-    electiveContributionFixedAmount: number;
+    elective_contribution_strategy: TaxDeferredContributionStrategy;
+    elective_contribution_percentage: number;
+    elective_contribution_fixed_amount: number;
 
-    employerContributionStrategy: EmployerContributionStrategy;
-    employerCompensationMatchPercentage: number;
-    employerContributionFixedAmount: number;
-    employerMatchPercentage: number;
-    employerMatchPercentageLimit: number;
+    employer_contribution_strategy: EmployerContributionStrategy;
+    employer_contribution_match_percentage: number;
+    employer_contribution_fixed_amount: number;
+    employer_match_percentage: number;
+    employer_match_percentage_limit: number;
 
 }
 
@@ -43,16 +43,16 @@ export interface TaxDeferredTemplate extends TaxDeferred {
 
 export const taxDeferredDefaults: TaxDeferredPartial = {
     name: '401k',
-    growthRate: DEFAULT_GROWTH_RATE,
-    initialBalance: 0,
-    electiveContributionStrategy: TaxDeferredContributionStrategy.PercentageOfIncome,
-    electiveContributionPercentage: 0,
-    electiveContributionFixedAmount: 0,
+    growth_rate: DEFAULT_GROWTH_RATE,
+    initial_balance: 0,
+    elective_contribution_strategy: TaxDeferredContributionStrategy.PercentageOfIncome,
+    elective_contribution_percentage: 0,
+    elective_contribution_fixed_amount: 0,
     income: undefined,
 
-    employerContributionStrategy:EmployerContributionStrategy.PercentageOfContribution,
-    employerMatchPercentage: 0,
-    employerCompensationMatchPercentage: 100,
-    employerContributionFixedAmount: 0,
-    employerMatchPercentageLimit: 0,
+    employer_contribution_strategy:EmployerContributionStrategy.PercentageOfContribution,
+    employer_match_percentage: 0,
+    employer_contribution_match_percentage: 100,
+    employer_contribution_fixed_amount: 0,
+    employer_match_percentage_limit: 0,
 }

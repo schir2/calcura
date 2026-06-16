@@ -12,12 +12,12 @@
       :title="expense.name"
       :modelName="ModelName.Expense"
       :tags="[
-          {label: expense.expenseType, iconName:expense.expenseType},
+          {label: expense.expense_type, iconName:expense.expense_type},
           {label: expense.frequency, iconName: 'frequency'},
-          {label: 'Grows with Inflation', iconName: 'inflation', hide: !expense.growsWithInflation},
-          {label: 'Essential', iconName: 'essential', hide: !expense.isEssential},
-          {label: 'Deductible', iconName: 'deductible', hide: !expense.isTaxDeductible},
-          {label: `Growth ${expense.growthRate}%`, iconName: 'growthRate', hide: expense.growthRate === 0},
+          {label: 'Grows with Inflation', iconName: 'inflation', hide: !expense.grows_with_inflation},
+          {label: 'Essential', iconName: 'essential', hide: !expense.is_essential},
+          {label: 'Deductible', iconName: 'deductible', hide: !expense.is_tax_deductible},
+          {label: `Growth ${expense.growth_rate}%`, iconName: 'growthRate', hide: expense.growth_rate === 0},
       ]"
   >
     <template #summary>

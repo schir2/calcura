@@ -8,21 +8,21 @@ import {ContributionType} from "~/models/common";
 export class CashReserveManager extends BaseManager<CashReserve, CashReserveState> {
     protected createInitialState(): CashReserveState {
         return {
-            amountRequested: undefined,
-            amountPaid: undefined,
-            cashReserveStartOfYear: this.config.initialAmount,
-            cashReserveEndOfYear: undefined,
+            amount_requested: undefined,
+            amount_paid: undefined,
+            chas_reserve_start_of_year: this.config.initial_amount,
+            cash_reserve_end_of_year: undefined,
             processed: false,
         }
     }
 
     createNextState(previousState: CashReserveState): CashReserveState {
-        assertDefined(previousState.cashReserveEndOfYear, 'cashReserveEndOfYear')
+        assertDefined(previousState.cash_reserve_end_of_year, 'cashReserveEndOfYear')
         return {
-            amountRequested: undefined,
-            amountPaid: undefined,
-            cashReserveStartOfYear: previousState.cashReserveEndOfYear,
-            cashReserveEndOfYear: undefined,
+            amount_requested: undefined,
+            amount_paid: undefined,
+            chas_reserve_start_of_year: previousState.cash_reserve_end_of_year,
+            cash_reserve_end_of_year: undefined,
             processed: false,
         }
     }
@@ -30,13 +30,13 @@ export class CashReserveManager extends BaseManager<CashReserve, CashReserveStat
     calculateContribution(): number {
         const currentState = this.getCurrentState();
         let contribution = 0
-        switch (this.config.cashReserveStrategy) {
+        switch (this.config.contribution_strategy) {
             case CashReserveStrategy.Fixed:
-                contribution = Math.max(this.config.reserveAmount - currentState.cashReserveStartOfYear, 0);
+                contribution = Math.max(this.config.reserve_amount - currentState.chas_reserve_start_of_year, 0);
                 break
             case CashReserveStrategy.Variable:
                 const annualExpenseTotal = this.orchestrator.getAnnualExpenseTotal()
-                contribution = Math.max(annualExpenseTotal * (this.config.reserveMonths / 12) - currentState.cashReserveStartOfYear, 0);
+                contribution = Math.max(annualExpenseTotal * (this.config.reserve_months / 12) - currentState.chas_reserve_start_of_year, 0);
                 break
         }
         return contribution
@@ -46,14 +46,14 @@ export class CashReserveManager extends BaseManager<CashReserve, CashReserveStat
         const currentState = this.getCurrentState();
         const contributionRequested = this.calculateContribution()
         const contribution = this.orchestrator.requestFunds(contributionRequested, FundType.Taxed)
-        const cashReserveEndOfYear = currentState.cashReserveStartOfYear + contribution;
+        const cashReserveEndOfYear = currentState.chas_reserve_start_of_year + contribution;
         this.orchestrator.withdraw(contribution, FundType.Taxed)
         this.orchestrator.contribute(cashReserveEndOfYear, ContributionType.CashReserve)
         this.updateCurrentState({
             ...currentState,
-            amountPaid: contribution,
-            amountRequested: contributionRequested,
-            cashReserveEndOfYear: cashReserveEndOfYear
+            amount_paid: contribution,
+            amount_requested: contributionRequested,
+            cash_reserve_end_of_year: cashReserveEndOfYear
         });
     }
 
