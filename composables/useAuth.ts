@@ -1,13 +1,14 @@
 export const useAuth = () => {
     const supabase = useSupabaseClient()
+    const isAuthenticated = computed(() => !!useSupabaseUser().value)
 
-    async function signInWithPassword(email: string, password: string) {
+    async function login(email: string, password: string) {
         const {data, error} = await supabase.auth.signInWithPassword({email, password})
         if (error) throw error
         return data
     }
 
-    async function signInWithGoogle() {
+    async function loginWithGoogle() {
         const {data, error} = await supabase.auth.signInWithOAuth({
             provider: 'google',
             options: {redirectTo: `${window.location.origin}/`}
@@ -16,16 +17,16 @@ export const useAuth = () => {
         return data
     }
 
-    async function signUp(email: string, password: string) {
+    async function register(email: string, password: string) {
         const {data, error} = await supabase.auth.signUp({email, password})
         if (error) throw error
         return data
     }
 
-    async function signOut() {
+    async function logout() {
         const {error} = await supabase.auth.signOut()
         if (error) throw error
     }
 
-    return {signInWithPassword, signInWithGoogle, signUp, signOut}
+    return {isAuthenticated, login, loginWithGoogle, register, logout}
 }

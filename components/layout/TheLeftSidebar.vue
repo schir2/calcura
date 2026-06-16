@@ -12,7 +12,7 @@
           @expand="collapsed = false"
           :native-scrollbar="false"
       >
-        <n-menu v-if="authStore.isAuthenticated"
+        <n-menu v-if="isAuthenticated"
                 :collapsed="collapsed"
                 :collapsed-width="64"
                 :collapsed-icon-size="22"
@@ -35,7 +35,7 @@ function renderLabel(label: string, to: string) {
   ])
 }
 
-const authStore = useAuthStore()
+const {isAuthenticated} = useAuth()
 const collapsed = ref<boolean>(false)
 const menuOptions: MenuOption[] = [
   {label: renderLabel('Home', '/'), key: 'home', icon: renderIcon('uil:home'),},

@@ -67,8 +67,8 @@ definePageMeta({
 })
 
 const router = useRouter()
-const authStore = useAuthStore()
-const {user, isAuthenticated} = storeToRefs(authStore)
+const user = useSupabaseUser()
+const {isAuthenticated} = useAuth()
 
 function handleStartNow() {
   router.push({path: "/auth/register"});

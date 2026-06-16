@@ -19,7 +19,8 @@ definePageMeta({
     }
 )
 const {data: plans, refresh} = useFetch<Plan[]>('api/plans')
-const {user, profile} = storeToRefs(useAuthStore())
+const user = useSupabaseUser()
+const {profile} = storeToRefs(useProfileStore())
 const {currentDateTimeString} = storeToRefs(useCurrentTime())
 
 </script>

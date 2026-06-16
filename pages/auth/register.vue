@@ -4,7 +4,7 @@
     <p>We sent a verification link to <strong>{{ registeredEmail }}</strong>. Please click the link in the email to activate your account before logging in.</p>
     <n-button class="mt-4" @click="$router.push('/auth/login/')">Go to Login</n-button>
   </div>
-  <n-form v-else-if="!authStore.isAuthenticated" ref="registrationForm" :model="registration" :rules="rules">
+  <n-form v-else-if="!isAuthenticated" ref="registrationForm" :model="registration" :rules="rules">
     <n-form-item path="email" label="Email">
       <n-input placeholder="Email" v-model:value="registration.email"></n-input>
     </n-form-item>
@@ -23,7 +23,7 @@
       </div>
     </n-form-item>
   </n-form>
-  <n-button v-if="authStore.isAuthenticated" @click="authStore.logout()" :loading="isLogoutLoading">Log Out</n-button>
+  <n-button v-if="isAuthenticated" @click="auth.logout()" :loading="isLogoutLoading">Log Out</n-button>
 </template>
 <script lang="ts" setup>
 
@@ -35,7 +35,8 @@ definePageMeta({
 })
 
 const router = useRouter()
-const authStore = useAuthStore()
+const auth = useAuth()
+const {isAuthenticated} = auth
 const message = useMessage()
 const loadingBar = useLoadingBar()
 const isRegisterLoading = ref<boolean>(false)
@@ -90,7 +91,7 @@ async function handleRegister() {
       isRegisterLoading.value = true;
       loadingBar.start()
       try {
-        await authStore.register(registration.value.email, registration.value.password)
+        await auth.register(registration.value.email, registration.value.password)
         registeredEmail.value = registration.value.email
         registrationSuccess.value = true
         loadingBar.finish()

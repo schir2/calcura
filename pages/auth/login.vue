@@ -1,5 +1,5 @@
 <template>
-  <n-form v-if="!authStore.isAuthenticated" ref="formRef" :model="credentialsRef" :rules="rules">
+  <n-form v-if="!isAuthenticated" ref="formRef" :model="credentialsRef" :rules="rules">
     <n-form-item path="email" label="Email">
       <n-input ref="emailRef" placeholder="email" v-model:value="credentialsRef.email"></n-input>
     </n-form-item>
@@ -22,7 +22,7 @@
     </n-form-item>
     <n-button quaternary type="primary">Forgot Password?</n-button>
   </n-form>
-  <n-button v-if="authStore.isAuthenticated" @click="authStore.logout()" :loading="isLogoutLoading">Log Out</n-button>
+  <n-button v-if="isAuthenticated" @click="auth.logout()" :loading="isLogoutLoading">Log Out</n-button>
 </template>
 <script lang="ts" setup>
 
@@ -34,7 +34,8 @@ definePageMeta({
 })
 
 const router = useRouter()
-const authStore = useAuthStore()
+const auth = useAuth()
+const {isAuthenticated} = auth
 
 const message = useMessage()
 const loadingBar = useLoadingBar()
@@ -70,7 +71,7 @@ async function handleLogin() {
       isLoginLoading.value = true;
       loadingBar.start()
       try {
-        await authStore.login(credentialsRef.value.email, credentialsRef.value.password)
+        await auth.login(credentialsRef.value.email, credentialsRef.value.password)
         message.success('Login Successful')
         loadingBar.finish()
         await router.push('/')
@@ -87,7 +88,7 @@ async function handleLogin() {
 async function handleGoogleLogin() {
   isGoogleLoading.value = true
   try {
-    await authStore.loginWithGoogle()
+    await auth.loginWithGoogle()
   } catch (error: any) {
     message.error(error?.message ?? 'Google login failed')
   } finally {

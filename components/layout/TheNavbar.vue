@@ -25,22 +25,17 @@
 <script setup lang="ts">
 const router = useRouter()
 const menu = ref({open: false})
-const authStore = useAuthStore()
-const {isAuthenticated, user} = storeToRefs(authStore)
+const auth = useAuth()
+const {isAuthenticated} = auth
 const message = useMessage()
 
 async function handleLogout() {
-  await authStore.logout()
+  await auth.logout()
   message.info('Logged out')
   await router.push('/')
-
 }
 
 const toggleMenu = () => {
   menu.value.open = !menu.value.open;
 }
-
-onMounted(() => {
-  authStore.initialize()
-})
 </script>
