@@ -2,31 +2,30 @@ export const useAuth = () => {
     const supabase = useSupabaseClient()
 
     async function signInWithPassword(email: string, password: string) {
-        const { data, error } = await supabase.auth.signInWithPassword({ email, password })
+        const {data, error} = await supabase.auth.signInWithPassword({email, password})
         if (error) throw error
         return data
     }
 
-    // NOTE: Google OAuth requires enabling the Google provider in Supabase Dashboard > Auth > Providers
     async function signInWithGoogle() {
-        const { data, error } = await supabase.auth.signInWithOAuth({
+        const {data, error} = await supabase.auth.signInWithOAuth({
             provider: 'google',
-            options: { redirectTo: `${window.location.origin}/` }
+            options: {redirectTo: `${window.location.origin}/`}
         })
         if (error) throw error
         return data
     }
 
     async function signUp(email: string, password: string) {
-        const { data, error } = await supabase.auth.signUp({ email, password })
+        const {data, error} = await supabase.auth.signUp({email, password})
         if (error) throw error
         return data
     }
 
     async function signOut() {
-        const { error } = await supabase.auth.signOut()
+        const {error} = await supabase.auth.signOut()
         if (error) throw error
     }
 
-    return { signInWithPassword, signInWithGoogle, signUp, signOut }
+    return {signInWithPassword, signInWithGoogle, signUp, signOut}
 }

@@ -3,7 +3,7 @@ import { NaiveUiResolver } from 'unplugin-vue-components/resolvers'
 import Components from 'unplugin-vue-components/vite'
 
 export default defineNuxtConfig({
-    compatibilityDate: '2024-04-03',
+    compatibilityDate: '2026-01-01',
     css: [
         '@/assets/css/tailwind.css',
         'animate.css/animate.min.css',
@@ -23,7 +23,12 @@ export default defineNuxtConfig({
       'nuxtjs-naive-ui',
     ],
     supabase: {
-      redirect: false,
+        types: '~~/shared/types/database.types.ts',
+        redirectOptions: {
+            login: 'auth/login',
+            exclude: ['/**'],
+            callback: 'auth/login'
+        }
     },
     imports: {
         dirs: [
@@ -83,6 +88,6 @@ export default defineNuxtConfig({
                 dts: true,
             })
         ]
-    }
+    },
 
 })
