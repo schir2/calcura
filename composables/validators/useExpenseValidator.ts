@@ -38,7 +38,7 @@ export function useExpenseValidation(modelRef: Ref<Partial<Expense>>) {
                 trigger: ["blur", "change"]
             }
         ],
-        expenseType: [
+        expense_type: [
             {required: true, message: "Expense type is required", trigger: ["blur", "change"]}
         ],
         frequency: [

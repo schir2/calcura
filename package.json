@@ -10,7 +10,9 @@
     "generate": "nuxt generate",
     "preview": "nuxt preview",
     "postinstall": "nuxt prepare",
-    "supabase:types": "npx supabase gen types typescript --local > types/database.types.ts"
+    "supabase:types": "npx supabase gen types typescript --local > types/database.types.ts",
+    "supabase:start": "npx supabase start",
+    "test:db": "npx supabase test db"
   },
   "dependencies": {
     "@iconify/json": "^2.2.282",

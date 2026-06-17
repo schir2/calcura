@@ -1,10 +1,7 @@
 import type {Income} from "~/types/Income";
+import type {Enums, TablesInsert, TablesUpdate} from '~/types/database.types'
 
-export enum RothIraContributionStrategy {
-    Fixed = 'fixed',
-    PercentageOfIncome = 'percentage_of_income',
-    Max = 'max'
-}
+export type RothIraContributionStrategy = Enums<'roth_ira_contribution_strategy'>
 
 export type RothIra = {
     id: number;
@@ -30,7 +27,10 @@ export const rothIraDefaults: RothIraPartial = {
     name: 'Roth IRA',
     growth_rate: 6,
     initial_balance: 0,
-    contribution_strategy: RothIraContributionStrategy.Fixed,
+    contribution_strategy: 'fixed',
     contribution_percentage: 0,
     contribution_fixed_amount: 0,
 }
+
+export type RothIraInsert = TablesInsert<'roth_ira'>
+export type RothIraUpdate = TablesUpdate<'roth_ira'>

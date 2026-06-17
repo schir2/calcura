@@ -1,8 +1,8 @@
-import {
+import type {
     GrowthApplicationStrategy,
     IncomeTaxStrategy,
     InsufficientFundsStrategy,
-    type Plan,
+    Plan,
     RetirementStrategy
 } from "~/types/Plan";
 
@@ -27,32 +27,23 @@ export const MIN_GROWTH_RATE = 0
 export const MAX_GROWTH_RATE = 200;
 
 export const DEFAULT_AGE: number = 30;
-export const DEFAULT_ALLOW_NEGATIVE_DISPOSABLE_INCOME: InsufficientFundsStrategy = InsufficientFundsStrategy.None
-export const DEFAULT_GROWTH_APPLICATION_STRATEGY: GrowthApplicationStrategy = GrowthApplicationStrategy.Start
+export const DEFAULT_ALLOW_NEGATIVE_DISPOSABLE_INCOME: InsufficientFundsStrategy = 'none'
+export const DEFAULT_GROWTH_APPLICATION_STRATEGY: GrowthApplicationStrategy = 'start'
 
 export const planDefaults: Partial<Plan> = {
     name: "Blank Plan",
     age: 30,
     year: new Date().getFullYear(),
+    growth_rate: 6.0,
     inflation_rate: 3,
-    insufficient_funds_strategy: InsufficientFundsStrategy.None,
-    growth_application_strategy: GrowthApplicationStrategy.Start,
-    tax_strategy: IncomeTaxStrategy.Simple,
+    insufficient_funds_strategy: 'none',
+    growth_application_strategy: 'start',
+    tax_strategy: 'simple',
     tax_rate: 2.5,
-    growthRate: 6.0,
     life_expectancy: 85,
-    retirement_strategy: RetirementStrategy.Age,
+    retirement_strategy: 'age',
     retirement_withdrawal_rate: 4,
     retirement_income_goal: 50000,
     retirement_age: 65,
     retirement_savings_amount: 200000,
-    cash_reserves: [],
-    incomes: [],
-    expenses: [],
-    debts: [],
-    tax_deferreds: [],
-    brokerages: [],
-    iras: [],
-    roth_iras: [],
-    command_sequences: [],
 };

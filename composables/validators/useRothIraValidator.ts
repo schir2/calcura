@@ -1,11 +1,10 @@
 import type {FormItemRule, FormRules} from "naive-ui";
 import type {RothIra} from "~/types/RothIra";
-import {RothIraContributionStrategy} from "~/types/RothIra";
 
 export function useRothIraValidation(modelRef: Ref<Partial<RothIra>>) {
 
     function validateContributionFixedAmount(rule: FormItemRule, value: number | undefined) {
-        if (modelRef.value.contribution_strategy === RothIraContributionStrategy.Fixed) {
+        if (modelRef.value.contribution_strategy === 'fixed') {
             if (value === null || value === undefined) {
                 return new Error("Fixed contribution amount is required when 'Fixed Payment' strategy is selected.");
             }
@@ -14,7 +13,7 @@ export function useRothIraValidation(modelRef: Ref<Partial<RothIra>>) {
     }
 
     function validateContributionPercentage(rule: FormItemRule, value: number | undefined) {
-        if (modelRef.value.contribution_strategy === RothIraContributionStrategy.PercentageOfIncome) {
+        if (modelRef.value.contribution_strategy === 'percentage_of_income') {
             if (value === null || value === undefined) {
                 return new Error("Contribution percentage is required when 'Percentage of Income' strategy is selected.");
             }

@@ -1,12 +1,12 @@
-import {type Ira, IraContributionStrategy} from '~/types/Ira';
+import type {Ira} from '~/types/Ira';
 import {assertDefined, calculateGrowthAmount} from "~/utils";
 import type IraState from "~/types/IraState";
 import BaseManager from "~/models/common/BaseManager";
 import type {IncomeManager} from "~/models/income/IncomeManager";
 import {FundType} from "~/models/plan/PlanManager";
-import {ContributionType} from "~/models/common";
 import eventBus from "~/services/eventBus";
 import {IRA_CONTRIBUTION_LIMIT_2024} from "~/constants/IraIConstants";
+import {ContributionType} from "~/types/ContributionType";
 
 export class IraIManager extends BaseManager<Ira, IraState> {
 
@@ -84,10 +84,10 @@ export class IraIManager extends BaseManager<Ira, IraState> {
 export function calculateIraContribution(iraConfig: Ira, incomeAmount?: number, iraLimit: number = IRA_CONTRIBUTION_LIMIT_2024): number {
     let contribution = 0
     switch (iraConfig.contribution_strategy) {
-        case IraContributionStrategy.Fixed:
+        case 'fixed':
             contribution = iraConfig.contribution_fixed_amount
             break
-        case IraContributionStrategy.PercentageOfIncome:
+        case 'percentage_of_income':
             if (incomeAmount === undefined) {
 
                 eventBus.emit('warning', {
@@ -98,7 +98,7 @@ export function calculateIraContribution(iraConfig: Ira, incomeAmount?: number, 
             }
             contribution = incomeAmount * iraConfig.contribution_percentage / 100
             break
-        case IraContributionStrategy.Max:
+        case 'max':
             contribution = iraLimit
             break
     }

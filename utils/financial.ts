@@ -1,7 +1,5 @@
-import type {GrowthApplicationStrategy} from "~/types/Plan";
-import {InsufficientFundsStrategy} from "~/types/Plan";
-
-import {Frequency} from "~/types/Frequency";
+import type {GrowthApplicationStrategy, InsufficientFundsStrategy} from "~/types/Plan";
+import type {Frequency} from "~/types/Frequency";
 
 export function calculateCompoundInterest(principal: number, interestRate: number, numberOfInterestApplicationsPerPeriod: number = 1, numberOfPeriods: number): number {
     return principal * (1 + (interestRate / numberOfInterestApplicationsPerPeriod)) ** (numberOfInterestApplicationsPerPeriod * numberOfPeriods)
@@ -29,11 +27,11 @@ export function adjustForInsufficientFunds(
     availableFunds: number, insufficientFundsStrategy: InsufficientFundsStrategy, minimum: number = 0,
 ): number {
     switch (insufficientFundsStrategy) {
-        case InsufficientFundsStrategy.None:
+        case 'none':
             return Math.max(Math.min(availableFunds, requestedAmount),0);
-        case InsufficientFundsStrategy.MinimumOnly:
+        case 'minimum_only':
             return Math.max(Math.min(availableFunds, requestedAmount), minimum);
-        case InsufficientFundsStrategy.Full:
+        case 'full':
             return requestedAmount;
         default:
             throw new Error(`Invalid insufficientFundsStrategy value: ${insufficientFundsStrategy}`);
@@ -42,15 +40,15 @@ export function adjustForInsufficientFunds(
 
 export function getAnnualAmount(amount: number, frequency: Frequency): number {
     switch (frequency) {
-        case Frequency.Monthly:
+        case 'monthly':
             return amount * 12
-        case Frequency.Annually:
+        case 'annual':
             return amount
-        case Frequency.Weekly:
+        case 'weekly':
             return amount * 52
-        case Frequency.Quarterly:
+        case 'quarterly':
             return amount * 4
-        case Frequency.Biweekly:
+        case 'biweekly':
             return amount * 26
         default:
             throw new Error(`Invalid frequency value: ${frequency}`);

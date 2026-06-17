@@ -1,4 +1,5 @@
-import {Frequency} from "~/types/Frequency";
+import type {Frequency} from "~/types/Frequency";
+import type {TablesInsert, TablesUpdate} from '~/types/database.types'
 
 export type IncomeType = 'ordinary'
 
@@ -16,8 +17,11 @@ export type IncomePartial = Partial<Omit<Income, 'id'>>
 
 export const incomeDefaults: IncomePartial = {
     name: "Income",
-    frequency: Frequency.Annually,
+    frequency: 'annual',
     gross_income: 0,
     growth_rate: 0,
     income_type: "ordinary",
 }
+
+export type IncomeInsert = TablesInsert<'income'>
+export type IncomeUpdate = TablesUpdate<'income'>

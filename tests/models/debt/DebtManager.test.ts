@@ -1,17 +1,8 @@
 import {beforeEach, describe, expect, it} from "vitest";
 import DebtManager from "~/models/debt/DebtManager";
 import type {Debt} from "~/types/Debt";
-import {DebtPaymentStrategy} from "~/types/Debt";
 import PlanManager from "~/models/plan/PlanManager";
-import {
-    GrowthApplicationStrategy,
-    IncomeTaxStrategy,
-    InsufficientFundsStrategy,
-    type Plan,
-    RetirementStrategy
-} from "~/types/Plan";
-
-import {Frequency} from "~/types/Frequency";
+import type {Plan} from "~/types/Plan";
 
 const planConfig: Plan = {
     id: 1,
@@ -19,12 +10,12 @@ const planConfig: Plan = {
     age: 30,
     year: new Date().getFullYear(),
     inflation_rate: 3,
-    insufficient_funds_strategy: InsufficientFundsStrategy.None,
-    growth_application_strategy: GrowthApplicationStrategy.Start,
-    tax_strategy: IncomeTaxStrategy.Simple,
+    insufficient_funds_strategy: 'none',
+    growth_application_strategy: 'start',
+    tax_strategy: 'simple',
     tax_rate: 30,
     life_expectancy: 85,
-    retirement_strategy: RetirementStrategy.Age,
+    retirement_strategy: 'age',
     retirement_withdrawal_rate: 4,
     retirement_income_goal: 50000,
     retirement_age: 65,
@@ -38,7 +29,7 @@ const planConfig: Plan = {
             gross_income: 100_000,
             growth_rate: 0,
             income_type: "ordinary",
-            frequency: Frequency.Annually
+            frequency: 'annual'
         },
         {
             id: 1,
@@ -46,7 +37,7 @@ const planConfig: Plan = {
             gross_income: 50_000,
             growth_rate: 0,
             income_type: "ordinary",
-            frequency: Frequency.Annually
+            frequency: 'annual'
         }
     ],
     expenses: [],
@@ -64,10 +55,10 @@ const debt: Debt = {
     principal: 1000,
     interest_rate: 5,
     payment_minimum: 50,
-    payment_strategy: DebtPaymentStrategy.Fixed,
+    payment_strategy: 'fixed',
     payment_fixed_amount: 100,
     payment_percentage: 20,
-    frequency: Frequency.Annually
+    frequency: 'annual'
 
 };
 
@@ -97,7 +88,7 @@ describe("DebtManager", () => {
         it("should calculate fixed payment correctly", () => {
             const debtManager = new DebtManager(planManager, {
                 ...debt,
-                payment_strategy: DebtPaymentStrategy.Fixed,
+                payment_strategy: 'fixed',
                 principal: 1000,
                 payment_percentage: 10,
             })
@@ -109,7 +100,7 @@ describe("DebtManager", () => {
         it("should calculate percentage payment correctly", () => {
             const debtManager = new DebtManager(planManager, {
                 ...debt,
-                payment_strategy: DebtPaymentStrategy.PercentageOfDebt,
+                payment_strategy: 'percentage_of_debt',
                 principal: 1000,
                 payment_percentage: 10,
             })
@@ -121,7 +112,7 @@ describe("DebtManager", () => {
         it("should calculate max payment correctly", () => {
             const debtManager = new DebtManager(planManager, {
                 ...debt,
-                payment_strategy: DebtPaymentStrategy.MaximumPayment,
+                payment_strategy: 'maximum_payment',
                 principal: 1000,
             })
             const debtState = debtManager.getCurrentState();
@@ -132,7 +123,7 @@ describe("DebtManager", () => {
         it("should calculate minimum payment correctly", () => {
             const debtManager = new DebtManager(planManager, {
                 ...debt,
-                payment_strategy: DebtPaymentStrategy.MinimumPayment,
+                payment_strategy: 'minimum_payment',
                 principal: 2000,
                 payment_minimum: 100,
             })

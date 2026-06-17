@@ -1,21 +1,8 @@
 import {beforeEach, describe, expect, it} from "vitest";
 import PlanManager, {FundType} from "~/models/plan/PlanManager";
-import {
-    GrowthApplicationStrategy,
-    IncomeTaxStrategy,
-    InsufficientFundsStrategy,
-    type Plan,
-    RetirementStrategy
-} from "~/types/Plan";
-import {ContributionType} from "~/models/common";
-import {EmployerContributionStrategy, TaxDeferredContributionStrategy} from "~/types/TaxDeferred";
-import {IraContributionStrategy} from "~/types/Ira";
-import {RothIraContributionStrategy} from "~/types/RothIra";
-import {BrokerageContributionStrategy} from "~/types/Brokerage";
-import {ExpenseType} from "~/types/Expense";
-import {DebtPaymentStrategy} from "~/types/Debt";
-import {CashReserveStrategy} from "~/types/CashReserve";
-import {Frequency} from "~/types/Frequency";
+import type {Plan} from "~/types/Plan";
+
+import {ContributionType} from "~/types/ContributionType";
 
 describe("PlanManager", () => {
     let planConfig: Plan;
@@ -28,12 +15,12 @@ describe("PlanManager", () => {
             age: 30,
             year: 2025,
             inflation_rate: 3,
-            insufficient_funds_strategy: InsufficientFundsStrategy.None,
-            growth_application_strategy: GrowthApplicationStrategy.Start,
-            tax_strategy: IncomeTaxStrategy.Simple,
+            insufficient_funds_strategy: 'none',
+            growth_application_strategy: 'start',
+            tax_strategy: 'simple',
             tax_rate: 30,
             life_expectancy: 85,
-            retirement_strategy: RetirementStrategy.Age,
+            retirement_strategy: 'age',
             retirement_withdrawal_rate: 4,
             retirement_income_goal: 50000,
             retirement_age: 65,
@@ -43,7 +30,7 @@ describe("PlanManager", () => {
                 {
                     id: 10,
                     name: 'Cash Reserve',
-                    contribution_strategy: CashReserveStrategy.Fixed,
+                    contribution_strategy: 'fixed',
                     reserve_months: 0,
                     reserve_amount: 10_000,
                     initial_amount: 15_000,
@@ -56,7 +43,7 @@ describe("PlanManager", () => {
                     gross_income: 100000,
                     growth_rate: 0,
                     income_type: "ordinary",
-                    frequency: Frequency.Annually
+                    frequency: 'annual'
                 },
                 {
                     id: 2,
@@ -64,16 +51,16 @@ describe("PlanManager", () => {
                     gross_income: 50000,
                     growth_rate: 0,
                     income_type: "ordinary",
-                    frequency: Frequency.Annually
+                    frequency: 'annual'
                 }
             ],
             expenses: [
                 {
                     id: 1,
                     name: 'Rent',
-                    frequency: Frequency.Monthly,
+                    frequency: 'monthly',
                     amount: 1_800,
-                    expense_type: ExpenseType.fixed,
+                    expense_type: 'fixed',
                     growth_rate: 0,
                     is_essential: true,
                     is_tax_deductible: false,
@@ -82,9 +69,9 @@ describe("PlanManager", () => {
                 {
                     id: 2,
                     name: 'Gym',
-                    frequency: Frequency.Monthly,
+                    frequency: 'monthly',
                     amount: 70,
-                    expense_type: ExpenseType.fixed,
+                    expense_type: 'fixed',
                     growth_rate: 0,
                     is_essential: false,
                     is_tax_deductible: false,
@@ -93,9 +80,9 @@ describe("PlanManager", () => {
                 {
                     id: 3,
                     name: 'Climbing',
-                    frequency: Frequency.Annually,
+                    frequency: 'annual',
                     amount: 1450,
-                    expense_type: ExpenseType.fixed,
+                    expense_type: 'fixed',
                     growth_rate: 0,
                     is_essential: false,
                     is_tax_deductible: false,
@@ -109,9 +96,9 @@ describe("PlanManager", () => {
                     principal: 100_000,
                     payment_fixed_amount: 600,
                     payment_minimum: 600,
-                    payment_strategy: DebtPaymentStrategy.MinimumPayment,
+                    payment_strategy: 'minimum_payment',
                     payment_percentage: 0,
-                    frequency: Frequency.Annually,
+                    frequency: 'annual',
                 }
             ],
             tax_deferreds: [
@@ -120,10 +107,10 @@ describe("PlanManager", () => {
                     name: 'Test TaxDeferred ',
                     growth_rate: 6,
                     initial_balance: 10_000,
-                    elective_contribution_strategy: TaxDeferredContributionStrategy.PercentageOfIncome,
+                    elective_contribution_strategy: 'percentage_of_income',
                     elective_contribution_percentage: 6,
                     elective_contribution_fixed_amount: 0,
-                    employer_contribution_strategy: EmployerContributionStrategy.PercentageOfContribution,
+                    employer_contribution_strategy: 'percentage_of_contribution',
                     employer_contribution_match_percentage: 100,
                     employer_contribution_fixed_amount: 0,
                     employer_match_percentage_limit: 3,
@@ -134,7 +121,7 @@ describe("PlanManager", () => {
                         gross_income: 100_000,
                         growth_rate: 0,
                         income_type: "ordinary",
-                        frequency: Frequency.Annually
+                        frequency: 'annual'
                     }
 
                 }
@@ -145,7 +132,7 @@ describe("PlanManager", () => {
                     name: 'Test Brokerage ',
                     growth_rate: 6,
                     initial_balance: 10_000,
-                    contribution_strategy: BrokerageContributionStrategy.Fixed,
+                    contribution_strategy: 'fixed',
                     contribution_percentage: 0,
                     contribution_fixed_amount: 0,
 
@@ -157,7 +144,7 @@ describe("PlanManager", () => {
                     name: 'Test Brokerage ',
                     growth_rate: 6,
                     initial_balance: 10_000,
-                    contribution_strategy: IraContributionStrategy.Fixed,
+                    contribution_strategy: 'fixed',
                     contribution_percentage: 0,
                     contribution_fixed_amount: 3_500,
                     income:
@@ -167,7 +154,7 @@ describe("PlanManager", () => {
                             gross_income: 100_000,
                             growth_rate: 0,
                             income_type: "ordinary",
-                            frequency: Frequency.Annually
+                            frequency: 'annual'
                         },
                 }],
             roth_iras: [
@@ -176,7 +163,7 @@ describe("PlanManager", () => {
                     name: 'Test Brokerage ',
                     growth_rate: 6,
                     initial_balance: 10_000,
-                    contribution_strategy: RothIraContributionStrategy.Fixed,
+                    contribution_strategy: 'fixed',
                     contribution_percentage: 0,
                     contribution_fixed_amount: 3_500,
                     income:
@@ -186,7 +173,7 @@ describe("PlanManager", () => {
                             gross_income: 100_000,
                             growth_rate: 0,
                             income_type: "ordinary",
-                            frequency: Frequency.Annually
+                            frequency: 'annual'
                         },
                 }],
             command_sequences: []
@@ -249,7 +236,7 @@ describe("PlanManager", () => {
         it("should allow minimum negative funds for taxable capital", () => {
             const currentState = planManager.getCurrentState();
             currentState.taxable_capital = 1_000;
-            planManager.getConfig().insufficient_funds_strategy = InsufficientFundsStrategy.MinimumOnly;
+            planManager.getConfig().insufficient_funds_strategy = 'minimum_only';
 
             expect(planManager.requestFunds(2_000, FundType.Taxable, 1_000)).toBe(1_000);
             expect(planManager.requestFunds(2_000, FundType.Taxable, 2_000)).toBe(2_000);
@@ -258,7 +245,7 @@ describe("PlanManager", () => {
         it("should allow full negative funds for taxable capital", () => {
             const currentState = planManager.getCurrentState();
             currentState.taxable_capital = 500;
-            planManager.getConfig().insufficient_funds_strategy = InsufficientFundsStrategy.Full;
+            planManager.getConfig().insufficient_funds_strategy = 'full';
 
             expect(planManager.requestFunds(1_000, FundType.Taxable)).toBe(1_000);
             expect(planManager.requestFunds(2_000, FundType.Taxable)).toBe(2_000);
@@ -267,7 +254,7 @@ describe("PlanManager", () => {
         it("should handle minimum parameter correctly with InsufficientFundsStrategy.None", () => {
             const currentState = planManager.getCurrentState();
             currentState.taxable_capital = 1000;
-            planManager.getConfig().insufficient_funds_strategy = InsufficientFundsStrategy.None;
+            planManager.getConfig().insufficient_funds_strategy = 'none';
 
             expect(planManager.requestFunds(2000, FundType.Taxable, -500)).toBe(1000); // Minimum ignored
         });

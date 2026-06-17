@@ -1,11 +1,7 @@
-import {Frequency} from "~/types/Frequency";
+import type {Enums, TablesInsert, TablesUpdate} from '~/types/database.types'
+import type {Frequency} from "~/types/Frequency";
 
-export enum DebtPaymentStrategy {
-    Fixed = 'fixed',
-    MinimumPayment = 'minimum_payment',
-    MaximumPayment = 'maximum_payment',
-    PercentageOfDebt = 'percentage_of_debt',
-}
+export type DebtPaymentStrategy = Enums<'debt_payment_strategy'>
 
 
 export type Debt = {
@@ -30,8 +26,11 @@ export const debtDefaults: DebtPartial = {
     principal: 0,
     interest_rate: 0,
     payment_minimum: 0,
-    payment_strategy: DebtPaymentStrategy.Fixed,
+    payment_strategy: 'fixed',
     payment_fixed_amount: 0,
     payment_percentage: 0,
-    frequency: Frequency.Monthly
+    frequency: 'monthly'
 }
+
+export type DebtInsert = TablesInsert<'debt'>
+export type DebtUpdate = TablesUpdate<'debt'>

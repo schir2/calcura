@@ -1,3 +1,5 @@
+import type {TablesInsert, TablesUpdate} from '~/types/database.types'
+
 export type UserProfile = {
     id: number;
     user_id: string;
@@ -9,3 +11,6 @@ export type UserProfile = {
     created_at: string;
     edited_at: string;
 }
+
+export type UserProfileInsert = TablesInsert<'profiles'>
+export type UserProfileUpdate = TablesUpdate<'profiles'>

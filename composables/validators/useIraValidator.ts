@@ -9,19 +9,19 @@ export function useIraValidation(modelRef: Ref<Partial<Ira>>) {
             {min: 3, message: " name must be at least 3 characters long.", trigger: ["blur", "change"]},
             {max: 32, message: " name must be at most 32 characters long.", trigger: ["blur", "change"]}
         ],
-        growthRate: [
+        growth_rate: [
             {required: true, type: "number", message: "Growth rate is required", trigger: ["blur", "change"]},
             {type: "number", min: 0, message: "Growth rate must be at least 0%", trigger: ["blur", "change"]},
             {type: "number", max: 100, message: "Growth rate must be at most 100%", trigger: ["blur", "change"]}
         ],
-        initialBalance: [
+        initial_balance: [
             {required: true, type: "number", message: "Balance is required", trigger: ["blur", "change"]},
             {type: "number", min: 0, message: "Balance must be at least $0.", trigger: ["blur", "change"]}
         ],
-        contributionStrategy: [
+        contribution_strategy: [
             {required: true, message: "Contribution strategy is required", trigger: ["blur", "change"]}
         ],
-        contributionPercentage: [
+        contribution_percentage: [
             {
                 required: true,
                 type: "number",
@@ -41,7 +41,7 @@ export function useIraValidation(modelRef: Ref<Partial<Ira>>) {
                 trigger: ["blur", "change"]
             }
         ],
-        contributionFixedAmount: [
+        contribution_fixed_amount: [
             {
                 required: true,
                 type: "number",

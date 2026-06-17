@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import {type CashReserve, cashReserveDefaults, CashReserveStrategy} from "~/types/CashReserve";
+import {type CashReserve, cashReserveDefaults} from "~/types/CashReserve";
 
 type Props = {
   initialValues?: Partial<CashReserve>;
@@ -53,7 +53,7 @@ function parse(input: string) {
           </n-radio-group>
         </n-form-item>
 
-        <n-form-item :required="modelRef.cash_reserve_strategy===CashReserveStrategy.Fixed" path="reserve_amount"
+        <n-form-item :required="modelRef.cash_reserve_strategy==='fixed'" path="reserve_amount"
                      label="Reserve Amount">
           <n-input-number
               v-model:value="modelRef.reserve_amount"
@@ -63,7 +63,7 @@ function parse(input: string) {
               placeholder="Enter reserve amount"/>
         </n-form-item>
 
-        <n-form-item :required="modelRef.cash_reserve_strategy===CashReserveStrategy.Variable" path="reserve_months"
+        <n-form-item :required="modelRef.cash_reserve_strategy==='variable'" path="reserve_months"
                      label="Reserve Months">
           <n-input-number v-model:value="modelRef.reserve_months" :precision="2"
                           placeholder="Enter reserve months"/>

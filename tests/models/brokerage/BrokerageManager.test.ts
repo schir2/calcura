@@ -1,17 +1,8 @@
-﻿import {beforeEach, describe, expect, it} from "vitest";
+import {beforeEach, describe, expect, it} from "vitest";
 import {BrokerageManager} from "~/models/brokerage/BrokerageManager";
 import type {Brokerage} from "~/types/Brokerage";
-import {BrokerageContributionStrategy} from "~/types/Brokerage";
 import PlanManager from "~/models/plan/PlanManager";
-import {
-    GrowthApplicationStrategy,
-    IncomeTaxStrategy,
-    InsufficientFundsStrategy,
-    type Plan,
-    RetirementStrategy
-} from "~/types/Plan";
-
-import {Frequency} from "~/types/Frequency";
+import type {Plan} from "~/types/Plan";
 
 const planConfig: Plan = {
     id: 1,
@@ -19,12 +10,12 @@ const planConfig: Plan = {
     age: 30,
     year: new Date().getFullYear(),
     inflation_rate: 3,
-    insufficient_funds_strategy: InsufficientFundsStrategy.None,
-    growth_application_strategy: GrowthApplicationStrategy.Start,
-    tax_strategy: IncomeTaxStrategy.Simple,
+    insufficient_funds_strategy: 'none',
+    growth_application_strategy: 'start',
+    tax_strategy: 'simple',
     tax_rate: 30,
     life_expectancy: 85,
-    retirement_strategy: RetirementStrategy.Age,
+    retirement_strategy: 'age',
     retirement_withdrawal_rate: 4,
     retirement_income_goal: 50000,
     retirement_age: 65,
@@ -38,7 +29,7 @@ const planConfig: Plan = {
             gross_income: 100_000,
             growth_rate: 0,
             income_type: "ordinary",
-            frequency: Frequency.Annually
+            frequency: 'annual'
         },
         {
             id: 1,
@@ -46,7 +37,7 @@ const planConfig: Plan = {
             gross_income: 50_000,
             growth_rate: 0,
             income_type: "ordinary",
-            frequency: Frequency.Annually
+            frequency: 'annual'
         }
     ],
     expenses: [],
@@ -63,7 +54,7 @@ const brokerage: Brokerage = {
     name: 'Test Brokerage ',
     growth_rate: 6,
     initial_balance: 10_000,
-    contribution_strategy: BrokerageContributionStrategy.Fixed,
+    contribution_strategy: 'fixed',
     contribution_percentage: 0,
     contribution_fixed_amount: 0,
 
@@ -95,7 +86,7 @@ describe("BrokerageManager", () => {
         it("should calculate fixed contribution correctly", () => {
             const brokerageManager = new BrokerageManager(planManager, {
                 ...brokerage,
-                contribution_strategy: BrokerageContributionStrategy.Fixed,
+                contribution_strategy: 'fixed',
                 contribution_fixed_amount: 100,
             })
             const contribution = brokerageManager.calculateContribution();
@@ -105,7 +96,7 @@ describe("BrokerageManager", () => {
         it("should calculate percentage income correctly", () => {
             const brokerageManager = new BrokerageManager(planManager, {
                 ...brokerage,
-                contribution_strategy: BrokerageContributionStrategy.PercentageOfIncome,
+                contribution_strategy: 'percentage_of_income',
                 contribution_percentage: 10,
             })
             const contribution = brokerageManager.calculateContribution();
@@ -115,7 +106,7 @@ describe("BrokerageManager", () => {
         it("should calculate max contribution correctly", () => {
             const brokerageManager = new BrokerageManager(planManager, {
                 ...brokerage,
-                contribution_strategy: BrokerageContributionStrategy.Max,
+                contribution_strategy: 'max',
             })
             const contribution = brokerageManager.calculateContribution();
             expect(contribution).toBe(105_000);
@@ -131,7 +122,7 @@ describe("BrokerageManager", () => {
                 contribution_fixed_amount: 1_000,
                 growth_rate: 10
             }
-            planManager = new PlanManager({...planConfig, growth_application_strategy: GrowthApplicationStrategy.Start, brokerages: [brokerageConfig]})
+            planManager = new PlanManager({...planConfig, growth_application_strategy: 'start', brokerages: [brokerageConfig]})
             const brokerageManager = new BrokerageManager(planManager, brokerageConfig)
             brokerageManager.process();
             const planState = brokerageManager.orchestrator.getCurrentState();
@@ -159,7 +150,7 @@ describe("BrokerageManager", () => {
                 contribution_fixed_amount: 1_000,
                 growth_rate: 10
             }
-            planManager = new PlanManager({...planConfig, growth_application_strategy: GrowthApplicationStrategy.End, brokerages: [brokerageConfig]})
+            planManager = new PlanManager({...planConfig, growth_application_strategy: 'end', brokerages: [brokerageConfig]})
             const brokerageManager = new BrokerageManager(planManager, brokerageConfig)
             brokerageManager.process();
             const planState = brokerageManager.orchestrator.getCurrentState();
@@ -201,7 +192,7 @@ describe("BrokerageManager", () => {
                 contribution_fixed_amount: 1_000,
                 growth_rate: 10
             }
-            planManager = new PlanManager({...planConfig, growth_application_strategy: GrowthApplicationStrategy.Start, brokerages: [brokerageConfig]})
+            planManager = new PlanManager({...planConfig, growth_application_strategy: 'start', brokerages: [brokerageConfig]})
             const brokerageManager = new BrokerageManager(planManager, brokerageConfig)
             brokerageManager.process();
             const brokerageState = brokerageManager.getCurrentState();

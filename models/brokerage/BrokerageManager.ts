@@ -1,9 +1,10 @@
-import {type Brokerage, BrokerageContributionStrategy} from '~/types/Brokerage';
+import type {Brokerage} from '~/types/Brokerage';
 import {assertDefined, calculateGrowthAmount} from "~/utils";
 import type BrokerageState from "~/types/BrokerageState";
 import BaseManager from "~/models/common/BaseManager";
 import {FundType} from "~/models/plan/PlanManager";
-import {ContributionType} from "~/models/common";
+
+import {ContributionType} from "~/types/ContributionType";
 
 export class BrokerageManager extends BaseManager<Brokerage, BrokerageState> {
 
@@ -72,13 +73,13 @@ export class BrokerageManager extends BaseManager<Brokerage, BrokerageState> {
 export function calculateBrokerageContribution(brokerageConfig: Brokerage, grossIncome: number, taxedCapital: number): number {
     let contribution = 0
     switch (brokerageConfig.contribution_strategy) {
-        case BrokerageContributionStrategy.Fixed:
+        case 'fixed':
             contribution = brokerageConfig.contribution_fixed_amount
             break
-        case BrokerageContributionStrategy.PercentageOfIncome:
+        case 'percentage_of_income':
             contribution = grossIncome * (brokerageConfig.contribution_percentage / 100)
             break
-        case BrokerageContributionStrategy.Max:
+        case 'max':
             contribution = taxedCapital
             break
     }

@@ -1,7 +1,6 @@
 import BaseManager from "~/models/common/BaseManager";
 import type {Expense} from "~/types/Expense";
 import type ExpenseState from "~/types/ExpenseState";
-import {Frequency} from "~/types/Frequency";
 
 export class ExpenseManager extends BaseManager<Expense, ExpenseState> {
     protected createInitialState(): ExpenseState {
@@ -44,15 +43,15 @@ export class ExpenseManager extends BaseManager<Expense, ExpenseState> {
 
     private _calculatePayment(baseAmount: number): number {
         switch (this.config.frequency) {
-            case Frequency.Annually:
+            case 'annual':
                 return baseAmount
-            case Frequency.Monthly:
+            case 'monthly':
                 return baseAmount * 12
-            case Frequency.Quarterly:
+            case 'quarterly':
                 return baseAmount * 4
-            case Frequency.Biweekly:
+            case 'biweekly':
                 return baseAmount * 26
-            case Frequency.Weekly:
+            case 'weekly':
                 return baseAmount * 52
         }
     }

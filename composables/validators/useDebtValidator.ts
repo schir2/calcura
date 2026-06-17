@@ -1,6 +1,5 @@
 import type {FormItemRule, FormRules} from "naive-ui";
 import type {Debt} from "~/types/Debt";
-import {DebtPaymentStrategy} from "~/types/Debt";
 import {
     MAX_DEBT_NAME_LENGTH,
     MAX_INTEREST_RATE,
@@ -12,7 +11,7 @@ import {
 
 export function useDebtValidation(modelRef: Ref<Partial<Debt>>) {
     function validatePaymentFixedAmount(rule: FormItemRule, value: number | undefined) {
-        if (modelRef.value.payment_strategy === DebtPaymentStrategy.Fixed) {
+        if (modelRef.value.payment_strategy === 'fixed') {
             if (value === null || value === undefined) {
                 return new Error("Fixed payment amount is required when 'Fixed Payment' strategy is selected.");
             }
@@ -21,7 +20,7 @@ export function useDebtValidation(modelRef: Ref<Partial<Debt>>) {
     }
 
     function validatePaymentPercentage(rule: FormItemRule, value: number | undefined) {
-        if (modelRef.value.payment_strategy === DebtPaymentStrategy.PercentageOfDebt) {
+        if (modelRef.value.payment_strategy === 'percentage_of_debt') {
             if (value === null || value === undefined) {
                 return new Error("Payment percentage is required when 'Percentage of Debt' strategy is selected.");
             }
@@ -30,7 +29,7 @@ export function useDebtValidation(modelRef: Ref<Partial<Debt>>) {
     }
 
     function validatePaymentMinimum(rule: FormItemRule, value: number | undefined) {
-        if (modelRef.value.payment_strategy === DebtPaymentStrategy.MinimumPayment){
+        if (modelRef.value.payment_strategy === 'minimum_payment') {
             if (value === null || value === undefined) {
                 return new Error("Fixed payment amount is required if Fixed Payment Strategy is selected")
             }

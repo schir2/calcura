@@ -1,16 +1,7 @@
 ﻿import type {Plan} from "~/types/Plan";
-import {
-    GrowthApplicationStrategy,
-    IncomeTaxStrategy,
-    InsufficientFundsStrategy,
-    RetirementStrategy
-} from "~/types/Plan";
-import {CashReserveStrategy} from "~/types/CashReserve";
 import {beforeEach, describe, expect, it} from "vitest";
 import type {CashReserveManager} from "~/models/cashReserve/CashReserveManager";
 import PlanManager from "~/models/plan/PlanManager";
-import {ExpenseType} from "~/types/Expense";
-import {Frequency} from "~/types/Frequency";
 
 const planConfig: Plan = {
     id: 1,
@@ -19,12 +10,12 @@ const planConfig: Plan = {
     year: new Date().getFullYear(),
     inflation_rate: 3,
     growthRate: 6,
-    insufficient_funds_strategy: InsufficientFundsStrategy.None,
-    growth_application_strategy: GrowthApplicationStrategy.Start,
-    tax_strategy: IncomeTaxStrategy.Simple,
+    insufficient_funds_strategy: 'none',
+    growth_application_strategy: 'start',
+    tax_strategy: 'simple',
     tax_rate: 30,
     life_expectancy: 85,
-    retirement_strategy: RetirementStrategy.Age,
+    retirement_strategy: 'age',
     retirement_withdrawal_rate: 4,
     retirement_income_goal: 50000,
     retirement_age: 65,
@@ -34,7 +25,7 @@ const planConfig: Plan = {
         {
             id: 1,
             name: 'Emergency Funds',
-            contribution_strategy: CashReserveStrategy.Fixed,
+            contribution_strategy: 'fixed',
             reserve_months: 0,
             reserve_amount: 30_000,
             initial_amount: 10_000,
@@ -47,7 +38,7 @@ const planConfig: Plan = {
             gross_income: 100_000,
             growth_rate: 0,
             income_type: "ordinary",
-            frequency: Frequency.Annually
+            frequency: 'annual'
         },
         {
             id: 1,
@@ -55,16 +46,16 @@ const planConfig: Plan = {
             gross_income: 50_000,
             growth_rate: 0,
             income_type: "ordinary",
-            frequency: Frequency.Annually
+            frequency: 'annual'
         }
     ],
     expenses: [
         {
             id: 1,
             name: 'Rent',
-            frequency: Frequency.Monthly,
+            frequency: 'monthly',
             amount: 1_800,
-            expense_type: ExpenseType.fixed,
+            expense_type: 'fixed',
             growth_rate: 0,
             is_essential: true,
             is_tax_deductible: false,
@@ -73,9 +64,9 @@ const planConfig: Plan = {
         {
             id: 2,
             name: 'Gym',
-            frequency: Frequency.Monthly,
+            frequency: 'monthly',
             amount: 70,
-            expense_type: ExpenseType.fixed,
+            expense_type: 'fixed',
             growth_rate: 0,
             is_essential: false,
             is_tax_deductible: false,
@@ -84,9 +75,9 @@ const planConfig: Plan = {
         {
             id: 3,
             name: 'Climbing',
-            frequency: Frequency.Annually,
+            frequency: 'annual',
             amount: 1450,
-            expense_type: ExpenseType.fixed,
+            expense_type: 'fixed',
             growth_rate: 0,
             is_essential: false,
             is_tax_deductible: false,
@@ -128,7 +119,7 @@ describe("CashManager", () => {
                 cash_reserves: [
                     {
                         ...planConfig.cash_reserves[0],
-                        contribution_strategy: CashReserveStrategy.Fixed,
+                        contribution_strategy: 'fixed',
                         initial_amount: 0,
                         reserve_amount: 20_000,
                     }
@@ -145,7 +136,7 @@ describe("CashManager", () => {
                 cash_reserves: [
                     {
                         ...planConfig.cash_reserves[0],
-                        contribution_strategy: CashReserveStrategy.Fixed,
+                        contribution_strategy: 'fixed',
                         initial_amount: 10_000,
                         reserve_amount: 20_000,
                     }
@@ -162,7 +153,7 @@ describe("CashManager", () => {
                 cash_reserves: [
                     {
                         ...planConfig.cash_reserves[0],
-                        contribution_strategy: CashReserveStrategy.Variable,
+                        contribution_strategy: 'variable',
                         initial_amount: 0,
                         reserve_months: 6,
                     }
@@ -179,7 +170,7 @@ describe("CashManager", () => {
                 cash_reserves: [
                     {
                         ...planConfig.cash_reserves[0],
-                        contribution_strategy: CashReserveStrategy.Variable,
+                        contribution_strategy: 'variable',
                         initial_amount: 10_000,
                         reserve_months: 6,
                     }

@@ -1,6 +1,5 @@
 <script lang="ts" setup>
 import {
-  BrokerageContributionStrategy,
   type Brokerage, brokerageDefaults,
   type BrokeragePartial
 } from "~/types/Brokerage";
@@ -98,7 +97,7 @@ export type BrokerageProjection = {
         </section>
         <n-form-item label="Contribution Strategy" path="contributionStrategy">
           <div class="grid grid-cols-3 gap-3 w-full">
-            <CommonRadioCard v-model="modelRef.contribution_strategy" :value="BrokerageContributionStrategy.Fixed"
+            <CommonRadioCard v-model="modelRef.contribution_strategy" :value="'fixed'"
                              title="Fixed">
               <n-form-item label="Fixed Contribution Amount" path="contributionFixedAmount">
                 <n-input-number class="w-full" v-model:value="modelRef.contribution_fixed_amount"
@@ -106,13 +105,13 @@ export type BrokerageProjection = {
               </n-form-item>
             </CommonRadioCard>
             <CommonRadioCard v-model="modelRef.contribution_strategy"
-                             :value="BrokerageContributionStrategy.PercentageOfIncome" title="Percentage of Income">
+                             :value="'percentage_of_income'" title="Percentage of Income">
               <n-form-item label="Contribution Percentage (%)" path="contributionPercentage">
                 <n-input-number class="w-full" v-model:value="modelRef.contribution_percentage"
                                 placeholder="Enter percentage"/>
               </n-form-item>
             </CommonRadioCard>
-            <CommonRadioCard v-model="modelRef.contribution_strategy" :value="BrokerageContributionStrategy.Max"
+            <CommonRadioCard v-model="modelRef.contribution_strategy" :value="'max'"
                              title="Max Out"/>
           </div>
         </n-form-item>

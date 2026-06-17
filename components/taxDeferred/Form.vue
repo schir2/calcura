@@ -1,8 +1,6 @@
 <script lang="ts" setup>
 
 import {
-  EmployerContributionStrategy,
-  TaxDeferredContributionStrategy,
   type TaxDeferred,
   taxDeferredDefaults
 } from "~/types/TaxDeferred";
@@ -131,7 +129,7 @@ const {
         >
           <div class="grid grid-cols-4 gap-3">
             <CommonRadioCard v-model="modelRef.elective_contribution_strategy"
-                             :value="TaxDeferredContributionStrategy.Fixed"
+                             :value="'fixed'"
                              title="Fixed Payment">
               <n-form-item path="elective_contribution_fixed_amount"
                            label="Fixed Contribution Amount"
@@ -167,7 +165,7 @@ const {
               </n-collapse>
             </CommonRadioCard>
             <CommonRadioCard v-model="modelRef.elective_contribution_strategy"
-                             :value="TaxDeferredContributionStrategy.PercentageOfIncome" title="Percentage of Income">
+                             :value="'percentage_of_income'" title="Percentage of Income">
               <n-form-item path="elective_contribution_percentage"
                            label="Contribution Percentage"
               >
@@ -201,7 +199,7 @@ const {
               </n-collapse>
             </CommonRadioCard>
             <CommonRadioCard v-model="modelRef.elective_contribution_strategy"
-                             :value="TaxDeferredContributionStrategy.UntilCompanyMatch" title="Employer Match Max">
+                             :value="'until_company_match'" title="Employer Match Max">
               <n-collapse>
                 <n-collapse-item>
                   <template #arrow>
@@ -227,7 +225,7 @@ const {
               </n-collapse>
             </CommonRadioCard>
             <CommonRadioCard v-model="modelRef.elective_contribution_strategy"
-                             :value="TaxDeferredContributionStrategy.Max"
+                             :value="'max'"
                              title="Maximum">
               <n-collapse>
                 <n-collapse-item>
@@ -260,7 +258,7 @@ const {
                      label="Employer Contribution Strategy"
         >
           <div class="grid grid-cols-3 gap-3">
-            <CommonRadioCard v-model="modelRef.employer_contribution_strategy" :value="EmployerContributionStrategy.Fixed"
+            <CommonRadioCard v-model="modelRef.employer_contribution_strategy" :value="'fixed'"
                              title="Fixed Payment">
               <n-form-item path="employer_contribution_fixed_amount"
                            label="Fixed Contribution Amount"
@@ -296,7 +294,7 @@ const {
               </n-collapse>
             </CommonRadioCard>
             <CommonRadioCard v-model="modelRef.employer_contribution_strategy"
-                             :value="EmployerContributionStrategy.PercentageOfContribution"
+                             :value="'percentage_of_contribution'"
                              title="Percentage of Contribution">
               <p class="grid grid-cols-2 gap-3">
                 <n-form-item path="employer_match_percentage"
@@ -334,7 +332,7 @@ const {
               </n-collapse>
             </CommonRadioCard>
             <CommonRadioCard v-model="modelRef.employer_contribution_strategy"
-                             :value="EmployerContributionStrategy.PercentageOfCompensation"
+                             :value="'percentage_of_compensation'"
                              title="Percentage of Compensation">
               <n-form-item path="employer_contribution_match_percentage"
                            label="Employer Compensation Match Percentage"

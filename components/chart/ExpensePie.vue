@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import {type Expense, ExpenseType} from "~/types/Expense";
+import type {Expense} from "~/types/Expense";
 import {darkTheme} from "naive-ui";
 import {ArcElement, Chart as ChartJS, Legend, Tooltip} from 'chart.js'
 import {Doughnut} from 'vue-chartjs'
@@ -29,13 +29,13 @@ const expenseMap = computed(() => {
 
   for (const expense of expenses) {
     const annualExpense = getAnnualAmount(expense.amount, expense.frequency)
-    if (expense.is_essential && expense.expense_type === ExpenseType.fixed) {
+    if (expense.is_essential && expense.expense_type === 'fixed') {
       expenseMap.essentialFixed += annualExpense
-    } else if (expense.is_essential && expense.expense_type === ExpenseType.variable) {
+    } else if (expense.is_essential && expense.expense_type === 'variable') {
       expenseMap.essentialVariable += annualExpense
-    } else if (!expense.is_essential && expense.expense_type === ExpenseType.fixed) {
+    } else if (!expense.is_essential && expense.expense_type === 'fixed') {
       expenseMap.discretionaryFixed += annualExpense
-    } else if (!expense.is_essential && expense.expense_type === ExpenseType.variable) {
+    } else if (!expense.is_essential && expense.expense_type === 'variable') {
       expenseMap.discretionaryVariable += annualExpense
     }
   }

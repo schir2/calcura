@@ -1,12 +1,12 @@
-import {type RothIra, RothIraContributionStrategy} from '~/types/RothIra';
+import type {RothIra} from '~/types/RothIra';
 import {assertDefined, calculateGrowthAmount} from "~/utils";
 import type RothIraState from "~/types/RothIraState";
 import BaseManager from "~/models/common/BaseManager";
 import type {IncomeManager} from "~/models/income/IncomeManager";
 import {FundType} from "~/models/plan/PlanManager";
-import {ContributionType} from "~/models/common";
 import eventBus from "~/services/eventBus";
 import {IRA_CONTRIBUTION_LIMIT_2024} from "~/constants/IraIConstants";
+import {ContributionType} from "~/types/ContributionType";
 
 export class RothIraManager extends BaseManager<RothIra, RothIraState> {
 
@@ -84,10 +84,10 @@ export class RothIraManager extends BaseManager<RothIra, RothIraState> {
 export function calculateRothIraContribution(rothIraConfig: RothIra, incomeAmount?: number, iraLimit: number = IRA_CONTRIBUTION_LIMIT_2024): number {
     let contribution = 0
     switch (rothIraConfig.contribution_strategy) {
-        case RothIraContributionStrategy.Fixed:
+        case 'fixed':
             contribution = rothIraConfig.contribution_fixed_amount
             break
-        case RothIraContributionStrategy.PercentageOfIncome:
+        case 'percentage_of_income':
             if (incomeAmount === undefined) {
 
                 eventBus.emit('warning', {
@@ -98,7 +98,7 @@ export function calculateRothIraContribution(rothIraConfig: RothIra, incomeAmoun
             }
             contribution = incomeAmount * rothIraConfig.contribution_percentage / 100
             break
-        case RothIraContributionStrategy.Max:
+        case 'max':
             contribution = iraLimit
             break
     }

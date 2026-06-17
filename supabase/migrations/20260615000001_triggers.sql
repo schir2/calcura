@@ -13,13 +13,15 @@
 -- ================================================
 
 CREATE OR REPLACE FUNCTION on_income_insert()
-RETURNS TRIGGER LANGUAGE plpgsql SECURITY DEFINER AS $$
+RETURNS TRIGGER LANGUAGE plpgsql SECURITY DEFINER
+SET search_path = public
+AS $$
 BEGIN
     INSERT INTO command (item_type, item_id, action, creator_id, editor_id)
     VALUES (
         'income'::command_item_type,
         NEW.id,
-        'income',
+        'process',
         COALESCE(NEW.creator_id, auth.uid()),
         COALESCE(NEW.creator_id, auth.uid())
     );
@@ -28,13 +30,15 @@ END;
 $$;
 
 CREATE OR REPLACE FUNCTION on_expense_insert()
-RETURNS TRIGGER LANGUAGE plpgsql SECURITY DEFINER AS $$
+RETURNS TRIGGER LANGUAGE plpgsql SECURITY DEFINER
+SET search_path = public
+AS $$
 BEGIN
     INSERT INTO command (item_type, item_id, action, creator_id, editor_id)
     VALUES (
         'expense'::command_item_type,
         NEW.id,
-        'expense',
+        'process',
         COALESCE(NEW.creator_id, auth.uid()),
         COALESCE(NEW.creator_id, auth.uid())
     );
@@ -43,13 +47,15 @@ END;
 $$;
 
 CREATE OR REPLACE FUNCTION on_debt_insert()
-RETURNS TRIGGER LANGUAGE plpgsql SECURITY DEFINER AS $$
+RETURNS TRIGGER LANGUAGE plpgsql SECURITY DEFINER
+SET search_path = public
+AS $$
 BEGIN
     INSERT INTO command (item_type, item_id, action, creator_id, editor_id)
     VALUES (
         'debt'::command_item_type,
         NEW.id,
-        'debt',
+        'process',
         COALESCE(NEW.creator_id, auth.uid()),
         COALESCE(NEW.creator_id, auth.uid())
     );
@@ -58,13 +64,15 @@ END;
 $$;
 
 CREATE OR REPLACE FUNCTION on_cash_reserve_insert()
-RETURNS TRIGGER LANGUAGE plpgsql SECURITY DEFINER AS $$
+RETURNS TRIGGER LANGUAGE plpgsql SECURITY DEFINER
+SET search_path = public
+AS $$
 BEGIN
     INSERT INTO command (item_type, item_id, action, creator_id, editor_id)
     VALUES (
         'cash_reserve'::command_item_type,
         NEW.id,
-        'cash_reserve',
+        'process',
         COALESCE(NEW.creator_id, auth.uid()),
         COALESCE(NEW.creator_id, auth.uid())
     );
@@ -73,13 +81,15 @@ END;
 $$;
 
 CREATE OR REPLACE FUNCTION on_brokerage_insert()
-RETURNS TRIGGER LANGUAGE plpgsql SECURITY DEFINER AS $$
+RETURNS TRIGGER LANGUAGE plpgsql SECURITY DEFINER
+SET search_path = public
+AS $$
 BEGIN
     INSERT INTO command (item_type, item_id, action, creator_id, editor_id)
     VALUES (
         'brokerage'::command_item_type,
         NEW.id,
-        'brokerage',
+        'process',
         COALESCE(NEW.creator_id, auth.uid()),
         COALESCE(NEW.creator_id, auth.uid())
     );
@@ -88,13 +98,15 @@ END;
 $$;
 
 CREATE OR REPLACE FUNCTION on_ira_insert()
-RETURNS TRIGGER LANGUAGE plpgsql SECURITY DEFINER AS $$
+RETURNS TRIGGER LANGUAGE plpgsql SECURITY DEFINER
+SET search_path = public
+AS $$
 BEGIN
     INSERT INTO command (item_type, item_id, action, creator_id, editor_id)
     VALUES (
         'ira'::command_item_type,
         NEW.id,
-        'ira',
+        'process',
         COALESCE(NEW.creator_id, auth.uid()),
         COALESCE(NEW.creator_id, auth.uid())
     );
@@ -103,13 +115,15 @@ END;
 $$;
 
 CREATE OR REPLACE FUNCTION on_roth_ira_insert()
-RETURNS TRIGGER LANGUAGE plpgsql SECURITY DEFINER AS $$
+RETURNS TRIGGER LANGUAGE plpgsql SECURITY DEFINER
+SET search_path = public
+AS $$
 BEGIN
     INSERT INTO command (item_type, item_id, action, creator_id, editor_id)
     VALUES (
         'roth_ira'::command_item_type,
         NEW.id,
-        'roth_ira',
+        'process',
         COALESCE(NEW.creator_id, auth.uid()),
         COALESCE(NEW.creator_id, auth.uid())
     );
@@ -118,13 +132,15 @@ END;
 $$;
 
 CREATE OR REPLACE FUNCTION on_hsa_insert()
-RETURNS TRIGGER LANGUAGE plpgsql SECURITY DEFINER AS $$
+RETURNS TRIGGER LANGUAGE plpgsql SECURITY DEFINER
+SET search_path = public
+AS $$
 BEGIN
     INSERT INTO command (item_type, item_id, action, creator_id, editor_id)
     VALUES (
         'hsa'::command_item_type,
         NEW.id,
-        'hsa',
+        'process',
         COALESCE(NEW.creator_id, auth.uid()),
         COALESCE(NEW.creator_id, auth.uid())
     );
@@ -133,13 +149,15 @@ END;
 $$;
 
 CREATE OR REPLACE FUNCTION on_tax_deferred_insert()
-RETURNS TRIGGER LANGUAGE plpgsql SECURITY DEFINER AS $$
+RETURNS TRIGGER LANGUAGE plpgsql SECURITY DEFINER
+SET search_path = public
+AS $$
 BEGIN
     INSERT INTO command (item_type, item_id, action, creator_id, editor_id)
     VALUES (
         'tax_deferred'::command_item_type,
         NEW.id,
-        'tax_deferred',
+        'process',
         COALESCE(NEW.creator_id, auth.uid()),
         COALESCE(NEW.creator_id, auth.uid())
     );
@@ -193,7 +211,9 @@ CREATE TRIGGER trg_tax_deferred_insert
 -- ================================================
 
 CREATE OR REPLACE FUNCTION on_income_delete()
-RETURNS TRIGGER LANGUAGE plpgsql SECURITY DEFINER AS $$
+RETURNS TRIGGER LANGUAGE plpgsql SECURITY DEFINER
+SET search_path = public
+AS $$
 BEGIN
     DELETE FROM command WHERE item_type = 'income'::command_item_type AND item_id = OLD.id;
     RETURN OLD;
@@ -201,7 +221,9 @@ END;
 $$;
 
 CREATE OR REPLACE FUNCTION on_expense_delete()
-RETURNS TRIGGER LANGUAGE plpgsql SECURITY DEFINER AS $$
+RETURNS TRIGGER LANGUAGE plpgsql SECURITY DEFINER
+SET search_path = public
+AS $$
 BEGIN
     DELETE FROM command WHERE item_type = 'expense'::command_item_type AND item_id = OLD.id;
     RETURN OLD;
@@ -209,7 +231,9 @@ END;
 $$;
 
 CREATE OR REPLACE FUNCTION on_debt_delete()
-RETURNS TRIGGER LANGUAGE plpgsql SECURITY DEFINER AS $$
+RETURNS TRIGGER LANGUAGE plpgsql SECURITY DEFINER
+SET search_path = public
+AS $$
 BEGIN
     DELETE FROM command WHERE item_type = 'debt'::command_item_type AND item_id = OLD.id;
     RETURN OLD;
@@ -217,7 +241,9 @@ END;
 $$;
 
 CREATE OR REPLACE FUNCTION on_cash_reserve_delete()
-RETURNS TRIGGER LANGUAGE plpgsql SECURITY DEFINER AS $$
+RETURNS TRIGGER LANGUAGE plpgsql SECURITY DEFINER
+SET search_path = public
+AS $$
 BEGIN
     DELETE FROM command WHERE item_type = 'cash_reserve'::command_item_type AND item_id = OLD.id;
     RETURN OLD;
@@ -225,7 +251,9 @@ END;
 $$;
 
 CREATE OR REPLACE FUNCTION on_brokerage_delete()
-RETURNS TRIGGER LANGUAGE plpgsql SECURITY DEFINER AS $$
+RETURNS TRIGGER LANGUAGE plpgsql SECURITY DEFINER
+SET search_path = public
+AS $$
 BEGIN
     DELETE FROM command WHERE item_type = 'brokerage'::command_item_type AND item_id = OLD.id;
     RETURN OLD;
@@ -233,7 +261,9 @@ END;
 $$;
 
 CREATE OR REPLACE FUNCTION on_ira_delete()
-RETURNS TRIGGER LANGUAGE plpgsql SECURITY DEFINER AS $$
+RETURNS TRIGGER LANGUAGE plpgsql SECURITY DEFINER
+SET search_path = public
+AS $$
 BEGIN
     DELETE FROM command WHERE item_type = 'ira'::command_item_type AND item_id = OLD.id;
     RETURN OLD;
@@ -241,7 +271,9 @@ END;
 $$;
 
 CREATE OR REPLACE FUNCTION on_roth_ira_delete()
-RETURNS TRIGGER LANGUAGE plpgsql SECURITY DEFINER AS $$
+RETURNS TRIGGER LANGUAGE plpgsql SECURITY DEFINER
+SET search_path = public
+AS $$
 BEGIN
     DELETE FROM command WHERE item_type = 'roth_ira'::command_item_type AND item_id = OLD.id;
     RETURN OLD;
@@ -249,7 +281,9 @@ END;
 $$;
 
 CREATE OR REPLACE FUNCTION on_hsa_delete()
-RETURNS TRIGGER LANGUAGE plpgsql SECURITY DEFINER AS $$
+RETURNS TRIGGER LANGUAGE plpgsql SECURITY DEFINER
+SET search_path = public
+AS $$
 BEGIN
     DELETE FROM command WHERE item_type = 'hsa'::command_item_type AND item_id = OLD.id;
     RETURN OLD;
@@ -257,7 +291,9 @@ END;
 $$;
 
 CREATE OR REPLACE FUNCTION on_tax_deferred_delete()
-RETURNS TRIGGER LANGUAGE plpgsql SECURITY DEFINER AS $$
+RETURNS TRIGGER LANGUAGE plpgsql SECURITY DEFINER
+SET search_path = public
+AS $$
 BEGIN
     DELETE FROM command WHERE item_type = 'tax_deferred'::command_item_type AND item_id = OLD.id;
     RETURN OLD;
@@ -309,7 +345,9 @@ CREATE TRIGGER trg_tax_deferred_delete
 -- ================================================
 
 CREATE OR REPLACE FUNCTION on_plan_created()
-RETURNS TRIGGER LANGUAGE plpgsql SECURITY DEFINER AS $$
+RETURNS TRIGGER LANGUAGE plpgsql SECURITY DEFINER
+SET search_path = public
+AS $$
 BEGIN
     INSERT INTO command_sequence (name, plan_id, ordering_type, creator_id, editor_id)
     VALUES (
@@ -338,7 +376,9 @@ CREATE TRIGGER trg_plan_created
 -- ================================================
 
 CREATE OR REPLACE FUNCTION on_command_sequence_created()
-RETURNS TRIGGER LANGUAGE plpgsql SECURITY DEFINER AS $$
+RETURNS TRIGGER LANGUAGE plpgsql SECURITY DEFINER
+SET search_path = public
+AS $$
 DECLARE
     v_command_id BIGINT;
     v_order      INTEGER := 1;
@@ -446,7 +486,9 @@ CREATE TRIGGER trg_command_sequence_created
 -- ================================================
 
 CREATE OR REPLACE FUNCTION on_plan_incomes_insert()
-RETURNS TRIGGER LANGUAGE plpgsql SECURITY DEFINER AS $$
+RETURNS TRIGGER LANGUAGE plpgsql SECURITY DEFINER
+SET search_path = public
+AS $$
 DECLARE
     v_command_id BIGINT;
 BEGIN
@@ -474,7 +516,9 @@ END;
 $$;
 
 CREATE OR REPLACE FUNCTION on_plan_expenses_insert()
-RETURNS TRIGGER LANGUAGE plpgsql SECURITY DEFINER AS $$
+RETURNS TRIGGER LANGUAGE plpgsql SECURITY DEFINER
+SET search_path = public
+AS $$
 DECLARE
     v_command_id BIGINT;
 BEGIN
@@ -502,7 +546,9 @@ END;
 $$;
 
 CREATE OR REPLACE FUNCTION on_plan_debts_insert()
-RETURNS TRIGGER LANGUAGE plpgsql SECURITY DEFINER AS $$
+RETURNS TRIGGER LANGUAGE plpgsql SECURITY DEFINER
+SET search_path = public
+AS $$
 DECLARE
     v_command_id BIGINT;
 BEGIN
@@ -530,7 +576,9 @@ END;
 $$;
 
 CREATE OR REPLACE FUNCTION on_plan_cash_reserves_insert()
-RETURNS TRIGGER LANGUAGE plpgsql SECURITY DEFINER AS $$
+RETURNS TRIGGER LANGUAGE plpgsql SECURITY DEFINER
+SET search_path = public
+AS $$
 DECLARE
     v_command_id BIGINT;
 BEGIN
@@ -558,7 +606,9 @@ END;
 $$;
 
 CREATE OR REPLACE FUNCTION on_plan_brokerages_insert()
-RETURNS TRIGGER LANGUAGE plpgsql SECURITY DEFINER AS $$
+RETURNS TRIGGER LANGUAGE plpgsql SECURITY DEFINER
+SET search_path = public
+AS $$
 DECLARE
     v_command_id BIGINT;
 BEGIN
@@ -586,7 +636,9 @@ END;
 $$;
 
 CREATE OR REPLACE FUNCTION on_plan_iras_insert()
-RETURNS TRIGGER LANGUAGE plpgsql SECURITY DEFINER AS $$
+RETURNS TRIGGER LANGUAGE plpgsql SECURITY DEFINER
+SET search_path = public
+AS $$
 DECLARE
     v_command_id BIGINT;
 BEGIN
@@ -614,7 +666,9 @@ END;
 $$;
 
 CREATE OR REPLACE FUNCTION on_plan_roth_iras_insert()
-RETURNS TRIGGER LANGUAGE plpgsql SECURITY DEFINER AS $$
+RETURNS TRIGGER LANGUAGE plpgsql SECURITY DEFINER
+SET search_path = public
+AS $$
 DECLARE
     v_command_id BIGINT;
 BEGIN
@@ -642,7 +696,9 @@ END;
 $$;
 
 CREATE OR REPLACE FUNCTION on_plan_hsas_insert()
-RETURNS TRIGGER LANGUAGE plpgsql SECURITY DEFINER AS $$
+RETURNS TRIGGER LANGUAGE plpgsql SECURITY DEFINER
+SET search_path = public
+AS $$
 DECLARE
     v_command_id BIGINT;
 BEGIN
@@ -670,7 +726,9 @@ END;
 $$;
 
 CREATE OR REPLACE FUNCTION on_plan_tax_deferreds_insert()
-RETURNS TRIGGER LANGUAGE plpgsql SECURITY DEFINER AS $$
+RETURNS TRIGGER LANGUAGE plpgsql SECURITY DEFINER
+SET search_path = public
+AS $$
 DECLARE
     v_command_id BIGINT;
 BEGIN
@@ -744,7 +802,9 @@ CREATE TRIGGER trg_plan_tax_deferreds_insert
 -- ================================================
 
 CREATE OR REPLACE FUNCTION on_plan_incomes_delete()
-RETURNS TRIGGER LANGUAGE plpgsql SECURITY DEFINER AS $$
+RETURNS TRIGGER LANGUAGE plpgsql SECURITY DEFINER
+SET search_path = public
+AS $$
 BEGIN
     DELETE FROM command_sequence_command
     WHERE command_id IN (
@@ -759,7 +819,9 @@ END;
 $$;
 
 CREATE OR REPLACE FUNCTION on_plan_expenses_delete()
-RETURNS TRIGGER LANGUAGE plpgsql SECURITY DEFINER AS $$
+RETURNS TRIGGER LANGUAGE plpgsql SECURITY DEFINER
+SET search_path = public
+AS $$
 BEGIN
     DELETE FROM command_sequence_command
     WHERE command_id IN (
@@ -774,7 +836,9 @@ END;
 $$;
 
 CREATE OR REPLACE FUNCTION on_plan_debts_delete()
-RETURNS TRIGGER LANGUAGE plpgsql SECURITY DEFINER AS $$
+RETURNS TRIGGER LANGUAGE plpgsql SECURITY DEFINER
+SET search_path = public
+AS $$
 BEGIN
     DELETE FROM command_sequence_command
     WHERE command_id IN (
@@ -789,7 +853,9 @@ END;
 $$;
 
 CREATE OR REPLACE FUNCTION on_plan_cash_reserves_delete()
-RETURNS TRIGGER LANGUAGE plpgsql SECURITY DEFINER AS $$
+RETURNS TRIGGER LANGUAGE plpgsql SECURITY DEFINER
+SET search_path = public
+AS $$
 BEGIN
     DELETE FROM command_sequence_command
     WHERE command_id IN (
@@ -804,7 +870,9 @@ END;
 $$;
 
 CREATE OR REPLACE FUNCTION on_plan_brokerages_delete()
-RETURNS TRIGGER LANGUAGE plpgsql SECURITY DEFINER AS $$
+RETURNS TRIGGER LANGUAGE plpgsql SECURITY DEFINER
+SET search_path = public
+AS $$
 BEGIN
     DELETE FROM command_sequence_command
     WHERE command_id IN (
@@ -819,7 +887,9 @@ END;
 $$;
 
 CREATE OR REPLACE FUNCTION on_plan_iras_delete()
-RETURNS TRIGGER LANGUAGE plpgsql SECURITY DEFINER AS $$
+RETURNS TRIGGER LANGUAGE plpgsql SECURITY DEFINER
+SET search_path = public
+AS $$
 BEGIN
     DELETE FROM command_sequence_command
     WHERE command_id IN (
@@ -834,7 +904,9 @@ END;
 $$;
 
 CREATE OR REPLACE FUNCTION on_plan_roth_iras_delete()
-RETURNS TRIGGER LANGUAGE plpgsql SECURITY DEFINER AS $$
+RETURNS TRIGGER LANGUAGE plpgsql SECURITY DEFINER
+SET search_path = public
+AS $$
 BEGIN
     DELETE FROM command_sequence_command
     WHERE command_id IN (
@@ -849,7 +921,9 @@ END;
 $$;
 
 CREATE OR REPLACE FUNCTION on_plan_hsas_delete()
-RETURNS TRIGGER LANGUAGE plpgsql SECURITY DEFINER AS $$
+RETURNS TRIGGER LANGUAGE plpgsql SECURITY DEFINER
+SET search_path = public
+AS $$
 BEGIN
     DELETE FROM command_sequence_command
     WHERE command_id IN (
@@ -864,7 +938,9 @@ END;
 $$;
 
 CREATE OR REPLACE FUNCTION on_plan_tax_deferreds_delete()
-RETURNS TRIGGER LANGUAGE plpgsql SECURITY DEFINER AS $$
+RETURNS TRIGGER LANGUAGE plpgsql SECURITY DEFINER
+SET search_path = public
+AS $$
 BEGIN
     DELETE FROM command_sequence_command
     WHERE command_id IN (

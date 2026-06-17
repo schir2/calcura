@@ -1,9 +1,9 @@
 import type {FormItemRule, FormRules} from "naive-ui";
-import {type Plan, RetirementStrategy} from '~/types/Plan'
+import type {Plan} from '~/types/Plan'
 
 export function usePlanValidator(modelRef: Ref<Partial<Plan>>) {
     function validateRetirementAge(rule: FormItemRule, value: number | undefined) {
-        if (modelRef.value.retirement_strategy === RetirementStrategy.Age) {
+        if (modelRef.value.retirement_strategy === 'age') {
             if (value === null || value === undefined) {
                 return new Error("Retirement age is required when Age Retirement strategy is selected");
             }
@@ -12,7 +12,7 @@ export function usePlanValidator(modelRef: Ref<Partial<Plan>>) {
     }
 
     function validateTargetSavingsAmount(rule: FormItemRule, value: number | undefined) {
-        if (modelRef.value.retirement_strategy === RetirementStrategy.TargetSavings) {
+        if (modelRef.value.retirement_strategy === 'target_savings') {
             if (value === null || value === undefined) {
                 return new Error("Target Savings Amount is required when Target Savings Retirement strategy is selected");
             }
@@ -21,7 +21,7 @@ export function usePlanValidator(modelRef: Ref<Partial<Plan>>) {
     }
 
     function validateWithdrawalRate(rule: FormItemRule, value: number | undefined) {
-        if (modelRef.value.retirement_strategy === RetirementStrategy.PercentRule) {
+        if (modelRef.value.retirement_strategy === 'percent_rule') {
             if (value === null || value === undefined) {
                 return new Error("Withdrawal Rate is required when Percent Rule Retirement strategy is selected");
             }
@@ -30,7 +30,7 @@ export function usePlanValidator(modelRef: Ref<Partial<Plan>>) {
     }
 
     function validateRetirementIncomeGoal(rule: FormItemRule, value: number | undefined) {
-        if (modelRef.value.retirement_strategy === RetirementStrategy.PercentRule) {
+        if (modelRef.value.retirement_strategy === 'percent_rule') {
             if (value === null || value === undefined) {
                 return new Error("Retirement Income Goal is required when Percent Rule Retirement strategy is selected");
             }

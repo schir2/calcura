@@ -1,5 +1,5 @@
 import type {Plan} from "~/types/Plan";
-import {ContributionLimitType, RetirementStrategy} from "~/types/Plan";
+import {ContributionLimitType} from "~/types/Plan";
 import type {PlanState} from "~/types/PlanState";
 import DebtManager from "~/models/debt/DebtManager";
 import BaseManager from "~/models/common/BaseManager";
@@ -15,12 +15,12 @@ import {ExpenseManager} from "~/models/expense/ExpenseManager";
 import {IraIManager} from "~/models/ira/IraIManager";
 import {CashReserveManager} from "~/models/cashReserve/CashReserveManager";
 import {TaxDeferredManager} from "~/models/taxDeferred/TaxDeferredManager";
-import {ContributionType} from "~/models/common";
 import {BaseOrchestrator} from "~/models/common/BaseOrchestrator";
 import {ContributionError} from "~/utils/errors/ContributionError";
 import {RothIraManager} from "~/models/rothIra/RothIraManager";
 import eventBus from "~/services/eventBus";
 import type {Command} from "~/types/Command";
+import {ContributionType} from "~/types/ContributionType";
 
 export enum FundType {
     Taxable = "taxable",
@@ -409,13 +409,13 @@ export default class PlanManager extends BaseOrchestrator<Plan, PlanState, PlanM
         const currentState = this.getCurrentState()
 
         switch (this.config.retirement_strategy) {
-            case RetirementStrategy.Age:
+            case 'age':
                 return this.getCurrentState().age === this.config.retirement_age;
-            case RetirementStrategy.DebtFree:
+            case 'debt_free':
                 return this.getCurrentDebt() <= 0
-            case RetirementStrategy.PercentRule:
+            case 'percent_rule':
                 return currentState.retirement_income_goal <= currentState.retirement_income_projected
-            case RetirementStrategy.TargetSavings:
+            case 'target_savings':
                 return this.config.retirement_savings_amount <= currentState.savings_end_of_year
         }
     }

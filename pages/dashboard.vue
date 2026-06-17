@@ -1,7 +1,6 @@
 <template>
   <div class="content-grid space-y-8">
     <h1 class="full-width text-6xl text-center">Calcura Dashboard</h1>
-    <client-only><p class="content text-lg text-center">{{ currentDateTimeString }}</p></client-only>
     <p class="content text-lg text-center">Welcome back {{ user?.email }}</p>
     <div class="breakout grid grid-cols-2 gap-2">
       <dashboard-plans v-if="plans" :plans="plans"/>
@@ -22,7 +21,6 @@ const {list} = usePlanService()
 const {data: plans,  refresh, error} = useAsyncData('plans', () => list())
 const user = useSupabaseUser()
 const {profile} = storeToRefs(useProfileStore())
-const {currentDateTimeString} = storeToRefs(useCurrentTime())
 
 </script>
 <style scoped>

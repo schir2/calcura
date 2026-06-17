@@ -1,10 +1,10 @@
 <script lang="ts" setup>
 
-import {type Debt, debtDefaults, DebtPaymentStrategy} from "~/types/Debt";
+import {type Debt, debtDefaults, type DebtPaymentStrategy} from "~/types/Debt";
 import {calculateDebtPayment} from "~/models/debt/DebtManager";
 import {useCrudFormWithValidation} from "~/composables/useCrudFormWithValidation";
 import {FORM_LABEL_ALIGN, FORM_LABEL_PLACEMENT} from "~/constants/FormConstants";
-import {Frequency} from "~/types/Frequency";
+import type {Frequency} from "~/types/Frequency";
 
 type Props = {
   initialValues?: Partial<Debt>;
@@ -18,10 +18,10 @@ const {formRef, modelRef, rules, handleCreate, handleUpdate, handleCancel} =
     useCrudFormWithValidation<Debt>(initialValues, emit, useDebtValidation);
 
 const paymentStrategyOptions = [
-  {label: "Fixed Payment", value: DebtPaymentStrategy.Fixed},
-  {label: "Percentage of Debt", value: DebtPaymentStrategy.PercentageOfDebt},
-  {label: "Pay Minimum", value: DebtPaymentStrategy.MinimumPayment},
-  {label: "Pay Maximum", value: DebtPaymentStrategy.MaximumPayment}
+  {label: "Fixed Payment", value: 'fixed' as DebtPaymentStrategy},
+  {label: "Percentage of Debt", value: 'percentage_of_debt' as DebtPaymentStrategy},
+  {label: "Pay Minimum", value: 'minimum_payment' as DebtPaymentStrategy},
+  {label: "Pay Maximum", value: 'maximum_payment' as DebtPaymentStrategy}
 ]
 
 
@@ -73,13 +73,14 @@ const projections = computed<Record<DebtPaymentStrategy, DebtProjection>>(() => 
 
   const result = {} as Record<DebtPaymentStrategy, DebtProjection>;
 
-  for (const paymentStrategy of Object.values(DebtPaymentStrategy)) {
+  const allStrategies: DebtPaymentStrategy[] = ['fixed', 'percentage_of_debt', 'minimum_payment', 'maximum_payment']
+  for (const paymentStrategy of allStrategies) {
     const debtConfig: Debt = {
       ...debtPartial,
-      payment_strategy: paymentStrategy as DebtPaymentStrategy,
+      payment_strategy: paymentStrategy,
     } as Debt;
 
-    result[paymentStrategy as DebtPaymentStrategy] = generateDebtProjection(debtConfig, 30);
+    result[paymentStrategy] = generateDebtProjection(debtConfig, 30);
   }
   return result;
 });
@@ -114,11 +115,11 @@ const projections = computed<Record<DebtPaymentStrategy, DebtProjection>>(() => 
         <n-form-item path="frequency" label="Payment Frequency">
           <n-radio-group v-model:value="modelRef.frequency">
             <n-radio-button v-for="option in [
-              { label: 'Weekly', value: Frequency.Weekly },
-              { label: 'Biweekly', value: Frequency.Biweekly },
-              { label: 'Monthly', value: Frequency.Monthly },
-              { label: 'Quarterly', value: Frequency.Quarterly },
-              { label: 'Annual', value: Frequency.Annually }
+              { label: 'Weekly', value: 'weekly' as Frequency },
+              { label: 'Biweekly', value: 'biweekly' as Frequency },
+              { label: 'Monthly', value: 'monthly' as Frequency },
+              { label: 'Quarterly', value: 'quarterly' as Frequency },
+              { label: 'Annual', value: 'annual' as Frequency }
             ]" :key="option.value" :label="option.label" :value="option.value"/>
           </n-radio-group>
         </n-form-item>
@@ -127,7 +128,7 @@ const projections = computed<Record<DebtPaymentStrategy, DebtProjection>>(() => 
                      label-placement="top">
           <section class="grid grid-cols-4 gap-3">
             <DebtProjectionCard :projection="projections.fixed" title="Fixed"
-                                v-model="modelRef.payment_strategy" :value="DebtPaymentStrategy.Fixed">
+                                v-model="modelRef.payment_strategy" :value="'fixed'">
               <template #inputs>
                 <n-form-item
                     path="paymentFixedAmount"
@@ -144,7 +145,7 @@ const projections = computed<Record<DebtPaymentStrategy, DebtProjection>>(() => 
             </DebtProjectionCard>
 
             <DebtProjectionCard :projection="projections.percentage_of_debt" title="Percentage"
-                                v-model="modelRef.payment_strategy" :value="DebtPaymentStrategy.PercentageOfDebt">
+                                v-model="modelRef.payment_strategy" :value="'percentage_of_debt'">
               <template #inputs>
                 <n-form-item
                     path="paymentPercentage"
@@ -160,7 +161,7 @@ const projections = computed<Record<DebtPaymentStrategy, DebtProjection>>(() => 
             </DebtProjectionCard>
 
             <DebtProjectionCard :projection="projections.minimum_payment" title="Minimum"
-                                v-model="modelRef.payment_strategy" :value="DebtPaymentStrategy.MinimumPayment">
+                                v-model="modelRef.payment_strategy" :value="'minimum_payment'">
               <template #inputs>
                 <n-form-item
                     path="paymentMinimum"
@@ -176,7 +177,7 @@ const projections = computed<Record<DebtPaymentStrategy, DebtProjection>>(() => 
             </DebtProjectionCard>
 
             <DebtProjectionCard :projection="projections.maximum_payment" title="Maximum"
-                                v-model="modelRef.payment_strategy" :value="DebtPaymentStrategy.MaximumPayment"/>
+                                v-model="modelRef.payment_strategy" :value="'maximum_payment'"/>
           </section>
         </n-form-item>
       </n-form>

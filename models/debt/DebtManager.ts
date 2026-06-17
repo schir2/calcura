@@ -1,5 +1,4 @@
 import type {Debt} from "~/types/Debt";
-import {DebtPaymentStrategy} from "~/types/Debt";
 import type DebtState from "~/types/DebtState";
 import {assertDefined} from "~/utils";
 import BaseManager from "~/models/common/BaseManager";
@@ -71,16 +70,16 @@ export default class DebtManager extends BaseManager<Debt, DebtState> {
 export function calculateDebtPayment(debtConfig: Debt, principal: number): number {
     let payment = 0
     switch (debtConfig.payment_strategy) {
-        case DebtPaymentStrategy.Fixed:
+        case 'fixed':
             payment = debtConfig.payment_fixed_amount;
             break
-        case DebtPaymentStrategy.PercentageOfDebt:
+        case 'percentage_of_debt':
             payment = principal * (debtConfig.payment_percentage / 100);
             break
-        case DebtPaymentStrategy.MaximumPayment:
+        case 'maximum_payment':
             payment = principal;
             break
-        case DebtPaymentStrategy.MinimumPayment:
+        case 'minimum_payment':
             payment = debtConfig.payment_minimum
             break
     }

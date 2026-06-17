@@ -1,13 +1,12 @@
 import type {TaxDeferred} from '~/types/TaxDeferred';
-import {EmployerContributionStrategy, TaxDeferredContributionStrategy} from "~/types/TaxDeferred";
 import {assertDefined, calculateGrowthAmount} from "~/utils";
 import type TaxDeferredState from "~/types/TaxDeferredState";
 import BaseManager from "~/models/common/BaseManager";
 import type {IncomeManager} from "~/models/income/IncomeManager";
 import {FundType} from "~/models/plan/PlanManager";
-import {ContributionType} from "~/models/common";
 import {ContributionLimitType} from "~/types/Plan";
 import eventBus from "~/services/eventBus";
+import {ContributionType} from "~/types/ContributionType";
 
 export class TaxDeferredManager extends BaseManager<TaxDeferred, TaxDeferredState> {
 
@@ -41,10 +40,10 @@ export class TaxDeferredManager extends BaseManager<TaxDeferred, TaxDeferredStat
     calculateElectiveContribution(): number {
         let contribution = 0
         switch (this.config.elective_contribution_strategy) {
-            case TaxDeferredContributionStrategy.Fixed:
+            case 'fixed':
                 contribution = this.config.elective_contribution_fixed_amount
                 break
-            case TaxDeferredContributionStrategy.PercentageOfIncome:
+            case 'percentage_of_income':
                 if (this.incomeManager === undefined) {
                     eventBus.emit('error', {
                         scope: 'taxDeferredManager:missingIncomeManager',
@@ -54,14 +53,14 @@ export class TaxDeferredManager extends BaseManager<TaxDeferred, TaxDeferredStat
                 }
                 contribution = this.incomeManager.getCurrentState().gross_income * (this.config.elective_contribution_percentage / 100)
                 break
-            case TaxDeferredContributionStrategy.UntilCompanyMatch:
-                if (this.config.employer_contribution_strategy === EmployerContributionStrategy.PercentageOfContribution) {
+            case 'until_company_match':
+                if (this.config.employer_contribution_strategy === 'percentage_of_contribution') {
                     contribution = this.getContributionFromEmployerMatchLimit(this.getEmployerMatchLimit());
                 } else {
                     contribution = this.calculateEmployerContribution()
                 }
                 break
-            case TaxDeferredContributionStrategy.Max:
+            case 'max':
                 contribution = Infinity
                 break
             default:
@@ -83,11 +82,11 @@ export class TaxDeferredManager extends BaseManager<TaxDeferred, TaxDeferredStat
         let electiveContribution = 0
 
         switch (this.config.employer_contribution_strategy) {
-            case EmployerContributionStrategy.None:
+            case 'none':
                 employerContribution = 0
                 break
 
-            case EmployerContributionStrategy.PercentageOfContribution:
+            case 'percentage_of_contribution':
                 if (this.incomeManager === undefined) {
                     eventBus.emit('error', {
                         scope: 'taxDeferredManager:missingIncomeManager',
@@ -100,7 +99,7 @@ export class TaxDeferredManager extends BaseManager<TaxDeferred, TaxDeferredStat
                     eventBus.emit('warning', {scope: 'calculateEmployerContribution:employerMatchPercentage', message: 'Employer match percentage should be greater than 0'})
                 }
                 const employerMatchLimit = this.getEmployerMatchLimit();
-                if (this.getConfig().elective_contribution_strategy === TaxDeferredContributionStrategy.UntilCompanyMatch) {
+                if (this.getConfig().elective_contribution_strategy === 'until_company_match') {
                     employerContribution = employerMatchLimit
                 } else {
                     electiveContribution = this.orchestrator.requestFunds(this.calculateElectiveContribution(), FundType.Taxable)
@@ -109,11 +108,11 @@ export class TaxDeferredManager extends BaseManager<TaxDeferred, TaxDeferredStat
                 }
                 break
 
-            case EmployerContributionStrategy.Fixed:
+            case 'fixed':
                 employerContribution = this.config.employer_contribution_fixed_amount
                 break
 
-            case EmployerContributionStrategy.PercentageOfCompensation:
+            case 'percentage_of_compensation':
                 if (this.incomeManager === undefined) {
                     eventBus.emit('error', {
                         scope: 'taxDeferredManager:missingIncomeManager',

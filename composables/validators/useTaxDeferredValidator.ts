@@ -1,7 +1,4 @@
-import {
-    TaxDeferredContributionStrategy,
-    type TaxDeferred
-} from "~/types/TaxDeferred";
+import type {TaxDeferred} from "~/types/TaxDeferred";
 import type {FormItemRule, FormRules} from "naive-ui";
 
 export function useTaxDeferredValidator(modelRef: Ref<Partial<TaxDeferred>>) {
@@ -20,7 +17,7 @@ export function useTaxDeferredValidator(modelRef: Ref<Partial<TaxDeferred>>) {
     }
 
     function validateIncome(rule: FormItemRule, value: string | undefined) {
-        if (modelRef.value.elective_contribution_strategy === TaxDeferredContributionStrategy.PercentageOfIncome && (value === null || value === undefined)) {
+        if (modelRef.value.elective_contribution_strategy === 'percentage_of_income' && (value === null || value === undefined)) {
             return new Error("Income is required for Percentage of Income Contribution Strategy");
         }
     }

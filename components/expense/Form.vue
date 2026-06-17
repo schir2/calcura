@@ -2,7 +2,7 @@
 import {type Expense, expenseDefaults} from "~/types/Expense";
 import {useCrudFormWithValidation} from "~/composables/useCrudFormWithValidation";
 import {getAnnualAmount} from "~/utils";
-import {Frequency} from "~/types/Frequency";
+import type {Frequency} from "~/types/Frequency";
 import {FORM_LABEL_ALIGN, FORM_LABEL_PLACEMENT, FORM_MODAL_WIDTH_CLASS} from "~/constants/FormConstants";
 
 type Props = {
@@ -84,7 +84,7 @@ const {formRef, modelRef, rules, handleCreate, handleUpdate, handleCancel} =
     <template #footer>
       <base-stat class="text-end">
         <span class="text-skin-error">-${{
-          $humanize.intComma(getAnnualAmount(modelRef.amount ?? 0, modelRef.frequency ?? Frequency.Annually))
+          $humanize.intComma(getAnnualAmount(modelRef.amount ?? 0, modelRef.frequency ?? 'annual'))
         }}/year</span>
       </base-stat>
     </template>

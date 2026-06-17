@@ -1,3 +1,4 @@
+import type {Enums, TablesInsert, TablesUpdate} from '~/types/database.types'
 import type {Debt} from "~/types/Debt";
 import type {TaxDeferred} from "~/types/TaxDeferred";
 import type {Income} from "~/types/Income";
@@ -9,27 +10,13 @@ import type {RothIra} from "~/types/RothIra";
 import type {CommandSequence} from "~/types/CommandSequence";
 
 
-export enum InsufficientFundsStrategy {
-    None = 'none',
-    MinimumOnly = 'minimum_only',
-    Full = 'full',
-}
+export type InsufficientFundsStrategy = Enums<'insufficient_funds_strategy'>
 
-export enum RetirementStrategy {
-    DebtFree = 'debt_free',
-    Age = 'age',
-    PercentRule = 'percent_rule',
-    TargetSavings = 'target_savings',
-}
+export type RetirementStrategy = Enums<'retirement_strategy'>
 
-export enum GrowthApplicationStrategy {
-    Start = 'start',
-    End = 'end',
-}
+export type GrowthApplicationStrategy = Enums<'growth_application_strategy'>
 
-export enum IncomeTaxStrategy {
-    Simple = 'simple',
-}
+export type IncomeTaxStrategy = Enums<'income_tax_strategy'>
 
 export enum ContributionLimitType {
     Ira = 'ira',
@@ -45,6 +32,7 @@ export type Plan = {
     name: string;
     age: number;
     year: number;
+    growth_rate: number;
     inflation_rate: number;
     insufficient_funds_strategy: InsufficientFundsStrategy;
     growth_application_strategy: GrowthApplicationStrategy;
@@ -69,3 +57,6 @@ export type Plan = {
     edited_at: Date
     created_at: Date
 }
+
+export type PlanInsert = TablesInsert<'plan'>
+export type PlanUpdate = TablesUpdate<'plan'>

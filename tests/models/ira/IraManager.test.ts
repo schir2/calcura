@@ -1,16 +1,7 @@
 import {beforeEach, describe, expect, it} from "vitest";
 import {IraIManager} from "~/models/ira/IraIManager";
-import {IraContributionStrategy} from "~/types/Ira";
 import PlanManager from "~/models/plan/PlanManager";
-import {
-    GrowthApplicationStrategy,
-    IncomeTaxStrategy,
-    InsufficientFundsStrategy,
-    type Plan,
-    RetirementStrategy
-} from "~/types/Plan";
-
-import {Frequency} from "~/types/Frequency";
+import type {Plan} from "~/types/Plan";
 
 const planConfig: Plan = {
     id: 1,
@@ -18,12 +9,12 @@ const planConfig: Plan = {
     age: 30,
     year: new Date().getFullYear(),
     inflation_rate: 3,
-    insufficient_funds_strategy: InsufficientFundsStrategy.None,
-    growth_application_strategy: GrowthApplicationStrategy.Start,
-    tax_strategy: IncomeTaxStrategy.Simple,
+    insufficient_funds_strategy: 'none',
+    growth_application_strategy: 'start',
+    tax_strategy: 'simple',
     tax_rate: 30,
     life_expectancy: 85,
-    retirement_strategy: RetirementStrategy.Age,
+    retirement_strategy: 'age',
     retirement_withdrawal_rate: 4,
     retirement_income_goal: 50000,
     retirement_age: 65,
@@ -37,7 +28,7 @@ const planConfig: Plan = {
             gross_income: 100_000,
             growth_rate: 0,
             income_type: "ordinary",
-            frequency: Frequency.Annually
+            frequency: 'annual'
         },
         {
             id: 1,
@@ -45,7 +36,7 @@ const planConfig: Plan = {
             gross_income: 50_000,
             growth_rate: 0,
             income_type: "ordinary",
-            frequency: Frequency.Annually
+            frequency: 'annual'
         }
     ],
     expenses: [],
@@ -57,7 +48,7 @@ const planConfig: Plan = {
             name: 'Test Brokerage ',
             growth_rate: 6,
             initial_balance: 10_000,
-            contribution_strategy: IraContributionStrategy.Fixed,
+            contribution_strategy: 'fixed',
             contribution_percentage: 0,
             contribution_fixed_amount: 0,
             income:
@@ -67,7 +58,7 @@ const planConfig: Plan = {
                     gross_income: 100_000,
                     growth_rate: 0,
                     income_type: "ordinary",
-                    frequency: Frequency.Annually
+                    frequency: 'annual'
                 },
 
         }
@@ -107,7 +98,7 @@ describe("IraManager", () => {
                 iras: [
                     {
                         ...planConfig.iras[0],
-                        contribution_strategy: IraContributionStrategy.Fixed,
+                        contribution_strategy: 'fixed',
                         contribution_fixed_amount: 100,
                     }
                 ]
@@ -123,7 +114,7 @@ describe("IraManager", () => {
                 iras: [
                     {
                         ...planConfig.iras[0],
-                        contribution_strategy: IraContributionStrategy.PercentageOfIncome,
+                        contribution_strategy: 'percentage_of_income',
                         contribution_percentage: 10,
                     }
                 ]
@@ -140,7 +131,7 @@ describe("IraManager", () => {
                 iras: [
                     {
                         ...planConfig.iras[0],
-                        contribution_strategy: IraContributionStrategy.Max,
+                        contribution_strategy: 'max',
                     }
                 ]
             })
@@ -155,7 +146,7 @@ describe("IraManager", () => {
         it("should process ira and update state correctly for start of year application strategy", () => {
             planManager = new PlanManager({
                 ...planConfig,
-                growth_application_strategy: GrowthApplicationStrategy.Start,
+                growth_application_strategy: 'start',
                 iras: [
                     {
                         ...planConfig.iras[0],
@@ -193,7 +184,7 @@ describe("IraManager", () => {
         it("should process ira and update state correctly for end of of year application strategy", () => {
             planManager = new PlanManager({
                 ...planConfig,
-                growth_application_strategy: GrowthApplicationStrategy.End,
+                growth_application_strategy: 'end',
                 iras: [
                     {
                         ...planConfig.iras[0],
@@ -241,7 +232,7 @@ describe("IraManager", () => {
 
             planManager = new PlanManager({
                 ...planConfig,
-                growth_application_strategy: GrowthApplicationStrategy.Start,
+                growth_application_strategy: 'start',
                 iras: [
                     {
                         ...planConfig.iras[0],

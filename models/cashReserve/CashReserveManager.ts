@@ -1,9 +1,9 @@
 import BaseManager from "~/models/common/BaseManager";
 import type {CashReserve} from "~/types/CashReserve";
-import {CashReserveStrategy} from "~/types/CashReserve";
 import type CashReserveState from "~/types/CashReserveState";
 import {FundType} from "~/models/plan/PlanManager";
-import {ContributionType} from "~/models/common";
+
+import {ContributionType} from "~/types/ContributionType";
 
 export class CashReserveManager extends BaseManager<CashReserve, CashReserveState> {
     protected createInitialState(): CashReserveState {
@@ -30,11 +30,11 @@ export class CashReserveManager extends BaseManager<CashReserve, CashReserveStat
     calculateContribution(): number {
         const currentState = this.getCurrentState();
         let contribution = 0
-        switch (this.config.contribution_strategy) {
-            case CashReserveStrategy.Fixed:
+        switch (this.config.cash_reserve_strategy) {
+            case 'fixed':
                 contribution = Math.max(this.config.reserve_amount - currentState.cash_reserve_start_of_year, 0);
                 break
-            case CashReserveStrategy.Variable:
+            case 'variable':
                 const annualExpenseTotal = this.orchestrator.getAnnualExpenseTotal()
                 contribution = Math.max(annualExpenseTotal * (this.config.reserve_months / 12) - currentState.cash_reserve_start_of_year, 0);
                 break

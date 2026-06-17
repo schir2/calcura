@@ -23,11 +23,12 @@ export default defineNuxtConfig({
       'nuxtjs-naive-ui',
     ],
     supabase: {
-        types: '~~/shared/types/database.types.ts',
+        redirect: false,
+        types: '~~/types/database.types.ts',
         redirectOptions: {
-            login: 'auth/login',
-            exclude: ['/**'],
-            callback: 'auth/login'
+            login: '/auth/login',
+            exclude: ['/auth/*'],
+            callback: '/auth/login'
         }
     },
     imports: {

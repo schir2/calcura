@@ -10,7 +10,7 @@ import {
 
 export function useCashReserveValidation(modelRef: Ref<Partial<CashReserve>>) {
     function validateReserveAmount(rule: FormItemRule, value: number | undefined) {
-        if (modelRef.value.contribution_strategy === "fixed") {
+        if (modelRef.value.cash_reserve_strategy === "fixed") {
             if (value === null || value === undefined) {
                 return new Error("Reserve amount is required when using a Fixed Cash Reserve strategy.");
             }
@@ -19,7 +19,7 @@ export function useCashReserveValidation(modelRef: Ref<Partial<CashReserve>>) {
     }
 
     function validateReserveMonths(rule: FormItemRule, value: number | undefined) {
-        if (modelRef.value.contribution_strategy === "variable") {
+        if (modelRef.value.cash_reserve_strategy === "variable") {
             if (value === null || value === undefined) {
                 return new Error("Reserve months is required when using a Variable Cash Reserve strategy.");
             }
@@ -33,14 +33,14 @@ export function useCashReserveValidation(modelRef: Ref<Partial<CashReserve>>) {
             {min: 3, message: "Cash Reserve name must be at least 3 characters long.", trigger: ["blur", "change"]},
             {max: 100, message: "Cash Reserve name must be at most 100 characters long.", trigger: ["blur", "change"]}
         ],
-        initialAmount: [
+        initial_amount: [
             {required: true, type: "number", message: "Initial amount is required", trigger: ["blur", "change"]},
             {type: "number", min: 0, message: "Initial amount must be at least $0.", trigger: ["blur", "change"]}
         ],
-        cashReserveStrategy: [
+        cash_reserve_strategy: [
             {required: true, message: "Cash Reserve strategy is required", trigger: ["blur", "change"]}
         ],
-        reserveAmount: [
+        reserve_amount: [
             {
                 type: "number",
                 min: MIN_RESERVE_AMOUNT,
@@ -54,7 +54,7 @@ export function useCashReserveValidation(modelRef: Ref<Partial<CashReserve>>) {
                 trigger: ["blur", "change"]
             }
         ],
-        reserveMonths: [
+        reserve_months: [
             {
                 type: "number",
                 min: MIN_RESERVE_MONTHS,

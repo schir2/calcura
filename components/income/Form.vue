@@ -4,7 +4,7 @@ import {type Income, incomeDefaults} from "~/types/Income";
 import {BarElement, CategoryScale, Chart as ChartJS, Legend, LinearScale, Title, Tooltip} from 'chart.js'
 import {getAnnualAmount} from "~/utils";
 import {useIncomeValidation} from "~/composables/validators/useIncomeValidator";
-import {Frequency} from "~/types/Frequency";
+import type {Frequency} from "~/types/Frequency";
 import {FORM_LABEL_ALIGN, FORM_LABEL_PLACEMENT, FORM_MODAL_WIDTH_CLASS} from "~/constants/FormConstants";
 
 type Props = {
@@ -98,7 +98,7 @@ function generateGrowthData(principal: number, growthRate: number = 0) {
     <template #footer>
       <base-stat class="text-end">
         <span class="text-skin-success">+${{
-            $humanize.intComma(getAnnualAmount(modelRef.gross_income ?? 0, modelRef.frequency ?? Frequency.Annually))
+            $humanize.intComma(getAnnualAmount(modelRef.gross_income ?? 0, modelRef.frequency ?? 'annual'))
           }}/year</span>
       </base-stat>
     </template>

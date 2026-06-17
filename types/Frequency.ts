@@ -1,7 +1,3 @@
-export enum Frequency {
-    Monthly = 'monthly',
-    Weekly = 'weekly',
-    Quarterly = 'quarterly',
-    Annually = 'annual',
-    Biweekly = 'biweekly',
-}
+import type {Enums} from '~/types/database.types'
+
+export type Frequency = Enums<'frequency'>

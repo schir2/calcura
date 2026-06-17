@@ -29,7 +29,7 @@
   ></PlanList>
 </template>
 <script lang="ts" setup>
-import type {Plan} from "~/types/Plan";
+import type {Plan, PlanInsert, PlanUpdate} from "~/types/Plan";
 import {usePlanService} from "~/composables/api/usePlanService";
 import {FORM_MODAL_WIDTH_CLASS} from "~/constants/FormConstants";
 
@@ -39,8 +39,13 @@ const {data: plans, refresh: refreshPlans} = useFetch<Plan[]>('api/plans')
 
 const showModal = ref(false)
 
+function toPlanInsert(plan: Partial<Plan>): PlanInsert {
+    const {cash_reserves, incomes, expenses, debts, tax_deferreds, brokerages, iras, roth_iras, command_sequences, id, created_at, edited_at, ...scalar} = plan
+    return scalar as PlanInsert
+}
+
 async function handleCreatePlan(planTemplate: Partial<Plan>) {
-  await planService.create(planTemplate)
+  await planService.create(toPlanInsert(planTemplate))
   await refreshPlans();
 }
 
@@ -54,7 +59,8 @@ async function handleDeletePlan(plan: Plan) {
 }
 
 async function handleUpdatePlan(plan: Plan) {
-  await planService.update(plan.id, plan)
+  const {id, ...update} = toPlanInsert(plan) as any
+  await planService.update(plan.id, update as PlanUpdate)
   await refreshPlans();
 }
 

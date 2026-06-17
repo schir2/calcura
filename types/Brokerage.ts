@@ -1,8 +1,6 @@
-export enum BrokerageContributionStrategy {
-    Fixed = 'fixed',
-    PercentageOfIncome = 'percentage_of_income',
-    Max = 'max'
-}
+import type {Enums, TablesInsert, TablesUpdate} from '~/types/database.types'
+
+export type BrokerageContributionStrategy = Enums<'contribution_strategy'>
 
 
 export type Brokerage = {
@@ -29,7 +27,10 @@ export const brokerageDefaults: BrokeragePartial = {
     name: 'Brokerage ',
     growth_rate: DEFAULT_GROWTH_RATE,
     initial_balance: 0,
-    contribution_strategy: BrokerageContributionStrategy.Fixed,
+    contribution_strategy: 'fixed',
     contribution_percentage: 0,
     contribution_fixed_amount: 0,
 }
+
+export type BrokerageInsert = TablesInsert<'brokerage'>
+export type BrokerageUpdate = TablesUpdate<'brokerage'>

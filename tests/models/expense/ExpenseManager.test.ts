@@ -1,16 +1,8 @@
 import {beforeEach, describe, expect, it} from "vitest";
 import PlanManager from "~/models/plan/PlanManager";
-import {
-    GrowthApplicationStrategy,
-    IncomeTaxStrategy,
-    InsufficientFundsStrategy,
-    type Plan,
-    RetirementStrategy
-} from "~/types/Plan";
-import {ExpenseType} from "~/types/Expense";
+import type {Plan} from "~/types/Plan";
 import {ExpenseManager} from "~/models/expense/ExpenseManager"
 import type ExpenseState from "~/types/ExpenseState";
-import {Frequency} from "~/types/Frequency";
 
 const planConfig: Plan = {
     id: 1,
@@ -18,12 +10,12 @@ const planConfig: Plan = {
     age: 30,
     year: new Date().getFullYear(),
     inflation_rate: 3,
-    insufficient_funds_strategy: InsufficientFundsStrategy.None,
-    growth_application_strategy: GrowthApplicationStrategy.Start,
-    tax_strategy: IncomeTaxStrategy.Simple,
+    insufficient_funds_strategy: 'none',
+    growth_application_strategy: 'start',
+    tax_strategy: 'simple',
     tax_rate: 30,
     life_expectancy: 85,
-    retirement_strategy: RetirementStrategy.Age,
+    retirement_strategy: 'age',
     retirement_withdrawal_rate: 4,
     retirement_income_goal: 50000,
     retirement_age: 65,
@@ -37,7 +29,7 @@ const planConfig: Plan = {
             gross_income: 100_000,
             growth_rate: 0,
             income_type: "ordinary",
-            frequency: Frequency.Annually
+            frequency: 'annual'
         },
         {
             id: 1,
@@ -45,16 +37,16 @@ const planConfig: Plan = {
             gross_income: 50_000,
             growth_rate: 0,
             income_type: "ordinary",
-            frequency: Frequency.Annually
+            frequency: 'annual'
         }
     ],
     expenses: [
         {
             id: 1,
             name: 'Rent',
-            frequency: Frequency.Monthly,
+            frequency: 'monthly',
             amount: 1_800,
-            expense_type: ExpenseType.fixed,
+            expense_type: 'fixed',
             growth_rate: 0,
             is_essential: true,
             is_tax_deductible: false,
@@ -96,7 +88,7 @@ describe("ExpenseManager", () => {
                 expenses: [{
                     ...planConfig.expenses[0],
                     amount: 100,
-                    frequency: Frequency.Annually
+                    frequency: 'annual'
                 }]
             })
             expenseManager = planManager.getManagerById('expense', 1)
@@ -109,7 +101,7 @@ describe("ExpenseManager", () => {
                 expenses: [{
                     ...planConfig.expenses[0],
                     amount: 100,
-                    frequency: Frequency.Quarterly
+                    frequency: 'quarterly'
                 }]
             })
             expenseManager = planManager.getManagerById('expense', 1)
@@ -122,7 +114,7 @@ describe("ExpenseManager", () => {
                 expenses: [{
                     ...planConfig.expenses[0],
                     amount: 100,
-                    frequency: Frequency.Monthly
+                    frequency: 'monthly'
                 }]
             })
             expenseManager = planManager.getManagerById('expense', 1)
@@ -135,7 +127,7 @@ describe("ExpenseManager", () => {
                 expenses: [{
                     ...planConfig.expenses[0],
                     amount: 100,
-                    frequency: Frequency.Weekly
+                    frequency: 'weekly'
                 }]
             })
             expenseManager = planManager.getManagerById('expense', 1)
@@ -160,7 +152,7 @@ describe("ExpenseManager", () => {
                 expenses: [{
                     ...planConfig.expenses[0],
                     amount: 100_000,
-                    frequency: Frequency.Quarterly
+                    frequency: 'quarterly'
                 }]
             })
             expenseManager = planManager.getManagerById('expense', 1)
@@ -178,7 +170,7 @@ describe("ExpenseManager", () => {
                 expenses: [{
                     ...planConfig.expenses[0],
                     amount: 100_000,
-                    frequency: Frequency.Annually,
+                    frequency: 'annual',
                     growth_rate: 10,
                 }]
             })
@@ -204,7 +196,7 @@ describe("ExpenseManager", () => {
                 expenses: [{
                     ...planConfig.expenses[0],
                     amount: 100_000,
-                    frequency: Frequency.Annually,
+                    frequency: 'annual',
                     growth_rate: 10,
                     grows_with_inflation: true,
                 }]

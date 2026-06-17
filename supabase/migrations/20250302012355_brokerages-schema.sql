@@ -154,8 +154,8 @@ CREATE TABLE income (
     frequency    frequency   NOT NULL DEFAULT 'annual',
     created_at   TIMESTAMPTZ NOT NULL DEFAULT now(),
     edited_at    TIMESTAMPTZ NOT NULL DEFAULT now(),
-    creator_id   UUID        REFERENCES auth.users(id) ON DELETE SET NULL,
-    editor_id    UUID        REFERENCES auth.users(id) ON DELETE SET NULL
+    creator_id   UUID        DEFAULT auth.uid() REFERENCES auth.users(id) ON DELETE SET NULL,
+    editor_id    UUID        DEFAULT auth.uid() REFERENCES auth.users(id) ON DELETE SET NULL
 );
 
 CREATE TABLE expense (
@@ -170,8 +170,8 @@ CREATE TABLE expense (
     is_tax_deductible    BOOLEAN      NOT NULL DEFAULT FALSE,
     created_at           TIMESTAMPTZ  NOT NULL DEFAULT now(),
     edited_at            TIMESTAMPTZ  NOT NULL DEFAULT now(),
-    creator_id           UUID         REFERENCES auth.users(id) ON DELETE SET NULL,
-    editor_id            UUID         REFERENCES auth.users(id) ON DELETE SET NULL
+    creator_id           UUID         DEFAULT auth.uid() REFERENCES auth.users(id) ON DELETE SET NULL,
+    editor_id            UUID         DEFAULT auth.uid() REFERENCES auth.users(id) ON DELETE SET NULL
 );
 
 CREATE TABLE debt (
@@ -186,8 +186,8 @@ CREATE TABLE debt (
     frequency            frequency             NOT NULL,
     created_at           TIMESTAMPTZ           NOT NULL DEFAULT now(),
     edited_at            TIMESTAMPTZ           NOT NULL DEFAULT now(),
-    creator_id           UUID                  REFERENCES auth.users(id) ON DELETE SET NULL,
-    editor_id            UUID                  REFERENCES auth.users(id) ON DELETE SET NULL
+    creator_id           UUID                  DEFAULT auth.uid() REFERENCES auth.users(id) ON DELETE SET NULL,
+    editor_id            UUID                  DEFAULT auth.uid() REFERENCES auth.users(id) ON DELETE SET NULL
 );
 
 CREATE TABLE cash_reserve (
@@ -199,8 +199,8 @@ CREATE TABLE cash_reserve (
     reserve_months        INTEGER,
     created_at            TIMESTAMPTZ           NOT NULL DEFAULT now(),
     edited_at             TIMESTAMPTZ           NOT NULL DEFAULT now(),
-    creator_id            UUID                  REFERENCES auth.users(id) ON DELETE SET NULL,
-    editor_id             UUID                  REFERENCES auth.users(id) ON DELETE SET NULL
+    creator_id            UUID                  DEFAULT auth.uid() REFERENCES auth.users(id) ON DELETE SET NULL,
+    editor_id             UUID                  DEFAULT auth.uid() REFERENCES auth.users(id) ON DELETE SET NULL
 );
 
 CREATE TABLE brokerage (
@@ -213,8 +213,8 @@ CREATE TABLE brokerage (
     contribution_fixed_amount NUMERIC,
     created_at                TIMESTAMPTZ           NOT NULL DEFAULT now(),
     edited_at                 TIMESTAMPTZ           NOT NULL DEFAULT now(),
-    creator_id                UUID                  REFERENCES auth.users(id) ON DELETE SET NULL,
-    editor_id                 UUID                  REFERENCES auth.users(id) ON DELETE SET NULL
+    creator_id                UUID                  DEFAULT auth.uid() REFERENCES auth.users(id) ON DELETE SET NULL,
+    editor_id                 UUID                  DEFAULT auth.uid() REFERENCES auth.users(id) ON DELETE SET NULL
 );
 
 CREATE TABLE ira (
@@ -227,8 +227,8 @@ CREATE TABLE ira (
     contribution_fixed_amount NUMERIC,
     created_at                TIMESTAMPTZ               NOT NULL DEFAULT now(),
     edited_at                 TIMESTAMPTZ               NOT NULL DEFAULT now(),
-    creator_id                UUID                      REFERENCES auth.users(id) ON DELETE SET NULL,
-    editor_id                 UUID                      REFERENCES auth.users(id) ON DELETE SET NULL
+    creator_id                UUID                      DEFAULT auth.uid() REFERENCES auth.users(id) ON DELETE SET NULL,
+    editor_id                 UUID                      DEFAULT auth.uid() REFERENCES auth.users(id) ON DELETE SET NULL
 );
 
 CREATE TABLE roth_ira (
@@ -241,8 +241,8 @@ CREATE TABLE roth_ira (
     contribution_fixed_amount NUMERIC,
     created_at                TIMESTAMPTZ                    NOT NULL DEFAULT now(),
     edited_at                 TIMESTAMPTZ                    NOT NULL DEFAULT now(),
-    creator_id                UUID                           REFERENCES auth.users(id) ON DELETE SET NULL,
-    editor_id                 UUID                           REFERENCES auth.users(id) ON DELETE SET NULL
+    creator_id                UUID                           DEFAULT auth.uid() REFERENCES auth.users(id) ON DELETE SET NULL,
+    editor_id                 UUID                           DEFAULT auth.uid() REFERENCES auth.users(id) ON DELETE SET NULL
 );
 
 CREATE TABLE hsa (
@@ -255,8 +255,8 @@ CREATE TABLE hsa (
     contribution_fixed_amount NUMERIC,
     created_at                TIMESTAMPTZ           NOT NULL DEFAULT now(),
     edited_at                 TIMESTAMPTZ           NOT NULL DEFAULT now(),
-    creator_id                UUID                  REFERENCES auth.users(id) ON DELETE SET NULL,
-    editor_id                 UUID                  REFERENCES auth.users(id) ON DELETE SET NULL
+    creator_id                UUID                  DEFAULT auth.uid() REFERENCES auth.users(id) ON DELETE SET NULL,
+    editor_id                 UUID                  DEFAULT auth.uid() REFERENCES auth.users(id) ON DELETE SET NULL
 );
 
 CREATE TABLE tax_deferred (
@@ -275,8 +275,8 @@ CREATE TABLE tax_deferred (
     employer_match_percentage_limit     NUMERIC,
     created_at                          TIMESTAMPTZ                        NOT NULL DEFAULT now(),
     edited_at                           TIMESTAMPTZ                        NOT NULL DEFAULT now(),
-    creator_id                          UUID                               REFERENCES auth.users(id) ON DELETE SET NULL,
-    editor_id                           UUID                               REFERENCES auth.users(id) ON DELETE SET NULL
+    creator_id                          UUID                               DEFAULT auth.uid() REFERENCES auth.users(id) ON DELETE SET NULL,
+    editor_id                           UUID                               DEFAULT auth.uid() REFERENCES auth.users(id) ON DELETE SET NULL
 );
 
 CREATE TABLE plan (
@@ -299,8 +299,8 @@ CREATE TABLE plan (
     life_expectancy                          INTEGER                     NOT NULL,
     created_at                               TIMESTAMPTZ                 NOT NULL DEFAULT now(),
     edited_at                                TIMESTAMPTZ                 NOT NULL DEFAULT now(),
-    creator_id                               UUID                        REFERENCES auth.users(id) ON DELETE SET NULL,
-    editor_id                                UUID                        REFERENCES auth.users(id) ON DELETE SET NULL
+    creator_id                               UUID                        DEFAULT auth.uid() REFERENCES auth.users(id) ON DELETE SET NULL,
+    editor_id                                UUID                        DEFAULT auth.uid() REFERENCES auth.users(id) ON DELETE SET NULL
 );
 
 -- ================================================
@@ -381,8 +381,8 @@ CREATE TABLE income_template (
     description  TEXT,
     created_at   TIMESTAMPTZ NOT NULL DEFAULT now(),
     edited_at    TIMESTAMPTZ NOT NULL DEFAULT now(),
-    creator_id   UUID        REFERENCES auth.users(id) ON DELETE SET NULL,
-    editor_id    UUID        REFERENCES auth.users(id) ON DELETE SET NULL
+    creator_id   UUID        DEFAULT auth.uid() REFERENCES auth.users(id) ON DELETE SET NULL,
+    editor_id    UUID        DEFAULT auth.uid() REFERENCES auth.users(id) ON DELETE SET NULL
 );
 
 CREATE TABLE expense_template (
@@ -398,8 +398,8 @@ CREATE TABLE expense_template (
     description          TEXT,
     created_at           TIMESTAMPTZ  NOT NULL DEFAULT now(),
     edited_at            TIMESTAMPTZ  NOT NULL DEFAULT now(),
-    creator_id           UUID         REFERENCES auth.users(id) ON DELETE SET NULL,
-    editor_id            UUID         REFERENCES auth.users(id) ON DELETE SET NULL
+    creator_id           UUID         DEFAULT auth.uid() REFERENCES auth.users(id) ON DELETE SET NULL,
+    editor_id            UUID         DEFAULT auth.uid() REFERENCES auth.users(id) ON DELETE SET NULL
 );
 
 CREATE TABLE debt_template (
@@ -415,8 +415,8 @@ CREATE TABLE debt_template (
     description          TEXT,
     created_at           TIMESTAMPTZ           NOT NULL DEFAULT now(),
     edited_at            TIMESTAMPTZ           NOT NULL DEFAULT now(),
-    creator_id           UUID                  REFERENCES auth.users(id) ON DELETE SET NULL,
-    editor_id            UUID                  REFERENCES auth.users(id) ON DELETE SET NULL
+    creator_id           UUID                  DEFAULT auth.uid() REFERENCES auth.users(id) ON DELETE SET NULL,
+    editor_id            UUID                  DEFAULT auth.uid() REFERENCES auth.users(id) ON DELETE SET NULL
 );
 
 CREATE TABLE cash_reserve_template (
@@ -429,8 +429,8 @@ CREATE TABLE cash_reserve_template (
     description           TEXT,
     created_at            TIMESTAMPTZ           NOT NULL DEFAULT now(),
     edited_at             TIMESTAMPTZ           NOT NULL DEFAULT now(),
-    creator_id            UUID                  REFERENCES auth.users(id) ON DELETE SET NULL,
-    editor_id             UUID                  REFERENCES auth.users(id) ON DELETE SET NULL
+    creator_id            UUID                  DEFAULT auth.uid() REFERENCES auth.users(id) ON DELETE SET NULL,
+    editor_id             UUID                  DEFAULT auth.uid() REFERENCES auth.users(id) ON DELETE SET NULL
 );
 
 CREATE TABLE brokerage_template (
@@ -444,8 +444,8 @@ CREATE TABLE brokerage_template (
     description               TEXT,
     created_at                TIMESTAMPTZ           NOT NULL DEFAULT now(),
     edited_at                 TIMESTAMPTZ           NOT NULL DEFAULT now(),
-    creator_id                UUID                  REFERENCES auth.users(id) ON DELETE SET NULL,
-    editor_id                 UUID                  REFERENCES auth.users(id) ON DELETE SET NULL
+    creator_id                UUID                  DEFAULT auth.uid() REFERENCES auth.users(id) ON DELETE SET NULL,
+    editor_id                 UUID                  DEFAULT auth.uid() REFERENCES auth.users(id) ON DELETE SET NULL
 );
 
 CREATE TABLE ira_template (
@@ -459,8 +459,8 @@ CREATE TABLE ira_template (
     description               TEXT,
     created_at                TIMESTAMPTZ               NOT NULL DEFAULT now(),
     edited_at                 TIMESTAMPTZ               NOT NULL DEFAULT now(),
-    creator_id                UUID                      REFERENCES auth.users(id) ON DELETE SET NULL,
-    editor_id                 UUID                      REFERENCES auth.users(id) ON DELETE SET NULL
+    creator_id                UUID                      DEFAULT auth.uid() REFERENCES auth.users(id) ON DELETE SET NULL,
+    editor_id                 UUID                      DEFAULT auth.uid() REFERENCES auth.users(id) ON DELETE SET NULL
 );
 
 CREATE TABLE roth_ira_template (
@@ -474,8 +474,8 @@ CREATE TABLE roth_ira_template (
     description               TEXT,
     created_at                TIMESTAMPTZ                    NOT NULL DEFAULT now(),
     edited_at                 TIMESTAMPTZ                    NOT NULL DEFAULT now(),
-    creator_id                UUID                           REFERENCES auth.users(id) ON DELETE SET NULL,
-    editor_id                 UUID                           REFERENCES auth.users(id) ON DELETE SET NULL
+    creator_id                UUID                           DEFAULT auth.uid() REFERENCES auth.users(id) ON DELETE SET NULL,
+    editor_id                 UUID                           DEFAULT auth.uid() REFERENCES auth.users(id) ON DELETE SET NULL
 );
 
 CREATE TABLE hsa_template (
@@ -489,8 +489,8 @@ CREATE TABLE hsa_template (
     description               TEXT,
     created_at                TIMESTAMPTZ           NOT NULL DEFAULT now(),
     edited_at                 TIMESTAMPTZ           NOT NULL DEFAULT now(),
-    creator_id                UUID                  REFERENCES auth.users(id) ON DELETE SET NULL,
-    editor_id                 UUID                  REFERENCES auth.users(id) ON DELETE SET NULL
+    creator_id                UUID                  DEFAULT auth.uid() REFERENCES auth.users(id) ON DELETE SET NULL,
+    editor_id                 UUID                  DEFAULT auth.uid() REFERENCES auth.users(id) ON DELETE SET NULL
 );
 
 CREATE TABLE tax_deferred_template (
@@ -510,8 +510,8 @@ CREATE TABLE tax_deferred_template (
     description                         TEXT,
     created_at                          TIMESTAMPTZ                        NOT NULL DEFAULT now(),
     edited_at                           TIMESTAMPTZ                        NOT NULL DEFAULT now(),
-    creator_id                          UUID                               REFERENCES auth.users(id) ON DELETE SET NULL,
-    editor_id                           UUID                               REFERENCES auth.users(id) ON DELETE SET NULL
+    creator_id                          UUID                               DEFAULT auth.uid() REFERENCES auth.users(id) ON DELETE SET NULL,
+    editor_id                           UUID                               DEFAULT auth.uid() REFERENCES auth.users(id) ON DELETE SET NULL
 );
 
 CREATE TABLE plan_template (
@@ -524,8 +524,8 @@ CREATE TABLE plan_template (
     description                 TEXT,
     created_at                  TIMESTAMPTZ                 NOT NULL DEFAULT now(),
     edited_at                   TIMESTAMPTZ                 NOT NULL DEFAULT now(),
-    creator_id                  UUID                        REFERENCES auth.users(id) ON DELETE SET NULL,
-    editor_id                   UUID                        REFERENCES auth.users(id) ON DELETE SET NULL
+    creator_id                  UUID                        DEFAULT auth.uid() REFERENCES auth.users(id) ON DELETE SET NULL,
+    editor_id                   UUID                        DEFAULT auth.uid() REFERENCES auth.users(id) ON DELETE SET NULL
 );
 
 CREATE TABLE plan_template_income_templates (
@@ -595,8 +595,8 @@ CREATE TABLE command (
     action     TEXT              NOT NULL,
     created_at TIMESTAMPTZ       NOT NULL DEFAULT now(),
     edited_at  TIMESTAMPTZ       NOT NULL DEFAULT now(),
-    creator_id UUID              REFERENCES auth.users(id) ON DELETE SET NULL,
-    editor_id  UUID              REFERENCES auth.users(id) ON DELETE SET NULL
+    creator_id UUID              DEFAULT auth.uid() REFERENCES auth.users(id) ON DELETE SET NULL,
+    editor_id  UUID              DEFAULT auth.uid() REFERENCES auth.users(id) ON DELETE SET NULL
 );
 
 CREATE TABLE command_sequence (
@@ -606,8 +606,8 @@ CREATE TABLE command_sequence (
     ordering_type command_sequence_ordering_type NOT NULL DEFAULT 'custom',
     created_at    TIMESTAMPTZ                    NOT NULL DEFAULT now(),
     edited_at     TIMESTAMPTZ                    NOT NULL DEFAULT now(),
-    creator_id    UUID                           REFERENCES auth.users(id) ON DELETE SET NULL,
-    editor_id     UUID                           REFERENCES auth.users(id) ON DELETE SET NULL
+    creator_id    UUID                           DEFAULT auth.uid() REFERENCES auth.users(id) ON DELETE SET NULL,
+    editor_id     UUID                           DEFAULT auth.uid() REFERENCES auth.users(id) ON DELETE SET NULL
 );
 
 CREATE TABLE command_sequence_command (

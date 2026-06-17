@@ -1,11 +1,15 @@
-import {ContributionType} from "~/models/common/index";
 import {FundType} from "~/models/plan/PlanManager";
 import BaseManager from "~/models/common/BaseManager";
 import {ProcessError} from "~/utils/errors/ProcessError";
 import type {BaseState} from "~/models/common/BaseState";
+import {ContributionType} from "~/types/ContributionType";
 
 
-export abstract class BaseOrchestrator<TConfig, TState extends BaseState, TManagers> {
+export abstract class BaseOrchestrator<
+    TConfig,
+    TState extends BaseState,
+    TManagers extends typeof BaseManager
+> {
     protected states: TState[] = [];
     protected readonly config: TConfig;
     protected _managers: TManagers
@@ -94,14 +98,14 @@ export abstract class BaseOrchestrator<TConfig, TState extends BaseState, TManag
     }
 
     getAllManagers(): BaseManager<any, any>[] {
-        const managerValues = Object.values(this.managers);
+        const managerValues: typeof BaseManager[] = Object.values(this.managers);
         const allManagers: BaseManager<any, any>[] = [];
 
         managerValues.forEach((managerOrManagers) => {
             if (Array.isArray(managerOrManagers)) {
                 allManagers.push(...managerOrManagers);
             } else {
-                allManagers.push(managerOrManagers as BaseManager<any, any>);
+                allManagers.push(managerOrManagers);
             }
         });
 
@@ -111,7 +115,6 @@ export abstract class BaseOrchestrator<TConfig, TState extends BaseState, TManag
     reset() {
         this.getAllManagers().forEach(manager => {
             manager.reset()
-            manager._createInitialState()
         })
         this.states = []
         this._createInitialState()

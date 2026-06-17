@@ -1,16 +1,7 @@
-﻿import {beforeEach, describe, expect, it} from "vitest";
+import {beforeEach, describe, expect, it} from "vitest";
 import {RothIraManager} from "~/models/rothIra/RothIraManager";
-import {RothIraContributionStrategy} from "~/types/RothIra";
 import PlanManager from "~/models/plan/PlanManager";
-import {
-    GrowthApplicationStrategy,
-    IncomeTaxStrategy,
-    InsufficientFundsStrategy,
-    type Plan,
-    RetirementStrategy
-} from "~/types/Plan";
-
-import {Frequency} from "~/types/Frequency";
+import type {Plan} from "~/types/Plan";
 
 const planConfig: Plan = {
     id: 1,
@@ -18,12 +9,12 @@ const planConfig: Plan = {
     age: 30,
     year: new Date().getFullYear(),
     inflation_rate: 3,
-    insufficient_funds_strategy: InsufficientFundsStrategy.None,
-    growth_application_strategy: GrowthApplicationStrategy.Start,
-    tax_strategy: IncomeTaxStrategy.Simple,
+    insufficient_funds_strategy: 'none',
+    growth_application_strategy: 'start',
+    tax_strategy: 'simple',
     tax_rate: 30,
     life_expectancy: 85,
-    retirement_strategy: RetirementStrategy.Age,
+    retirement_strategy: 'age',
     retirement_withdrawal_rate: 4,
     retirement_income_goal: 50000,
     retirement_age: 65,
@@ -37,7 +28,7 @@ const planConfig: Plan = {
             gross_income: 100_000,
             growth_rate: 0,
             income_type: "ordinary",
-            frequency: Frequency.Annually
+            frequency: 'annual'
         },
         {
             id: 1,
@@ -45,7 +36,7 @@ const planConfig: Plan = {
             gross_income: 50_000,
             growth_rate: 0,
             income_type: "ordinary",
-            frequency: Frequency.Annually
+            frequency: 'annual'
         }
     ],
     expenses: [],
@@ -58,7 +49,7 @@ const planConfig: Plan = {
             name: 'Test Roth ',
             growth_rate: 6,
             initial_balance: 10_000,
-            contribution_strategy: RothIraContributionStrategy.Fixed,
+            contribution_strategy: 'fixed',
             contribution_percentage: 0,
             contribution_fixed_amount: 0,
             income:
@@ -68,7 +59,7 @@ const planConfig: Plan = {
                     gross_income: 100_000,
                     growth_rate: 0,
                     income_type: "ordinary",
-                    frequency: Frequency.Annually
+                    frequency: 'annual'
                 },
 
         }
@@ -109,7 +100,7 @@ describe("RothIraManager", () => {
                 roth_iras: [
                     {
                         ...planConfig.roth_iras[0],
-                        contribution_strategy: RothIraContributionStrategy.Fixed,
+                        contribution_strategy: 'fixed',
                         contribution_fixed_amount: 100,
                     }
                 ]
@@ -127,7 +118,7 @@ describe("RothIraManager", () => {
                 roth_iras: [
                     {
                         ...planConfig.roth_iras[0],
-                        contribution_strategy: RothIraContributionStrategy.PercentageOfIncome,
+                        contribution_strategy: 'percentage_of_income',
                         contribution_percentage: 10,
                     }
                 ]
@@ -146,7 +137,7 @@ describe("RothIraManager", () => {
                 roth_iras: [
                     {
                         ...planConfig.roth_iras[0],
-                        contribution_strategy: RothIraContributionStrategy.Max,
+                        contribution_strategy: 'max',
                     }
                 ]
             })
@@ -163,7 +154,7 @@ describe("RothIraManager", () => {
         it("should process rothIra and update state correctly for start of year application strategy", () => {
             planManager = new PlanManager({
                 ...planConfig,
-                growth_application_strategy: GrowthApplicationStrategy.Start,
+                growth_application_strategy: 'start',
                 roth_iras: [
                     {
                         ...planConfig.roth_iras[0],
@@ -203,7 +194,7 @@ describe("RothIraManager", () => {
         it("should process rothIra and update state correctly for end of of year application strategy", () => {
             planManager = new PlanManager({
                 ...planConfig,
-                growth_application_strategy: GrowthApplicationStrategy.End,
+                growth_application_strategy: 'end',
                 roth_iras: [
                     {
                         ...planConfig.roth_iras[0],
@@ -253,7 +244,7 @@ describe("RothIraManager", () => {
 
             planManager = new PlanManager({
                 ...planConfig,
-                growth_application_strategy: GrowthApplicationStrategy.Start,
+                growth_application_strategy: 'start',
                 roth_iras: [
                     {
                         ...planConfig.roth_iras[0],

@@ -1,19 +1,9 @@
 import type {Income} from "~/types/Income";
+import type {Enums, TablesInsert, TablesUpdate} from '~/types/database.types'
 
-export enum EmployerContributionStrategy {
-    None = 'none',
-    PercentageOfContribution = 'percentage_of_contribution',
-    PercentageOfCompensation = 'percentage_of_compensation',
-    Fixed = 'fixed',
-}
+export type EmployerContributionStrategy = Enums<'employer_contribution_strategy'>
 
-export enum TaxDeferredContributionStrategy {
-    None = 'none',
-    UntilCompanyMatch = 'until_company_match',
-    PercentageOfIncome = 'percentage_of_income',
-    Fixed = 'fixed',
-    Max = 'max',
-}
+export type TaxDeferredContributionStrategy = Enums<'tax_deferred_contribution_strategy'>
 
 export type TaxDeferred = {
     id: number;
@@ -44,14 +34,17 @@ export const taxDeferredDefaults: TaxDeferredPartial = {
     name: '401k',
     growth_rate: DEFAULT_GROWTH_RATE,
     initial_balance: 0,
-    elective_contribution_strategy: TaxDeferredContributionStrategy.PercentageOfIncome,
+    elective_contribution_strategy: 'percentage_of_income',
     elective_contribution_percentage: 0,
     elective_contribution_fixed_amount: 0,
     income: undefined,
 
-    employer_contribution_strategy:EmployerContributionStrategy.PercentageOfContribution,
+    employer_contribution_strategy: 'percentage_of_contribution',
     employer_match_percentage: 0,
     employer_contribution_match_percentage: 100,
     employer_contribution_fixed_amount: 0,
     employer_match_percentage_limit: 0,
 }
+
+export type TaxDeferredInsert = TablesInsert<'tax_deferred'>
+export type TaxDeferredUpdate = TablesUpdate<'tax_deferred'>

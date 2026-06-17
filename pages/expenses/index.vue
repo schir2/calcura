@@ -19,7 +19,7 @@ async function handleCreateExpense(expenseTemplate: ExpensePartial) {
 }
 
 async function handleDeleteExpense(expense: Expense) {
-  await expenseService.delete(expense.id)
+  await expenseService.remove(expense.id)
   await loadExpenses();
 }
 
