@@ -1,12 +1,12 @@
 import type {TaxDeferred} from '~/types/TaxDeferred';
 import {assertDefined, calculateGrowthAmount} from "~/utils";
-import type TaxDeferredState from "~/types/TaxDeferredState";
 import BaseManager from "~/models/common/BaseManager";
 import type {IncomeManager} from "~/models/income/IncomeManager";
 import {FundType} from "~/models/plan/PlanManager";
 import {ContributionLimitType} from "~/types/Plan";
 import eventBus from "~/services/eventBus";
 import {ContributionType} from "~/types/ContributionType";
+import type {TaxDeferredState} from "~/types/TaxDeferredState";
 
 export class TaxDeferredManager extends BaseManager<TaxDeferred, TaxDeferredState> {
 
@@ -97,7 +97,10 @@ export class TaxDeferredManager extends BaseManager<TaxDeferred, TaxDeferredStat
                 }
                 if ((this.getConfig().employer_match_percentage ?? 0) <= 0) {
 
-                    eventBus.emit('warning', {scope: 'calculateEmployerContribution:employerMatchPercentage', message: 'Employer match percentage should be greater than 0'})
+                    eventBus.emit('warning', {
+                        scope: 'calculateEmployerContribution:employerMatchPercentage',
+                        message: 'Employer match percentage should be greater than 0'
+                    })
                 }
                 const employerMatchLimit = this.getEmployerMatchLimit();
                 if (this.getConfig().elective_contribution_strategy === 'until_company_match') {
@@ -165,7 +168,11 @@ export class TaxDeferredManager extends BaseManager<TaxDeferred, TaxDeferredStat
         const electiveContributionLimit = Math.min(this.orchestrator.getLimitForContributionType(ContributionLimitType.Elective), electiveContribution)
         const contribution = Math.min(this.orchestrator.getLimitForContributionType(ContributionLimitType.Deferred), employerContribution + electiveContribution)
         const employerContributionLimit = Math.min(contribution - electiveContributionLimit, employerContribution)
-        return {electiveContribution: electiveContributionLimit, employerContribution: employerContributionLimit, contribution: employerContributionLimit + electiveContributionLimit}
+        return {
+            electiveContribution: electiveContributionLimit,
+            employerContribution: employerContributionLimit,
+            contribution: employerContributionLimit + electiveContributionLimit
+        }
     }
 
 
@@ -174,7 +181,11 @@ export class TaxDeferredManager extends BaseManager<TaxDeferred, TaxDeferredStat
         const employerContributionRequest = this.calculateEmployerContribution()
         const electiveContributionRequest = this.calculateElectiveContribution();
         const electiveContributionReturned = this.orchestrator.requestFunds(electiveContributionRequest, FundType.Taxable)
-        const {contribution, employerContribution, electiveContribution} = this.getContributionsAdjustedForLimits(electiveContributionReturned, employerContributionRequest)
+        const {
+            contribution,
+            employerContribution,
+            electiveContribution
+        } = this.getContributionsAdjustedForLimits(electiveContributionReturned, employerContributionRequest)
 
         this.orchestrator.withdraw(electiveContribution, FundType.Taxable)
         const growthAmount = calculateGrowthAmount(

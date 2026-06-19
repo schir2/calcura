@@ -1,6 +1,6 @@
 import type {Ira} from '~/types/Ira';
 import {assertDefined, calculateGrowthAmount} from "~/utils";
-import type IraState from "~/types/IraState";
+import type {IraState} from "~/types/IraState";
 import BaseManager from "~/models/common/BaseManager";
 import type {IncomeManager} from "~/models/income/IncomeManager";
 import {FundType} from "~/models/plan/PlanManager";

@@ -1,8 +1,12 @@
 import AutoImport from 'unplugin-auto-import/vite'
-import { NaiveUiResolver } from 'unplugin-vue-components/resolvers'
+import {NaiveUiResolver} from 'unplugin-vue-components/resolvers'
 import Components from 'unplugin-vue-components/vite'
 
 export default defineNuxtConfig({
+    future: {
+        compatibilityVersion: 4
+    },
+
     compatibilityDate: '2026-01-01',
     css: [
         '@/assets/css/tailwind.css',
@@ -14,13 +18,13 @@ export default defineNuxtConfig({
     },
     devtools: {enabled: true},
     modules: [
-      '@nuxtjs/supabase',
-      '@vee-validate/nuxt',
-      '@nuxt/test-utils/module',
-      '@pinia/nuxt',
-      '@vueuse/nuxt',
-      '@nuxt/icon',
-      'nuxtjs-naive-ui',
+        '@nuxtjs/supabase',
+        '@vee-validate/nuxt',
+        '@nuxt/test-utils/module',
+        '@pinia/nuxt',
+        '@vueuse/nuxt',
+        '@nuxt/icon',
+        'nuxtjs-naive-ui',
     ],
     supabase: {
         redirect: false,
@@ -37,9 +41,9 @@ export default defineNuxtConfig({
             'composables/**'
         ]
     },
-    icon:{
+    icon: {
         serverBundle: {
-            collections: ['uil','mdi',]
+            collections: ['uil', 'mdi',]
         }
     },
     build: {
@@ -54,7 +58,7 @@ export default defineNuxtConfig({
     app: {
         head: {
             link: [
-                { rel: 'icon', type: 'image/svg+xml', href: '/favicon.svg' }
+                {rel: 'icon', type: 'image/svg+xml', href: '/favicon.svg'}
             ],
             bodyAttrs: {
                 class: 'bg-skin-base text-skin-base'

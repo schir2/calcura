@@ -1,5 +1,5 @@
 import type {Debt} from "~/types/Debt";
-import type DebtState from "~/types/DebtState";
+import type {DebtState} from "~/types/DebtState";
 import {assertDefined} from "~/utils";
 import BaseManager from "~/models/common/BaseManager";
 import {FundType} from "~/models/plan/PlanManager";

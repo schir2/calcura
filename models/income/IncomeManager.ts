@@ -1,5 +1,5 @@
 import BaseManager from "~/models/common/BaseManager";
-import type IncomeState from "~/types/IncomeState";
+import type {IncomeState} from "~/types/IncomeState";
 import type {Income} from "~/types/Income";
 
 export class IncomeManager extends BaseManager<Income, IncomeState> {

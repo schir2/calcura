@@ -1,6 +1,6 @@
 import type {Brokerage} from '~/types/Brokerage';
 import {assertDefined, calculateGrowthAmount} from "~/utils";
-import type BrokerageState from "~/types/BrokerageState";
+import type {BrokerageState} from "~/types/BrokerageState";
 import BaseManager from "~/models/common/BaseManager";
 import {FundType} from "~/models/plan/PlanManager";
 

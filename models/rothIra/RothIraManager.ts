@@ -1,6 +1,6 @@
 import type {RothIra} from '~/types/RothIra';
 import {assertDefined, calculateGrowthAmount} from "~/utils";
-import type RothIraState from "~/types/RothIraState";
+import type {RothIraState} from "~/types/RothIraState";
 import BaseManager from "~/models/common/BaseManager";
 import type {IncomeManager} from "~/models/income/IncomeManager";
 import {FundType} from "~/models/plan/PlanManager";
