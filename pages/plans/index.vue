@@ -4,7 +4,9 @@ import {usePlanService} from "~/composables/api/usePlanService";
 
 
 const planService = usePlanService()
-const {data: plans, refresh: refreshPlans} = useFetch<Plan[]>('api/plans')
+const {data: plans, refresh: refreshPlans} = useAsyncData(() => {
+  return planService.list()
+})
 
 const showModal = ref(false)
 
@@ -17,8 +19,8 @@ function handleClickCreatePlan() {
   showModal.value = true
 }
 
-async function handleDeletePlan(plan: Plan) {
-  await planService.remove(plan.id)
+async function handleDeletePlan(id: number) {
+  await planService.remove(id)
   await refreshPlans();
 }
 
@@ -56,9 +58,10 @@ onMounted(async () => {
 
 
   </n-modal>
-  <PlanList :plans="plans"
-            @duplicate="handleCreatePlan"
-            @update="handleUpdatePlan"
-            @delete="handleDeletePlan"
+  <PlanList
+      :plans="plans ?? []"
+      @duplicate="handleCreatePlan"
+      @update="handleUpdatePlan"
+      @delete="handleDeletePlan"
   ></PlanList>
 </template>
