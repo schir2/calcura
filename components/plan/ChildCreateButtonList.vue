@@ -23,7 +23,7 @@
   </n-modal>
 </template>
 <script setup lang="ts">
-import {ModelName} from "~/types/ModelName";
+import type {ModelName} from "~/types/ModelName";
 import {
   BrokerageForm,
   CashReserveForm,
@@ -38,14 +38,14 @@ import {
 type CreateButtonProps = { name: ModelName, label: string, form: Component, buttonType: string };
 
 const items: CreateButtonProps[] = [
-  {name: ModelName.Income, label: 'Income', form: IncomeForm, buttonType: 'primary'},
-  {name: ModelName.Expense, label: 'Expense', form: ExpenseForm, buttonType: 'warning'},
-  {name: ModelName.Debt, label: 'Debt', form: DebtForm, buttonType: 'error'},
-  {name: ModelName.CashReserve, label: 'Cash Reserve', form: CashReserveForm, buttonType: 'info'},
-  {name: ModelName.TaxDeferred, label: '401k', form: TaxDeferredForm, buttonType: 'info'},
-  {name: ModelName.RothIra, label: 'Roth', form: RothIraForm, buttonType: 'info'},
-  {name: ModelName.Ira, label: 'IRA', form: IraForm, buttonType: 'info'},
-  {name: ModelName.Brokerage, label: 'Brokerage', form: BrokerageForm, buttonType: 'info'},
+  {name: 'income', label: 'Income', form: IncomeForm, buttonType: 'primary'},
+  {name: 'expense', label: 'Expense', form: ExpenseForm, buttonType: 'warning'},
+  {name: 'debt', label: 'Debt', form: DebtForm, buttonType: 'error'},
+  {name: 'cash_reserve', label: 'Cash Reserve', form: CashReserveForm, buttonType: 'info'},
+  {name: 'tax_deferred', label: '401k', form: TaxDeferredForm, buttonType: 'info'},
+  {name: 'roth_ira', label: 'Roth', form: RothIraForm, buttonType: 'info'},
+  {name: 'ira', label: 'IRA', form: IraForm, buttonType: 'info'},
+  {name: 'brokerage', label: 'Brokerage', form: BrokerageForm, buttonType: 'info'},
 ];
 
 const showModal = ref<boolean>(false)

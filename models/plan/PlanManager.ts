@@ -29,14 +29,14 @@ export enum FundType {
 
 export type PlanManagers = {
     expense: ExpenseManager[];
-    cashReserve: CashReserveManager[];
+    cash_reserve: CashReserveManager[];
     debt: DebtManager[];
     income: IncomeManager[];
-    taxDeferred: TaxDeferredManager[];
-    rothIra: RothIraManager[];
+    tax_deferred: TaxDeferredManager[];
+    roth_ira: RothIraManager[];
     ira: IraIManager[];
     brokerage: BrokerageManager[];
-};
+}
 
 
 export default class PlanManager extends BaseOrchestrator<Plan, PlanState, PlanManagers> {
@@ -44,13 +44,13 @@ export default class PlanManager extends BaseOrchestrator<Plan, PlanState, PlanM
     createManagers(): PlanManagers {
         return {
             income: this.config.incomes.map((income) => new IncomeManager(this, income)),
-            cashReserve: this.config.cash_reserves.map((cashReserve) => new CashReserveManager(this, cashReserve)),
+            cash_reserve: this.config.cash_reserves.map((cashReserve) => new CashReserveManager(this, cashReserve)),
             expense: this.config.expenses.map((expense) => new ExpenseManager(this, expense)),
             debt: this.config.debts.map((debt) => new DebtManager(this, debt)),
             brokerage: this.config.brokerages.map((brokerage) => new BrokerageManager(this, brokerage)),
             ira: this.config.iras.map((ira) => new IraIManager(this, ira)),
-            rothIra: this.config.roth_iras.map((rothIra) => new RothIraManager(this, rothIra)),
-            taxDeferred: this.config.tax_deferreds.map((taxDeferred) => new TaxDeferredManager(this, taxDeferred))
+            roth_ira: this.config.roth_iras.map((rothIra) => new RothIraManager(this, rothIra)),
+            tax_deferred: this.config.tax_deferreds.map((taxDeferred) => new TaxDeferredManager(this, taxDeferred))
         }
     }
 
@@ -476,7 +476,7 @@ export default class PlanManager extends BaseOrchestrator<Plan, PlanState, PlanM
             if (commands) {
                 commands.forEach(command => {
                     if (command.is_active) {
-                        manager = this.getManagerById(command.item_type, Number(command.model_id))
+                        manager = this.getManagerById(command.item_type, Number(command.item_id))
                         manager?.process()
                         manager?.advanceTimePeriod()
                     }

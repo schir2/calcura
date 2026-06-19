@@ -1,13 +1,5 @@
-import type {PlanManagers} from "~/models/plan/PlanManager";
+import type {Database} from "~/types/database.types";
 
-export type Command = {
-    id: number;
-    order: number;
-    name: string;
-    label: string;
-    item_type: keyof PlanManagers;
-    model_id: number;
-    action: "process";
-    is_active: boolean;
-    item_id: number;
-}
+export type Command = Database['public']['Tables']['command']['Row'];
+export type CommandInsert = Database['public']['Tables']['command']['Insert'];
+export type CommandUpdate = Database['public']['Tables']['command']['Update'];

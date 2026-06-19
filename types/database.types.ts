@@ -210,6 +210,7 @@ export type Database = {
           edited_at: string
           editor_id: string | null
           id: number
+          is_active: boolean
           item_id: number
           item_type: Database["public"]["Enums"]["command_item_type"]
         }
@@ -220,6 +221,7 @@ export type Database = {
           edited_at?: string
           editor_id?: string | null
           id?: never
+          is_active?: boolean
           item_id: number
           item_type: Database["public"]["Enums"]["command_item_type"]
         }
@@ -230,6 +232,7 @@ export type Database = {
           edited_at?: string
           editor_id?: string | null
           id?: never
+          is_active?: boolean
           item_id?: number
           item_type?: Database["public"]["Enums"]["command_item_type"]
         }

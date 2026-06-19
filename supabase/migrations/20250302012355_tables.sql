@@ -596,7 +596,8 @@ CREATE TABLE command (
     created_at TIMESTAMPTZ       NOT NULL DEFAULT now(),
     edited_at  TIMESTAMPTZ       NOT NULL DEFAULT now(),
     creator_id UUID              DEFAULT auth.uid() REFERENCES auth.users(id) ON DELETE SET NULL,
-    editor_id  UUID              DEFAULT auth.uid() REFERENCES auth.users(id) ON DELETE SET NULL
+    editor_id  UUID              DEFAULT auth.uid() REFERENCES auth.users(id) ON DELETE SET NULL,
+    is_active  BOOLEAN           NOT NULL DEFAULT TRUE
 );
 
 CREATE TABLE command_sequence (

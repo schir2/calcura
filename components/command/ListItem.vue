@@ -1,6 +1,7 @@
 <script setup lang="ts">
-import {ModelName, ModelTextColor} from "~/types/ModelName"
+import {ModelName} from "~/types/ModelName"
 import type {IconName} from "~/components/base/Ico.vue";
+import {ModelTextColor} from "../../constants/ModelTextColor";
 
 type Tag = {
   label?: string | number,

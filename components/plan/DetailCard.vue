@@ -1,3 +1,41 @@
+<script setup lang="ts">
+
+import type {Plan} from "~/types/Plan";
+
+type Props = {
+  plan: Plan
+}
+
+const props = defineProps<Props>()
+
+const showModal = ref<boolean>(false)
+const showDetail = ref<boolean>(false)
+
+const emit = defineEmits(['delete', 'update', 'create']);
+
+function handleDelete() {
+  emit('delete', props.plan);
+}
+
+function handleUpdate(plan: Partial<Plan>) {
+  emit('update', plan)
+  showModal.value = false;
+}
+
+
+function handleCreate(planPartial: Partial<Plan>) {
+  emit('create', planPartial)
+  showModal.value = false;
+}
+
+function handleClose() {
+  showModal.value = false;
+}
+
+function handleEdit() {
+  showModal.value = true;
+}
+</script>
 <template>
 
   <n-modal v-model:show="showModal">
@@ -74,41 +112,3 @@
     </n-collapse-transition>
   </n-card>
 </template>
-<script setup lang="ts">
-
-import type {Plan} from "~/types/Plan";
-
-type Props = {
-  plan: Plan
-}
-
-const props = defineProps<Props>()
-
-const showModal = ref<boolean>(false)
-const showDetail = ref<boolean>(false)
-
-const emit = defineEmits(['delete', 'update', 'create']);
-
-function handleDelete() {
-  emit('delete', props.plan);
-}
-
-function handleUpdate(plan: Partial<Plan>) {
-  emit('update', plan)
-  showModal.value = false;
-}
-
-
-function handleCreate(planPartial: Partial<Plan>) {
-  emit('create', planPartial)
-  showModal.value = false;
-}
-
-function handleClose() {
-  showModal.value = false;
-}
-
-function handleEdit() {
-  showModal.value = true;
-}
-</script>

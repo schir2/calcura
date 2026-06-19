@@ -1,9 +1,8 @@
 <script setup lang="ts">
 import type {Plan} from "~/types/Plan";
 import ChildCreateButtonList from "~/components/plan/ChildCreateButtonList.vue";
-import {ModelName} from "~/types/ModelName";
+import type {ModelName} from "~/types/ModelName";
 import type {CommandSequence} from "~/types/CommandSequence";
-import {camelToKebab} from "~/utils";
 import PlanManager from "~/models/plan/PlanManager";
 import type {PlanState} from "~/types/PlanState";
 import type {Debt} from "~/types/Debt";
@@ -12,7 +11,9 @@ import type {Expense} from "~/types/Expense";
 const planService = usePlanService()
 const route = useRoute()
 const planId = Number(route.params.id)
-const {data: plan, refresh: refreshPlan, pending: planLoading} = await useFetch<Plan>(`/api/plans/${planId}`)
+const {data: plan, refresh: refreshPlan, status} = useAsyncData(() => {
+  return planService.get(planId)
+})
 const loading = ref<boolean>(false);
 
 
@@ -24,25 +25,25 @@ useHead({
 })
 
 async function handleCreatePlanModel(payload: { model: ModelName, data: any }) {
-  plan.value = await useApi(`plans/${planId}/${camelToKebab(payload.model)}s`).create(payload.data)
+  plan.value = await planService.create(payload.data)
   await loadPlan()
 }
 
 async function handleRemovePlanModel(payload: { modelName: ModelName, data: any }) {
   const {modelName, data} = payload;
-  await useApi(`plans/${planId}/${camelToKebab(modelName)}s`).remove(data.id)
+  await useApi(modelName).remove(data.id)
   await loadPlan();
 }
 
 async function handleUpdateModel(payload: { modelName: ModelName, data: any }) {
   const {modelName, data} = payload;
-  await useApi(`/${camelToKebab(modelName)}s`).update(data.id, data);
+  await useApi(modelName).update(data.id, data);
   await loadPlan();
 }
 
 async function handleDeleteModel(payload: { modelName: ModelName, data: any }) {
   const {modelName, data} = payload;
-  await useApi(`/${camelToKebab(modelName)}s`).remove(payload.data.id);
+  await useApi(modelName).remove(payload.data.id);
   await loadPlan();
 }
 
@@ -70,8 +71,8 @@ function handleClickShowMeTheDataButton() {
   showDataTable.value = true
 }
 
-async function handleUpdatePlan(planData: Plan) {
-  await planService.update(planData.id, planData)
+async function handleUpdatePlan(id: number, update: PlanUpdate) {
+  await planService.update(id, update)
   showModal.value = false;
   await loadPlan()
 }
@@ -109,8 +110,8 @@ async function loadPlan() {
   }
 }
 
-const activeExpensesAndDebts = computed((): {expenses: Expense[], debts: Debt[]} => {
-      const result: {expenses: Expense[], debts: Debt[]} = {
+const activeExpensesAndDebts = computed((): { expenses: Expense[], debts: Debt[] } => {
+      const result: { expenses: Expense[], debts: Debt[] } = {
         expenses: [],
         debts: []
       }
@@ -118,16 +119,16 @@ const activeExpensesAndDebts = computed((): {expenses: Expense[], debts: Debt[]}
         const commands = planManager.value.getCommandsForSequence(activeCommandSequenceId.value)
         const currentPlan = planManager.value.getConfig() as Plan
         for (const command of commands) {
-          if (command.isActive) {
-            if (command.modelName === 'debt') {
+          if (command.is_active) {
+            if (command.item_type === 'debt') {
               for (const debt of currentPlan.debts) {
-                if (command.modelId === debt.id) {
+                if (command.item_id === debt.id) {
                   result.debts.push(debt)
                 }
               }
-            } else if (command.modelName === 'expense') {
+            } else if (command.item_type === 'expense') {
               for (const expense of currentPlan.expenses) {
-                if (command.modelId === expense.id) {
+                if (command.item_id === expense.id) {
                   result.expenses.push(expense)
                 }
               }

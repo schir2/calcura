@@ -1,7 +1,6 @@
 import type {Database} from '~/types/database.types'
-
-type Tables = Database['public']['Tables']
-type TableName = keyof Tables
+import type {TableName} from "~/types/TableName";
+import type {Tables} from "~/types/Table";
 
 export function useApi<
     T extends TableName = TableName,

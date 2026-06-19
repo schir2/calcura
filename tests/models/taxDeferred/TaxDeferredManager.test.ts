@@ -79,7 +79,7 @@ let taxDeferredManager: TaxDeferredManager | undefined;
 describe("TaxDeferredManager", () => {
     beforeEach(() => {
         planManager = new PlanManager(planConfig)
-        taxDeferredManager = planManager.getManagerById('taxDeferred', 1)
+        taxDeferredManager = planManager.getManagerById('tax_deferred', 1)
         assertDefined(taxDeferredManager, 'TaxDeferredManager')
     });
 
@@ -115,7 +115,7 @@ describe("TaxDeferredManager", () => {
                     }]
                 }
             )
-            const taxDeferredManager = planManager.getManagerById<TaxDeferredManager>('taxDeferred', 1)
+            const taxDeferredManager = planManager.getManagerById<TaxDeferredManager>('tax_deferred', 1)
             assertDefined(taxDeferredManager, 'TaxDeferredManager')
             const electiveContribution = taxDeferredManager.calculateElectiveContribution();
             expect(electiveContribution).toBe(100);
@@ -133,7 +133,7 @@ describe("TaxDeferredManager", () => {
                     }]
                 }
             )
-            const taxDeferredManager = planManager.getManagerById<TaxDeferredManager>('taxDeferred', 1)
+            const taxDeferredManager = planManager.getManagerById<TaxDeferredManager>('tax_deferred', 1)
             assertDefined(taxDeferredManager, 'TaxDeferredManager')
             const electiveContribution = taxDeferredManager.calculateElectiveContribution();
             expect(electiveContribution).toBe(10_000);
@@ -151,7 +151,7 @@ describe("TaxDeferredManager", () => {
                     }]
                 }
             )
-            const taxDeferredManager = planManager.getManagerById<TaxDeferredManager>('taxDeferred', 1)
+            const taxDeferredManager = planManager.getManagerById<TaxDeferredManager>('tax_deferred', 1)
             assertDefined(taxDeferredManager, 'TaxDeferredManager')
             const electiveContribution = taxDeferredManager.calculateElectiveContribution();
             expect(electiveContribution).toBe(Infinity);
@@ -173,7 +173,7 @@ describe("TaxDeferredManager", () => {
                     }]
                 }
             )
-            const taxDeferredManager = planManager.getManagerById<TaxDeferredManager>('taxDeferred', 1)
+            const taxDeferredManager = planManager.getManagerById<TaxDeferredManager>('tax_deferred', 1)
             assertDefined(taxDeferredManager, 'TaxDeferredManager')
             const electiveContribution = taxDeferredManager.calculateElectiveContribution();
             expect(electiveContribution).toBe(3_000);
@@ -192,7 +192,7 @@ describe("TaxDeferredManager", () => {
                     }]
                 }
             )
-            const taxDeferredManager = planManager.getManagerById<TaxDeferredManager>('taxDeferred', 1)
+            const taxDeferredManager = planManager.getManagerById<TaxDeferredManager>('tax_deferred', 1)
             assertDefined(taxDeferredManager, 'TaxDeferredManager')
             const electiveContribution = taxDeferredManager.calculateEmployerContribution();
             expect(electiveContribution).toBe(10_000);
@@ -209,7 +209,7 @@ describe("TaxDeferredManager", () => {
                     }]
                 }
             )
-            const taxDeferredManager = planManager.getManagerById<TaxDeferredManager>('taxDeferred', 1)
+            const taxDeferredManager = planManager.getManagerById<TaxDeferredManager>('tax_deferred', 1)
             assertDefined(taxDeferredManager, 'TaxDeferredManager')
             const electiveContribution = taxDeferredManager.calculateEmployerContribution();
             expect(electiveContribution).toBe(5_000);
@@ -229,7 +229,7 @@ describe("TaxDeferredManager", () => {
                     }]
                 }
             )
-            const taxDeferredManager = planManager.getManagerById<TaxDeferredManager>('taxDeferred', 1)
+            const taxDeferredManager = planManager.getManagerById<TaxDeferredManager>('tax_deferred', 1)
             assertDefined(taxDeferredManager, 'TaxDeferredManager')
             const electiveContribution = taxDeferredManager.calculateEmployerContribution();
             expect(electiveContribution).toBe(0);
@@ -251,7 +251,7 @@ describe("TaxDeferredManager", () => {
                     }]
                 }
             )
-            const taxDeferredManager = planManager.getManagerById<TaxDeferredManager>('taxDeferred', 1)
+            const taxDeferredManager = planManager.getManagerById<TaxDeferredManager>('tax_deferred', 1)
             assertDefined(taxDeferredManager, 'TaxDeferredManager')
             const electiveContribution = taxDeferredManager.calculateEmployerContribution();
             expect(electiveContribution).toBe(750);
@@ -273,7 +273,7 @@ describe("TaxDeferredManager", () => {
                     }]
                 }
             )
-            const taxDeferredManager = planManager.getManagerById<TaxDeferredManager>('taxDeferred', 1)
+            const taxDeferredManager = planManager.getManagerById<TaxDeferredManager>('tax_deferred', 1)
 
             expect(() => {
                 assertDefined(taxDeferredManager, 'TaxDeferredManager')
@@ -297,7 +297,7 @@ describe("TaxDeferredManager", () => {
                     }]
                 }
             )
-            const taxDeferredManager = planManager.getManagerById<TaxDeferredManager>('taxDeferred', 1)
+            const taxDeferredManager = planManager.getManagerById<TaxDeferredManager>('tax_deferred', 1)
             assertDefined(taxDeferredManager, 'TaxDeferredManager')
             const electiveContribution = taxDeferredManager.calculateEmployerContribution();
             expect(electiveContribution).toBe(0);
@@ -324,7 +324,7 @@ describe("TaxDeferredManager", () => {
                     }]
                 }
             )
-            taxDeferredManager = planManager.getManagerById('taxDeferred', 1)
+            taxDeferredManager = planManager.getManagerById('tax_deferred', 1)
             assertDefined(taxDeferredManager, 'TaxDeferredManager')
             taxDeferredManager.process();
             const planState = taxDeferredManager.orchestrator.getCurrentState();
@@ -364,7 +364,7 @@ describe("TaxDeferredManager", () => {
                     }]
                 }
             )
-            taxDeferredManager = planManager.getManagerById('taxDeferred', 1)
+            taxDeferredManager = planManager.getManagerById('tax_deferred', 1)
             assertDefined(taxDeferredManager, 'TaxDeferredManager')
             taxDeferredManager.process();
             const planState = taxDeferredManager.orchestrator.getCurrentState();
@@ -387,7 +387,7 @@ describe("TaxDeferredManager", () => {
         });
 
         it("should throw error if processing already processed state", () => {
-            const taxDeferredManager = planManager.getManagerById('taxDeferred', 1)
+            const taxDeferredManager = planManager.getManagerById('tax_deferred', 1)
             assertDefined(taxDeferredManager, 'TaxDeferredManager')
             taxDeferredManager.process();
             expect(() => taxDeferredManager.process()).toThrow(

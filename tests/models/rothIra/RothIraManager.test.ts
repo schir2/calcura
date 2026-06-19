@@ -74,7 +74,7 @@ let rothIraManager: RothIraManager | undefined;
 describe("RothIraManager", () => {
     beforeEach(() => {
         planManager = new PlanManager(planConfig)
-        rothIraManager = planManager.getManagerById<RothIraManager>('rothIra',1)
+        rothIraManager = planManager.getManagerById<RothIraManager>('roth_ira',1)
         assertDefined(rothIraManager, 'RothIraManager')
     });
 
@@ -106,7 +106,7 @@ describe("RothIraManager", () => {
                 ]
             })
 
-        rothIraManager = planManager.getManagerById<RothIraManager>('rothIra',1)
+        rothIraManager = planManager.getManagerById<RothIraManager>('roth_ira',1)
         assertDefined(rothIraManager, 'RothIraManager')
             const contribution = rothIraManager.calculateContribution();
             expect(contribution).toBe(100);
@@ -124,7 +124,7 @@ describe("RothIraManager", () => {
                 ]
             })
 
-        rothIraManager = planManager.getManagerById<RothIraManager>('rothIra',1)
+        rothIraManager = planManager.getManagerById<RothIraManager>('roth_ira',1)
         assertDefined(rothIraManager, 'RothIraManager')
 
             const contribution = rothIraManager.calculateContribution();
@@ -142,7 +142,7 @@ describe("RothIraManager", () => {
                 ]
             })
 
-        rothIraManager = planManager.getManagerById<RothIraManager>('rothIra',1)
+        rothIraManager = planManager.getManagerById<RothIraManager>('roth_ira',1)
         assertDefined(rothIraManager, 'RothIraManager')
             const contribution = rothIraManager.calculateContribution();
             expect(contribution).toBe(7_000);
@@ -165,7 +165,7 @@ describe("RothIraManager", () => {
                 ]
             })
 
-        rothIraManager = planManager.getManagerById<RothIraManager>('rothIra',1)
+        rothIraManager = planManager.getManagerById<RothIraManager>('roth_ira',1)
         assertDefined(rothIraManager, 'RothIraManager')
             rothIraManager.process();
             const planState = rothIraManager.orchestrator.getCurrentState();
@@ -205,7 +205,7 @@ describe("RothIraManager", () => {
                 ]
             })
 
-        rothIraManager = planManager.getManagerById<RothIraManager>('rothIra',1)
+        rothIraManager = planManager.getManagerById<RothIraManager>('roth_ira',1)
         assertDefined(rothIraManager, 'RothIraManager')
 
             rothIraManager.process();
@@ -255,7 +255,7 @@ describe("RothIraManager", () => {
                 ]
             })
 
-        rothIraManager = planManager.getManagerById<RothIraManager>('rothIra',1)
+        rothIraManager = planManager.getManagerById<RothIraManager>('roth_ira',1)
         assertDefined(rothIraManager, 'RothIraManager')
             rothIraManager.process();
             const rothIraState = rothIraManager.getCurrentState();
