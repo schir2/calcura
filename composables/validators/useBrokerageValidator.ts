@@ -1,7 +1,7 @@
 import type {FormItemRule, FormRules} from "naive-ui";
-import type {BrokeragePartial} from "~/types/Brokerage";
+import type {Brokerage} from "~/types/Brokerage";
 
-export function useBrokerageValidator(modelRef: Ref<BrokeragePartial>) {
+export function useBrokerageValidator(modelRef: Ref<Partial<Brokerage>>) {
     function validateContributionFixedAmount(rule: FormItemRule, value: number | undefined) {
         if (modelRef.value.contribution_strategy === "fixed") {
             if (value === null || value === undefined) {

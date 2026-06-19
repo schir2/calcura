@@ -24,8 +24,8 @@ export default class DebtManager extends BaseManager<Debt, DebtState> {
             throw new Error("The current state has already been processed.");
         }
         const paymentRequest = this.calculatePayment(currentState)
-        const payment = this.orchestrator.requestFunds(paymentRequest, FundType.Taxed, this.config.payment_minimum)
-        this.orchestrator.payDebt(payment, this.config.payment_minimum)
+        const payment = this.orchestrator.requestFunds(paymentRequest, FundType.Taxed, this.config.payment_minimum ?? 0)
+        this.orchestrator.payDebt(payment, this.config.payment_minimum ?? 0)
 
         const principalEndOfYear = currentState.principal_start_of_year - payment;
         const interestAmount = this.calculateInterest(principalEndOfYear)
@@ -71,16 +71,16 @@ export function calculateDebtPayment(debtConfig: Debt, principal: number): numbe
     let payment = 0
     switch (debtConfig.payment_strategy) {
         case 'fixed':
-            payment = debtConfig.payment_fixed_amount;
+            payment = debtConfig.payment_fixed_amount ?? 0;
             break
         case 'percentage_of_debt':
-            payment = principal * (debtConfig.payment_percentage / 100);
+            payment = principal * ((debtConfig.payment_percentage ?? 0) / 100);
             break
         case 'maximum_payment':
             payment = principal;
             break
         case 'minimum_payment':
-            payment = debtConfig.payment_minimum
+            payment = debtConfig.payment_minimum ?? 0
             break
     }
     payment = getAnnualAmount(payment, debtConfig.frequency)

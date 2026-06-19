@@ -85,7 +85,7 @@ export function calculateIraContribution(iraConfig: Ira, incomeAmount?: number, 
     let contribution = 0
     switch (iraConfig.contribution_strategy) {
         case 'fixed':
-            contribution = iraConfig.contribution_fixed_amount
+            contribution = iraConfig.contribution_fixed_amount ?? 0
             break
         case 'percentage_of_income':
             if (incomeAmount === undefined) {
@@ -96,7 +96,7 @@ export function calculateIraContribution(iraConfig: Ira, incomeAmount?: number, 
                 })
                 return 0
             }
-            contribution = incomeAmount * iraConfig.contribution_percentage / 100
+            contribution = incomeAmount * (iraConfig.contribution_percentage ?? 0) / 100
             break
         case 'max':
             contribution = iraLimit

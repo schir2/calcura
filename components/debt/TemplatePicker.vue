@@ -18,21 +18,21 @@
   </n-thing>
 </template>
 <script lang="ts" setup>
-import {type Debt, debtDefaults, type DebtInsert, type DebtPartial, type DebtTemplate} from "~/types/Debt";
+import {type Debt, debtDefaults, type DebtInsert, type DebtTemplate} from "~/types/Debt";
 import {useDebtTemplateService} from "~/composables/api/useDebtTemplateService";
 import {processTemplate} from "~/utils/templateProcessorUtils";
 
 
 const showModal = ref(false);
-const activeDebtPartial = ref<DebtPartial | null>()
+const activeDebtPartial = ref<Partial<Debt> | null>()
 const templateService = useDebtTemplateService()
-const templates = ref<DebtPartial[]>([])
+const templates = ref<Partial<Debt>[]>([])
 
 async function loadTemplates() {
   templates.value = [debtDefaults]
   const loadedTemplates = await templateService.list()
   if (loadedTemplates.length > 0) {
-    loadedTemplates.forEach(debtTemplate => templates.value.push(processTemplate<DebtPartial, DebtTemplate, Debt>(debtDefaults, debtTemplate)));
+    loadedTemplates.forEach(debtTemplate => templates.value.push(processTemplate<Partial<Debt>, DebtTemplate, Debt>(debtDefaults, debtTemplate)));
   }
 }
 

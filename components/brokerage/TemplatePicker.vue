@@ -21,22 +21,22 @@
 import {
   type Brokerage,
   brokerageDefaults,
-  type BrokerageInsert, type BrokeragePartial,
+  type BrokerageInsert,
   type BrokerageTemplate
 } from "~/types/Brokerage";
 import {useBrokerageTemplateService} from "~/composables/api/useBrokerageTemplateService";
 import {processTemplate} from "~/utils/templateProcessorUtils";
 
 const showModal = ref(false);
-const activeBrokeragePartial = ref<BrokeragePartial | null>()
+const activeBrokeragePartial = ref<Partial<Brokerage> | null>()
 const templateService = useBrokerageTemplateService()
-const templates = ref<BrokeragePartial[]>([])
+const templates = ref<Partial<Brokerage>[]>([])
 
 async function loadTemplates() {
   templates.value = [brokerageDefaults]
   const loadedTemplates = await templateService.list()
   if (loadedTemplates.length > 0) {
-    loadedTemplates.forEach(brokerageTemplate => templates.value.push(processTemplate<BrokeragePartial, BrokerageTemplate, Brokerage>(brokerageDefaults, brokerageTemplate)));
+    loadedTemplates.forEach(brokerageTemplate => templates.value.push(processTemplate<Partial<Brokerage>, BrokerageTemplate, Brokerage>(brokerageDefaults, brokerageTemplate)));
   }
 }
 

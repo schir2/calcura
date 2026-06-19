@@ -111,7 +111,7 @@ describe("PlanManager", () => {
                     elective_contribution_percentage: 6,
                     elective_contribution_fixed_amount: 0,
                     employer_contribution_strategy: 'percentage_of_contribution',
-                    employer_contribution_match_percentage: 100,
+                    employer_compensation_match_percentage: 100,
                     employer_contribution_fixed_amount: 0,
                     employer_match_percentage_limit: 3,
                     employer_match_percentage: 100,

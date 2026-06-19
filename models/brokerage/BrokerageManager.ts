@@ -74,10 +74,10 @@ export function calculateBrokerageContribution(brokerageConfig: Brokerage, gross
     let contribution = 0
     switch (brokerageConfig.contribution_strategy) {
         case 'fixed':
-            contribution = brokerageConfig.contribution_fixed_amount
+            contribution = brokerageConfig.contribution_fixed_amount ?? 0
             break
         case 'percentage_of_income':
-            contribution = grossIncome * (brokerageConfig.contribution_percentage / 100)
+            contribution = grossIncome * ((brokerageConfig.contribution_percentage ?? 0) / 100)
             break
         case 'max':
             contribution = taxedCapital

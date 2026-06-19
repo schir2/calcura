@@ -32,11 +32,11 @@ export class CashReserveManager extends BaseManager<CashReserve, CashReserveStat
         let contribution = 0
         switch (this.config.cash_reserve_strategy) {
             case 'fixed':
-                contribution = Math.max(this.config.reserve_amount - currentState.cash_reserve_start_of_year, 0);
+                contribution = Math.max((this.config.reserve_amount ?? 0) - currentState.cash_reserve_start_of_year, 0);
                 break
             case 'variable':
                 const annualExpenseTotal = this.orchestrator.getAnnualExpenseTotal()
-                contribution = Math.max(annualExpenseTotal * (this.config.reserve_months / 12) - currentState.cash_reserve_start_of_year, 0);
+                contribution = Math.max(annualExpenseTotal * ((this.config.reserve_months ?? 0) / 12) - currentState.cash_reserve_start_of_year, 0);
                 break
         }
         return contribution

@@ -25,7 +25,7 @@ import {processTemplate} from "~/utils/templateProcessorUtils";
 import {
   type TaxDeferred,
   taxDeferredDefaults,
-  type TaxDeferredInsert, type TaxDeferredPartial,
+  type TaxDeferredInsert,
   type TaxDeferredTemplate
 } from "~/types/TaxDeferred";
 import type {Income} from "~/types/Income";
@@ -35,9 +35,9 @@ type Props = {
 }
 const props = defineProps<Props>()
 const showModal = ref(false);
-const activeTaxDeferredPartial = ref<TaxDeferredPartial | null>()
+const activeTaxDeferredPartial = ref<Partial<TaxDeferred> | null>()
 const templateService = useTaxDeferredTemplateService()
-const templates = ref<TaxDeferredPartial[]>([])
+const templates = ref<Partial<TaxDeferred>[]>([])
 
 function handleOpenModal(taxDeferredTemplate: Partial<TaxDeferred>) {
   activeTaxDeferredPartial.value = taxDeferredTemplate
@@ -48,7 +48,7 @@ async function loadTemplates() {
   templates.value = [taxDeferredDefaults]
   const loadedTemplates = await templateService.list()
   if (loadedTemplates.length > 0) {
-    loadedTemplates.forEach(taxDeferredTemplate => templates.value.push(processTemplate<TaxDeferredPartial, TaxDeferredTemplate, TaxDeferred>(taxDeferredDefaults, taxDeferredTemplate)));
+    loadedTemplates.forEach(taxDeferredTemplate => templates.value.push(processTemplate<Partial<TaxDeferred>, TaxDeferredTemplate, TaxDeferred>(taxDeferredDefaults, taxDeferredTemplate)));
   }
 }
 

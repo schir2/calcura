@@ -41,7 +41,7 @@ export class TaxDeferredManager extends BaseManager<TaxDeferred, TaxDeferredStat
         let contribution = 0
         switch (this.config.elective_contribution_strategy) {
             case 'fixed':
-                contribution = this.config.elective_contribution_fixed_amount
+                contribution = this.config.elective_contribution_fixed_amount ?? 0
                 break
             case 'percentage_of_income':
                 if (this.incomeManager === undefined) {
@@ -51,7 +51,7 @@ export class TaxDeferredManager extends BaseManager<TaxDeferred, TaxDeferredStat
                     })
                     return 0
                 }
-                contribution = this.incomeManager.getCurrentState().gross_income * (this.config.elective_contribution_percentage / 100)
+                contribution = this.incomeManager.getCurrentState().gross_income * ((this.config.elective_contribution_percentage ?? 0) / 100)
                 break
             case 'until_company_match':
                 if (this.config.employer_contribution_strategy === 'percentage_of_contribution') {
@@ -71,10 +71,11 @@ export class TaxDeferredManager extends BaseManager<TaxDeferred, TaxDeferredStat
     }
 
     private getContributionFromEmployerMatchLimit(employerMatchLimit: number) {
-        if (this.config.employer_match_percentage === 0) {
+        const employerMatchPercentage = this.config.employer_match_percentage ?? 0
+        if (employerMatchPercentage === 0) {
             return 0
         }
-        return employerMatchLimit * 100 / this.config.employer_match_percentage
+        return employerMatchLimit * 100 / employerMatchPercentage
     }
 
     calculateEmployerContribution(): number {
@@ -94,7 +95,7 @@ export class TaxDeferredManager extends BaseManager<TaxDeferred, TaxDeferredStat
                     })
                     return 0
                 }
-                if (this.getConfig().employer_match_percentage <= 0) {
+                if ((this.getConfig().employer_match_percentage ?? 0) <= 0) {
 
                     eventBus.emit('warning', {scope: 'calculateEmployerContribution:employerMatchPercentage', message: 'Employer match percentage should be greater than 0'})
                 }
@@ -103,13 +104,13 @@ export class TaxDeferredManager extends BaseManager<TaxDeferred, TaxDeferredStat
                     employerContribution = employerMatchLimit
                 } else {
                     electiveContribution = this.orchestrator.requestFunds(this.calculateElectiveContribution(), FundType.Taxable)
-                    const employerMatch = electiveContribution * (this.config.employer_match_percentage / 100);
+                    const employerMatch = electiveContribution * ((this.config.employer_match_percentage ?? 0) / 100);
                     employerContribution = Math.min(employerMatch, employerMatchLimit)
                 }
                 break
 
             case 'fixed':
-                employerContribution = this.config.employer_contribution_fixed_amount
+                employerContribution = this.config.employer_contribution_fixed_amount ?? 0
                 break
 
             case 'percentage_of_compensation':
@@ -120,7 +121,7 @@ export class TaxDeferredManager extends BaseManager<TaxDeferred, TaxDeferredStat
                     })
                     return 0
                 }
-                employerContribution = this.incomeManager.getCurrentState().gross_income * (this.config.employer_contribution_match_percentage / 100)
+                employerContribution = this.incomeManager.getCurrentState().gross_income * ((this.config.employer_compensation_match_percentage ?? 0) / 100)
                 break
         }
         return employerContribution
@@ -135,7 +136,7 @@ export class TaxDeferredManager extends BaseManager<TaxDeferred, TaxDeferredStat
             })
             return 0
         }
-        return this.incomeManager.getCurrentState().gross_income * this.config.employer_match_percentage_limit / 100;
+        return this.incomeManager.getCurrentState().gross_income * (this.config.employer_match_percentage_limit ?? 0) / 100;
     }
 
     createNextState(previousState: TaxDeferredState): TaxDeferredState {

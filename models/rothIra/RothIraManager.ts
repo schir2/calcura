@@ -85,7 +85,7 @@ export function calculateRothIraContribution(rothIraConfig: RothIra, incomeAmoun
     let contribution = 0
     switch (rothIraConfig.contribution_strategy) {
         case 'fixed':
-            contribution = rothIraConfig.contribution_fixed_amount
+            contribution = rothIraConfig.contribution_fixed_amount ?? 0
             break
         case 'percentage_of_income':
             if (incomeAmount === undefined) {
@@ -96,7 +96,7 @@ export function calculateRothIraContribution(rothIraConfig: RothIra, incomeAmoun
                 })
                 return 0
             }
-            contribution = incomeAmount * rothIraConfig.contribution_percentage / 100
+            contribution = incomeAmount * (rothIraConfig.contribution_percentage ?? 0) / 100
             break
         case 'max':
             contribution = iraLimit

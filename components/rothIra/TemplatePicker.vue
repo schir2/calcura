@@ -17,21 +17,20 @@
   </n-thing>
 </template>
 <script lang="ts" setup>
-import type {RothIraTemplate} from "~/types/RothIra";
-import {type RothIra, rothIraDefaults, type RothIraInsert, type RothIraPartial} from "~/types/RothIra";
+import {type RothIra, rothIraDefaults, type RothIraInsert, type RothIraTemplate} from "~/types/RothIra";
 import {useRothIraTemplateService} from "~/composables/api/useRothIraTemplateService";
 import {processTemplate} from "~/utils/templateProcessorUtils";
 
 const showModal = ref(false);
-const activeRothIraPartial = ref<RothIraPartial | null>()
+const activeRothIraPartial = ref<Partial<RothIra> | null>()
 const templateService = useRothIraTemplateService()
-const templates = ref<RothIraPartial[]>([])
+const templates = ref<Partial<RothIra>[]>([])
 
 async function loadTemplates() {
-  templates.value =[rothIraDefaults]
+  templates.value = [rothIraDefaults]
   const loadedTemplates = await templateService.list()
   if (loadedTemplates.length > 0) {
-    loadedTemplates.forEach(rothIraTemplate => templates.value.push(processTemplate<RothIraPartial, RothIraTemplate, RothIra>(rothIraDefaults, rothIraTemplate)));
+    loadedTemplates.forEach(rothIraTemplate => templates.value.push(processTemplate<Partial<RothIra>, RothIraTemplate, RothIra>(rothIraDefaults, rothIraTemplate)));
   }
 }
 

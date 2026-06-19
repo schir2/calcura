@@ -338,10 +338,10 @@ const {
             <CommonRadioCard v-model="modelRef.employer_contribution_strategy"
                              :value="'percentage_of_compensation'"
                              title="Percentage of Compensation">
-              <n-form-item path="employer_contribution_match_percentage"
+              <n-form-item path="employer_compensation_match_percentage"
                            label="Employer Compensation Match Percentage"
               >
-                <n-input-number v-model:value="modelRef.employer_contribution_match_percentage"/>
+                <n-input-number v-model:value="modelRef.employer_compensation_match_percentage"/>
               </n-form-item>
               <n-collapse>
                 <n-collapse-item>

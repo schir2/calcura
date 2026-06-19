@@ -1,27 +1,14 @@
-import type {Enums, TablesInsert, TablesUpdate} from '~/types/database.types'
-import type {Frequency} from "~/types/Frequency";
+import type {Tables, TablesInsert, TablesUpdate} from '~/types/database.types'
 
-export type DebtPaymentStrategy = Enums<'debt_payment_strategy'>
+export type Debt = Tables<'debt'>
+export type DebtTemplate = Tables<'debt_template'>
 
+export type DebtPaymentStrategy = Debt['payment_strategy']
 
-export type Debt = {
-    id: number;
-    name: string;
-    principal: number;
-    interest_rate: number;
-    payment_minimum: number;
-    payment_strategy: DebtPaymentStrategy;
-    payment_fixed_amount: number;
-    payment_percentage: number;
-    frequency: Frequency
-}
+export type DebtInsert = TablesInsert<'debt'>
+export type DebtUpdate = TablesUpdate<'debt'>
 
-export type DebtPartial = Partial<Omit<Debt, 'id'>>
-export type DebtTemplate = Debt & {
-    description: string;
-}
-
-export const debtDefaults: DebtPartial = {
+export const debtDefaults: DebtInsert = {
     name: 'Debt',
     principal: 0,
     interest_rate: 0,
@@ -31,6 +18,3 @@ export const debtDefaults: DebtPartial = {
     payment_percentage: 0,
     frequency: 'monthly'
 }
-
-export type DebtInsert = TablesInsert<'debt'>
-export type DebtUpdate = TablesUpdate<'debt'>

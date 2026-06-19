@@ -20,13 +20,12 @@
 <script lang="ts" setup>
 import {processTemplate} from "~/utils/templateProcessorUtils";
 import {useIncomeTemplateService} from "~/composables/api/useIncomeTemplateService";
-import {type Income, incomeDefaults, type IncomeInsert, type IncomePartial} from "~/types/Income";
-import type {IncomeTemplate} from "~/models/income/IncomeTemplate";
+import {type Income, incomeDefaults, type IncomeInsert, type IncomeTemplate} from "~/types/Income";
 
 const showModal = ref(false);
-const activeIncomePartial = ref<IncomePartial | null>()
+const activeIncomePartial = ref<Partial<Income> | null>()
 const templateService = useIncomeTemplateService()
-const templates = ref<IncomePartial[]>([])
+const templates = ref<Partial<Income>[]>([])
 
 function handleOpenModal(incomeTemplate: Partial<Income>) {
   activeIncomePartial.value = incomeTemplate
@@ -37,7 +36,7 @@ async function loadTemplates() {
   templates.value = [incomeDefaults]
   const loadedTemplates = await templateService.list()
   if (loadedTemplates.length > 0) {
-    loadedTemplates.forEach(incomeTemplate => templates.value.push(processTemplate<IncomePartial, IncomeTemplate, Income>(incomeDefaults, incomeTemplate)));
+    loadedTemplates.forEach(incomeTemplate => templates.value.push(processTemplate<Partial<Income>, IncomeTemplate, Income>(incomeDefaults, incomeTemplate)));
   }
 }
 

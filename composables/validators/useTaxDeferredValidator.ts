@@ -70,7 +70,7 @@ export function useTaxDeferredValidator(modelRef: Ref<Partial<TaxDeferred>>) {
         employer_contribution_strategy: [
             {required: true, message: "Employer contribution strategy is required", trigger: ["blur", "change"]}
         ],
-        employer_contribution_match_percentage: [
+        employer_compensation_match_percentage: [
             {
                 required: true,
                 type: "number",

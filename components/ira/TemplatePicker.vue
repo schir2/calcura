@@ -17,19 +17,18 @@
   </n-thing>
 </template>
 <script lang="ts" setup>
-import type {IraTemplate} from "~/types/Ira";
-import {type Ira, iraDefaults, type IraInsert, type IraPartial} from "~/types/Ira";
+import {type Ira, iraDefaults, type IraInsert, type IraTemplate} from "~/types/Ira";
 import {useIraTemplateService} from "~/composables/api/useIraTemplateService";
 import {processTemplate} from "~/utils/templateProcessorUtils";
 
 const showModal = ref(false);
-const activeIraPartial = ref<IraPartial | null>()
+const activeIraPartial = ref<Partial<Ira> | null>()
 const templateService = useIraTemplateService()
-const templates = ref<IraPartial[]>([])
+const templates = ref<Partial<Ira>[]>([])
 
 async function loadTemplates() {
   const loadedIraTemplates = await templateService.list()
-  templates.value = loadedIraTemplates.map(iraTemplate => processTemplate<IraPartial, IraTemplate, Ira>(iraDefaults, iraTemplate));
+  templates.value = loadedIraTemplates.map(iraTemplate => processTemplate<Partial<Ira>, IraTemplate, Ira>(iraDefaults, iraTemplate));
   templates.value.push(iraDefaults)
 }
 

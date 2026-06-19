@@ -1,4 +1,4 @@
-type ExpenseState = {
+export type ExpenseState = {
     base_amount: number;
     amount_requested: number;
     amount_paid: number;
@@ -6,5 +6,3 @@ type ExpenseState = {
     growth_amount: number;
     processed: boolean;
 }
-
-export default ExpenseState

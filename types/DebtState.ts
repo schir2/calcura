@@ -1,4 +1,4 @@
-type DebtState = {
+export type DebtState = {
     payment: number;
     payment_lifetime: number;
     interest_lifetime: number;
@@ -7,5 +7,3 @@ type DebtState = {
     principal_end_of_year?: number;
     processed: boolean,
 }
-
-export default DebtState

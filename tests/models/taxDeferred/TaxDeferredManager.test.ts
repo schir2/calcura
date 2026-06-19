@@ -53,7 +53,7 @@ const planConfig: Plan = {
             elective_contribution_percentage: 10,
             elective_contribution_fixed_amount: 0,
             employer_contribution_strategy: 'percentage_of_contribution',
-            employer_contribution_match_percentage: 100,
+            employer_compensation_match_percentage: 100,
             employer_contribution_fixed_amount: 0,
             employer_match_percentage_limit: 5,
             employer_match_percentage: 50,
@@ -166,7 +166,7 @@ describe("TaxDeferredManager", () => {
                         elective_contribution_strategy: 'until_company_match',
                         elective_contribution_percentage: 100,
                         employer_contribution_strategy: 'percentage_of_contribution',
-                        employer_contribution_match_percentage: 0,
+                        employer_compensation_match_percentage: 0,
                         employer_match_percentage: 100,
                         employer_match_percentage_limit: 3,
 
@@ -205,7 +205,7 @@ describe("TaxDeferredManager", () => {
                     tax_deferreds: [{
                         ...planConfig.tax_deferreds[0],
                         employer_contribution_strategy: 'percentage_of_compensation',
-                        employer_contribution_match_percentage: 5,
+                        employer_compensation_match_percentage: 5,
                     }]
                 }
             )
@@ -222,7 +222,7 @@ describe("TaxDeferredManager", () => {
                     tax_deferreds: [{
                         ...planConfig.tax_deferreds[0],
                         employer_contribution_strategy: 'none',
-                        employer_contribution_match_percentage: 100,
+                        employer_compensation_match_percentage: 100,
                         employer_match_percentage_limit: 3,
                         employer_match_percentage: 50,
                         employer_contribution_fixed_amount: 10_000,
@@ -244,7 +244,7 @@ describe("TaxDeferredManager", () => {
                         employer_contribution_strategy: 'percentage_of_contribution',
                         elective_contribution_strategy: 'fixed',
                         elective_contribution_fixed_amount: 1_500,
-                        employer_contribution_match_percentage: 100,
+                        employer_compensation_match_percentage: 100,
                         employer_match_percentage_limit: 3,
                         employer_match_percentage: 50,
                         employer_contribution_fixed_amount: 10_000,
@@ -266,7 +266,7 @@ describe("TaxDeferredManager", () => {
                         elective_contribution_strategy: 'until_company_match',
                         elective_contribution_percentage: 100,
                         employer_contribution_strategy: 'percentage_of_contribution',
-                        employer_contribution_match_percentage: 0,
+                        employer_compensation_match_percentage: 0,
                         employer_match_percentage: 0,
                         employer_match_percentage_limit: 3,
 
@@ -290,7 +290,7 @@ describe("TaxDeferredManager", () => {
                         elective_contribution_strategy: 'until_company_match',
                         elective_contribution_percentage: 100,
                         employer_contribution_strategy: 'percentage_of_contribution',
-                        employer_contribution_match_percentage: 0,
+                        employer_compensation_match_percentage: 0,
                         employer_match_percentage: 100,
                         employer_match_percentage_limit: 0,
 

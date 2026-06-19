@@ -18,20 +18,20 @@
   </n-thing>
 </template>
 <script lang="ts" setup>
-import {type Expense, expenseDefaults, type ExpenseInsert, type ExpensePartial, type ExpenseTemplate} from "~/types/Expense";
+import {type Expense, expenseDefaults, type ExpenseInsert, type ExpenseTemplate} from "~/types/Expense";
 import {useExpenseTemplateService} from "~/composables/api/useExpenseTemplateService";
 import {processTemplate} from "~/utils/templateProcessorUtils";
 
 const showModal = ref(false);
-const activeExpensePartial = ref<ExpensePartial | null>()
+const activeExpensePartial = ref<Partial<Expense> | null>()
 const templateService = useExpenseTemplateService()
-const templates = ref<ExpensePartial[]>([])
+const templates = ref<Partial<Expense>[]>([])
 
 async function loadTemplates() {
   templates.value = [expenseDefaults]
   const loadedTemplates = await templateService.list()
   if (loadedTemplates.length > 0) {
-    loadedTemplates.forEach(expenseTemplate => templates.value.push(processTemplate<ExpensePartial, ExpenseTemplate, Expense>(expenseDefaults, expenseTemplate)));
+    loadedTemplates.forEach(expenseTemplate => templates.value.push(processTemplate<Partial<Expense>, ExpenseTemplate, Expense>(expenseDefaults, expenseTemplate)));
   }
 }
 

@@ -1,28 +1,14 @@
-import type {Income} from "~/types/Income";
-import type {Enums, TablesInsert, TablesUpdate} from '~/types/database.types'
-import type {Frequency} from "~/types/Frequency";
+import type {Tables, TablesInsert, TablesUpdate} from '~/types/database.types'
 
-export type ExpenseType = Enums<'expense_type'>
+export type Expense = Tables<'expense'>
+export type ExpenseTemplate = Tables<'expense_template'>
 
-export type Expense = {
-    id: number;
-    name: string,
-    amount: number,
-    expense_type: ExpenseType,
-    frequency: Frequency,
-    is_essential: boolean,
-    is_tax_deductible: boolean,
-    grows_with_inflation: boolean,
-    growth_rate: number,
-}
+export type ExpenseType = Expense['expense_type']
 
-export type ExpensePartial = Partial<Omit<Expense, 'id'>>
+export type ExpenseInsert = TablesInsert<'expense'>
+export type ExpenseUpdate = TablesUpdate<'expense'>
 
-export type ExpenseTemplate = Income & {
-    description: string
-}
-
-export const expenseDefaults: ExpensePartial = {
+export const expenseDefaults: ExpenseInsert = {
     name: '',
     amount: 0,
     expense_type: 'fixed',
@@ -32,6 +18,3 @@ export const expenseDefaults: ExpensePartial = {
     grows_with_inflation: false,
     growth_rate: 0,
 }
-
-export type ExpenseInsert = TablesInsert<'expense'>
-export type ExpenseUpdate = TablesUpdate<'expense'>

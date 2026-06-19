@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import {
   type Brokerage, brokerageDefaults,
-  type BrokerageInsert, type BrokeragePartial, type BrokerageUpdate
+  type BrokerageInsert, type BrokerageUpdate
 } from "~/types/Brokerage";
 import type {FormInst} from "naive-ui";
 import {useBrokerageValidator} from "~/composables/validators/useBrokerageValidator";
@@ -17,7 +17,7 @@ const emit = defineEmits<{
   update: [id: number, update: BrokerageUpdate]
   cancel: []
 }>()
-const modelRef = ref<BrokeragePartial>(initialValues)
+const modelRef = ref<Partial<Brokerage>>(initialValues)
 const formRef = ref<FormInst | null>(null);
 const {handleCreate, handleUpdate, handleCancel} = useCrudForm(emit, formRef, modelRef)
 const {rules} = useBrokerageValidator(modelRef)

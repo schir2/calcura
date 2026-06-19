@@ -25,7 +25,7 @@ const planConfig: Plan = {
         {
             id: 1,
             name: 'Emergency Funds',
-            contribution_strategy: 'fixed',
+            cash_reserve_strategy: 'fixed',
             reserve_months: 0,
             reserve_amount: 30_000,
             initial_amount: 10_000,
@@ -119,7 +119,7 @@ describe("CashManager", () => {
                 cash_reserves: [
                     {
                         ...planConfig.cash_reserves[0],
-                        contribution_strategy: 'fixed',
+                        cash_reserve_strategy: 'fixed',
                         initial_amount: 0,
                         reserve_amount: 20_000,
                     }
@@ -136,7 +136,7 @@ describe("CashManager", () => {
                 cash_reserves: [
                     {
                         ...planConfig.cash_reserves[0],
-                        contribution_strategy: 'fixed',
+                        cash_reserve_strategy: 'fixed',
                         initial_amount: 10_000,
                         reserve_amount: 20_000,
                     }
@@ -153,7 +153,7 @@ describe("CashManager", () => {
                 cash_reserves: [
                     {
                         ...planConfig.cash_reserves[0],
-                        contribution_strategy: 'variable',
+                        cash_reserve_strategy: 'variable',
                         initial_amount: 0,
                         reserve_months: 6,
                     }
@@ -170,7 +170,7 @@ describe("CashManager", () => {
                 cash_reserves: [
                     {
                         ...planConfig.cash_reserves[0],
-                        contribution_strategy: 'variable',
+                        cash_reserve_strategy: 'variable',
                         initial_amount: 10_000,
                         reserve_months: 6,
                     }

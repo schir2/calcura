@@ -1,27 +1,15 @@
 import type {Income} from "~/types/Income";
-import type {Enums, TablesInsert, TablesUpdate} from '~/types/database.types'
+import type {Tables, TablesInsert, TablesUpdate} from '~/types/database.types'
 
-export type IraContributionStrategy = Enums<'ira_contribution_strategy'>
+export type Ira = Tables<'ira'> & { income?: Income }
+export type IraTemplate = Tables<'ira_template'>
 
-export type Ira = {
-    id: number;
-    name: string;
-    growth_rate: number;
-    initial_balance: number;
-    contribution_strategy: IraContributionStrategy;
-    contribution_percentage: number;
-    contribution_fixed_amount: number;
+export type IraContributionStrategy = Tables<'ira'>['contribution_strategy']
 
-    income?: Income;
-}
+export type IraInsert = TablesInsert<'ira'>
+export type IraUpdate = TablesUpdate<'ira'>
 
-export type IraPartial = Partial<Omit<Ira, 'id'>>
-
-export type IraTemplate = Ira & {
-    description: string;
-}
-
-export const iraDefaults: IraPartial = {
+export const iraDefaults: IraInsert = {
     name: 'Traditional IRA',
     growth_rate: 6,
     initial_balance: 0,
@@ -29,6 +17,3 @@ export const iraDefaults: IraPartial = {
     contribution_percentage: 0,
     contribution_fixed_amount: 0,
 }
-
-export type IraInsert = TablesInsert<'ira'>
-export type IraUpdate = TablesUpdate<'ira'>

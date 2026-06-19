@@ -21,22 +21,22 @@
 import {
   type CashReserve,
   cashReserveDefaults,
-  type CashReserveInsert, type CashReservePartial,
+  type CashReserveInsert,
   type CashReserveTemplate
 } from "~/types/CashReserve";
 import {useCashReserveTemplateService} from "~/composables/api/useCashReserveTemplateService";
 import {processTemplate} from "~/utils/templateProcessorUtils";
 
 const showModal = ref(false);
-const activeCashReservePartial = ref<CashReservePartial | null>()
+const activeCashReservePartial = ref<Partial<CashReserve> | null>()
 const templateService = useCashReserveTemplateService()
-const templates = ref<CashReservePartial[]>([])
+const templates = ref<Partial<CashReserve>[]>([])
 
 async function loadTemplates() {
   templates.value = [cashReserveDefaults]
   const loadedTemplates = await templateService.list()
   if (loadedTemplates.length > 0) {
-    loadedTemplates.forEach(cashReserveTemplate => templates.value.push(processTemplate<CashReservePartial, CashReserveTemplate, CashReserve>(cashReserveDefaults, cashReserveTemplate)));
+    loadedTemplates.forEach(cashReserveTemplate => templates.value.push(processTemplate<Partial<CashReserve>, CashReserveTemplate, CashReserve>(cashReserveDefaults, cashReserveTemplate)));
   }
 }
 
