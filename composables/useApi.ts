@@ -27,7 +27,7 @@ export function useApi<
         },
 
         async create(payload: Insert): Promise<Row> {
-            const {data, error} = await client.from(table).insert(payload as any).select().single()
+            const {data, error} = await client.from(table).insert(payload as any)
             if (error) throw error
             return data as Row
         },

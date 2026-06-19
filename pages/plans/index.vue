@@ -1,3 +1,37 @@
+<script lang="ts" setup>
+import type {Plan, PlanInsert, PlanUpdate} from "~/types/Plan";
+import {usePlanService} from "~/composables/api/usePlanService";
+
+
+const planService = usePlanService()
+const {data: plans, refresh: refreshPlans} = useFetch<Plan[]>('api/plans')
+
+const showModal = ref(false)
+
+async function handleCreatePlan(insert: PlanInsert) {
+  await planService.create(insert)
+  await refreshPlans();
+}
+
+function handleClickCreatePlan() {
+  showModal.value = true
+}
+
+async function handleDeletePlan(plan: Plan) {
+  await planService.remove(plan.id)
+  await refreshPlans();
+}
+
+async function handleUpdatePlan(id: number, update: PlanUpdate) {
+  await planService.update(id, update)
+  await refreshPlans();
+}
+
+onMounted(async () => {
+  await refreshPlans();
+});
+</script>
+
 <template>
   <n-button type="primary" circle @click="handleClickCreatePlan">
     <template #icon>
@@ -28,43 +62,3 @@
             @delete="handleDeletePlan"
   ></PlanList>
 </template>
-<script lang="ts" setup>
-import type {Plan, PlanInsert, PlanUpdate} from "~/types/Plan";
-import {usePlanService} from "~/composables/api/usePlanService";
-import {FORM_MODAL_WIDTH_CLASS} from "~/constants/FormConstants";
-
-
-const planService = usePlanService()
-const {data: plans, refresh: refreshPlans} = useFetch<Plan[]>('api/plans')
-
-const showModal = ref(false)
-
-function toPlanInsert(plan: Partial<Plan>): PlanInsert {
-    const {cash_reserves, incomes, expenses, debts, tax_deferreds, brokerages, iras, roth_iras, command_sequences, id, created_at, edited_at, ...scalar} = plan
-    return scalar as PlanInsert
-}
-
-async function handleCreatePlan(planTemplate: Partial<Plan>) {
-  await planService.create(toPlanInsert(planTemplate))
-  await refreshPlans();
-}
-
-function handleClickCreatePlan() {
-  showModal.value = true
-}
-
-async function handleDeletePlan(plan: Plan) {
-  await planService.remove(plan.id)
-  await refreshPlans();
-}
-
-async function handleUpdatePlan(plan: Plan) {
-  const {id, ...update} = toPlanInsert(plan) as any
-  await planService.update(plan.id, update as PlanUpdate)
-  await refreshPlans();
-}
-
-onMounted(async () => {
-  await refreshPlans();
-});
-</script>

@@ -40,6 +40,43 @@ components/
 - Schema validators live in `composables/validators/use[Domain]Validator.ts`
 - Form field names must match snake_case interface properties exactly
 
+### Emits
+
+Always use typed `defineEmits` with the Vue 3.3+ tuple syntax. Never use the untyped array form.
+
+```typescript
+// CORRECT
+const emit = defineEmits<{
+  create: [insert: PlanInsert]
+  update: [id: number, update: PlanUpdate]
+  delete: [id: number]
+  cancel: []
+}>()
+
+// WRONG — untyped
+const emit = defineEmits(['create', 'update', 'delete', 'cancel'])
+```
+
+**Standard emit signatures:**
+- `create` — one arg named `insert`, typed as the domain's Supabase Insert type (e.g. `PlanInsert`)
+- `update` — two args: `id: number` then `update` typed as the domain's Supabase Update type (e.g. `PlanUpdate`)
+- `delete` — one arg: `id: number` only — never the full entity
+- `cancel` — no args
+
+**Page handler signatures must mirror the emit exactly:**
+```typescript
+async function handleCreatePlan(insert: PlanInsert) { ... }
+async function handleUpdatePlan(id: number, update: PlanUpdate) { ... }
+async function handleDeletePlan(id: number) { ... }
+```
+
+**Naming rules:**
+- Always use the generic operation name — never prefix with the entity (`deleteRetirement`, `updateIncome` are violations)
+- `delete` not `remove`, `update` not `edit` — one name per operation, no synonyms
+- No naming clash exists when a page listens to `@update` from multiple components — Vue scopes each component's events to its own listener, so the page just binds different handlers per component
+
+**Aggregator components** that tunnel events from multiple domains through a single channel (e.g. `CommandTabber`) must wrap payloads with `{ modelName, data }` to carry routing metadata rather than using namespaced event names.
+
 ### NaiveUI
 - Use NaiveUI components (`n-form`, `n-input`, `n-button`, etc.) — not raw HTML form elements
 - Avoid inline styles; use Tailwind classes
