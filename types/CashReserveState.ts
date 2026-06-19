@@ -1,4 +1,4 @@
-import type {BaseState} from "~/models/common/BaseState";
+import type {BaseState} from "~/types/BaseState";
 
 type CashReserveState = BaseState & {
     amount_requested?: number;

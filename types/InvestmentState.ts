@@ -1,4 +1,4 @@
-import type {BaseState} from "~/models/common/BaseState";
+import type {BaseState} from "~/types/BaseState";
 
 export type InvestmentState = BaseState & {
     contribution?: number;

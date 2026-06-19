@@ -1,7 +1,7 @@
 import {FundType} from "~/models/plan/PlanManager";
 import BaseManager from "~/models/common/BaseManager";
 import {ProcessError} from "~/utils/errors/ProcessError";
-import type {BaseState} from "~/models/common/BaseState";
+import type {BaseState} from "~/types/BaseState";
 import {ContributionType} from "~/types/ContributionType";
 
 
