@@ -21,7 +21,7 @@
 import {
   type CashReserve,
   cashReserveDefaults,
-  type CashReservePartial,
+  type CashReserveInsert, type CashReservePartial,
   type CashReserveTemplate
 } from "~/types/CashReserve";
 import {useCashReserveTemplateService} from "~/composables/api/useCashReserveTemplateService";
@@ -49,11 +49,13 @@ onMounted(async () => {
   await loadTemplates()
 })
 
-const emit = defineEmits(['create'])
+const emit = defineEmits<{
+  create: [insert: CashReserveInsert]
+}>()
 
 function handleCreate(cashReservePartial: Partial<CashReserve>) {
-  emit('create', cashReservePartial)
-  showModal.value = false;
+  emit('create', cashReservePartial as CashReserveInsert)
+  showModal.value = false
 }
 
 function handleClose() {

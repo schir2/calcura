@@ -35,6 +35,10 @@ type Props = {
   errors?: FormValidationError[]
 }
 const props = defineProps<Props>()
-const emit = defineEmits(['update', 'create', 'cancel'])
+const emit = defineEmits<{
+  update: []
+  create: []
+  cancel: []
+}>()
 const hasErrors = computed(()=> props.errors && Object.keys(props.errors).length > 0)
 </script>

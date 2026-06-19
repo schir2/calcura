@@ -6,25 +6,25 @@
   ></RothIraInvestmentList>
 </template>
 <script setup lang="ts">
-import type {RothIra, RothIraInvestmentPartial} from "~/types/RothIra";
+import type {RothIra, RothIraInsert, RothIraUpdate} from "~/types/RothIra";
 
 import {useRothIraService} from "~/composables/api/useRothIraService";
 
 const rothIraInvestmentService = useRothIraService();
 
 
-async function handleCreateRothIraInvestment(rothIraInvestmentTemplate: RothIraInvestmentPartial) {
-  const rothIraInvestment = await rothIraInvestmentService.create(rothIraInvestmentTemplate)
+async function handleCreateRothIraInvestment(insert: RothIraInsert) {
+  await rothIraInvestmentService.create(insert)
   await loadRothIraInvestments();
 }
 
-async function handleDeleteRothIraInvestment(rothIraInvestment: RothIra) {
-  await rothIraInvestmentService.delete(rothIraInvestment.id)
+async function handleDeleteRothIraInvestment(id: number) {
+  await rothIraInvestmentService.remove(id)
   await loadRothIraInvestments();
 }
 
-async function handleUpdateRothIraInvestment(rothIraInvestment: RothIra) {
-  await rothIraInvestmentService.update(rothIraInvestment.id, rothIraInvestment)
+async function handleUpdateRothIraInvestment(id: number, update: RothIraUpdate) {
+  await rothIraInvestmentService.update(id, update)
   await loadRothIraInvestments();
 }
 

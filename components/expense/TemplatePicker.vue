@@ -18,7 +18,7 @@
   </n-thing>
 </template>
 <script lang="ts" setup>
-import {type Expense, expenseDefaults, type ExpensePartial, type ExpenseTemplate} from "~/types/Expense";
+import {type Expense, expenseDefaults, type ExpenseInsert, type ExpensePartial, type ExpenseTemplate} from "~/types/Expense";
 import {useExpenseTemplateService} from "~/composables/api/useExpenseTemplateService";
 import {processTemplate} from "~/utils/templateProcessorUtils";
 
@@ -44,11 +44,13 @@ onMounted(async () => {
   await loadTemplates()
 })
 
-const emit = defineEmits(['create'])
+const emit = defineEmits<{
+  create: [insert: ExpenseInsert]
+}>()
 
 function handleCreate(expensePartial: Partial<Expense>) {
-  emit('create', expensePartial)
-  showModal.value = false;
+  emit('create', expensePartial as ExpenseInsert)
+  showModal.value = false
 }
 
 function handleClose() {

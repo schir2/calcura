@@ -7,25 +7,25 @@
   ></IncomeList>
 </template>
 <script setup lang="ts">
-import type {Income, IncomePartial} from "~/types/Income";
+import type {Income, IncomeInsert, IncomeUpdate} from "~/types/Income";
 
 const incomes = ref<Income[]>([]);
 const {create, update, list, remove} = useIncomeService();
 const loading = ref<boolean>(false);
 
 
-async function handleCreateIncome(incomeTemplate: IncomePartial) {
-  await create(incomeTemplate)
+async function handleCreateIncome(insert: IncomeInsert) {
+  await create(insert)
   await loadIncomes();
 }
 
-async function handleDeleteIncome(income: Income) {
-  await remove(income.id)
+async function handleDeleteIncome(id: number) {
+  await remove(id)
   await loadIncomes();
 }
 
-async function handleUpdateIncome(income: Income) {
-  await update(income.id, income)
+async function handleUpdateIncome(id: number, update: IncomeUpdate) {
+  await update(id, update)
   await loadIncomes();
 }
 

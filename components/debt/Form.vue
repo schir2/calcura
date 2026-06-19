@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 
-import {type Debt, debtDefaults, type DebtPaymentStrategy} from "~/types/Debt";
+import {type Debt, debtDefaults, type DebtInsert, type DebtPaymentStrategy, type DebtUpdate} from "~/types/Debt";
 import {calculateDebtPayment} from "~/models/debt/DebtManager";
 import {useCrudFormWithValidation} from "~/composables/useCrudFormWithValidation";
 import {FORM_LABEL_ALIGN, FORM_LABEL_PLACEMENT} from "~/constants/FormConstants";
@@ -12,7 +12,11 @@ type Props = {
 }
 
 const {initialValues = debtDefaults, mode} = defineProps<Props>();
-const emit = defineEmits(["update", "cancel", "create"]);
+const emit = defineEmits<{
+  create: [insert: DebtInsert]
+  update: [id: number, update: DebtUpdate]
+  cancel: []
+}>()
 
 const {formRef, modelRef, rules, handleCreate, handleUpdate, handleCancel} =
     useCrudFormWithValidation<Debt>(initialValues, emit, useDebtValidation);

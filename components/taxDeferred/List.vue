@@ -3,16 +3,12 @@
     <TaxDeferredListItem v-for="(taxDeferred, index) in taxDeferreds"
                                    :taxDeferred="taxDeferred" :key="taxDeferred.id"
                                    :incomes="incomes"
-                                   @delete="handleDelete" @update="handleUpdate" @create="handleCreate"
-                                   @remove="handleRemove"></TaxDeferredListItem>
+                                   @delete="handleDelete" @update="handleUpdate" @create="handleCreate"></TaxDeferredListItem>
   </n-card>
 
 </template>
 <script lang="ts" setup>
-import type {
-  TaxDeferred,
-  TaxDeferredTemplate
-} from "~/types/TaxDeferred";
+import type {TaxDeferred, TaxDeferredInsert, TaxDeferredUpdate} from "~/types/TaxDeferred";
 import type {Income} from "~/types/Income";
 
 type Props = {
@@ -22,22 +18,22 @@ type Props = {
 
 const props = defineProps<Props>()
 
-const emit = defineEmits(['delete', 'update', 'create', 'remove']);
+const emit = defineEmits<{
+  create: [insert: TaxDeferredInsert]
+  update: [id: number, update: TaxDeferredUpdate]
+  delete: [id: number]
+}>()
 
-function handleDelete(taxDeferred: TaxDeferred) {
-  emit('delete', taxDeferred);
+function handleDelete(id: number) {
+  emit('delete', id)
 }
 
-function handleCreate(taxDeferredTemplate: TaxDeferredTemplate) {
-  emit('create', taxDeferredTemplate);
+function handleCreate(insert: TaxDeferredInsert) {
+  emit('create', insert)
 }
 
-function handleUpdate(taxDeferred: TaxDeferred) {
-  emit('update', taxDeferred);
-}
-
-function handleRemove(taxDeferred: TaxDeferred) {
-  emit('remove', taxDeferred)
+function handleUpdate(id: number, update: TaxDeferredUpdate) {
+  emit('update', id, update)
 }
 
 </script>

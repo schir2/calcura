@@ -6,25 +6,25 @@
   ></CashReserveList>
 </template>
 <script setup lang="ts">
-import type {CashReserve, CashReservePartial} from "~/types/CashReserve";
+import type {CashReserve, CashReserveInsert, CashReserveUpdate} from "~/types/CashReserve";
 
 import {useCashReserveService} from "~/composables/api/useCashReserveService";
 
 const cashReserveService = useCashReserveService();
 
 
-async function handleCreateCashReserve(cashReserveTemplate: CashReservePartial) {
-  const cashReserve = await cashReserveService.create(cashReserveTemplate)
+async function handleCreateCashReserve(insert: CashReserveInsert) {
+  await cashReserveService.create(insert)
   await loadCashReserves();
 }
 
-async function handleDeleteCashReserve(cashReserve: CashReserve) {
-  await cashReserveService.delete(cashReserve.id)
+async function handleDeleteCashReserve(id: number) {
+  await cashReserveService.remove(id)
   await loadCashReserves();
 }
 
-async function handleUpdateCashReserve(cashReserve: CashReserve) {
-  await cashReserveService.update(cashReserve.id, cashReserve)
+async function handleUpdateCashReserve(id: number, update: CashReserveUpdate) {
+  await cashReserveService.update(id, update)
   await loadCashReserves();
 }
 

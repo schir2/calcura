@@ -11,5 +11,7 @@ type Props = {
 
 const props = defineProps<Props>()
 
-const emit = defineEmits(['update-command-sequence'])
+const emit = defineEmits<{
+  'update-command-sequence': [sequence: CommandSequence]
+}>()
 </script>

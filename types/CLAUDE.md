@@ -57,8 +57,17 @@ interface Income {
 1. Match column names exactly as they appear in the SQL migration
 2. Use `NUMERIC` columns as `number` in TypeScript (Supabase JS client parses them)
 3. Use `TIMESTAMPTZ` columns as `string` (ISO 8601) — convert to `Date` only at the display layer
-4. Export a `Partial<Omit<T, 'id' | 'created_at' | 'edited_at' | 'creator_id' | 'editor_id'>>` type for form/create payloads
+4. Export `*Insert` and `*Update` aliases derived from Supabase generated types — these are the canonical payload types for emits and service calls:
+   ```typescript
+   export type IncomeInsert = TablesInsert<'income'>
+   export type IncomeUpdate = TablesUpdate<'income'>
+   ```
 5. Export a defaults object for form initialization
+6. Do **not** export hand-crafted `*Partial` types (e.g. `Partial<Omit<Income, 'id'>>`). These are deprecated — use `*Insert` and `*Update` instead. Existing `*Partial` exports should be removed as components are updated.
+
+## Deprecated patterns
+
+**`*Partial` types** — `IncomePartial`, `DebtPartial`, `ExpensePartial`, etc. — are hand-crafted `Partial<Omit<T, 'id'>>` aliases that predate the Supabase migration. They are being replaced by the Supabase-derived `*Insert` / `*Update` types. Do not add new `*Partial` types; migrate away from existing ones when touching a file.
 
 ## State types (simulation engine)
 

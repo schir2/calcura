@@ -2,7 +2,7 @@
   <n-button @click="handleCreateRetirement()">Add</n-button>
   <div class="container">
     <Retirement v-for="(debtConfig, index) in debts" :debtConfig="debtConfig" :key="debtConfig.id"
-          @deleteRetirement="handleDeleteRetirement" @updateRetirement="handleUpdateRetirement"></Retirement>
+          @delete="handleDeleteRetirement" @update="handleUpdateRetirement"></Retirement>
   </div>
 
 </template>
@@ -13,16 +13,20 @@ type Props = {
 
 const props = defineProps<Props>()
 
-const emit = defineEmits(['deleteRetirement', 'updateRetirement', 'createRetirement']);
-function handleDeleteRetirement(debtId: number){
-  emit('deleteRetirement',debtId);
-}
-function handleCreateRetirement(){
-  emit('createRetirement');
-}
+const emit = defineEmits<{
+  delete: [id: number]
+  update: [debtConfig: RetirementConfig]
+  create: []
+}>()
 
-function handleUpdateRetirement(debtConfig: debtConfig) {
-  emit('updateRetirement', debtConfig);
+function handleDeleteRetirement(debtId: number) {
+  emit('delete', debtId)
+}
+function handleCreateRetirement() {
+  emit('create')
+}
+function handleUpdateRetirement(debtConfig: RetirementConfig) {
+  emit('update', debtConfig)
 }
 
 </script>

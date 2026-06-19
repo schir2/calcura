@@ -26,7 +26,12 @@ watch(() => props.commandSequence.commands, (newCommands) => {
   commandsRef.value = [...newCommands];
 }, {deep: true});
 
-const emit = defineEmits(['update', 'delete', 'remove', 'update-sequence']);
+const emit = defineEmits<{
+  update: [payload: { modelName: ModelName, id: number, data: Record<string, unknown> }]
+  delete: [payload: { modelName: ModelName, id: number }]
+  remove: [payload: { modelName: ModelName, data: unknown }]
+  'update-sequence': [sequence: CommandSequence]
+}>()
 
 const reorderedCommands = computed(() => {
   let order = 0
@@ -138,16 +143,16 @@ function updateCommandState(command: Command, newValue: boolean) {
 
 const drag = ref<boolean>(false)
 
-function handleUpdate(modelName: ModelName, data: Object) {
-  emit("update", {modelName: modelName, data: data})
+function handleUpdate(modelName: ModelName, id: number, data: Record<string, unknown>) {
+  emit("update", {modelName, id, data})
 }
 
-function handleDelete(modelName: ModelName, data: Object) {
-  emit("delete", {modelName: modelName, data: data})
+function handleDelete(modelName: ModelName, id: number) {
+  emit("delete", {modelName, id})
 }
 
-function handleRemove(modelName: ModelName, data: Object) {
-  emit("remove", {modelName: modelName, data: data})
+function handleRemove(modelName: ModelName, data: unknown) {
+  emit("remove", {modelName, data})
 }
 </script>
 <template>
@@ -171,9 +176,9 @@ function handleRemove(modelName: ModelName, data: Object) {
         />
         <component
             :is="renderComponent(plan, command.item_type, command.model_id)"
-            @update="handleUpdate(command.item_type, $event)"
-            @delete="handleDelete(command.item_type, $event)"
-            @remove="handleRemove(command.item_type, $event)"
+            @update="(id, update) => handleUpdate(command.item_type, id, update)"
+            @delete="(id) => handleDelete(command.item_type, id)"
+            @remove="(entity) => handleRemove(command.item_type, entity)"
         />
       </div>
     </template>

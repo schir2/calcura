@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import {type Plan} from "~/types/Plan";
+import {type Plan, type PlanInsert, type PlanUpdate} from "~/types/Plan";
 import {usePlanValidator} from "~/composables/validators/usePlanValidator";
 import {planDefaults} from "~/constants/planConstants";
 import {FORM_MODAL_WIDTH_CLASS} from "~/constants/FormConstants";
@@ -10,7 +10,11 @@ type Props = {
 }
 
 const {initialValues = planDefaults, mode = 'create'} = defineProps<Props>();
-const emit = defineEmits(['create', 'update', 'cancel'])
+const emit = defineEmits<{
+  create: [insert: PlanInsert]
+  update: [id: number, update: PlanUpdate]
+  cancel: []
+}>()
 const {formRef, modelRef, rules, handleCreate, handleUpdate, handleCancel} =
     useCrudFormWithValidation<Plan>(initialValues, emit, usePlanValidator)
 

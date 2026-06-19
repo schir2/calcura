@@ -1,6 +1,6 @@
 <template>
   <n-button-group :size="'tiny'">
-    <n-button tertiary round type="warning" @click="$emit('edit')">
+    <n-button tertiary round type="warning" @click="$emit('update')">
       <template #icon>
         <Icon name="mdi:edit"/>
       </template>
@@ -64,7 +64,11 @@ const props = defineProps<Props>()
 const showRemovePopConfirm = ref(false)
 const showDeletePopConfirm = ref(false)
 
-const emit = defineEmits(['remove', 'delete', 'edit'])
+const emit = defineEmits<{
+  update: []
+  remove: []
+  delete: []
+}>()
 
 function handleRemove() {
   showRemovePopConfirm.value = false

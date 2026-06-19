@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import {
   type Brokerage, brokerageDefaults,
-  type BrokeragePartial
+  type BrokerageInsert, type BrokeragePartial, type BrokerageUpdate
 } from "~/types/Brokerage";
 import type {FormInst} from "naive-ui";
 import {useBrokerageValidator} from "~/composables/validators/useBrokerageValidator";
@@ -12,7 +12,11 @@ type Props = {
 }
 
 const {initialValues = brokerageDefaults, mode} = defineProps<Props>();
-const emit = defineEmits(["update", "cancel", "create"]);
+const emit = defineEmits<{
+  create: [insert: BrokerageInsert]
+  update: [id: number, update: BrokerageUpdate]
+  cancel: []
+}>()
 const modelRef = ref<BrokeragePartial>(initialValues)
 const formRef = ref<FormInst | null>(null);
 const {handleCreate, handleUpdate, handleCancel} = useCrudForm(emit, formRef, modelRef)

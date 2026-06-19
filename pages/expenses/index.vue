@@ -6,25 +6,25 @@
   ></ExpenseList>
 </template>
 <script setup lang="ts">
-import type {Expense, ExpensePartial} from "~/types/Expense";
+import type {Expense, ExpenseInsert, ExpenseUpdate} from "~/types/Expense";
 
 import {useExpenseService} from "~/composables/api/useExpenseService";
 
 const expenseService = useExpenseService();
 
 
-async function handleCreateExpense(expenseTemplate: ExpensePartial) {
-  const expense = await expenseService.create(expenseTemplate)
+async function handleCreateExpense(insert: ExpenseInsert) {
+  await expenseService.create(insert)
   await loadExpenses();
 }
 
-async function handleDeleteExpense(expense: Expense) {
-  await expenseService.remove(expense.id)
+async function handleDeleteExpense(id: number) {
+  await expenseService.remove(id)
   await loadExpenses();
 }
 
-async function handleUpdateExpense(expense: Expense) {
-  await expenseService.update(expense.id, expense)
+async function handleUpdateExpense(id: number, update: ExpenseUpdate) {
+  await expenseService.update(id, update)
   await loadExpenses();
 }
 

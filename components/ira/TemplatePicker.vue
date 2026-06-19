@@ -18,7 +18,7 @@
 </template>
 <script lang="ts" setup>
 import type {IraTemplate} from "~/types/Ira";
-import {type Ira, iraDefaults, type IraPartial} from "~/types/Ira";
+import {type Ira, iraDefaults, type IraInsert, type IraPartial} from "~/types/Ira";
 import {useIraTemplateService} from "~/composables/api/useIraTemplateService";
 import {processTemplate} from "~/utils/templateProcessorUtils";
 
@@ -42,11 +42,13 @@ onMounted(async () => {
   await loadTemplates()
 })
 
-const emit = defineEmits(['create'])
+const emit = defineEmits<{
+  create: [insert: IraInsert]
+}>()
 
 function handleCreate(iraPartial: Partial<Ira>) {
-  emit('create', iraPartial)
-  showModal.value = false;
+  emit('create', iraPartial as IraInsert)
+  showModal.value = false
 }
 
 function handleClose() {

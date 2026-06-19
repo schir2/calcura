@@ -43,7 +43,7 @@
 </template>
 <script setup lang="ts">
 
-import type {Plan} from "~/types/Plan";
+import type {Plan, PlanInsert, PlanUpdate} from "~/types/Plan";
 
 type Props = {
   plan: Plan
@@ -53,21 +53,25 @@ const props = defineProps<Props>()
 
 const showModal = ref<boolean>(false)
 
-const emit = defineEmits(['delete', 'update', 'create']);
+const emit = defineEmits<{
+  delete: [id: number]
+  update: [id: number, update: PlanUpdate]
+  create: [insert: PlanInsert]
+}>()
 
 function handleDelete() {
-  emit('delete', props.plan);
+  emit('delete', props.plan.id)
 }
 
-function handleUpdate(plan: Partial<Plan>) {
-  emit('update', plan)
-  showModal.value = false;
+function handleUpdate(plan: Plan) {
+  const { id, ...update } = plan
+  emit('update', id, update as PlanUpdate)
+  showModal.value = false
 }
-
 
 function handleCreate(planPartial: Partial<Plan>) {
-  emit('create', planPartial)
-  showModal.value = false;
+  emit('create', planPartial as PlanInsert)
+  showModal.value = false
 }
 
 function handleClose() {

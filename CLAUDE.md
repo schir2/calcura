@@ -127,6 +127,8 @@ Key decisions are documented in `docs/adr/`. Read these before making changes th
 - Run `supabase gen types typescript --local > types/database.types.ts` after any migration
 - Use `SECURITY DEFINER` + `SET search_path = public` on all trigger functions
 - Wrap `auth.uid()` in `(select auth.uid())` in RLS policies to prevent per-row re-evaluation
+- Use typed `defineEmits` with Vue 3.3+ tuple syntax in every component
+- Use `*Insert` / `*Update` Supabase-derived types for emit payloads and page handlers
 
 ### Don't
 - Add camelCase ↔ snake_case conversion utilities
@@ -135,3 +137,6 @@ Key decisions are documented in `docs/adr/`. Read these before making changes th
 - Modify the simulation engine in `models/` when doing API migration work
 - Edit `types/database.types.ts` by hand
 - Add `supabase.redirect: true` — the custom middleware handles redirects
+- Use `Partial<Model>` or `*Partial` types as emit payloads — use `*Insert` / `*Update` instead
+- Use untyped `defineEmits(['create', 'update'])` — always type your emits
+- Add new `*Partial` type aliases — they are deprecated

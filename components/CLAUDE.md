@@ -70,6 +70,19 @@ async function handleUpdatePlan(id: number, update: PlanUpdate) { ... }
 async function handleDeletePlan(id: number) { ... }
 ```
 
+**Payload types — always use Supabase-derived types, never `Partial<Model>`:**
+```typescript
+// CORRECT
+create: [insert: IncomeInsert]   // TablesInsert<'income'>
+update: [id: number, update: IncomeUpdate]  // TablesUpdate<'income'>
+
+// WRONG — hand-crafted Partial
+create: [insert: Partial<Income>]
+create: [insert: IncomePartial]
+```
+
+`*Partial` types (`IncomePartial`, `DebtPartial`, etc.) are deprecated. Use `*Insert` / `*Update` everywhere. Page handler signatures follow the same rule.
+
 **Naming rules:**
 - Always use the generic operation name — never prefix with the entity (`deleteRetirement`, `updateIncome` are violations)
 - `delete` not `remove`, `update` not `edit` — one name per operation, no synonyms

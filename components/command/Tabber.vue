@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import type {Plan} from "~/types/Plan";
 import type {CommandSequence} from "~/types/CommandSequence";
+import type {ModelName} from "~/types/ModelName";
 
 type Props = {
   plan: Plan
@@ -8,7 +9,14 @@ type Props = {
 const props = defineProps<Props>()
 const activeTab = defineModel('activeTab');
 
-const emit = defineEmits(['update', 'delete', 'remove', 'update-sequence', 'delete-sequence', 'create-sequence'])
+const emit = defineEmits<{
+  update: [payload: { modelName: ModelName, id: number, data: Record<string, unknown> }]
+  delete: [payload: { modelName: ModelName, id: number }]
+  remove: [payload: { modelName: ModelName, data: unknown }]
+  'update-sequence': [sequence: CommandSequence]
+  'delete-sequence': [id: number]
+  'create-sequence': []
+}>()
 
 function handleClickDeleteSequence(commandSequenceId: number){
   emit('delete-sequence', commandSequenceId);

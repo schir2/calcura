@@ -18,7 +18,7 @@
 </template>
 <script lang="ts" setup>
 import type {RothIraTemplate} from "~/types/RothIra";
-import {type RothIra, rothIraDefaults, type RothIraPartial} from "~/types/RothIra";
+import {type RothIra, rothIraDefaults, type RothIraInsert, type RothIraPartial} from "~/types/RothIra";
 import {useRothIraTemplateService} from "~/composables/api/useRothIraTemplateService";
 import {processTemplate} from "~/utils/templateProcessorUtils";
 
@@ -44,11 +44,13 @@ onMounted(async () => {
   await loadTemplates()
 })
 
-const emit = defineEmits(['create'])
+const emit = defineEmits<{
+  create: [insert: RothIraInsert]
+}>()
 
 function handleCreate(rothIraPartial: Partial<RothIra>) {
-  emit('create', rothIraPartial)
-  showModal.value = false;
+  emit('create', rothIraPartial as RothIraInsert)
+  showModal.value = false
 }
 
 function handleClose() {

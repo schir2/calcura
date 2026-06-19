@@ -19,8 +19,10 @@
 </template>
 <script lang="ts" setup>
 const currentStep = defineModel<number>(1);
-const emit = defineEmits(['update'])
+const emit = defineEmits<{
+  update: [value: number, oldValue: number]
+}>()
 watch(currentStep, (value, oldValue) => {
-  emit('update', {value: value, oldValue: oldValue});
+  emit('update', value, oldValue)
 })
 </script>

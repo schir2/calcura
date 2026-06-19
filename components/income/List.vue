@@ -2,8 +2,7 @@
   <n-card title="Income(s)">
     <n-list>
       <IncomeListItem v-for="(income, index) in incomes" :income="income" :key="income.id"
-                      @delete="handleDelete" @update="handleUpdate" @create="handleCreate"
-                      @remove="handleRemove"></IncomeListItem>
+                      @delete="handleDelete" @update="handleUpdate" @create="handleCreate"></IncomeListItem>
     </n-list>
 
 
@@ -12,7 +11,7 @@
 
 </template>
 <script lang="ts" setup>
-import type {Income} from "~/types/Income";
+import type {Income, IncomeInsert, IncomeUpdate} from "~/types/Income";
 
 type Props = {
   incomes: Income[]
@@ -20,22 +19,22 @@ type Props = {
 
 const props = defineProps<Props>()
 
-const emit = defineEmits(['delete', 'update', 'create', 'remove']);
+const emit = defineEmits<{
+  create: [insert: IncomeInsert]
+  update: [id: number, update: IncomeUpdate]
+  delete: [id: number]
+}>()
 
-function handleDelete(income: Income) {
-  emit('delete', income);
+function handleDelete(id: number) {
+  emit('delete', id)
 }
 
-function handleCreate(incomeTemplate: Partial<Income>) {
-  emit('create', incomeTemplate);
+function handleCreate(insert: IncomeInsert) {
+  emit('create', insert)
 }
 
-function handleUpdate(income: Income) {
-  emit('update', income);
-}
-
-function handleRemove(income: Income) {
-  emit('remove', income)
+function handleUpdate(id: number, update: IncomeUpdate) {
+  emit('update', id, update)
 }
 
 </script>

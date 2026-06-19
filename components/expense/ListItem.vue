@@ -1,7 +1,6 @@
 <template>
   <n-modal v-model:show="showModal">
     <ExpenseForm :initialValues="expense" mode="edit"
-                 @delete="handleDelete"
                  @create="handleCreate"
                  @update="handleUpdate"
                  @cancel="handleClose"
@@ -28,7 +27,7 @@
 </template>
 <script setup lang="ts">
 
-import type {Expense} from "~/types/Expense";
+import type {Expense, ExpenseInsert, ExpenseUpdate} from "~/types/Expense";
 import {getAnnualAmount} from "~/utils";
 import {ModelName} from "~/types/ModelName";
 
@@ -40,33 +39,37 @@ const props = defineProps<Props>()
 
 const showModal = ref<boolean>(false)
 
-const emit = defineEmits(['delete', 'update', 'create', 'remove']);
+const emit = defineEmits<{
+  create: [insert: ExpenseInsert]
+  update: [id: number, update: ExpenseUpdate]
+  delete: [id: number]
+  remove: [expense: Expense]
+}>()
 
 function handleDelete() {
-  emit('delete', props.expense);
+  emit('delete', props.expense.id)
 }
 
-function handleUpdate(expense: Partial<Expense>) {
-  emit('update', expense)
-  showModal.value = false;
+function handleUpdate(expense: Expense) {
+  const { id, ...update } = expense
+  emit('update', id, update as ExpenseUpdate)
+  showModal.value = false
 }
-
 
 function handleCreate(expensePartial: Partial<Expense>) {
-  emit('create', expensePartial)
-  showModal.value = false;
+  emit('create', expensePartial as ExpenseInsert)
+  showModal.value = false
 }
 
-
 function handleRemove() {
-  emit('remove', props.expense);
+  emit('remove', props.expense)
 }
 
 function handleClose() {
-  showModal.value = false;
+  showModal.value = false
 }
 
 function handleEdit() {
-  showModal.value = true;
+  showModal.value = true
 }
 </script>

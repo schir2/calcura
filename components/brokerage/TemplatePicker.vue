@@ -21,7 +21,7 @@
 import {
   type Brokerage,
   brokerageDefaults,
-  type BrokeragePartial,
+  type BrokerageInsert, type BrokeragePartial,
   type BrokerageTemplate
 } from "~/types/Brokerage";
 import {useBrokerageTemplateService} from "~/composables/api/useBrokerageTemplateService";
@@ -49,11 +49,13 @@ onMounted(async () => {
   await loadTemplates()
 })
 
-const emit = defineEmits(['create'])
+const emit = defineEmits<{
+  create: [insert: BrokerageInsert]
+}>()
 
 function handleCreate(brokeragePartial: Partial<Brokerage>) {
-  emit('create', brokeragePartial)
-  showModal.value = false;
+  emit('create', brokeragePartial as BrokerageInsert)
+  showModal.value = false
 }
 
 function handleClose() {

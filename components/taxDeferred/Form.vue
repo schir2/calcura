@@ -2,7 +2,7 @@
 
 import {
   type TaxDeferred,
-  taxDeferredDefaults
+  taxDeferredDefaults, type TaxDeferredInsert, type TaxDeferredUpdate
 } from "~/types/TaxDeferred";
 import {getTaxDeferredElectiveContributionLimit} from "~/utils";
 import type {Income} from "~/types/Income";
@@ -15,7 +15,11 @@ type Props = {
 
 const {initialValues = taxDeferredDefaults, mode} = defineProps<Props>();
 
-const emit = defineEmits(["update", "cancel", "create"]);
+const emit = defineEmits<{
+  create: [insert: TaxDeferredInsert]
+  update: [id: number, update: TaxDeferredUpdate]
+  cancel: []
+}>()
 const {
   formRef,
   modelRef,

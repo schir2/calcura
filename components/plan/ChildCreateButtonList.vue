@@ -51,7 +51,9 @@ const items: CreateButtonProps[] = [
 const showModal = ref<boolean>(false)
 const selectedChildProp = ref<CreateButtonProps | null>(null)
 
-const emit = defineEmits(['create-model'])
+const emit = defineEmits<{
+  'create-model': [payload: { model: ModelName, data: unknown }]
+}>()
 
 function handleOpenCreateModal(item: CreateButtonProps) {
   selectedChildProp.value = item

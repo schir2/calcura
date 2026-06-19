@@ -7,10 +7,7 @@
   ></TaxDeferredInvestmentList>
 </template>
 <script setup lang="ts">
-import type {
-  TaxDeferred,
-  TaxDeferredInvestmentPartial
-} from "~/types/TaxDeferred";
+import type {TaxDeferred, TaxDeferredInsert, TaxDeferredUpdate} from "~/types/TaxDeferred";
 
 import {useTaxDeferredService} from "~/composables/api/useTaxDeferredService";
 import type {Income} from "~/types/Income";
@@ -19,18 +16,18 @@ const taxDeferredInvestmentService = useTaxDeferredService();
 const incomeService = useIncomeService()
 
 
-async function handleCreateTaxDeferredInvestment(taxDeferredInvestmentTemplate: TaxDeferredInvestmentPartial) {
-  const taxDeferredInvestment = await taxDeferredInvestmentService.create(taxDeferredInvestmentTemplate)
+async function handleCreateTaxDeferredInvestment(insert: TaxDeferredInsert) {
+  await taxDeferredInvestmentService.create(insert)
   await loadTaxDeferredInvestments();
 }
 
-async function handleDeleteTaxDeferredInvestment(taxDeferredInvestment: TaxDeferred) {
-  await taxDeferredInvestmentService.delete(taxDeferredInvestment.id)
+async function handleDeleteTaxDeferredInvestment(id: number) {
+  await taxDeferredInvestmentService.remove(id)
   await loadTaxDeferredInvestments();
 }
 
-async function handleUpdateTaxDeferredInvestment(taxDeferredInvestment: TaxDeferred) {
-  await taxDeferredInvestmentService.update(taxDeferredInvestment.id, taxDeferredInvestment)
+async function handleUpdateTaxDeferredInvestment(id: number, update: TaxDeferredUpdate) {
+  await taxDeferredInvestmentService.update(id, update)
   await loadTaxDeferredInvestments();
 }
 

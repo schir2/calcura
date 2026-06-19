@@ -6,25 +6,25 @@
   ></DebtList>
 </template>
 <script setup lang="ts">
-import type {Debt, DebtPartial} from "~/types/Debt";
+import type {Debt, DebtInsert, DebtUpdate} from "~/types/Debt";
 
 import {useDebtService} from "~/composables/api/useDebtService";
 
 const debtService = useDebtService();
 
 
-async function handleCreateDebt(debtTemplate: DebtPartial) {
-  const debt = await debtService.create(debtTemplate)
+async function handleCreateDebt(insert: DebtInsert) {
+  await debtService.create(insert)
   await loadDebts();
 }
 
-async function handleDeleteDebt(debt: Debt) {
-  await debtService.delete(debt.id)
+async function handleDeleteDebt(id: number) {
+  await debtService.remove(id)
   await loadDebts();
 }
 
-async function handleUpdateDebt(debt: Debt) {
-  await debtService.update(debt.id, debt)
+async function handleUpdateDebt(id: number, update: DebtUpdate) {
+  await debtService.update(id, update)
   await loadDebts();
 }
 

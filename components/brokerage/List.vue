@@ -1,13 +1,12 @@
 <template>
   <n-card title="Brokerages">
       <BrokerageListItem v-for="(brokerage, index) in brokerages" :brokerage="brokerage" :key="brokerage.id"
-                      @delete="handleDelete" @update="handleUpdate" @create="handleCreate"
-                      @remove="handleRemove"></BrokerageListItem>
+                      @delete="handleDelete" @update="handleUpdate" @create="handleCreate"></BrokerageListItem>
   </n-card>
 
 </template>
 <script lang="ts" setup>
-import type {Brokerage, BrokerageTemplate} from "~/types/Brokerage";
+import type {Brokerage, BrokerageInsert, BrokerageUpdate} from "~/types/Brokerage";
 
 type Props = {
   brokerages: Brokerage[]
@@ -15,22 +14,22 @@ type Props = {
 
 const props = defineProps<Props>()
 
-const emit = defineEmits(['delete', 'update', 'create', 'remove']);
+const emit = defineEmits<{
+  create: [insert: BrokerageInsert]
+  update: [id: number, update: BrokerageUpdate]
+  delete: [id: number]
+}>()
 
-function handleDelete(brokerage: Brokerage) {
-  emit('delete', brokerage);
+function handleDelete(id: number) {
+  emit('delete', id)
 }
 
-function handleCreate(brokerageTemplate: BrokerageTemplate) {
-  emit('create', brokerageTemplate);
+function handleCreate(insert: BrokerageInsert) {
+  emit('create', insert)
 }
 
-function handleUpdate(brokerage: Brokerage) {
-  emit('update', brokerage);
-}
-
-function handleRemove(brokerage: Brokerage) {
-  emit('remove', brokerage)
+function handleUpdate(id: number, update: BrokerageUpdate) {
+  emit('update', id, update)
 }
 
 </script>

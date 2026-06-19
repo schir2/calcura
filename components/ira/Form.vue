@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import {type Ira, iraDefaults} from "~/types/Ira";
+import {type Ira, iraDefaults, type IraInsert, type IraUpdate} from "~/types/Ira";
 
 type Props = {
   initialValues?: Partial<Ira>;
@@ -7,7 +7,11 @@ type Props = {
 }
 
 const {initialValues = iraDefaults} = defineProps<Props>();
-const emit = defineEmits(["update", "cancel", "create"]);
+const emit = defineEmits<{
+  create: [insert: IraInsert]
+  update: [id: number, update: IraUpdate]
+  cancel: []
+}>()
 
 const {formRef, modelRef, rules, handleCreate, handleUpdate, handleCancel} =
     useCrudFormWithValidation(initialValues, emit, useIraValidation);

@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import {type CashReserve, cashReserveDefaults} from "~/types/CashReserve";
+import {type CashReserve, cashReserveDefaults, type CashReserveInsert, type CashReserveUpdate} from "~/types/CashReserve";
 
 type Props = {
   initialValues?: Partial<CashReserve>;
@@ -7,7 +7,11 @@ type Props = {
 }
 
 const {initialValues = cashReserveDefaults, mode} = defineProps<Props>();
-const emit = defineEmits(["update", "cancel", "create"]);
+const emit = defineEmits<{
+  create: [insert: CashReserveInsert]
+  update: [id: number, update: CashReserveUpdate]
+  cancel: []
+}>()
 
 const {formRef, modelRef, rules, handleCreate, handleUpdate, handleCancel} =
     useCrudFormWithValidation(initialValues, emit, useCashReserveValidation)

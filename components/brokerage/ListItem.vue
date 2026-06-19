@@ -1,7 +1,7 @@
 
 <script setup lang="ts">
 
-import type {Brokerage} from "~/types/Brokerage";
+import type {Brokerage, BrokerageInsert, BrokerageUpdate} from "~/types/Brokerage";
 import {ModelName} from "~/types/ModelName";
 import {calculateBrokerageContribution} from "~/models/brokerage/BrokerageManager";
 import type {PlanState} from "~/types/PlanState";
@@ -16,34 +16,38 @@ const {brokerage} = defineProps<Props>()
 
 const showModal = ref<boolean>(false)
 
-const emit = defineEmits(['delete', 'update', 'create', 'remove']);
+const emit = defineEmits<{
+  create: [insert: BrokerageInsert]
+  update: [id: number, update: BrokerageUpdate]
+  delete: [id: number]
+  remove: [brokerage: Brokerage]
+}>()
 
 function handleDelete() {
-  emit('delete', brokerage);
+  emit('delete', brokerage.id)
 }
 
-function handleUpdate(brokerage: Partial<Brokerage>) {
-  emit('update', brokerage)
-  showModal.value = false;
+function handleUpdate(b: Brokerage) {
+  const { id, ...update } = b
+  emit('update', id, update as BrokerageUpdate)
+  showModal.value = false
 }
-
 
 function handleCreate(brokeragePartial: Partial<Brokerage>) {
-  emit('create', brokeragePartial)
-  showModal.value = false;
+  emit('create', brokeragePartial as BrokerageInsert)
+  showModal.value = false
 }
 
-
 function handleRemove() {
-  emit('remove', brokerage);
+  emit('remove', brokerage)
 }
 
 function handleClose() {
-  showModal.value = false;
+  showModal.value = false
 }
 
 function handleEdit() {
-  showModal.value = true;
+  showModal.value = true
 }
 
 const planStates = inject<Ref<PlanState[]>>('planStates')
@@ -62,7 +66,6 @@ const annualContribution = computed(() => {
 <template>
   <n-modal v-model:show="showModal">
     <BrokerageForm :initialValues="brokerage" mode="edit"
-                   @delete="handleDelete"
                    @create="handleCreate"
                    @update="handleUpdate"
                    @cancel="handleClose"

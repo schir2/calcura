@@ -25,7 +25,7 @@ import {processTemplate} from "~/utils/templateProcessorUtils";
 import {
   type TaxDeferred,
   taxDeferredDefaults,
-  type TaxDeferredPartial,
+  type TaxDeferredInsert, type TaxDeferredPartial,
   type TaxDeferredTemplate
 } from "~/types/TaxDeferred";
 import type {Income} from "~/types/Income";
@@ -56,11 +56,13 @@ onMounted(async () => {
   await loadTemplates()
 })
 
-const emit = defineEmits(['create'])
+const emit = defineEmits<{
+  create: [insert: TaxDeferredInsert]
+}>()
 
 function handleCreate(taxDeferredPartial: Partial<TaxDeferred>) {
-  emit('create', taxDeferredPartial)
-  showModal.value = false;
+  emit('create', taxDeferredPartial as TaxDeferredInsert)
+  showModal.value = false
 }
 
 function handleClose() {

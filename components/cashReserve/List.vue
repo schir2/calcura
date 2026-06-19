@@ -1,13 +1,12 @@
 <template>
   <n-card title="Cash Reserve(s)">
       <CashReserveListItem v-for="(cashReserve, index) in cashReserves" :cashReserve="cashReserve" :key="cashReserve.id"
-                      @delete="handleDelete" @update="handleUpdate" @create="handleCreate"
-                      @remove="handleRemove"></CashReserveListItem>
+                      @delete="handleDelete" @update="handleUpdate" @create="handleCreate"></CashReserveListItem>
   </n-card>
 
 </template>
 <script lang="ts" setup>
-import type {CashReserve, CashReserveTemplate} from "~/types/CashReserve";
+import type {CashReserve, CashReserveInsert, CashReserveUpdate} from "~/types/CashReserve";
 
 type Props = {
   cashReserves: CashReserve[]
@@ -15,22 +14,22 @@ type Props = {
 
 const props = defineProps<Props>()
 
-const emit = defineEmits(['delete', 'update', 'create', 'remove']);
+const emit = defineEmits<{
+  create: [insert: CashReserveInsert]
+  update: [id: number, update: CashReserveUpdate]
+  delete: [id: number]
+}>()
 
-function handleDelete(cashReserve: CashReserve) {
-  emit('delete', cashReserve);
+function handleDelete(id: number) {
+  emit('delete', id)
 }
 
-function handleCreate(cashReserveTemplate: CashReserveTemplate) {
-  emit('create', cashReserveTemplate);
+function handleCreate(insert: CashReserveInsert) {
+  emit('create', insert)
 }
 
-function handleUpdate(cashReserve: CashReserve) {
-  emit('update', cashReserve);
-}
-
-function handleRemove(cashReserve: CashReserve) {
-  emit('remove', cashReserve)
+function handleUpdate(id: number, update: CashReserveUpdate) {
+  emit('update', id, update)
 }
 
 </script>

@@ -6,25 +6,25 @@
   ></BrokerageInvestmentList>
 </template>
 <script setup lang="ts">
-import type {Brokerage, BrokerageInvestmentPartial} from "~/types/Brokerage";
+import type {Brokerage, BrokerageInsert, BrokerageUpdate} from "~/types/Brokerage";
 
 import {useBrokerageService} from "~/composables/api/useBrokerageService";
 
 const brokerageInvestmentService = useBrokerageService();
 
 
-async function handleCreateBrokerageInvestment(brokerageInvestmentTemplate: BrokerageInvestmentPartial) {
-  const brokerageInvestment = await brokerageInvestmentService.create(brokerageInvestmentTemplate)
+async function handleCreateBrokerageInvestment(insert: BrokerageInsert) {
+  await brokerageInvestmentService.create(insert)
   await loadBrokerageInvestments();
 }
 
-async function handleDeleteBrokerageInvestment(brokerageInvestment: Brokerage) {
-  await brokerageInvestmentService.delete(brokerageInvestment.id)
+async function handleDeleteBrokerageInvestment(id: number) {
+  await brokerageInvestmentService.remove(id)
   await loadBrokerageInvestments();
 }
 
-async function handleUpdateBrokerageInvestment(brokerageInvestment: Brokerage) {
-  await brokerageInvestmentService.update(brokerageInvestment.id, brokerageInvestment)
+async function handleUpdateBrokerageInvestment(id: number, update: BrokerageUpdate) {
+  await brokerageInvestmentService.update(id, update)
   await loadBrokerageInvestments();
 }
 

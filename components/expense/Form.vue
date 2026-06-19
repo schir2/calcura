@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import {type Expense, expenseDefaults} from "~/types/Expense";
+import {type Expense, type ExpenseInsert, type ExpenseUpdate, expenseDefaults} from "~/types/Expense";
 import {useCrudFormWithValidation} from "~/composables/useCrudFormWithValidation";
 import {getAnnualAmount} from "~/utils";
 import type {Frequency} from "~/types/Frequency";
@@ -11,7 +11,11 @@ type Props = {
 }
 
 const {initialValues = expenseDefaults, mode} = defineProps<Props>();
-const emit = defineEmits(["update", "cancel", "create"]);
+const emit = defineEmits<{
+  create: [insert: ExpenseInsert]
+  update: [id: number, update: ExpenseUpdate]
+  cancel: []
+}>()
 
 const {formRef, modelRef, rules, handleCreate, handleUpdate, handleCancel} =
     useCrudFormWithValidation(initialValues, emit, useExpenseValidation);

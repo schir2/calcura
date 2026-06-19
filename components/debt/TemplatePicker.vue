@@ -18,7 +18,7 @@
   </n-thing>
 </template>
 <script lang="ts" setup>
-import {type Debt, debtDefaults, type DebtPartial, type DebtTemplate} from "~/types/Debt";
+import {type Debt, debtDefaults, type DebtInsert, type DebtPartial, type DebtTemplate} from "~/types/Debt";
 import {useDebtTemplateService} from "~/composables/api/useDebtTemplateService";
 import {processTemplate} from "~/utils/templateProcessorUtils";
 
@@ -45,11 +45,13 @@ onMounted(async () => {
   await loadTemplates()
 })
 
-const emit = defineEmits(['create'])
+const emit = defineEmits<{
+  create: [insert: DebtInsert]
+}>()
 
 function handleCreate(debtPartial: Partial<Debt>) {
-  emit('create', debtPartial)
-  showModal.value = false;
+  emit('create', debtPartial as DebtInsert)
+  showModal.value = false
 }
 
 function handleClose() {

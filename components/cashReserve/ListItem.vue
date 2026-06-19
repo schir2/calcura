@@ -1,7 +1,6 @@
 <template>
   <n-modal v-model:show="showModal">
     <CashReserveForm :initialValues="cashReserve" mode="edit"
-                     @delete="handleDelete"
                      @create="handleCreate"
                      @update="handleUpdate"
                      @cancel="handleClose"
@@ -17,7 +16,7 @@
 </template>
 <script setup lang="ts">
 
-import type {CashReserve} from "~/types/CashReserve";
+import type {CashReserve, CashReserveInsert, CashReserveUpdate} from "~/types/CashReserve";
 import {ModelName} from "~/types/ModelName";
 
 type Props = {
@@ -28,33 +27,37 @@ const props = defineProps<Props>()
 
 const showModal = ref<boolean>(false)
 
-const emit = defineEmits(['delete', 'update', 'create', 'remove']);
+const emit = defineEmits<{
+  create: [insert: CashReserveInsert]
+  update: [id: number, update: CashReserveUpdate]
+  delete: [id: number]
+  remove: [cashReserve: CashReserve]
+}>()
 
 function handleDelete() {
-  emit('delete', props.cashReserve);
+  emit('delete', props.cashReserve.id)
 }
 
-function handleUpdate(cashReserve: Partial<CashReserve>) {
-  emit('update', cashReserve)
-  showModal.value = false;
+function handleUpdate(c: CashReserve) {
+  const { id, ...update } = c
+  emit('update', id, update as CashReserveUpdate)
+  showModal.value = false
 }
-
 
 function handleCreate(cashReservePartial: Partial<CashReserve>) {
-  emit('create', cashReservePartial)
-  showModal.value = false;
+  emit('create', cashReservePartial as CashReserveInsert)
+  showModal.value = false
 }
 
-
 function handleRemove() {
-  emit('remove', props.cashReserve);
+  emit('remove', props.cashReserve)
 }
 
 function handleClose() {
-  showModal.value = false;
+  showModal.value = false
 }
 
 function handleEdit() {
-  showModal.value = true;
+  showModal.value = true
 }
 </script>

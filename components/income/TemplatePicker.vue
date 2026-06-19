@@ -20,7 +20,7 @@
 <script lang="ts" setup>
 import {processTemplate} from "~/utils/templateProcessorUtils";
 import {useIncomeTemplateService} from "~/composables/api/useIncomeTemplateService";
-import {type Income, incomeDefaults, type IncomePartial} from "~/types/Income";
+import {type Income, incomeDefaults, type IncomeInsert, type IncomePartial} from "~/types/Income";
 import type {IncomeTemplate} from "~/models/income/IncomeTemplate";
 
 const showModal = ref(false);
@@ -45,11 +45,13 @@ onMounted(async () => {
   await loadTemplates()
 })
 
-const emit = defineEmits(['create'])
+const emit = defineEmits<{
+  create: [insert: IncomeInsert]
+}>()
 
 function handleCreate(incomePartial: Partial<Income>) {
-  emit('create', incomePartial)
-  showModal.value = false;
+  emit('create', incomePartial as IncomeInsert)
+  showModal.value = false
 }
 
 function handleClose() {

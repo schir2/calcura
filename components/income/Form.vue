@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import {Bar} from 'vue-chartjs'
-import {type Income, incomeDefaults} from "~/types/Income";
+import {type Income, type IncomeInsert, type IncomeUpdate, incomeDefaults} from "~/types/Income";
 import {BarElement, CategoryScale, Chart as ChartJS, Legend, LinearScale, Title, Tooltip} from 'chart.js'
 import {getAnnualAmount} from "~/utils";
 import {useIncomeValidation} from "~/composables/validators/useIncomeValidator";
@@ -14,7 +14,11 @@ type Props = {
 
 const {initialValues = incomeDefaults, mode} = defineProps<Props>();
 
-const emit = defineEmits(["update", "cancel", "create"]);
+const emit = defineEmits<{
+  create: [insert: IncomeInsert]
+  update: [id: number, update: IncomeUpdate]
+  cancel: []
+}>()
 const {formRef, modelRef, rules, handleCreate, handleUpdate, handleCancel} =
     useCrudFormWithValidation(initialValues, emit, useIncomeValidation);
 

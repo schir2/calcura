@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import {type RothIra, rothIraDefaults} from "~/types/RothIra";
+import {type RothIra, rothIraDefaults, type RothIraInsert, type RothIraUpdate} from "~/types/RothIra";
 
 type Props = {
   initialValues?: Partial<RothIra>;
@@ -7,7 +7,11 @@ type Props = {
 }
 
 const {initialValues = rothIraDefaults, mode} = defineProps<Props>();
-const emit = defineEmits(["update", "cancel", "create"]);
+const emit = defineEmits<{
+  create: [insert: RothIraInsert]
+  update: [id: number, update: RothIraUpdate]
+  cancel: []
+}>()
 
 const {formRef, modelRef, rules, handleCreate, handleUpdate, handleCancel} =
     useCrudFormWithValidation(initialValues, emit, useRothIraValidation);

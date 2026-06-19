@@ -2,7 +2,6 @@
   <n-modal v-model:show="showModal">
     <TaxDeferredForm :initialValues="taxDeferred" mode="edit"
                      :incomes="incomes"
-                     @delete="handleDelete"
                      @create="handleCreate"
                      @update="handleUpdate"
                      @cancel="handleClose"
@@ -22,7 +21,7 @@
 </template>
 <script setup lang="ts">
 
-import type {TaxDeferred} from "~/types/TaxDeferred";
+import type {TaxDeferred, TaxDeferredInsert, TaxDeferredUpdate} from "~/types/TaxDeferred";
 import {ModelName} from "~/types/ModelName";
 import type {Income} from "~/types/Income";
 
@@ -35,33 +34,37 @@ const props = defineProps<Props>()
 
 const showModal = ref<boolean>(false)
 
-const emit = defineEmits(['delete', 'update', 'create', 'remove']);
+const emit = defineEmits<{
+  create: [insert: TaxDeferredInsert]
+  update: [id: number, update: TaxDeferredUpdate]
+  delete: [id: number]
+  remove: [taxDeferred: TaxDeferred]
+}>()
 
 function handleDelete() {
-  emit('delete', props.taxDeferred);
+  emit('delete', props.taxDeferred.id)
 }
 
-function handleUpdate(taxDeferred: Partial<TaxDeferred>) {
-  emit('update', taxDeferred)
-  showModal.value = false;
+function handleUpdate(t: TaxDeferred) {
+  const { id, ...update } = t
+  emit('update', id, update as TaxDeferredUpdate)
+  showModal.value = false
 }
-
 
 function handleCreate(taxDeferredPartial: Partial<TaxDeferred>) {
-  emit('create', taxDeferredPartial)
-  showModal.value = false;
+  emit('create', taxDeferredPartial as TaxDeferredInsert)
+  showModal.value = false
 }
 
-
 function handleRemove() {
-  emit('remove', props.taxDeferred);
+  emit('remove', props.taxDeferred)
 }
 
 function handleClose() {
-  showModal.value = false;
+  showModal.value = false
 }
 
 function handleEdit() {
-  showModal.value = true;
+  showModal.value = true
 }
 </script>
