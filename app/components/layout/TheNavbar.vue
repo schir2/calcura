@@ -1,6 +1,5 @@
 <script setup lang="ts">
 const router = useRouter()
-const menu = ref({open: false})
 const auth = useAuth()
 const {isAuthenticated} = auth
 const message = useMessage()
@@ -11,9 +10,6 @@ async function handleLogout() {
   await router.push('/')
 }
 
-const toggleMenu = () => {
-  menu.value.open = !menu.value.open;
-}
 </script>
 <template>
   <n-layout-header class="pt-3 pb-2 px-4">
