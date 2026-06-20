@@ -25,7 +25,7 @@ import {
 } from "#shared/types/CashReserve";
 import {useCashReserveTemplateService} from "~/composables/api/useCashReserveTemplateService";
 import {processTemplate} from "~/utils/templateProcessorUtils";
-import {cashReserveDefaults} from "~~/constants/CashReserveConstants";
+import {cashReserveDefaults} from "~/constants/CashReserveConstants";
 
 const showModal = ref(false);
 const activeCashReservePartial = ref<Partial<CashReserve> | null>()

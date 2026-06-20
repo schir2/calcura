@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import type {Brokerage, BrokerageInsert, BrokerageUpdate} from "#shared/types/Brokerage";
-import {brokerageDefaults} from "~~/constants/BrokerageConstants";
+import {brokerageDefaults} from "~/constants/BrokerageConstants";
 import type {FormInst} from "naive-ui";
 import {useBrokerageValidator} from "~/composables/validators/useBrokerageValidator";
 

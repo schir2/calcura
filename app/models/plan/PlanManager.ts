@@ -18,7 +18,7 @@ import {TaxDeferredManager} from "~/models/taxDeferred/TaxDeferredManager";
 import {BaseOrchestrator} from "~/models/common/BaseOrchestrator";
 import {ContributionError} from "~/utils/errors/ContributionError";
 import {RothIraManager} from "~/models/rothIra/RothIraManager";
-import eventBus from "~/services/eventBus";
+import eventBus from "~/utils/eventBus";
 import type {Command} from "#shared/types/Command";
 import {ContributionType} from "#shared/types/ContributionType";
 

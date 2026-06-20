@@ -1,40 +1,32 @@
-import type {Database} from '#shared/types/database.types'
+import type {Database, Tables, TablesInsert, TablesUpdate} from '#shared/types/database.types'
 import type {TableName} from "#shared/types/TableName";
-import type {Tables} from "#shared/types/Table";
 
-export function useApi<
-    T extends TableName = TableName,
-    Row = Tables[T]['Row'],
-    Insert = Tables[T]['Insert'],
-    Update = Tables[T]['Update']
-
->(table: T,) {
+export function useApi<T extends TableName>(table: T) {
     const client = useSupabaseClient<Database>()
 
-
     return {
-        async list(): Promise<Row[]> {
+        async list(): Promise<Tables<T>[]> {
             const {data, error} = await client.from(table).select('*')
             if (error) throw error
-            return data as Row[]
+            return data as Tables<T>[]
         },
 
-        async get(id: number): Promise<Row> {
+        async get(id: number): Promise<Tables<T>> {
             const {data, error} = await client.from(table).select('*').eq('id', id).single()
             if (error) throw error
-            return data as Row
+            return data as Tables<T>
         },
 
-        async create(payload: Insert): Promise<Row> {
+        async create(payload: TablesInsert<T>): Promise<Tables<T>> {
             const {data, error} = await client.from(table).insert(payload as any)
             if (error) throw error
-            return data as Row
+            return data as Tables<T>
         },
 
-        async update(id: number, payload: Update): Promise<Row> {
+        async update(id: number, payload: TablesUpdate<T>): Promise<Tables<T>> {
             const {data, error} = await client.from(table).update(payload as any).eq('id', id).select().single()
             if (error) throw error
-            return data as Row
+            return data as Tables<T>
         },
 
         async remove(id: number): Promise<void> {

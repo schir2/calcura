@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import type {CashReserve, CashReserveInsert, CashReserveUpdate} from "#shared/types/CashReserve";
-import {cashReserveDefaults} from "~~/constants/CashReserveConstants";
+import {cashReserveDefaults} from "~/constants/CashReserveConstants";
 
 type Props = {
   initialValues?: Partial<CashReserve>;

@@ -21,7 +21,7 @@
 import {processTemplate} from "~/utils/templateProcessorUtils";
 import {useIncomeTemplateService} from "~/composables/api/useIncomeTemplateService";
 import type {Income, IncomeInsert, IncomeTemplate} from "#shared/types/Income";
-import {incomeDefaults} from "~~/constants/IncomeConstants";
+import {incomeDefaults} from "~/constants/IncomeConstants";
 
 const showModal = ref(false);
 const activeIncomePartial = ref<Partial<Income> | null>()

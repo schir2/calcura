@@ -6,7 +6,7 @@ import {getAnnualAmount} from "~/utils";
 import {useIncomeValidation} from "~/composables/validators/useIncomeValidator";
 import type {Frequency} from "#shared/types/Frequency";
 import {FORM_LABEL_ALIGN, FORM_LABEL_PLACEMENT, FORM_MODAL_WIDTH_CLASS} from "~/constants/FormConstants";
-import {incomeDefaults} from "~~/constants/IncomeConstants";
+import {incomeDefaults} from "~/constants/IncomeConstants";
 
 type Props = {
   initialValues?: Partial<Income>;

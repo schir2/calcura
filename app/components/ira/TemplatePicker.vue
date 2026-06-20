@@ -21,7 +21,7 @@
 import type {Ira, IraInsert, IraTemplate} from "#shared/types/Ira";
 import {useIraTemplateService} from "~/composables/api/useIraTemplateService";
 import {processTemplate} from "~/utils/templateProcessorUtils";
-import {iraDefaults} from "~~/constants/IraConstants";
+import {iraDefaults} from "~/constants/IraConstants";
 
 const showModal = ref(false);
 const activeIraPartial = ref<Partial<Ira> | null>()

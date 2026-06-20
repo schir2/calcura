@@ -35,7 +35,8 @@ export default defineNuxtConfig({
     imports: {
         dirs: [
             'constants',
-            'composables/**'
+            'composables/api',
+            'composables/validators',
         ]
     },
     icon: {

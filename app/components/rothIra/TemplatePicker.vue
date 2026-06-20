@@ -18,7 +18,7 @@
 </template>
 <script lang="ts" setup>
 import type {RothIra, RothIraInsert, RothIraTemplate} from "#shared/types/RothIra";
-import {rothIraDefaults} from "~~/constants/RothIraConstants";
+import {rothIraDefaults} from "~/constants/RothIraConstants";
 import {useRothIraTemplateService} from "~/composables/api/useRothIraTemplateService";
 import {processTemplate} from "~/utils/templateProcessorUtils";
 

@@ -19,7 +19,7 @@
 </template>
 <script lang="ts" setup>
 import type {Brokerage, BrokerageInsert, BrokerageTemplate} from "#shared/types/Brokerage";
-import {brokerageDefaults} from "~~/constants/BrokerageConstants";
+import {brokerageDefaults} from "~/constants/BrokerageConstants";
 import {useBrokerageTemplateService} from "~/composables/api/useBrokerageTemplateService";
 import {processTemplate} from "~/utils/templateProcessorUtils";
 

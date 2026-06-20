@@ -6,7 +6,7 @@ import {
 } from "#shared/types/TaxDeferred";
 import {getTaxDeferredElectiveContributionLimit} from "~/utils";
 import type {Income} from "#shared/types/Income";
-import {taxDeferredDefaults} from "~~/constants/TaxDeferredConstants";
+import {taxDeferredDefaults} from "~/constants/TaxDeferredConstants";
 
 type Props = {
   initialValues?: Partial<TaxDeferred>;

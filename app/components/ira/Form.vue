@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import type {Ira, IraInsert, IraUpdate} from "#shared/types/Ira";
-import {iraDefaults} from "~~/constants/IraConstants";
+import {iraDefaults} from "~/constants/IraConstants";
 
 type Props = {
   initialValues?: Partial<Ira>;

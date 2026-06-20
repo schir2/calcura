@@ -21,7 +21,7 @@
 import type {Expense, ExpenseInsert, ExpenseTemplate} from "#shared/types/Expense";
 import {useExpenseTemplateService} from "~/composables/api/useExpenseTemplateService";
 import {processTemplate} from "~/utils/templateProcessorUtils";
-import {expenseDefaults} from "~~/constants/ExpenseConstants";
+import {expenseDefaults} from "~/constants/ExpenseConstants";
 
 const showModal = ref(false);
 const activeExpensePartial = ref<Partial<Expense> | null>()

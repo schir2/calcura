@@ -23,7 +23,7 @@
 import {useTaxDeferredTemplateService} from "~/composables/api/useTaxDeferredTemplateService";
 import {processTemplate} from "~/utils/templateProcessorUtils";
 import type {TaxDeferred, TaxDeferredInsert, TaxDeferredTemplate} from "#shared/types/TaxDeferred";
-import {taxDeferredDefaults} from "~~/constants/TaxDeferredConstants";
+import {taxDeferredDefaults} from "~/constants/TaxDeferredConstants";
 import type {Income} from "#shared/types/Income";
 
 type Props = {

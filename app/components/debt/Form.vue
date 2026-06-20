@@ -5,7 +5,7 @@ import {calculateDebtPayment} from "~/models/debt/DebtManager";
 import {useCrudFormWithValidation} from "~/composables/useCrudFormWithValidation";
 import {FORM_LABEL_ALIGN, FORM_LABEL_PLACEMENT} from "~/constants/FormConstants";
 import type {Frequency} from "#shared/types/Frequency";
-import {debtDefaults} from "~~/constants/DebtConstants";
+import {debtDefaults} from "~/constants/DebtConstants";
 
 type Props = {
   initialValues?: Partial<Debt>;

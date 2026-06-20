@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import type {RothIra, RothIraInsert, RothIraUpdate} from "#shared/types/RothIra";
-import {rothIraDefaults} from "~~/constants/RothIraConstants";
+import {rothIraDefaults} from "~/constants/RothIraConstants";
 
 type Props = {
   initialValues?: Partial<RothIra>;

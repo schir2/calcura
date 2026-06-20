@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import type {Expense, ExpenseInsert, ExpenseUpdate} from "#shared/types/Expense";
-import {expenseDefaults} from "~~/constants/ExpenseConstants";
+import {expenseDefaults} from "~/constants/ExpenseConstants";
 import {useCrudFormWithValidation} from "~/composables/useCrudFormWithValidation";
 import {getAnnualAmount} from "~/utils";
 import {FORM_LABEL_ALIGN, FORM_LABEL_PLACEMENT, FORM_MODAL_WIDTH_CLASS} from "~/constants/FormConstants";

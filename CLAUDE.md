@@ -117,6 +117,23 @@ Key decisions are documented in `docs/adr/`. Read these before making changes th
 - IRA income association → ADR 006
 - Auth redirect → ADR 007
 
+## Change Communication Protocol
+
+Before making any file changes, follow this step-through workflow by default:
+
+1. **Announce scope** — state what files will change and why before touching anything
+2. **Await approval** — wait for the user to confirm before executing
+3. **Execute the phase** — make the changes
+4. **Preview the next phase** — describe what comes next and why
+5. **Await approval** — repeat until done
+
+**Override:** If the user says **"just do it"**, skip all pauses, execute every phase, then report at the end.
+
+### Rationale detail level
+- **Minor change** (single file, mechanical fix): one sentence — what changed and why
+- **Significant change** (design decision, multi-file impact, public API/type change): explain what, why, and any trade-offs before proceeding
+- Any decision made without explicit user input must be surfaced and approved before acting
+
 ## Conventions
 
 ### Do

@@ -2,7 +2,7 @@
 import {type Debt, type DebtInsert, type DebtTemplate} from "#shared/types/Debt";
 import {useDebtTemplateService} from "~/composables/api/useDebtTemplateService";
 import {processTemplate} from "~/utils/templateProcessorUtils";
-import {debtDefaults} from "~~/constants/DebtConstants";
+import {debtDefaults} from "~/constants/DebtConstants";
 
 
 const showModal = ref(false);

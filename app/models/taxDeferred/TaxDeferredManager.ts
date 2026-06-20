@@ -4,7 +4,7 @@ import BaseManager from "~/models/common/BaseManager";
 import type {IncomeManager} from "~/models/income/IncomeManager";
 import {FundType} from "~/models/plan/PlanManager";
 import {ContributionLimitType} from "#shared/types/Plan";
-import eventBus from "~/services/eventBus";
+import eventBus from "~/utils/eventBus";
 import {ContributionType} from "#shared/types/ContributionType";
 import type {TaxDeferredState} from "#shared/types/TaxDeferredState";
 
