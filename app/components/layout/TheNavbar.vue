@@ -20,7 +20,7 @@ const toggleMenu = () => {
     <nav class="justify-between items-center flex">
       <n-button quaternary @click="router.push('/')">
         <span class="flex gap-2 items-center">
-        <img class="h-8 inline-block" src="/assets/img/logos/calcura-logo.svg" alt="logo"/>
+        <img class="h-8 inline-block" src="~/assets/img/logos/calcura-logo.svg" alt="logo"/>
         <span class="text-xl">Calcura</span>
         </span>
       </n-button>

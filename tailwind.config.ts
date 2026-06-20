@@ -1,7 +1,9 @@
-/** @type {import('tailwindcss').Config} */
 import type {PluginAPI} from "tailwindcss/types/config";
 import animate from "tailwindcss-animate";
-import { setupInspiraUI } from "@inspira-ui/plugins";
+import {setupInspiraUI} from "@inspira-ui/plugins";
+import forms from "@tailwindcss/forms";
+import typography from "@tailwindcss/typography";
+import aspectRatio from "@tailwindcss/aspect-ratio";
 
 function withOpacity(variableName: string) {
     return ({opacityValue}: { opacityValue?: number }): string => {
@@ -13,15 +15,10 @@ function withOpacity(variableName: string) {
 }
 
 
-module.exports = {
+export default {
     content: [
+        './app/**/*.{vue,js,ts}',
         './*.ts',
-        './components/**/*.{vue,js,ts}', // Vue components
-        './layouts/**/*.vue',            // Nuxt layouts
-        './pages/**/*.vue',              // Nuxt pages
-        './composables/**/*.{js,ts}',    // Composables
-        './plugins/**/*.{js,ts}',        // Plugins
-        './app.vue',                     // Main app file
     ],
     theme: {
         extend: {
@@ -225,9 +222,9 @@ module.exports = {
     plugins: [
         animate,
         setupInspiraUI,
-        require('@tailwindcss/forms'),
-        require('@tailwindcss/typography'),
-        require('@tailwindcss/aspect-ratio'),
+        forms,
+        typography,
+        aspectRatio,
         function (api: PluginAPI) {
             const {addUtilities} = api;
             addUtilities({
