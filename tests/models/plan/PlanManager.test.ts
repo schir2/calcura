@@ -1,8 +1,8 @@
 import {beforeEach, describe, expect, it} from "vitest";
 import PlanManager, {FundType} from "~/models/plan/PlanManager";
-import type {Plan} from "~/types/Plan";
+import type {Plan} from "#shared/types/Plan";
 
-import {ContributionType} from "~/types/ContributionType";
+import {ContributionType} from "#shared/types/ContributionType";
 
 describe("PlanManager", () => {
     let planConfig: Plan;

@@ -13,22 +13,19 @@ export default defineNuxtConfig({
         'animate.css/animate.min.css',
 
     ],
-    experimental: {
-        asyncContext: true,
-    },
-    devtools: {enabled: true},
+    devtools: {enabled: false},
     modules: [
-        '@nuxtjs/supabase',
-        '@vee-validate/nuxt',
-        '@nuxt/test-utils/module',
-        '@pinia/nuxt',
-        '@vueuse/nuxt',
-        '@nuxt/icon',
-        'nuxtjs-naive-ui',
+      '@nuxtjs/supabase',
+      '@vee-validate/nuxt',
+      '@nuxt/test-utils/module',
+      '@pinia/nuxt',
+      '@vueuse/nuxt',
+      '@nuxt/icon',
+      'nuxtjs-naive-ui',
     ],
     supabase: {
         redirect: false,
-        types: '~~/types/database.types.ts',
+        types: '~~/shared/types/database.types.ts',
         redirectOptions: {
             login: '/auth/login',
             exclude: ['/auth/*'],
@@ -47,7 +44,7 @@ export default defineNuxtConfig({
         }
     },
     build: {
-        transpile: ['vueuc'],
+        transpile: ['vueuc', 'naive-ui', '@css-render/vue3-ssr'],
     },
     postcss: {
         plugins: {
@@ -75,6 +72,12 @@ export default defineNuxtConfig({
         server: {
             allowedHosts: ['calcura.org'],
         },
+        // optimizeDeps: {
+        //     include: ['vueuc', 'naive-ui', 'cookie'],
+        // },
+        // ssr: {
+        //     noExternal: ['vueuc', 'naive-ui', '@css-render/vue3-ssr'],
+        // },
         plugins: [
             AutoImport({
                 imports: [
@@ -83,14 +86,13 @@ export default defineNuxtConfig({
                             'useDialog',
                             'useMessage',
                             'useNotification',
-                            'useLoadingBar',
+                            'useLoadingBar'
                         ]
                     }
                 ]
             }),
             Components({
-                resolvers: [NaiveUiResolver()],
-                dts: true,
+                resolvers: [NaiveUiResolver()]
             })
         ]
     },

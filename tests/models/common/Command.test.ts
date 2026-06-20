@@ -1,5 +1,5 @@
 import {describe, expect, it} from "vitest";
-import type {Command} from "~/types/Command";
+import type {Command} from "#shared/types/Command";
 import {compareAndSyncCommands} from "~/utils/commandUtils";
 
 describe("compareAndSyncCommands", () => {

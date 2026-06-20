@@ -1,6 +1,6 @@
 import {describe, expect, it} from 'vitest';
 import {adjustForInsufficientFunds, calculateCompoundInterest, calculateGrowthAmount, getAnnualAmount} from '@/utils/financial';
-import type {Frequency} from "~/types/Frequency";
+import type {Frequency} from "#shared/types/Frequency";
 
 describe('financialUtils', () => {
 

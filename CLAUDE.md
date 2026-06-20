@@ -25,7 +25,7 @@ supabase start                    # Start local Supabase (Docker)
 supabase stop                     # Stop local Supabase
 supabase db reset                 # Replay all migrations on local DB
 supabase migration new <name>     # Create a timestamped migration file
-supabase gen types typescript --local > types/database.types.ts  # Regenerate TS types
+supabase gen types typescript --local > shared/types/database.types.ts  # Regenerate TS types
 ```
 
 ## Tech Stack
@@ -102,7 +102,7 @@ Components under `components/` are grouped by domain (`brokerage/`, `debt/`, `in
 
 ### Key Type Files
 
-- `types/database.types.ts` — **auto-generated** by `supabase gen types typescript --local`. Do not edit by hand.
+- `shared/types/database.types.ts` — **auto-generated** by `supabase gen types typescript --local`. Do not edit by hand.
 - `types/Plan.ts` — core plan interface and strategy/limit enums
 - `types/[Domain].ts` — config and state types per financial entity; all snake_case
 - `types/Auth.ts` — auth-related types (Supabase session, credentials)
@@ -124,7 +124,7 @@ Key decisions are documented in `docs/adr/`. Read these before making changes th
 - Use `useSupabaseClient()` in composables for all DB access
 - Write field names in snake_case to match the DB schema
 - Create a migration file for any schema change; never edit the DB directly
-- Run `supabase gen types typescript --local > types/database.types.ts` after any migration
+- Run `supabase gen types typescript --local > shared/types/database.types.ts` after any migration
 - Use `SECURITY DEFINER` + `SET search_path = public` on all trigger functions
 - Wrap `auth.uid()` in `(select auth.uid())` in RLS policies to prevent per-row re-evaluation
 - Use typed `defineEmits` with Vue 3.3+ tuple syntax in every component
@@ -135,7 +135,7 @@ Key decisions are documented in `docs/adr/`. Read these before making changes th
 - Call `$fetch` with CSRF headers (the Django API is gone)
 - Put API calls directly in components — use composables
 - Modify the simulation engine in `models/` when doing API migration work
-- Edit `types/database.types.ts` by hand
+- Edit `shared/types/database.types.ts` by hand
 - Add `supabase.redirect: true` — the custom middleware handles redirects
 - Use `Partial<Model>` or `*Partial` types as emit payloads — use `*Insert` / `*Update` instead
 - Use untyped `defineEmits(['create', 'update'])` — always type your emits
