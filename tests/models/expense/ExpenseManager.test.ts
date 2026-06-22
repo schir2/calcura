@@ -1,6 +1,6 @@
 import {beforeEach, describe, expect, it} from "vitest";
 import PlanManager from "~/models/plan/PlanManager";
-import type {Plan} from "#shared/types/Plan";
+import type {PlanWithRelations as Plan} from "#shared/types/Plan";
 import {ExpenseManager} from "~/models/expense/ExpenseManager"
 import type ExpenseState from "#shared/types/ExpenseState";
 

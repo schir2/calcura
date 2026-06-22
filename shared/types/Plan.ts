@@ -1,4 +1,5 @@
-import type {Enums, TablesInsert, TablesUpdate} from '#shared/types/database.types'
+import type {Enums, Tables, TablesInsert, TablesUpdate} from '#shared/types/database.types'
+
 import type {Debt} from "#shared/types/Debt";
 import type {TaxDeferred} from "#shared/types/TaxDeferred";
 import type {Income} from "#shared/types/Income";
@@ -25,37 +26,18 @@ export enum ContributionLimitType {
 
 }
 
-export type PlanModels = 'taxDeferred' | 'brokerage' | 'cashReserve' | 'debt' | 'expense' | 'income' | 'ira' | 'plan' | 'rothIra';
+export type Plan = Tables<'plan'>
 
-export type Plan = {
-    id: number;
-    name: string;
-    age: number;
-    year: number;
-    growth_rate: number;
-    inflation_rate: number;
-    insufficient_funds_strategy: InsufficientFundsStrategy;
-    growth_application_strategy: GrowthApplicationStrategy;
-    tax_strategy: IncomeTaxStrategy
-    tax_rate: number
-    life_expectancy: number;
-    retirement_strategy: RetirementStrategy;
-    retirement_withdrawal_rate: number;
-    retirement_income_goal: number;
-    retirement_age: number;
-    retirement_savings_amount: number;
-    retirement_income_adjusted_for_inflation: boolean;
+export type PlanWithRelations = Plan & {
     cash_reserves: CashReserve[]
     incomes: Income[]
     expenses: Expense[]
     debts: Debt[]
-    tax_deferreds: TaxDeferred[];
-    brokerages: Brokerage[];
-    iras: Ira[];
-    roth_iras: RothIra[];
-    command_sequences: CommandSequence[];
-    edited_at: Date
-    created_at: Date
+    tax_deferreds: TaxDeferred[]
+    brokerages: Brokerage[]
+    iras: Ira[]
+    roth_iras: RothIra[]
+    command_sequences: CommandSequence[]
 }
 
 export type PlanInsert = TablesInsert<'plan'>

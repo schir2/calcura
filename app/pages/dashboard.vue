@@ -1,28 +1,26 @@
+<script lang="ts" setup>
+
+definePageMeta({
+      title: 'Calcura Dashboard',
+      layout: 'default',
+    }
+)
+const {list} = usePlanService()
+const {data: plans, refresh, error} = useAsyncData('plans', () => list())
+const user = useSupabaseUser()
+const {profile} = storeToRefs(useProfileStore())
+
+</script>
 <template>
   <div class="content-grid space-y-8">
     <h1 class="full-width text-6xl text-center">Calcura Dashboard</h1>
     <p class="content text-lg text-center">Welcome back {{ user?.email }}</p>
     <div class="breakout grid grid-cols-2 gap-2">
-      <dashboard-plans v-if="plans" :plans="plans"/>
+      <dashboard-plans v-if="plans?.length" :plans="plans"/>
       <dashboard-profile v-if="profile" :profile="profile"/>
     </div>
   </div>
 </template>
-<script lang="ts" setup>
-
-import type {Plan} from "#shared/types/Plan";
-
-definePageMeta({
-      title: 'Dashboard',
-      layout: 'default',
-    }
-)
-const {list} = usePlanService()
-const {data: plans,  refresh, error} = useAsyncData('plans', () => list())
-const user = useSupabaseUser()
-const {profile} = storeToRefs(useProfileStore())
-
-</script>
 <style scoped>
 .content-grid {
   --padding-inline: 1rem;

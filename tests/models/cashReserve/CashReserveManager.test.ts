@@ -1,4 +1,4 @@
-import type {Plan} from "#shared/types/Plan";
+import type {PlanWithRelations as Plan} from "#shared/types/Plan";
 import {beforeEach, describe, expect, it} from "vitest";
 import type {CashReserveManager} from "~/models/cashReserve/CashReserveManager";
 import PlanManager from "~/models/plan/PlanManager";

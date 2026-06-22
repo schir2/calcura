@@ -1,7 +1,7 @@
 import {beforeEach, describe, expect, it} from "vitest";
 import {RothIraManager} from "~/models/rothIra/RothIraManager";
 import PlanManager from "~/models/plan/PlanManager";
-import type {Plan} from "#shared/types/Plan";
+import type {PlanWithRelations as Plan} from "#shared/types/Plan";
 
 const planConfig: Plan = {
     id: 1,

@@ -13,7 +13,7 @@
 
 </template>
 <script setup lang="ts">
-import type {Plan} from "#shared/types/Plan";
+import type {PlanWithRelations as Plan} from "#shared/types/Plan";
 
 type Props = {
   plan: Plan

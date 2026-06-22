@@ -2,7 +2,7 @@ import {beforeEach, describe, expect, it} from "vitest";
 import {BrokerageManager} from "~/models/brokerage/BrokerageManager";
 import type {Brokerage} from "#shared/types/Brokerage";
 import PlanManager from "~/models/plan/PlanManager";
-import type {Plan} from "#shared/types/Plan";
+import type {PlanWithRelations as Plan} from "#shared/types/Plan";
 
 const planConfig: Plan = {
     id: 1,

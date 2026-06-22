@@ -1,6 +1,6 @@
 import {beforeEach, describe, expect, it} from "vitest";
 import PlanManager, {FundType} from "~/models/plan/PlanManager";
-import type {Plan} from "#shared/types/Plan";
+import type {PlanWithRelations as Plan} from "#shared/types/Plan";
 
 import {ContributionType} from "#shared/types/ContributionType";
 
@@ -192,7 +192,6 @@ describe("PlanManager", () => {
             expect(state.taxable_capital).toBe(150_000)
             expect(state.taxed_capital).toBe(105_000)
             expect(state.taxed_withdrawals).toBe(0)
-            expect(state.deductions).toBe(0)
             expect(state.elective_limit).toBe(23_500)
             expect(state.deferred_limit).toBe(70_000)
             expect(state.ira_limit).toBe(7_000)
@@ -329,34 +328,13 @@ describe("PlanManager", () => {
     })
 
     describe('getAGI', () => {
-        it("should correctly calculate AGI based on taxable income and deductions", () => {
+        it("should correctly calculate AGI based on taxable income", () => {
             const currentState = planManager.getCurrentState();
             currentState.taxable_income = 100000;
-            currentState.deductions = 20000;
 
             const agi = planManager.getAGI(currentState);
 
             expect(agi).toBe(80000);
-        });
-
-        it("should return taxable income as AGI when deductions are 0", () => {
-            const currentState = planManager.getCurrentState();
-            currentState.taxable_income = 50000;
-            currentState.deductions = 0;
-
-            const agi = planManager.getAGI(currentState);
-
-            expect(agi).toBe(50000);
-        });
-
-        it("should handle negative AGI when deductions exceed taxable income", () => {
-            const currentState = planManager.getCurrentState();
-            currentState.taxable_income = 30000;
-            currentState.deductions = 40000;
-
-            const agi = planManager.getAGI(currentState);
-
-            expect(agi).toBe(-10000);
         });
     });
 

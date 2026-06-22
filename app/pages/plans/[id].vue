@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type {Plan} from "#shared/types/Plan";
+import type {PlanWithRelations as Plan} from "#shared/types/Plan";
 import ChildCreateButtonList from "~/components/plan/ChildCreateButtonList.vue";
 import type {ModelName} from "#shared/types/ModelName";
 import type {CommandSequence} from "#shared/types/CommandSequence";
@@ -9,15 +9,22 @@ import type {Debt} from "#shared/types/Debt";
 import type {Expense} from "#shared/types/Expense";
 
 const planService = usePlanService()
+const supabase = useSupabaseClient()
+
 const route = useRoute()
 const planId = Number(route.params.id)
+
+
 const {data: plan, refresh: refreshPlan, status} = useAsyncData(() => {
-  return planService.get(planId)
+  return supabase.from('plan').
+  select(
+      `*, cash_reserves:cash_reserve(*), income(*), expenses:expense(*), debts:debt(*), tax_deffereds:tax_deferred(*), brokerages:brokerage(*), iras:ira(*), roth_iras:roth_ira(*), command_sequences:command_sequence(*, command_sequence_commands:command_sequence_command(*, command(*)))`).
+  eq('id', planId).single()
 })
 const loading = ref<boolean>(false);
 
 
-useHead({
+definePageMeta({
   title: 'Calcura Dashboard',
   meta: [
     {name: 'description', content: 'Calcura: Dashboard'}
@@ -25,43 +32,47 @@ useHead({
 })
 
 async function handleCreatePlanModel(payload: { model: ModelName, data: any }) {
+  console.log(payload)
+  switch (payload.model) {
+    case 'income':
+  }
   plan.value = await planService.create(payload.data)
-  await loadPlan()
+  await refreshPlan()
 }
 
 async function handleRemovePlanModel(payload: { modelName: ModelName, data: any }) {
   const {modelName, data} = payload;
   await useApi(modelName).remove(data.id)
-  await loadPlan();
+  await refreshPlan();
 }
 
 async function handleUpdateModel(payload: { modelName: ModelName, data: any }) {
   const {modelName, data} = payload;
   await useApi(modelName).update(data.id, data);
-  await loadPlan();
+  await refreshPlan();
 }
 
 async function handleDeleteModel(payload: { modelName: ModelName, data: any }) {
   const {modelName, data} = payload;
   await useApi(modelName).remove(payload.data.id);
-  await loadPlan();
+  await refreshPlan();
 }
 
 const repo = useRepo()
 
 async function handleUpdateSequence(commandSequence: CommandSequence) {
   await repo.commandSequence.update(commandSequence.id, commandSequence)
-  await loadPlan()
+  await refreshPlan()
 }
 
 async function handleCreateSequence(commandSequence: CommandSequence) {
   await repo.commandSequence.create({name: 'Tester', plan: planId})
-  await loadPlan()
+  await refreshPlan()
 }
 
 async function handleDeleteSequence(commandSequenceId: number) {
   await repo.commandSequence.remove(commandSequenceId)
-  await loadPlan()
+  await refreshPlan()
 }
 
 const showModal = ref(false);
@@ -74,7 +85,7 @@ function handleClickShowMeTheDataButton() {
 async function handleUpdatePlan(id: number, update: PlanUpdate) {
   await planService.update(id, update)
   showModal.value = false;
-  await loadPlan()
+  await refreshPlan()
 }
 
 function handleClose() {
@@ -86,29 +97,17 @@ const activeCommandSequenceId = ref<null | number>(null)
 const planManager = ref<PlanManager | null>(null);
 const planStates = ref<PlanState[] | null>(null);
 
-watchEffect(() => {
-  if (plan?.value) {
-    planManager.value = new PlanManager(plan.value);
-    if (!activeCommandSequenceId?.value) {
-      activeCommandSequenceId.value = plan.value.commandSequences[0]?.id
-    }
-    planStates.value = planManager.value.simulate(activeCommandSequenceId.value)
-  }
-}, {})
+// watchEffect(() => {
+//   if (plan?.value) {
+//     planManager.value = new PlanManager(plan.value);
+//     if (!activeCommandSequenceId?.value) {
+//       activeCommandSequenceId.value = plan.value.commandSequences[0]?.id
+//     }
+//     planStates.value = planManager.value.simulate(activeCommandSequenceId.value)
+//   }
+// }, {})
 
 provide('planStates', planStates)
-
-async function loadPlan() {
-  try {
-    await refreshPlan()
-    if (plan) {
-    }
-  } catch (error) {
-    console.log('Error loading plan:', error);
-  } finally {
-    loading.value = false;
-  }
-}
 
 const activeExpensesAndDebts = computed((): { expenses: Expense[], debts: Debt[] } => {
       const result: { expenses: Expense[], debts: Debt[] } = {
@@ -144,6 +143,7 @@ const activeExpensesAndDebts = computed((): { expenses: Expense[], debts: Debt[]
 </script>
 <template>
   <div class="grid plan-container">
+    {{plan}}
     <div v-if="plan" class="space-y-2" style="grid-area:main">
       <n-modal v-model:show="showModal">
         <LazyPlanForm :initialValues="plan" mode="edit"
@@ -176,17 +176,17 @@ const activeExpensesAndDebts = computed((): { expenses: Expense[], debts: Debt[]
         <ChildCreateButtonList @create-model="handleCreatePlanModel($event)"/>
       </n-card>
 
-      <command-tabber
-          v-if="plan"
-          v-model:active-tab="activeCommandSequenceId"
-          :plan="plan"
-          @update="handleUpdateModel"
-          @delete="handleDeleteModel"
-          @remove="handleRemovePlanModel"
-          @update-sequence="handleUpdateSequence"
-          @delete-sequence="handleDeleteSequence"
-          @create-sequence="handleCreateSequence"
-      />
+<!--      <command-tabber-->
+<!--          v-if="plan?.command_sequences"-->
+<!--          v-model:active-tab="activeCommandSequenceId"-->
+<!--          :plan="plan"-->
+<!--          @update="handleUpdateModel"-->
+<!--          @delete="handleDeleteModel"-->
+<!--          @remove="handleRemovePlanModel"-->
+<!--          @update-sequence="handleUpdateSequence"-->
+<!--          @delete-sequence="handleDeleteSequence"-->
+<!--          @create-sequence="handleCreateSequence"-->
+<!--      />-->
     </div>
     <div class="space-y-2" style="grid-area:charts">
       <div class="grid grid-cols-2 gap-2">

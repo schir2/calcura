@@ -2,7 +2,7 @@
 import type {Command} from "#shared/types/Command";
 import draggable from 'vuedraggable';
 import type {CommandSequence} from "#shared/types/CommandSequence";
-import type {Plan} from "#shared/types/Plan";
+import type {PlanWithRelations as Plan} from "#shared/types/Plan";
 import type {ModelName} from "#shared/types/ModelName";
 import {
   BrokerageListItem,

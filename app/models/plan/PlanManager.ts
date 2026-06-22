@@ -1,4 +1,4 @@
-import type {Plan} from "#shared/types/Plan";
+import type {PlanWithRelations as Plan} from "#shared/types/Plan";
 import {ContributionLimitType} from "#shared/types/Plan";
 import type {PlanState} from "#shared/types/PlanState";
 import DebtManager from "~/models/debt/DebtManager";
@@ -102,8 +102,6 @@ export default class PlanManager extends BaseOrchestrator<Plan, PlanState, PlanM
             taxed_capital: taxedIncome,
             taxed_withdrawals: 0,
 
-            deductions: 0,
-
             inflation_rate: this.config.inflation_rate,
 
             elective_limit: getTaxDeferredElectiveContributionLimit(this.config.year, this.config.age),
@@ -174,8 +172,6 @@ export default class PlanManager extends BaseOrchestrator<Plan, PlanState, PlanM
             taxable_capital: grossIncome,
             taxed_capital: taxedCapital,
             taxed_withdrawals: 0,
-
-            deductions: 0,
 
             elective_limit: getTaxDeferredElectiveContributionLimit(year, age),
             deferred_limit: getTaxDeferredContributionLimit(year, age),
@@ -398,7 +394,7 @@ export default class PlanManager extends BaseOrchestrator<Plan, PlanState, PlanM
     }
 
     getAGI(planState: PlanState): number {
-        return planState.taxable_income - planState.deductions
+        return planState.taxable_income
     }
 
     calculateTaxes(agi: number): number {

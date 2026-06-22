@@ -1,13 +1,12 @@
 <script lang="ts" setup>
-import type {Plan} from "#shared/types/Plan";
 import type {CommandSequence} from "#shared/types/CommandSequence";
 import type {ModelName} from "#shared/types/ModelName";
 
 type Props = {
-  plan: Plan
+  command_sequences: CommandSequence[]
 }
 const props = defineProps<Props>()
-const activeTab = defineModel('activeTab');
+const activeTab = defineModel<number>('activeTab');
 
 const emit = defineEmits<{
   update: [payload: { modelName: ModelName, id: number, data: Record<string, unknown> }]

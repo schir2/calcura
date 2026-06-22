@@ -4,7 +4,7 @@ export const useProfileStore = defineStore('profile', () => {
     const user = useSupabaseUser()
 
     watch(user, async (newUser) => {
-        if (newUser) {
+        if (newUser?.id) {
             const {get} = useProfileService()
             profile.value = await get(newUser.id)
         } else {
