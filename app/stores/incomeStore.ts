@@ -1,6 +1,3 @@
-export const useIncomeStore = defineStore('incomeStore', () => {
-    const loaded = ref(false)
-    const incomes = ref<Income[]>([])
+import {modelStoreFactory} from '~/stores/base/modelStoreFactory'
 
-    return {loaded, incomes}
-})
+export const useIncomeStore = modelStoreFactory('income')
