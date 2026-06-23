@@ -430,36 +430,103 @@ describe("PlanManager", () => {
     })
 
     describe("canRetire", () => {
-        it.todo("should return true if retirement age is met when using 'age' strategy");
-        it.todo("should return true if all debts are cleared when using 'debt_free' strategy");
-        it.todo("should return true if retirement income goal is met when using 'percent_rule' strategy");
-        it.todo("should return true if retirement savings amount is met when using 'target_savings' strategy");
-        it.todo("should return false if none of the retirement strategies are met");
+        it("should return true if retirement age is met when using 'age' strategy", () => {
+            planManager = new PlanManager({...planConfig, age: 65, retirement_age: 65, retirement_strategy: 'age'})
+            expect(planManager.canRetire()).toBe(true)
+        });
+
+        it("should return true if all debts are cleared when using 'debt_free' strategy", () => {
+            planManager = new PlanManager({...planConfig, debts: [], retirement_strategy: 'debt_free'})
+            expect(planManager.canRetire()).toBe(true)
+        });
+
+        it("should return true if retirement income goal is met when using 'percent_rule' strategy", () => {
+            planManager = new PlanManager({...planConfig, retirement_strategy: 'percent_rule', retirement_income_goal: 50_000})
+            planManager.getCurrentState().plan.retirement_income_projected = 60_000
+            expect(planManager.canRetire()).toBe(true)
+        });
+
+        it("should return true if retirement savings amount is met when using 'target_savings' strategy", () => {
+            // Initial savings: tax_deferred(20k) + tax_exempt(10k) + taxable(10k) + cash.net(105k) = 145k
+            planManager = new PlanManager({...planConfig, retirement_strategy: 'target_savings', retirement_savings_amount: 100_000})
+            expect(planManager.canRetire()).toBe(true)
+        });
+
+        it("should return false if none of the retirement strategies are met", () => {
+            // default: age strategy, age=30, retirement_age=65
+            expect(planManager.canRetire()).toBe(false)
+        });
     });
 
     describe("getCurrentDebt", () => {
-        it.todo("should calculate the total current debt based on all debt managers");
-        it.todo("should return 0 if there are no debts");
+        it("should calculate the total current debt based on all debt managers", () => {
+            // planConfig has one debt with principal=100_000
+            expect(planManager.getCurrentDebt()).toBe(100_000)
+        });
+
+        it("should return 0 if there are no debts", () => {
+            planManager = new PlanManager({...planConfig, debts: []})
+            expect(planManager.getCurrentDebt()).toBe(0)
+        });
     });
 
     describe("getGrossIncome", () => {
-        it.todo("should calculate the total gross income from all income managers");
-        it.todo("should return 0 if there are no income managers");
+        it("should calculate the total gross income from all income managers", () => {
+            // planConfig: income 100_000 + 50_000 = 150_000
+            expect(planManager.getGrossIncome()).toBe(150_000)
+        });
+
+        it("should return 0 if there are no income managers", () => {
+            planManager = new PlanManager({...planConfig, incomes: []})
+            expect(planManager.getGrossIncome()).toBe(0)
+        });
     });
 
     describe("getInflationRate", () => {
-        it.todo("should return the configured inflation rate");
+        it("should return the configured inflation rate", () => {
+            expect(planManager.getInflationRate()).toBe(3)
+        });
     });
 
     describe("createNextState", () => {
-        it.todo("should correctly increment age and year");
-        it.todo("should reset savings start of year based on end of year savings");
-        it.todo("should recalculate contribution limits for the new year");
-        it.todo("should handle inflation rate correctly");
+        it("should correctly increment age and year", () => {
+            planManager.process()
+            const next = planManager.advanceTimePeriod()
+            expect(next.plan.age).toBe(31)
+            expect(next.plan.year).toBe(2026)
+        });
+
+        it("should reset savings start of year based on end of year savings", () => {
+            planManager.process()
+            const processed = planManager.getCurrentState()
+            const next = planManager.advanceTimePeriod()
+            expect(next.assets.tax_deferred.balance_start).toBe(processed.assets.tax_deferred.balance_end)
+            expect(next.assets.tax_exempt.balance_start).toBe(processed.assets.tax_exempt.balance_end)
+            expect(next.assets.taxable.balance_start).toBe(processed.assets.taxable.balance_end)
+        });
+
+        it("should recalculate contribution limits for the new year", () => {
+            planManager.process()
+            const next = planManager.advanceTimePeriod()
+            expect(next.limits.elective).toBeGreaterThan(0)
+            expect(next.limits.deferred).toBeGreaterThan(0)
+            expect(next.limits.ira).toBeGreaterThan(0)
+            expect(next.limits.hsa).toBeGreaterThan(0)
+        });
+
+        it("should handle inflation rate correctly", () => {
+            // retirement_income_adjusted_for_inflation=true, inflation_rate=3, goal=50_000
+            planManager.process()
+            const next = planManager.advanceTimePeriod()
+            expect(next.plan.retirement_income_goal).toBeCloseTo(50_000 * 1.03)
+        });
     });
 
     describe("getAllManagers", () => {
-        it.todo("should return a flat array of all managers");
+        it("should return a flat array of all managers", () => {
+            // planConfig: 1 cash_reserve, 2 incomes, 3 expenses, 1 debt, 1 tax_deferred, 1 brokerage, 1 ira, 1 roth_ira, 0 hsas = 11
+            expect(planManager.getAllManagers().length).toBe(11)
+        });
     });
 
     describe("getCommands", () => {
@@ -467,18 +534,57 @@ describe("PlanManager", () => {
     });
 
     describe("processImplementation", () => {
-        it.todo("should return the plan state unchanged (default implementation)");
+        it("should update retirement_income_projected and accumulate lifetime income", () => {
+            // Initial savings: tax_deferred(20k) + tax_exempt(10k) + taxable(10k) + cash.net(105k) = 145k
+            // projected = 145k * 4% = 5_800
+            planManager.process()
+            const state = planManager.getCurrentState()
+            expect(state.plan.retirement_income_projected).toBe(5_800)
+            expect(state.income.gross_lifetime).toBe(150_000)
+            expect(state.income.net_lifetime).toBe(105_000)
+        });
     });
 
     describe("simulate", () => {
-        it.todo("should correctly simulate the plan over multiple years");
-        it.todo("should execute all commands if provided");
-        it.todo("should correctly process unprocessed states for all managers");
+        it("should correctly simulate the plan over multiple years", () => {
+            // age strategy: age=30, retirement_age=65 → 36 states (ages 30–65)
+            const states = planManager.simulate()
+            expect(states.length).toBe(36)
+            expect(states[states.length - 1].plan.age).toBe(65)
+            expect(states[states.length - 1].retired).toBe(false)
+        });
+
+        it("should execute all commands if provided", () => {
+            const emptySequence = {command_sequence_commands: []} as any
+            const states = planManager.simulate(emptySequence)
+            expect(states.length).toBe(36)
+            expect(states[states.length - 1].plan.age).toBe(65)
+        });
+
+        it("should correctly process unprocessed states for all managers", () => {
+            const states = planManager.simulate()
+            for (const state of states) {
+                expect(state.processed).toBe(true)
+            }
+        });
     });
 
     describe("processUnprocessed", () => {
-        it.todo("should process and return the updated plan state if the manager state is unprocessed");
-        it.todo("should return the unchanged plan state if the manager state is already processed");
+        it("should process and advance the manager if unprocessed", () => {
+            const expenseManager = planManager.getManagerById('expense', 1)
+            expect(expenseManager.getCurrentState().processed).toBe(false)
+            planManager.processUnprocessed(expenseManager)
+            expect(expenseManager.getStates().length).toBe(2)
+            expect(expenseManager.getStates()[0].processed).toBe(true)
+        });
+
+        it("should skip process but still advance if already processed", () => {
+            const expenseManager = planManager.getManagerById('expense', 1)
+            expenseManager.process()
+            expect(expenseManager.getCurrentState().processed).toBe(true)
+            planManager.processUnprocessed(expenseManager)
+            expect(expenseManager.getStates().length).toBe(2)
+        });
     });
 
     describe("getIncomeSummary", () => {
