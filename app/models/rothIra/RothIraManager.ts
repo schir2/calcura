@@ -35,7 +35,7 @@ export class RothIraManager extends BaseManager<RothIra, RothIraState> {
         return calculateRothIraContribution(
             this.config,
             this.incomeManager?.getCurrentState().gross_income,
-            this.orchestrator.getCurrentState().ira_limit
+            this.orchestrator.getCurrentState().limits.ira
         );
     }
 

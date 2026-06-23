@@ -34,6 +34,7 @@ export default class DebtManager extends BaseManager<Debt, DebtState> {
         const paymentLifetime = currentState.payment_lifetime + payment;
         const updatedPrincipalEndOfYear = principalEndOfYear + interestAmount;
 
+        this.orchestrator.accrueDebtInterest(interestAmount)
         this.orchestrator.adjustDebt(updatedPrincipalEndOfYear)
         this.updateCurrentState({
             ...currentState,

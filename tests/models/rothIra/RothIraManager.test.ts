@@ -179,17 +179,17 @@ describe("RothIraManager", () => {
             expect(rothIraState.balance_start_of_year).toBe(10_000);
             expect(rothIraState.balance_end_of_year).toBe(18_000);
             expect(rothIraState.processed).toBe(true);
-            expect(planState.taxable_income).toBe(150_000);
-            expect(planState.ira_limit).toBe(0);
-            expect(planState.taxable_capital).toBe(140_000);
-            expect(planState.taxed_income).toBe(105_000);
-            expect(planState.taxed_capital).toBe(98_000);
-            expect(planState.savings_taxable_end_of_year).toBe(0);
-            expect(planState.savings_tax_deferred_end_of_year).toBe(0);
-            expect(planState.savings_tax_exempt_end_of_year).toBe(18_000);
-            expect(planState.tax_exempt_contributions).toBe(7_000);
-            expect(planState.tax_exempt_contributions_lifetime).toBe(7_000);
-            expect(planState.taxed_withdrawals).toBe(7_000);
+            expect(planState.income.taxable).toBe(150_000);
+            expect(planState.limits.ira).toBe(0);
+            expect(planState.cash.taxable).toBe(140_000);
+            expect(planState.income.net).toBe(105_000);
+            expect(planState.cash.net).toBe(98_000);
+            expect(planState.assets.taxable.balance_end).toBe(0);
+            expect(planState.assets.tax_deferred.balance_end).toBe(0);
+            expect(planState.assets.tax_exempt.balance_end).toBe(18_000);
+            expect(planState.assets.tax_exempt.contribution).toBe(7_000);
+            expect(planState.assets.tax_exempt.contribution_lifetime).toBe(7_000);
+            expect(planState.cash.spent).toBe(7_000);
         });
 
         it("should process rothIra and update state correctly for end of of year application strategy", () => {
@@ -221,12 +221,12 @@ describe("RothIraManager", () => {
             expect(rothIraState.balance_start_of_year).toBe(10_000);
             expect(rothIraState.balance_end_of_year).toBe(16_500);
             expect(rothIraState.processed).toBe(true);
-            expect(planState.taxed_income).toBe(105_000);
-            expect(planState.taxed_capital).toBe(100_000);
-            expect(planState.savings_taxable_end_of_year).toBe(0);
-            expect(planState.savings_tax_deferred_end_of_year).toBe(0);
-            expect(planState.savings_tax_exempt_end_of_year).toBe(16_500);
-            expect(planState.taxed_withdrawals).toBe(5_000);
+            expect(planState.income.net).toBe(105_000);
+            expect(planState.cash.net).toBe(100_000);
+            expect(planState.assets.taxable.balance_end).toBe(0);
+            expect(planState.assets.tax_deferred.balance_end).toBe(0);
+            expect(planState.assets.tax_exempt.balance_end).toBe(16_500);
+            expect(planState.cash.spent).toBe(5_000);
         });
 
         it("should throw error if processing already processed state", () => {

@@ -4,7 +4,7 @@ import ChildCreateButtonList from "~/components/plan/ChildCreateButtonList.vue";
 import type {ModelName} from "#shared/types/ModelName";
 import type {CommandSequence} from "#shared/types/CommandSequence";
 import PlanManager from "~/models/plan/PlanManager";
-import type {PlanState} from "#shared/types/PlanState";
+import type {OrchestratorState} from "#shared/types/OrchestratorState";
 import type {Debt} from "#shared/types/Debt";
 import type {Expense} from "#shared/types/Expense";
 
@@ -95,7 +95,7 @@ function handleClose() {
 const activeCommandSequenceId = ref<null | number>(null)
 
 const planManager = ref<PlanManager | null>(null);
-const planStates = ref<PlanState[] | null>(null);
+const planStates = ref<OrchestratorState[] | null>(null);
 
 // watchEffect(() => {
 //   if (plan?.value) {

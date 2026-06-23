@@ -20,6 +20,13 @@ A form component that receives a full entity (with `id`) as a prop. Emits `updat
 ### `useCrudForm`
 Composable that manages form state and validation only. Returns `{ formRef, modelRef, rules, validate }`. Does not own emit logic — that lives in the form component. Generic over whatever Supabase type the caller passes (`*Insert` for create, full entity for edit).
 
+## Naming Conventions
+
+### Runtime variable names must be fully descriptive
+Callback parameters, locals, and all runtime identifiers use complete, meaningful names — never 1-2 letter abbreviations. `taxDeferred`, `brokerage`, `manager`, `command` — not `td`, `b`, `m`, `c`. This applies everywhere: `map`, `reduce`, `forEach`, and plain variable declarations.
+
+Generic type parameters (`T`, `TState`, `TConfig`, `TRow`) are exempt — they follow standard TypeScript convention and operate only in the type system.
+
 ## Decisions
 
 ### Shared validation bounds live in `constants/shared.ts`

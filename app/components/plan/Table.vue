@@ -1,9 +1,9 @@
 <script setup lang="ts">
-import type {PlanState} from "#shared/types/PlanState";
+import type {OrchestratorState} from "#shared/types/OrchestratorState";
 import humanize from "humanize-plus"
 
 type Props = {
-  planStates: PlanState[]
+  planStates: OrchestratorState[]
 }
 
 const columns = [
@@ -71,22 +71,22 @@ const props = defineProps<Props>()
 
 const formattedPlanStates = computed(() => {
   return props.planStates.map(state => ({
-    age: state.age,
-    grossIncome: `$${humanize.intComma(state.gross_income)}`,
-    taxableIncome: `$${humanize.intComma(state.taxable_income)}`,
-    taxedIncome: `$${humanize.intComma(state.taxed_income)}`,
-    retirementIncomeProjected: `$${humanize.intComma(state.retirement_income_projected)}`,
-    retirementIncomeGoal: `$${humanize.intComma(state.retirement_income_goal)}`,
-    taxedCapital: `$${humanize.intComma(state.taxed_capital)}`,
-    taxableCapital: `$${humanize.intComma(state.taxable_capital)}`,
-    taxedWithdrawals: `$${humanize.intComma(state.taxed_withdrawals)}`,
-    expensesTotal: `$${humanize.intComma(state.expenses_total)}`,
-    expensesPaid: `$${humanize.intComma(state.expenses_paid)}`,
-    expensesShortfall: `$${humanize.intComma(state.expenses_shortfall)}`,
-    savingsTaxDeferredEndOfYear: `$${humanize.intComma(state.savings_tax_deferred_end_of_year)}`,
-    savingsTaxExemptEndOfYear: `$${humanize.intComma(state.savings_tax_exempt_end_of_year)}`,
-    savingsTaxableEndOfYear: `$${humanize.intComma(state.savings_taxable_end_of_year)}`,
-    savingsEndOfYear: `$${humanize.intComma(state.savings_end_of_year)}`,
+    age: state.plan.age,
+    grossIncome: `$${humanize.intComma(state.income.gross)}`,
+    taxableIncome: `$${humanize.intComma(state.income.taxable)}`,
+    taxedIncome: `$${humanize.intComma(state.income.net)}`,
+    retirementIncomeProjected: `$${humanize.intComma(state.plan.retirement_income_projected)}`,
+    retirementIncomeGoal: `$${humanize.intComma(state.plan.retirement_income_goal)}`,
+    taxedCapital: `$${humanize.intComma(state.cash.net)}`,
+    taxableCapital: `$${humanize.intComma(state.cash.taxable)}`,
+    taxedWithdrawals: `$${humanize.intComma(state.cash.spent)}`,
+    expensesTotal: `$${humanize.intComma(state.liabilities.expense.balance_start)}`,
+    expensesPaid: `$${humanize.intComma(state.liabilities.expense.paid)}`,
+    expensesShortfall: `$${humanize.intComma(state.liabilities.expense.shortfall)}`,
+    savingsTaxDeferredEndOfYear: `$${humanize.intComma(state.assets.tax_deferred.balance_end)}`,
+    savingsTaxExemptEndOfYear: `$${humanize.intComma(state.assets.tax_exempt.balance_end)}`,
+    savingsTaxableEndOfYear: `$${humanize.intComma(state.assets.taxable.balance_end)}`,
+    savingsEndOfYear: `$${humanize.intComma(state.assets.tax_deferred.balance_end + state.assets.tax_exempt.balance_end + state.assets.taxable.balance_end + state.cash.net)}`,
   }));
 });
 

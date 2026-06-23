@@ -184,43 +184,45 @@ describe("PlanManager", () => {
     describe('constructor', () => {
         it("should create an initial state with correct defaults", () => {
             const state = planManager.getCurrentState();
-            expect(state.age).toBe(30)
-            expect(state.year).toBe(2025)
-            expect(state.gross_income).toBe(150_000)
-            expect(state.taxable_income).toBe(150_000)
-            expect(state.taxed_income).toBe(105_000)
-            expect(state.AGI).toBe(0)
-            expect(state.taxable_capital).toBe(150_000)
-            expect(state.taxed_capital).toBe(105_000)
-            expect(state.taxed_withdrawals).toBe(0)
-            expect(state.elective_limit).toBe(23_500)
-            expect(state.deferred_limit).toBe(70_000)
-            expect(state.ira_limit).toBe(7_000)
-            expect(state.inflation_rate).toBe(3)
-            expect(state.tax_deferred_contributions).toBe(0)
-            expect(state.tax_deferred_contributions_lifetime).toBe(0)
-            expect(state.tax_exempt_contributions).toBe(0)
-            expect(state.tax_exempt_contributions_lifetime).toBe(0)
-            expect(state.taxable_contributions).toBe(0)
-            expect(state.taxable_contributions_lifetime).toBe(0)
-            expect(state.savings_tax_deferred_start_of_year).toBe(20_000)
-            expect(state.savings_tax_deferred_end_of_year).toBe(20_000)
-            expect(state.savings_tax_exempt_start_of_year).toBe(10_000)
-            expect(state.savings_tax_exempt_end_of_year).toBe(10_000)
-            expect(state.savings_taxable_start_of_year).toBe(10_000)
-            expect(state.savings_taxable_end_of_year).toBe(10_000)
-            expect(state.savings_start_of_year).toBe(40_000)
-            expect(state.savings_end_of_year).toBe(0)
-            expect(state.retirement_income_projected).toBe(0)
+            expect(state.plan.age).toBe(30)
+            expect(state.plan.year).toBe(2025)
+            expect(state.income.gross).toBe(150_000)
+            expect(state.income.taxable).toBe(150_000)
+            expect(state.income.net).toBe(105_000)
+            expect(state.income.agi).toBe(0)
+            expect(state.cash.taxable).toBe(150_000)
+            expect(state.cash.net).toBe(105_000)
+            expect(state.cash.spent).toBe(0)
+            expect(state.limits.elective).toBe(23_500)
+            expect(state.limits.deferred).toBe(70_000)
+            expect(state.limits.ira).toBe(7_000)
+            expect(state.plan.inflation_rate).toBe(3)
+            expect(state.assets.tax_deferred.contribution).toBe(0)
+            expect(state.assets.tax_deferred.contribution_lifetime).toBe(0)
+            expect(state.assets.tax_exempt.contribution).toBe(0)
+            expect(state.assets.tax_exempt.contribution_lifetime).toBe(0)
+            expect(state.assets.taxable.contribution).toBe(0)
+            expect(state.assets.taxable.contribution_lifetime).toBe(0)
+            expect(state.assets.tax_deferred.balance_start).toBe(20_000)
+            expect(state.assets.tax_deferred.balance_end).toBe(20_000)
+            expect(state.assets.tax_exempt.balance_start).toBe(10_000)
+            expect(state.assets.tax_exempt.balance_end).toBe(10_000)
+            expect(state.assets.taxable.balance_start).toBe(10_000)
+            expect(state.assets.taxable.balance_end).toBe(10_000)
+            expect(
+                state.assets.tax_deferred.balance_start +
+                state.assets.tax_exempt.balance_start +
+                state.assets.taxable.balance_start
+            ).toBe(40_000)
+            expect(state.plan.retirement_income_projected).toBe(0)
             expect(state.retired).toBe(false)
             expect(state.processed).toBe(false)
-
         })
     })
     describe('requestFunds', () => {
         it("should correctly request funds from taxable capital", () => {
             const currentState = planManager.getCurrentState();
-            currentState.taxable_capital = 50_000;
+            currentState.cash.taxable = 50_000;
 
             expect(planManager.requestFunds(20000, FundType.Taxable)).toBe(20_000);
             expect(planManager.requestFunds(60000, FundType.Taxable)).toBe(50_000);
@@ -228,14 +230,14 @@ describe("PlanManager", () => {
 
         it("should correctly request funds from taxed capital", () => {
             const currentState = planManager.getCurrentState();
-            currentState.taxed_capital = 30_000;
+            currentState.cash.net = 30_000;
 
             expect(planManager.requestFunds(10_000, FundType.Taxed)).toBe(10_000);
             expect(planManager.requestFunds(40_000, FundType.Taxed)).toBe(30_000);
         });
         it("should allow minimum negative funds for taxable capital", () => {
             const currentState = planManager.getCurrentState();
-            currentState.taxable_capital = 1_000;
+            currentState.cash.taxable = 1_000;
             planManager.getConfig().insufficient_funds_strategy = 'minimum_only';
 
             expect(planManager.requestFunds(2_000, FundType.Taxable, 1_000)).toBe(1_000);
@@ -244,7 +246,7 @@ describe("PlanManager", () => {
 
         it("should allow full negative funds for taxable capital", () => {
             const currentState = planManager.getCurrentState();
-            currentState.taxable_capital = 500;
+            currentState.cash.taxable = 500;
             planManager.getConfig().insufficient_funds_strategy = 'full';
 
             expect(planManager.requestFunds(1_000, FundType.Taxable)).toBe(1_000);
@@ -253,7 +255,7 @@ describe("PlanManager", () => {
 
         it("should handle minimum parameter correctly with InsufficientFundsStrategy.None", () => {
             const currentState = planManager.getCurrentState();
-            currentState.taxable_capital = 1000;
+            currentState.cash.taxable = 1000;
             planManager.getConfig().insufficient_funds_strategy = 'none';
 
             expect(planManager.requestFunds(2000, FundType.Taxable, -500)).toBe(1000); // Minimum ignored
@@ -268,37 +270,37 @@ describe("PlanManager", () => {
     describe('contribute', () => {
         it("should correctly contribute to tax-deferred savings", () => {
             const currentState = planManager.getCurrentState();
-            currentState.savings_tax_deferred_end_of_year = 0;
+            currentState.assets.tax_deferred.balance_end = 0;
 
             planManager.contribute(5000, ContributionType.TaxDeferred);
 
-            expect(currentState.tax_deferred_contributions).toBe(5000);
-            expect(currentState.tax_deferred_contributions_lifetime).toBe(5000);
+            expect(currentState.assets.tax_deferred.contribution).toBe(5000);
+            expect(currentState.assets.tax_deferred.contribution_lifetime).toBe(5000);
         });
 
         it("should correctly contribute to tax-exempt savings", () => {
             const currentState = planManager.getCurrentState();
-            currentState.savings_tax_exempt_end_of_year = 0;
+            currentState.assets.tax_exempt.balance_end = 0;
 
             planManager.contribute(3000, ContributionType.RothIra);
 
-            expect(currentState.tax_exempt_contributions).toBe(3000);
-            expect(currentState.tax_exempt_contributions_lifetime).toBe(3000);
+            expect(currentState.assets.tax_exempt.contribution).toBe(3000);
+            expect(currentState.assets.tax_exempt.contribution_lifetime).toBe(3000);
         });
 
         it("should correctly contribute to taxable savings", () => {
             const currentState = planManager.getCurrentState();
-            currentState.savings_taxable_end_of_year = 0;
+            currentState.assets.taxable.balance_end = 0;
 
             planManager.contribute(7000, ContributionType.Taxable);
 
-            expect(currentState.taxable_contributions).toBe(7000);
-            expect(currentState.taxable_contributions_lifetime).toBe(7000);
+            expect(currentState.assets.taxable.contribution).toBe(7000);
+            expect(currentState.assets.taxable.contribution_lifetime).toBe(7000);
         });
     })
     describe('calculateTaxes', () => {
         it("should correctly calculate taxes based on AGI and tax rate", () => {
-            planConfig.tax_rate = 30; // Set tax rate to 30%
+            planConfig.tax_rate = 30;
             planManager = new PlanManager(planConfig);
 
             const agi = 100000;
@@ -329,65 +331,65 @@ describe("PlanManager", () => {
     })
 
     describe('getAGI', () => {
-        it("should correctly calculate AGI based on taxable income", () => {
+        it("should return the current taxable income as AGI", () => {
             const currentState = planManager.getCurrentState();
-            currentState.taxable_income = 100000;
+            currentState.income.taxable = 100000;
 
             const agi = planManager.getAGI(currentState);
 
-            expect(agi).toBe(80000);
+            expect(agi).toBe(100000);
         });
     });
 
     describe("invest", () => {
         it("taxDeferred", () => {
-            planManager.getCurrentState().savings_tax_deferred_end_of_year = 0
+            planManager.getCurrentState().assets.tax_deferred.balance_end = 0
             planManager.invest(5_000, ContributionType.TaxDeferred)
-            expect(planManager.getCurrentState().savings_tax_deferred_end_of_year).toBe(5_000)
+            expect(planManager.getCurrentState().assets.tax_deferred.balance_end).toBe(5_000)
         })
         it("ira", () => {
-            planManager.getCurrentState().savings_tax_deferred_end_of_year = 0
+            planManager.getCurrentState().assets.tax_deferred.balance_end = 0
             planManager.invest(5_000, ContributionType.Ira)
-            expect(planManager.getCurrentState().savings_tax_deferred_end_of_year).toBe(5_000)
+            expect(planManager.getCurrentState().assets.tax_deferred.balance_end).toBe(5_000)
         })
         it("rothIra", () => {
-            planManager.getCurrentState().savings_tax_deferred_end_of_year = 0
+            planManager.getCurrentState().assets.tax_deferred.balance_end = 0
             planManager.invest(5_000, ContributionType.RothIra)
-            expect(planManager.getCurrentState().savings_tax_exempt_end_of_year).toBe(15_000)
+            expect(planManager.getCurrentState().assets.tax_exempt.balance_end).toBe(15_000)
         })
         it("taxable", () => {
-            planManager.getCurrentState().savings_tax_deferred_end_of_year = 0
+            planManager.getCurrentState().assets.tax_deferred.balance_end = 0
             planManager.invest(5_000, ContributionType.Taxable)
-            expect(planManager.getCurrentState().savings_taxable_end_of_year).toBe(15_000)
+            expect(planManager.getCurrentState().assets.taxable.balance_end).toBe(15_000)
         })
         it("elective", () => {
-            planManager.getCurrentState().savings_tax_deferred_end_of_year = 0
+            planManager.getCurrentState().assets.tax_deferred.balance_end = 0
             planManager.invest(5_000, ContributionType.Elective)
-            expect(planManager.getCurrentState().savings_tax_deferred_end_of_year).toBe(5_000)
+            expect(planManager.getCurrentState().assets.tax_deferred.balance_end).toBe(5_000)
         })
     })
 
     describe("withdraw", () => {
         it("should correctly withdraw from taxable capital and update state", () => {
             const currentState = planManager.getCurrentState();
-            currentState.taxable_capital = 50000;
-            currentState.taxable_income = 50000;
-            currentState.taxed_withdrawals = 10000;
+            currentState.cash.taxable = 50000;
+            currentState.income.taxable = 50000;
+            currentState.cash.spent = 10000;
 
             planManager.withdraw(20000, FundType.Taxable);
 
-            expect(currentState.taxable_capital).toBe(30000); // Deducted
-            expect(currentState.taxable_income).toBe(30000); // Adjusted
+            expect(currentState.cash.taxable).toBe(30000);
+            expect(currentState.income.taxable).toBe(30000);
             const agi = planManager.getAGI(currentState);
             expect(agi).toBe(30000);
             const calculatedTaxes = planManager.calculateTaxes(agi);
-            expect(currentState.taxed_income).toBe(30000 - calculatedTaxes);
-            expect(currentState.taxed_capital).toBe(currentState.taxed_income - currentState.taxed_withdrawals);
+            expect(currentState.income.net).toBe(30000 - calculatedTaxes);
+            expect(currentState.cash.net).toBe(currentState.income.net - currentState.cash.spent);
         });
 
         it("should throw an error if taxable withdrawal exceeds available capital", () => {
             const currentState = planManager.getCurrentState();
-            currentState.taxable_capital = 10000;
+            currentState.cash.taxable = 10000;
 
             expect(() => planManager.withdraw(20000, FundType.Taxable)).toThrow(
                 "Insufficient taxable capital for withdrawal"
@@ -396,18 +398,18 @@ describe("PlanManager", () => {
 
         it("should correctly withdraw from taxed capital and update state", () => {
             const currentState = planManager.getCurrentState();
-            currentState.taxed_capital = 30000;
-            currentState.taxed_withdrawals = 5000;
+            currentState.cash.net = 30000;
+            currentState.cash.spent = 5000;
 
             planManager.withdraw(10000, FundType.Taxed);
 
-            expect(currentState.taxed_capital).toBe(20000); // Deducted
-            expect(currentState.taxed_withdrawals).toBe(15000); // Increased
+            expect(currentState.cash.net).toBe(20000);
+            expect(currentState.cash.spent).toBe(15000);
         });
 
         it("should throw an error if taxed withdrawal exceeds available capital", () => {
             const currentState = planManager.getCurrentState();
-            currentState.taxed_capital = 5000;
+            currentState.cash.net = 5000;
 
             expect(() => planManager.withdraw(10000, FundType.Taxed)).toThrow(
                 "Insufficient taxed capital for tax-exempt contribution"
@@ -416,7 +418,7 @@ describe("PlanManager", () => {
 
         it("should throw an error for invalid fund type", () => {
             expect(() => planManager.withdraw(10000, "invalid" as FundType)).toThrow(
-                "Invalid contribution type"
+                "Invalid fund type"
             );
         });
     });

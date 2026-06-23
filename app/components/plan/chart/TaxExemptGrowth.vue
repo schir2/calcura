@@ -1,7 +1,7 @@
 <template>
   <n-card>
     <template #header>
-      <p v-if="finalPlanState" class="text-xl text-center">Tax Exempt Savings at Age {{ finalPlanState.age }}</p>
+      <p v-if="finalPlanState" class="text-xl text-center">Tax Exempt Savings at Age {{ finalPlanState.plan.age }}</p>
     </template>
     <Line v-if="data" :data="data" :options="options"/>
   </n-card>
@@ -21,7 +21,7 @@ import {
   Tooltip
 } from 'chart.js'
 import {Line} from 'vue-chartjs'
-import type {PlanState} from "#shared/types/PlanState";
+import type {OrchestratorState} from "#shared/types/OrchestratorState";
 
 ChartJS.register(
     CategoryScale,
@@ -34,13 +34,13 @@ ChartJS.register(
 )
 
 type Props = {
-  states: PlanState[]
+  states: OrchestratorState[]
 }
 
 
 const props = defineProps<Props>()
 const finalPlanState = computed(() => props.states[props.states.length - 1])
-const series = computed(() => props.states.map(state => (state.savings_tax_exempt_end_of_year)))
+const series = computed(() => props.states.map(state => state.assets.tax_exempt.balance_end))
 
 
 ChartJS.register(ArcElement, Tooltip, Legend)
@@ -51,7 +51,7 @@ const data = computed(() => {
   }
   return {
 
-    labels: Array.from({length: series.value.length}, (_, i) => `Age ${props.states[i].age}`),
+    labels: Array.from({length: series.value.length}, (_, i) => `Age ${props.states[i].plan.age}`),
     datasets: [
       {
         borderColor: darkTheme.common.infoColorHover,

@@ -46,7 +46,7 @@ const planConfig: Plan = {
     brokerages: [],
     iras: [],
     roth_iras: [],
-n    hsas: [],
+    hsas: [],
     command_sequences: [],
 }
 
@@ -136,12 +136,12 @@ describe("BrokerageManager", () => {
             expect(brokerageState.balance_start_of_year).toBe(10_000);
             expect(brokerageState.balance_end_of_year).toBe(12_000);
             expect(brokerageState.processed).toBe(true);
-            expect(planState.taxed_income).toBe(105_000);
-            expect(planState.taxed_capital).toBe(104_000);
-            expect(planState.taxable_contributions).toBe(1_000);
-            expect(planState.taxable_contributions_lifetime).toBe(1_000);
-            expect(planState.savings_taxable_end_of_year).toBe(12_000);
-            expect(planState.taxed_withdrawals).toBe(1_000);
+            expect(planState.income.net).toBe(105_000);
+            expect(planState.cash.net).toBe(104_000);
+            expect(planState.assets.taxable.contribution).toBe(1_000);
+            expect(planState.assets.taxable.contribution_lifetime).toBe(1_000);
+            expect(planState.assets.taxable.balance_end).toBe(12_000);
+            expect(planState.cash.spent).toBe(1_000);
         });
 
         it("should process brokerage and update state correctly for end of of year application strategy", () => {
@@ -165,12 +165,12 @@ describe("BrokerageManager", () => {
             expect(brokerageState.balance_start_of_year).toBe(10_000);
             expect(brokerageState.balance_end_of_year).toBe(12_100);
             expect(brokerageState.processed).toBe(true);
-            expect(planState.taxed_income).toBe(105_000);
-            expect(planState.taxed_capital).toBe(104_000);
-            expect(planState.savings_tax_deferred_end_of_year).toBe(0);
-            expect(planState.savings_taxable_end_of_year).toBe(12_100);
-            expect(planState.savings_tax_exempt_end_of_year).toBe(0);
-            expect(planState.taxed_withdrawals).toBe(1_000);
+            expect(planState.income.net).toBe(105_000);
+            expect(planState.cash.net).toBe(104_000);
+            expect(planState.assets.tax_deferred.balance_end).toBe(0);
+            expect(planState.assets.taxable.balance_end).toBe(12_100);
+            expect(planState.assets.tax_exempt.balance_end).toBe(0);
+            expect(planState.cash.spent).toBe(1_000);
         });
 
         it("should throw error if processing already processed state", () => {

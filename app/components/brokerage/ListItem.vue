@@ -3,7 +3,7 @@
 import type {Brokerage, BrokerageInsert, BrokerageUpdate} from "#shared/types/Brokerage";
 import {ModelName} from "#shared/types/ModelName";
 import {calculateBrokerageContribution} from "~/models/brokerage/BrokerageManager";
-import type {PlanState} from "#shared/types/PlanState";
+import type {OrchestratorState} from "#shared/types/OrchestratorState";
 import type {Income} from "#shared/types/Income";
 
 type Props = {
@@ -49,14 +49,14 @@ function handleEdit() {
   showModal.value = true
 }
 
-const planStates = inject<Ref<PlanState[]>>('planStates')
+const planStates = inject<Ref<OrchestratorState[]>>('planStates')
 
 const annualContribution = computed(() => {
   if (planStates?.value && planStates.value.length > 1) {
     return calculateBrokerageContribution(
         brokerage,
-        planStates.value[0].gross_income,
-        planStates.value[0].taxable_contributions_lifetime ?? 0
+        planStates.value[0].income.gross,
+        planStates.value[0].assets.taxable.contribution_lifetime ?? 0
     )
   }
   return 0

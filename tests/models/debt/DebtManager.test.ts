@@ -153,8 +153,8 @@ describe("DebtManager", () => {
             expect(currentState.interest_lifetime).toBe(900);
             expect(currentState.principal_end_of_year).toBeCloseTo(9900);
             expect(currentState.processed).toBe(true);
-            expect(planState.taxed_income).toBe(105_000);
-            expect(planState.taxed_capital).toBe(104_000);
+            expect(planState.income.net).toBe(105_000);
+            expect(planState.cash.net).toBe(104_000);
         });
 
         it("should process debt and update state correctly", () => {
@@ -176,8 +176,8 @@ describe("DebtManager", () => {
             expect(currentState.interest_lifetime).toBe(900+890);
             expect(currentState.principal_end_of_year).toBeCloseTo(9790);
             expect(currentState.processed).toBe(true);
-            expect(planState.taxed_income).toBe(105_000);
-            expect(planState.taxed_capital).toBe(103_000);
+            expect(planState.income.net).toBe(105_000);
+            expect(planState.cash.net).toBe(103_000);
         });
 
         it("should throw error if processing already processed state", () => {

@@ -2,6 +2,7 @@ import type {PlanWithRelations as Plan} from "#shared/types/Plan";
 import {beforeEach, describe, expect, it} from "vitest";
 import type {CashReserveManager} from "~/models/cashReserve/CashReserveManager";
 import PlanManager from "~/models/plan/PlanManager";
+import {assertDefined} from "../../../app/utils";
 
 const planConfig: Plan = {
     id: 1,
@@ -196,8 +197,8 @@ describe("CashManager", () => {
             expect(currentState.amount_paid).toBe(20_000)
             expect(currentState.cash_reserve_start_of_year).toBe(10_000)
             expect(currentState.cash_reserve_end_of_year).toBe(30_000)
-            expect(planState.taxed_capital).toBe(85_000)
-            expect(planState.taxed_withdrawals).toBe(20_000)
+            expect(planState.cash.net).toBe(85_000)
+            expect(planState.cash.spent).toBe(20_000)
 
         })
         it('insufficient funds', () => {
@@ -219,8 +220,8 @@ describe("CashManager", () => {
             expect(currentState.amount_paid).toBe(105_000)
             expect(currentState.cash_reserve_start_of_year).toBe(10_000)
             expect(currentState.cash_reserve_end_of_year).toBe(115_000)
-            expect(planState.taxed_capital).toBe(0)
-            expect(planState.taxed_withdrawals).toBe(105_000)
+            expect(planState.cash.net).toBe(0)
+            expect(planState.cash.spent).toBe(105_000)
 
         })
     })

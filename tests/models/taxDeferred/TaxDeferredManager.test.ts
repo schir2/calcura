@@ -2,6 +2,7 @@ import {beforeEach, describe, expect, it} from "vitest";
 import {TaxDeferredManager} from "~/models/taxDeferred/TaxDeferredManager";
 import PlanManager from "~/models/plan/PlanManager";
 import type {PlanWithRelations as Plan} from "#shared/types/Plan";
+import {assertDefined} from "../../../app/utils";
 
 const planConfig: Plan = {
     id: 1,
@@ -342,10 +343,10 @@ describe("TaxDeferredManager", () => {
             expect(taxDeferredState.balance_start_of_year).toBe(10_000);
             expect(taxDeferredState.balance_end_of_year).toBe(28_600);
             expect(taxDeferredState.processed).toBe(true);
-            expect(planState.savings_tax_deferred_end_of_year).toBe(28_600);
-            expect(planState.taxed_income).toBe(96_600);
-            expect(planState.taxed_capital).toBe(96_600);
-            expect(planState.taxed_withdrawals).toBe(0);
+            expect(planState.assets.tax_deferred.balance_end).toBe(28_600);
+            expect(planState.income.net).toBe(96_600);
+            expect(planState.cash.net).toBe(96_600);
+            expect(planState.cash.spent).toBe(0);
         });
 
         it("should process taxDeferred and update state correctly for end of of year application strategy", () => {
@@ -381,10 +382,10 @@ describe("TaxDeferredManager", () => {
             +
                 expect(taxDeferredState.balance_end_of_year).toBe(29_680);
             expect(taxDeferredState.processed).toBe(true);
-            expect(planState.savings_tax_deferred_end_of_year).toBe(29_680);
-            expect(planState.taxed_income).toBe(96_600);
-            expect(planState.taxed_capital).toBe(96_600);
-            expect(planState.taxed_withdrawals).toBe(0);
+            expect(planState.assets.tax_deferred.balance_end).toBe(29_680);
+            expect(planState.income.net).toBe(96_600);
+            expect(planState.cash.net).toBe(96_600);
+            expect(planState.cash.spent).toBe(0);
         });
 
         it("should throw error if processing already processed state", () => {
