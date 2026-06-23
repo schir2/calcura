@@ -43,6 +43,7 @@ const planConfig: Plan = {
     debts: [],
     brokerages: [],
     roth_iras: [],
+    hsas: [],
     tax_deferreds: [
         {
             id: 1,

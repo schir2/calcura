@@ -46,6 +46,7 @@ const planConfig: Plan = {
     brokerages: [],
     iras: [],
     roth_iras: [],
+n    hsas: [],
     command_sequences: [],
 }
 

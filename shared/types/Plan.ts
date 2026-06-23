@@ -8,6 +8,7 @@ import type {Brokerage} from "#shared/types/Brokerage";
 import type {Ira} from "#shared/types/Ira";
 import type {CashReserve} from "#shared/types/CashReserve";
 import type {RothIra} from "#shared/types/RothIra";
+import type {Hsa} from "#shared/types/Hsa";
 import type {CommandSequence, CommandSequenceWithRelations} from "#shared/types/CommandSequence";
 
 
@@ -23,7 +24,7 @@ export enum ContributionLimitType {
     Ira = 'ira',
     Elective = 'elective',
     Deferred = 'deferred',
-
+    Hsa = 'hsa',
 }
 
 export type Plan = Tables<'plan'>
@@ -37,6 +38,7 @@ export type PlanWithRelations = Plan & {
     brokerages: Brokerage[]
     iras: Ira[]
     roth_iras: RothIra[]
+    hsas: Hsa[]
     command_sequences: CommandSequenceWithRelations[]
 }
 

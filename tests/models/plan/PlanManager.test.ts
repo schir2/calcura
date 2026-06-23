@@ -176,6 +176,7 @@ describe("PlanManager", () => {
                             frequency: 'annual'
                         },
                 }],
+            hsas: [],
             command_sequences: []
         }
         planManager = new PlanManager(planConfig);

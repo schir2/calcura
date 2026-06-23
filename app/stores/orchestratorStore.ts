@@ -39,10 +39,10 @@ export const orchestratorStore = defineStore('orchestrator', () => {
         loaded.value = true
     })
 
-    const planWithRelations = computed<PlanWithRelations | null>(() => {
-        if (!loaded.value) return null
+    const planWithRelations = computed(() => {
+        if (!loaded.value || !plan.value) return null
         return {
-            ...plan,
+            ...plan.value,
             cash_reserves: cashReserveStore.list,
             incomes: incomeStore.list,
             expenses: expenseStore.list,
@@ -56,7 +56,7 @@ export const orchestratorStore = defineStore('orchestrator', () => {
         }
     })
 
-    function simulate(commandSequence: CommandSequenceWithRelations[]) {
+    function simulate(commandSequence: CommandSequenceWithRelations) {
         if (!planWithRelations.value) return
         const planManager = new PlanManager(planWithRelations.value)
         return planManager.simulate(commandSequence)

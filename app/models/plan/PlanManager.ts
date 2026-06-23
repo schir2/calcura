@@ -6,6 +6,7 @@ import BaseManager from "~/models/common/BaseManager";
 import {
     adjustForInsufficientFunds,
     getIraLimit,
+    getHsaLimit,
     getTaxDeferredContributionLimit,
     getTaxDeferredElectiveContributionLimit
 } from "~/utils";
@@ -18,6 +19,7 @@ import {TaxDeferredManager} from "~/models/taxDeferred/TaxDeferredManager";
 import {BaseOrchestrator} from "~/models/common/BaseOrchestrator";
 import {ContributionError} from "~/utils/errors/ContributionError";
 import {RothIraManager} from "~/models/rothIra/RothIraManager";
+import {HsaManager} from "~/models/hsa/HsaManager";
 import eventBus from "~/utils/eventBus";
 import type {Command} from "#shared/types/Command";
 import {ContributionType} from "#shared/types/ContributionType";
@@ -42,7 +44,7 @@ export type PlanManagers = {
 }
 
 
-export default class PlanManager extends BaseOrchestrator<Plan, PlanState, PlanManagers> {
+export default class PlanManager extends BaseOrchestrator<PlanWithRelations, PlanState, PlanManagers> {
 
     createManagers(): PlanManagers {
         return {
@@ -54,7 +56,7 @@ export default class PlanManager extends BaseOrchestrator<Plan, PlanState, PlanM
             ira: this.config.iras.map((ira) => new IraIManager(this, ira)),
             roth_ira: this.config.roth_iras.map((rothIra) => new RothIraManager(this, rothIra)),
             tax_deferred: this.config.tax_deferreds.map((taxDeferred) => new TaxDeferredManager(this, taxDeferred)),
-            hsa: []
+            hsa: this.config.hsas.map((hsa) => new HsaManager(this, hsa))
         }
     }
 
@@ -111,6 +113,7 @@ export default class PlanManager extends BaseOrchestrator<Plan, PlanState, PlanM
             elective_limit: getTaxDeferredElectiveContributionLimit(this.config.year, this.config.age),
             deferred_limit: getTaxDeferredContributionLimit(this.config.year, this.config.age),
             ira_limit: getIraLimit(this.config.year, this.config.age),
+            hsa_limit: getHsaLimit(this.config.year, this.config.age),
 
             tax_deferred_contributions: 0,
             taxable_contributions: 0,
@@ -180,6 +183,7 @@ export default class PlanManager extends BaseOrchestrator<Plan, PlanState, PlanM
             elective_limit: getTaxDeferredElectiveContributionLimit(year, age),
             deferred_limit: getTaxDeferredContributionLimit(year, age),
             ira_limit: getIraLimit(year, age),
+            hsa_limit: getHsaLimit(year, age),
 
             inflation_rate: inflationRate,
 
@@ -246,6 +250,7 @@ export default class PlanManager extends BaseOrchestrator<Plan, PlanState, PlanM
             [ContributionLimitType.Deferred]: currentState.deferred_limit,
             [ContributionLimitType.Elective]: currentState.elective_limit,
             [ContributionLimitType.Ira]: currentState.ira_limit,
+            [ContributionLimitType.Hsa]: currentState.hsa_limit,
         }
 
         if (contributionLimitType === undefined) {
@@ -266,6 +271,9 @@ export default class PlanManager extends BaseOrchestrator<Plan, PlanState, PlanM
                 break;
             case ContributionLimitType.Deferred:
                 currentState.deferred_limit -= adjustment;
+                break;
+            case ContributionLimitType.Hsa:
+                currentState.hsa_limit -= adjustment;
                 break;
         }
         return currentState
@@ -332,6 +340,9 @@ export default class PlanManager extends BaseOrchestrator<Plan, PlanState, PlanM
                 break;
             case ContributionType.Ira:
                 currentState.savings_tax_deferred_end_of_year += amount;
+                break;
+            case ContributionType.Hsa:
+                currentState.savings_tax_deferred_end_of_year += amount;
         }
         this.updateCurrentState(currentState);
     }
@@ -366,6 +377,11 @@ export default class PlanManager extends BaseOrchestrator<Plan, PlanState, PlanM
                 break;
             case ContributionType.CashReserve:
                 currentState.cash_reserves_total += contribution
+                break;
+            case ContributionType.Hsa:
+                this.adjustContributionLimit(contribution, ContributionLimitType.Hsa);
+                currentState.tax_deferred_contributions += contribution;
+                currentState.tax_deferred_contributions_lifetime += contribution;
                 break;
         }
         this.updateCurrentState(currentState);
@@ -511,6 +527,8 @@ export default class PlanManager extends BaseOrchestrator<Plan, PlanState, PlanM
                 return currentState.elective_limit
             case ContributionLimitType.Deferred:
                 return currentState.deferred_limit
+            case ContributionLimitType.Hsa:
+                return currentState.hsa_limit
         }
     }
 }
