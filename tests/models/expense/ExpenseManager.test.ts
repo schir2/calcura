@@ -222,10 +222,74 @@ describe("ExpenseManager", () => {
     })
 
     describe('calculateGrowthAmount', () => {
+        it('no growth', () => {
+            expect(expenseManager.calculateGrowthAmount(100_000)).toBe(0)
+        })
 
-    });
+        it('own growth_rate', () => {
+            planManager = new PlanManager({
+                ...planConfig,
+                expenses: [{...planConfig.expenses[0], growth_rate: 10, grows_with_inflation: false}]
+            })
+            expenseManager = planManager.getManagerById('expense', 1)
+            expect(expenseManager.calculateGrowthAmount(100_000)).toBe(10_000)
+        })
+
+        it('grows_with_inflation uses plan inflation_rate', () => {
+            planManager = new PlanManager({
+                ...planConfig,
+                inflation_rate: 5,
+                expenses: [{...planConfig.expenses[0], grows_with_inflation: true}]
+            })
+            expenseManager = planManager.getManagerById('expense', 1)
+            expect(expenseManager.calculateGrowthAmount(100_000)).toBe(5_000)
+        })
+
+        it('grows_with_inflation takes precedence over own growth_rate', () => {
+            planManager = new PlanManager({
+                ...planConfig,
+                inflation_rate: 3,
+                expenses: [{...planConfig.expenses[0], growth_rate: 10, grows_with_inflation: true}]
+            })
+            expenseManager = planManager.getManagerById('expense', 1)
+            expect(expenseManager.calculateGrowthAmount(100_000)).toBe(3_000)
+        })
+    })
 
 
     describe('createNextState', () => {
+        it('no growth — base_amount unchanged, growth_amount 0', () => {
+            const current = expenseManager.getCurrentState()
+            const next = expenseManager.createNextState(current)
+            expect(next.base_amount).toBe(1_800)
+            expect(next.growth_amount).toBe(0)
+            expect(next.amount_requested).toBe(0)
+            expect(next.amount_paid).toBe(0)
+            expect(next.processed).toBe(false)
+        })
+
+        it('own growth_rate — base_amount grows by growth_rate', () => {
+            planManager = new PlanManager({
+                ...planConfig,
+                expenses: [{...planConfig.expenses[0], amount: 100_000, frequency: 'annual', growth_rate: 10}]
+            })
+            expenseManager = planManager.getManagerById('expense', 1)
+            const next = expenseManager.createNextState(expenseManager.getCurrentState())
+            expect(next.base_amount).toBe(110_000)
+            expect(next.growth_amount).toBe(10_000)
+            expect(next.processed).toBe(false)
+        })
+
+        it('grows_with_inflation — base_amount grows by inflation_rate', () => {
+            planManager = new PlanManager({
+                ...planConfig,
+                inflation_rate: 5,
+                expenses: [{...planConfig.expenses[0], amount: 100_000, frequency: 'annual', grows_with_inflation: true}]
+            })
+            expenseManager = planManager.getManagerById('expense', 1)
+            const next = expenseManager.createNextState(expenseManager.getCurrentState())
+            expect(next.base_amount).toBe(105_000)
+            expect(next.growth_amount).toBe(5_000)
+        })
     })
 });

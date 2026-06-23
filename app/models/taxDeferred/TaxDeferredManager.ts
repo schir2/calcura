@@ -96,11 +96,7 @@ export class TaxDeferredManager extends BaseManager<TaxDeferred, TaxDeferredStat
                     return 0
                 }
                 if ((this.getConfig().employer_match_percentage ?? 0) <= 0) {
-
-                    eventBus.emit('warning', {
-                        scope: 'calculateEmployerContribution:employerMatchPercentage',
-                        message: 'Employer match percentage should be greater than 0'
-                    })
+                    throw new Error('Employer match percentage must be greater than 0')
                 }
                 const employerMatchLimit = this.getEmployerMatchLimit();
                 if (this.getConfig().elective_contribution_strategy === 'until_company_match') {
