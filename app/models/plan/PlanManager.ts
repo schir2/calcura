@@ -1,4 +1,4 @@
-import type {PlanWithRelations as Plan} from "#shared/types/Plan";
+import type {PlanWithRelations} from "#shared/types/Plan";
 import {ContributionLimitType} from "#shared/types/Plan";
 import type {OrchestratorState} from "#shared/types/OrchestratorState";
 import DebtManager from "~/models/debt/DebtManager";
@@ -44,7 +44,7 @@ export type PlanManagers = {
 }
 
 
-export default class PlanManager extends BaseOrchestrator<Plan, OrchestratorState, PlanManagers> {
+export default class PlanManager extends BaseOrchestrator<PlanWithRelations, OrchestratorState, PlanManagers> {
 
     createManagers(): PlanManagers {
         return {

@@ -2,6 +2,7 @@ import {beforeEach, describe, expect, it} from "vitest";
 import {RothIraManager} from "~/models/rothIra/RothIraManager";
 import PlanManager from "~/models/plan/PlanManager";
 import type {PlanWithRelations as Plan} from "#shared/types/Plan";
+import {assertDefined} from "../../../app/utils";
 
 const planConfig: Plan = {
     id: 1,
@@ -75,7 +76,7 @@ let rothIraManager: RothIraManager | undefined;
 describe("RothIraManager", () => {
     beforeEach(() => {
         planManager = new PlanManager(planConfig)
-        rothIraManager = planManager.getManagerById<RothIraManager>('roth_ira',1)
+        rothIraManager = planManager.getManagerById<RothIraManager>('roth_ira', 1)
         assertDefined(rothIraManager, 'RothIraManager')
     });
 
@@ -107,8 +108,8 @@ describe("RothIraManager", () => {
                 ]
             })
 
-        rothIraManager = planManager.getManagerById<RothIraManager>('roth_ira',1)
-        assertDefined(rothIraManager, 'RothIraManager')
+            rothIraManager = planManager.getManagerById<RothIraManager>('roth_ira', 1)
+            assertDefined(rothIraManager, 'RothIraManager')
             const contribution = rothIraManager.calculateContribution();
             expect(contribution).toBe(100);
         });
@@ -125,8 +126,8 @@ describe("RothIraManager", () => {
                 ]
             })
 
-        rothIraManager = planManager.getManagerById<RothIraManager>('roth_ira',1)
-        assertDefined(rothIraManager, 'RothIraManager')
+            rothIraManager = planManager.getManagerById<RothIraManager>('roth_ira', 1)
+            assertDefined(rothIraManager, 'RothIraManager')
 
             const contribution = rothIraManager.calculateContribution();
             expect(contribution).toBe(7_000);
@@ -143,8 +144,8 @@ describe("RothIraManager", () => {
                 ]
             })
 
-        rothIraManager = planManager.getManagerById<RothIraManager>('roth_ira',1)
-        assertDefined(rothIraManager, 'RothIraManager')
+            rothIraManager = planManager.getManagerById<RothIraManager>('roth_ira', 1)
+            assertDefined(rothIraManager, 'RothIraManager')
             const contribution = rothIraManager.calculateContribution();
             expect(contribution).toBe(7_000);
         });
@@ -166,8 +167,8 @@ describe("RothIraManager", () => {
                 ]
             })
 
-        rothIraManager = planManager.getManagerById<RothIraManager>('roth_ira',1)
-        assertDefined(rothIraManager, 'RothIraManager')
+            rothIraManager = planManager.getManagerById<RothIraManager>('roth_ira', 1)
+            assertDefined(rothIraManager, 'RothIraManager')
             rothIraManager.process();
             const planState = rothIraManager.orchestrator.getCurrentState();
             const rothIraState = rothIraManager.getCurrentState();
@@ -206,8 +207,8 @@ describe("RothIraManager", () => {
                 ]
             })
 
-        rothIraManager = planManager.getManagerById<RothIraManager>('roth_ira',1)
-        assertDefined(rothIraManager, 'RothIraManager')
+            rothIraManager = planManager.getManagerById<RothIraManager>('roth_ira', 1)
+            assertDefined(rothIraManager, 'RothIraManager')
 
             rothIraManager.process();
             const planState = rothIraManager.orchestrator.getCurrentState();
@@ -256,8 +257,8 @@ describe("RothIraManager", () => {
                 ]
             })
 
-        rothIraManager = planManager.getManagerById<RothIraManager>('roth_ira',1)
-        assertDefined(rothIraManager, 'RothIraManager')
+            rothIraManager = planManager.getManagerById<RothIraManager>('roth_ira', 1)
+            assertDefined(rothIraManager, 'RothIraManager')
             rothIraManager.process();
             const rothIraState = rothIraManager.getCurrentState();
             const newState = rothIraManager.createNextState(rothIraState);
