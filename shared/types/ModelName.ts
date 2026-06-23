@@ -1,13 +1,3 @@
-import type {TableName} from "#shared/types/TableName";
+import type {Enums} from '#shared/types/database.types'
 
-export type ModelName = Extract<TableName,
-    'tax_deferred' |
-    'brokerage' |
-    'cash_reserve' |
-    'debt' |
-    'expense' |
-    'income' |
-    'ira' |
-    'plan' |
-    'roth_ira'>
-
+export type ModelName = Enums<'model_name'>

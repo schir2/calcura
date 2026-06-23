@@ -8,7 +8,7 @@ import type {Brokerage} from "#shared/types/Brokerage";
 import type {Ira} from "#shared/types/Ira";
 import type {CashReserve} from "#shared/types/CashReserve";
 import type {RothIra} from "#shared/types/RothIra";
-import type {CommandSequence} from "#shared/types/CommandSequence";
+import type {CommandSequence, CommandSequenceWithRelations} from "#shared/types/CommandSequence";
 
 
 export type InsufficientFundsStrategy = Enums<'insufficient_funds_strategy'>
@@ -37,7 +37,7 @@ export type PlanWithRelations = Plan & {
     brokerages: Brokerage[]
     iras: Ira[]
     roth_iras: RothIra[]
-    command_sequences: CommandSequence[]
+    command_sequences: CommandSequenceWithRelations[]
 }
 
 export type PlanInsert = TablesInsert<'plan'>

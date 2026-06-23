@@ -47,6 +47,7 @@ export type Database = {
           id: number
           initial_balance: number
           name: string
+          plan_id: number
         }
         Insert: {
           contribution_fixed_amount?: number | null
@@ -60,6 +61,7 @@ export type Database = {
           id?: never
           initial_balance: number
           name: string
+          plan_id: number
         }
         Update: {
           contribution_fixed_amount?: number | null
@@ -73,8 +75,17 @@ export type Database = {
           id?: never
           initial_balance?: number
           name?: string
+          plan_id?: number
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "brokerage_plan_id_fkey"
+            columns: ["plan_id"]
+            isOneToOne: false
+            referencedRelation: "plan"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       brokerage_template: {
         Row: {
@@ -131,6 +142,7 @@ export type Database = {
           id: number
           initial_amount: number
           name: string
+          plan_id: number
           reserve_amount: number | null
           reserve_months: number | null
         }
@@ -143,6 +155,7 @@ export type Database = {
           id?: never
           initial_amount: number
           name: string
+          plan_id: number
           reserve_amount?: number | null
           reserve_months?: number | null
         }
@@ -155,10 +168,19 @@ export type Database = {
           id?: never
           initial_amount?: number
           name?: string
+          plan_id?: number
           reserve_amount?: number | null
           reserve_months?: number | null
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "cash_reserve_plan_id_fkey"
+            columns: ["plan_id"]
+            isOneToOne: false
+            referencedRelation: "plan"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       cash_reserve_template: {
         Row: {
@@ -211,8 +233,8 @@ export type Database = {
           editor_id: string | null
           id: number
           is_active: boolean
-          item_id: number
-          item_type: Database["public"]["Enums"]["command_item_type"]
+          model_id: number
+          model_name: Database["public"]["Enums"]["model_name"]
         }
         Insert: {
           action: string
@@ -222,8 +244,8 @@ export type Database = {
           editor_id?: string | null
           id?: never
           is_active?: boolean
-          item_id: number
-          item_type: Database["public"]["Enums"]["command_item_type"]
+          model_id: number
+          model_name: Database["public"]["Enums"]["model_name"]
         }
         Update: {
           action?: string
@@ -233,8 +255,8 @@ export type Database = {
           editor_id?: string | null
           id?: never
           is_active?: boolean
-          item_id?: number
-          item_type?: Database["public"]["Enums"]["command_item_type"]
+          model_id?: number
+          model_name?: Database["public"]["Enums"]["model_name"]
         }
         Relationships: []
       }
@@ -332,6 +354,7 @@ export type Database = {
           payment_minimum: number | null
           payment_percentage: number | null
           payment_strategy: Database["public"]["Enums"]["debt_payment_strategy"]
+          plan_id: number
           principal: number
         }
         Insert: {
@@ -347,6 +370,7 @@ export type Database = {
           payment_minimum?: number | null
           payment_percentage?: number | null
           payment_strategy: Database["public"]["Enums"]["debt_payment_strategy"]
+          plan_id: number
           principal: number
         }
         Update: {
@@ -362,9 +386,18 @@ export type Database = {
           payment_minimum?: number | null
           payment_percentage?: number | null
           payment_strategy?: Database["public"]["Enums"]["debt_payment_strategy"]
+          plan_id?: number
           principal?: number
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "debt_plan_id_fkey"
+            columns: ["plan_id"]
+            isOneToOne: false
+            referencedRelation: "plan"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       debt_template: {
         Row: {
@@ -432,6 +465,7 @@ export type Database = {
           is_essential: boolean
           is_tax_deductible: boolean
           name: string
+          plan_id: number
         }
         Insert: {
           amount: number
@@ -447,6 +481,7 @@ export type Database = {
           is_essential?: boolean
           is_tax_deductible?: boolean
           name: string
+          plan_id: number
         }
         Update: {
           amount?: number
@@ -462,8 +497,17 @@ export type Database = {
           is_essential?: boolean
           is_tax_deductible?: boolean
           name?: string
+          plan_id?: number
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "expense_plan_id_fkey"
+            columns: ["plan_id"]
+            isOneToOne: false
+            referencedRelation: "plan"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       expense_template: {
         Row: {
@@ -529,6 +573,7 @@ export type Database = {
           id: number
           initial_balance: number
           name: string
+          plan_id: number
         }
         Insert: {
           contribution_fixed_amount?: number | null
@@ -542,6 +587,7 @@ export type Database = {
           id?: never
           initial_balance: number
           name: string
+          plan_id: number
         }
         Update: {
           contribution_fixed_amount?: number | null
@@ -555,8 +601,17 @@ export type Database = {
           id?: never
           initial_balance?: number
           name?: string
+          plan_id?: number
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "hsa_plan_id_fkey"
+            columns: ["plan_id"]
+            isOneToOne: false
+            referencedRelation: "plan"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       hsa_template: {
         Row: {
@@ -615,6 +670,7 @@ export type Database = {
           id: number
           income_type: Database["public"]["Enums"]["income_type"]
           name: string
+          plan_id: number
         }
         Insert: {
           created_at?: string
@@ -627,6 +683,7 @@ export type Database = {
           id?: never
           income_type?: Database["public"]["Enums"]["income_type"]
           name: string
+          plan_id: number
         }
         Update: {
           created_at?: string
@@ -639,8 +696,17 @@ export type Database = {
           id?: never
           income_type?: Database["public"]["Enums"]["income_type"]
           name?: string
+          plan_id?: number
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "income_plan_id_fkey"
+            columns: ["plan_id"]
+            isOneToOne: false
+            referencedRelation: "plan"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       income_template: {
         Row: {
@@ -695,8 +761,10 @@ export type Database = {
           editor_id: string | null
           growth_rate: number
           id: number
+          income_id: number | null
           initial_balance: number
           name: string
+          plan_id: number
         }
         Insert: {
           contribution_fixed_amount?: number | null
@@ -708,8 +776,10 @@ export type Database = {
           editor_id?: string | null
           growth_rate: number
           id?: never
+          income_id?: number | null
           initial_balance: number
           name: string
+          plan_id: number
         }
         Update: {
           contribution_fixed_amount?: number | null
@@ -721,10 +791,27 @@ export type Database = {
           editor_id?: string | null
           growth_rate?: number
           id?: never
+          income_id?: number | null
           initial_balance?: number
           name?: string
+          plan_id?: number
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "ira_income_id_fkey"
+            columns: ["income_id"]
+            isOneToOne: false
+            referencedRelation: "income"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "ira_plan_id_fkey"
+            columns: ["plan_id"]
+            isOneToOne: false
+            referencedRelation: "plan"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       ira_template: {
         Row: {
@@ -849,306 +936,6 @@ export type Database = {
         }
         Relationships: []
       }
-      plan_brokerages: {
-        Row: {
-          brokerage_id: number
-          plan_id: number
-        }
-        Insert: {
-          brokerage_id: number
-          plan_id: number
-        }
-        Update: {
-          brokerage_id?: number
-          plan_id?: number
-        }
-        Relationships: [
-          {
-            foreignKeyName: "plan_brokerages_brokerage_id_fkey"
-            columns: ["brokerage_id"]
-            isOneToOne: false
-            referencedRelation: "brokerage"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "plan_brokerages_plan_id_fkey"
-            columns: ["plan_id"]
-            isOneToOne: false
-            referencedRelation: "plan"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
-      plan_cash_reserves: {
-        Row: {
-          cash_reserve_id: number
-          plan_id: number
-        }
-        Insert: {
-          cash_reserve_id: number
-          plan_id: number
-        }
-        Update: {
-          cash_reserve_id?: number
-          plan_id?: number
-        }
-        Relationships: [
-          {
-            foreignKeyName: "plan_cash_reserves_cash_reserve_id_fkey"
-            columns: ["cash_reserve_id"]
-            isOneToOne: false
-            referencedRelation: "cash_reserve"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "plan_cash_reserves_plan_id_fkey"
-            columns: ["plan_id"]
-            isOneToOne: false
-            referencedRelation: "plan"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
-      plan_debts: {
-        Row: {
-          debt_id: number
-          plan_id: number
-        }
-        Insert: {
-          debt_id: number
-          plan_id: number
-        }
-        Update: {
-          debt_id?: number
-          plan_id?: number
-        }
-        Relationships: [
-          {
-            foreignKeyName: "plan_debts_debt_id_fkey"
-            columns: ["debt_id"]
-            isOneToOne: false
-            referencedRelation: "debt"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "plan_debts_plan_id_fkey"
-            columns: ["plan_id"]
-            isOneToOne: false
-            referencedRelation: "plan"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
-      plan_expenses: {
-        Row: {
-          expense_id: number
-          plan_id: number
-        }
-        Insert: {
-          expense_id: number
-          plan_id: number
-        }
-        Update: {
-          expense_id?: number
-          plan_id?: number
-        }
-        Relationships: [
-          {
-            foreignKeyName: "plan_expenses_expense_id_fkey"
-            columns: ["expense_id"]
-            isOneToOne: false
-            referencedRelation: "expense"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "plan_expenses_plan_id_fkey"
-            columns: ["plan_id"]
-            isOneToOne: false
-            referencedRelation: "plan"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
-      plan_hsas: {
-        Row: {
-          hsa_id: number
-          plan_id: number
-        }
-        Insert: {
-          hsa_id: number
-          plan_id: number
-        }
-        Update: {
-          hsa_id?: number
-          plan_id?: number
-        }
-        Relationships: [
-          {
-            foreignKeyName: "plan_hsas_hsa_id_fkey"
-            columns: ["hsa_id"]
-            isOneToOne: false
-            referencedRelation: "hsa"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "plan_hsas_plan_id_fkey"
-            columns: ["plan_id"]
-            isOneToOne: false
-            referencedRelation: "plan"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
-      plan_incomes: {
-        Row: {
-          income_id: number
-          plan_id: number
-        }
-        Insert: {
-          income_id: number
-          plan_id: number
-        }
-        Update: {
-          income_id?: number
-          plan_id?: number
-        }
-        Relationships: [
-          {
-            foreignKeyName: "plan_incomes_income_id_fkey"
-            columns: ["income_id"]
-            isOneToOne: false
-            referencedRelation: "income"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "plan_incomes_plan_id_fkey"
-            columns: ["plan_id"]
-            isOneToOne: false
-            referencedRelation: "plan"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
-      plan_iras: {
-        Row: {
-          income_id: number | null
-          ira_id: number
-          plan_id: number
-        }
-        Insert: {
-          income_id?: number | null
-          ira_id: number
-          plan_id: number
-        }
-        Update: {
-          income_id?: number | null
-          ira_id?: number
-          plan_id?: number
-        }
-        Relationships: [
-          {
-            foreignKeyName: "plan_iras_income_id_fkey"
-            columns: ["income_id"]
-            isOneToOne: false
-            referencedRelation: "income"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "plan_iras_ira_id_fkey"
-            columns: ["ira_id"]
-            isOneToOne: false
-            referencedRelation: "ira"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "plan_iras_plan_id_fkey"
-            columns: ["plan_id"]
-            isOneToOne: false
-            referencedRelation: "plan"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
-      plan_roth_iras: {
-        Row: {
-          income_id: number | null
-          plan_id: number
-          roth_ira_id: number
-        }
-        Insert: {
-          income_id?: number | null
-          plan_id: number
-          roth_ira_id: number
-        }
-        Update: {
-          income_id?: number | null
-          plan_id?: number
-          roth_ira_id?: number
-        }
-        Relationships: [
-          {
-            foreignKeyName: "plan_roth_iras_income_id_fkey"
-            columns: ["income_id"]
-            isOneToOne: false
-            referencedRelation: "income"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "plan_roth_iras_plan_id_fkey"
-            columns: ["plan_id"]
-            isOneToOne: false
-            referencedRelation: "plan"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "plan_roth_iras_roth_ira_id_fkey"
-            columns: ["roth_ira_id"]
-            isOneToOne: false
-            referencedRelation: "roth_ira"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
-      plan_tax_deferreds: {
-        Row: {
-          income_id: number | null
-          plan_id: number
-          tax_deferred_id: number
-        }
-        Insert: {
-          income_id?: number | null
-          plan_id: number
-          tax_deferred_id: number
-        }
-        Update: {
-          income_id?: number | null
-          plan_id?: number
-          tax_deferred_id?: number
-        }
-        Relationships: [
-          {
-            foreignKeyName: "plan_tax_deferreds_income_id_fkey"
-            columns: ["income_id"]
-            isOneToOne: false
-            referencedRelation: "income"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "plan_tax_deferreds_plan_id_fkey"
-            columns: ["plan_id"]
-            isOneToOne: false
-            referencedRelation: "plan"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "plan_tax_deferreds_tax_deferred_id_fkey"
-            columns: ["tax_deferred_id"]
-            isOneToOne: false
-            referencedRelation: "tax_deferred"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
       plan_template: {
         Row: {
           age: number | null
@@ -1190,276 +977,6 @@ export type Database = {
           year?: number | null
         }
         Relationships: []
-      }
-      plan_template_brokerage_templates: {
-        Row: {
-          brokerage_template_id: number
-          plan_template_id: number
-        }
-        Insert: {
-          brokerage_template_id: number
-          plan_template_id: number
-        }
-        Update: {
-          brokerage_template_id?: number
-          plan_template_id?: number
-        }
-        Relationships: [
-          {
-            foreignKeyName: "plan_template_brokerage_templates_brokerage_template_id_fkey"
-            columns: ["brokerage_template_id"]
-            isOneToOne: false
-            referencedRelation: "brokerage_template"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "plan_template_brokerage_templates_plan_template_id_fkey"
-            columns: ["plan_template_id"]
-            isOneToOne: false
-            referencedRelation: "plan_template"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
-      plan_template_cash_reserve_templates: {
-        Row: {
-          cash_reserve_template_id: number
-          plan_template_id: number
-        }
-        Insert: {
-          cash_reserve_template_id: number
-          plan_template_id: number
-        }
-        Update: {
-          cash_reserve_template_id?: number
-          plan_template_id?: number
-        }
-        Relationships: [
-          {
-            foreignKeyName: "plan_template_cash_reserve_templa_cash_reserve_template_id_fkey"
-            columns: ["cash_reserve_template_id"]
-            isOneToOne: false
-            referencedRelation: "cash_reserve_template"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "plan_template_cash_reserve_templates_plan_template_id_fkey"
-            columns: ["plan_template_id"]
-            isOneToOne: false
-            referencedRelation: "plan_template"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
-      plan_template_debt_templates: {
-        Row: {
-          debt_template_id: number
-          plan_template_id: number
-        }
-        Insert: {
-          debt_template_id: number
-          plan_template_id: number
-        }
-        Update: {
-          debt_template_id?: number
-          plan_template_id?: number
-        }
-        Relationships: [
-          {
-            foreignKeyName: "plan_template_debt_templates_debt_template_id_fkey"
-            columns: ["debt_template_id"]
-            isOneToOne: false
-            referencedRelation: "debt_template"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "plan_template_debt_templates_plan_template_id_fkey"
-            columns: ["plan_template_id"]
-            isOneToOne: false
-            referencedRelation: "plan_template"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
-      plan_template_expense_templates: {
-        Row: {
-          expense_template_id: number
-          plan_template_id: number
-        }
-        Insert: {
-          expense_template_id: number
-          plan_template_id: number
-        }
-        Update: {
-          expense_template_id?: number
-          plan_template_id?: number
-        }
-        Relationships: [
-          {
-            foreignKeyName: "plan_template_expense_templates_expense_template_id_fkey"
-            columns: ["expense_template_id"]
-            isOneToOne: false
-            referencedRelation: "expense_template"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "plan_template_expense_templates_plan_template_id_fkey"
-            columns: ["plan_template_id"]
-            isOneToOne: false
-            referencedRelation: "plan_template"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
-      plan_template_hsa_templates: {
-        Row: {
-          hsa_template_id: number
-          plan_template_id: number
-        }
-        Insert: {
-          hsa_template_id: number
-          plan_template_id: number
-        }
-        Update: {
-          hsa_template_id?: number
-          plan_template_id?: number
-        }
-        Relationships: [
-          {
-            foreignKeyName: "plan_template_hsa_templates_hsa_template_id_fkey"
-            columns: ["hsa_template_id"]
-            isOneToOne: false
-            referencedRelation: "hsa_template"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "plan_template_hsa_templates_plan_template_id_fkey"
-            columns: ["plan_template_id"]
-            isOneToOne: false
-            referencedRelation: "plan_template"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
-      plan_template_income_templates: {
-        Row: {
-          income_template_id: number
-          plan_template_id: number
-        }
-        Insert: {
-          income_template_id: number
-          plan_template_id: number
-        }
-        Update: {
-          income_template_id?: number
-          plan_template_id?: number
-        }
-        Relationships: [
-          {
-            foreignKeyName: "plan_template_income_templates_income_template_id_fkey"
-            columns: ["income_template_id"]
-            isOneToOne: false
-            referencedRelation: "income_template"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "plan_template_income_templates_plan_template_id_fkey"
-            columns: ["plan_template_id"]
-            isOneToOne: false
-            referencedRelation: "plan_template"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
-      plan_template_ira_templates: {
-        Row: {
-          ira_template_id: number
-          plan_template_id: number
-        }
-        Insert: {
-          ira_template_id: number
-          plan_template_id: number
-        }
-        Update: {
-          ira_template_id?: number
-          plan_template_id?: number
-        }
-        Relationships: [
-          {
-            foreignKeyName: "plan_template_ira_templates_ira_template_id_fkey"
-            columns: ["ira_template_id"]
-            isOneToOne: false
-            referencedRelation: "ira_template"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "plan_template_ira_templates_plan_template_id_fkey"
-            columns: ["plan_template_id"]
-            isOneToOne: false
-            referencedRelation: "plan_template"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
-      plan_template_roth_ira_templates: {
-        Row: {
-          plan_template_id: number
-          roth_ira_template_id: number
-        }
-        Insert: {
-          plan_template_id: number
-          roth_ira_template_id: number
-        }
-        Update: {
-          plan_template_id?: number
-          roth_ira_template_id?: number
-        }
-        Relationships: [
-          {
-            foreignKeyName: "plan_template_roth_ira_templates_plan_template_id_fkey"
-            columns: ["plan_template_id"]
-            isOneToOne: false
-            referencedRelation: "plan_template"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "plan_template_roth_ira_templates_roth_ira_template_id_fkey"
-            columns: ["roth_ira_template_id"]
-            isOneToOne: false
-            referencedRelation: "roth_ira_template"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
-      plan_template_tax_deferred_templates: {
-        Row: {
-          plan_template_id: number
-          tax_deferred_template_id: number
-        }
-        Insert: {
-          plan_template_id: number
-          tax_deferred_template_id: number
-        }
-        Update: {
-          plan_template_id?: number
-          tax_deferred_template_id?: number
-        }
-        Relationships: [
-          {
-            foreignKeyName: "plan_template_tax_deferred_templa_tax_deferred_template_id_fkey"
-            columns: ["tax_deferred_template_id"]
-            isOneToOne: false
-            referencedRelation: "tax_deferred_template"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "plan_template_tax_deferred_templates_plan_template_id_fkey"
-            columns: ["plan_template_id"]
-            isOneToOne: false
-            referencedRelation: "plan_template"
-            referencedColumns: ["id"]
-          },
-        ]
       }
       profiles: {
         Row: {
@@ -1508,8 +1025,10 @@ export type Database = {
           editor_id: string | null
           growth_rate: number
           id: number
+          income_id: number | null
           initial_balance: number
           name: string
+          plan_id: number
         }
         Insert: {
           contribution_fixed_amount?: number | null
@@ -1521,8 +1040,10 @@ export type Database = {
           editor_id?: string | null
           growth_rate: number
           id?: never
+          income_id?: number | null
           initial_balance: number
           name: string
+          plan_id: number
         }
         Update: {
           contribution_fixed_amount?: number | null
@@ -1534,10 +1055,27 @@ export type Database = {
           editor_id?: string | null
           growth_rate?: number
           id?: never
+          income_id?: number | null
           initial_balance?: number
           name?: string
+          plan_id?: number
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "roth_ira_income_id_fkey"
+            columns: ["income_id"]
+            isOneToOne: false
+            referencedRelation: "income"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "roth_ira_plan_id_fkey"
+            columns: ["plan_id"]
+            isOneToOne: false
+            referencedRelation: "plan"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       roth_ira_template: {
         Row: {
@@ -1603,8 +1141,10 @@ export type Database = {
           employer_match_percentage_limit: number | null
           growth_rate: number
           id: number
+          income_id: number | null
           initial_balance: number
           name: string
+          plan_id: number
         }
         Insert: {
           created_at?: string
@@ -1624,8 +1164,10 @@ export type Database = {
           employer_match_percentage_limit?: number | null
           growth_rate: number
           id?: never
+          income_id?: number | null
           initial_balance: number
           name: string
+          plan_id: number
         }
         Update: {
           created_at?: string
@@ -1645,10 +1187,27 @@ export type Database = {
           employer_match_percentage_limit?: number | null
           growth_rate?: number
           id?: never
+          income_id?: number | null
           initial_balance?: number
           name?: string
+          plan_id?: number
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "tax_deferred_income_id_fkey"
+            columns: ["income_id"]
+            isOneToOne: false
+            referencedRelation: "income"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "tax_deferred_plan_id_fkey"
+            columns: ["plan_id"]
+            isOneToOne: false
+            referencedRelation: "plan"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       tax_deferred_template: {
         Row: {
@@ -1728,27 +1287,6 @@ export type Database = {
     }
     Enums: {
       cash_reserve_strategy: "fixed" | "variable"
-      command_item_type:
-        | "brokerage"
-        | "brokerage_template"
-        | "cash_reserve"
-        | "cash_reserve_template"
-        | "debt"
-        | "debt_template"
-        | "expense"
-        | "expense_template"
-        | "hsa"
-        | "hsa_template"
-        | "income"
-        | "income_template"
-        | "ira"
-        | "ira_template"
-        | "roth_ira"
-        | "roth_ira_template"
-        | "tax_deferred"
-        | "tax_deferred_template"
-        | "plan"
-        | "plan_template"
       command_sequence_ordering_type: "predefined" | "custom"
       contribution_strategy: "fixed" | "percentage_of_income" | "max"
       debt_payment_strategy:
@@ -1774,6 +1312,16 @@ export type Database = {
       income_type: "ordinary"
       insufficient_funds_strategy: "none" | "minimum_only" | "full"
       ira_contribution_strategy: "fixed" | "percentage_of_income" | "max"
+      model_name:
+        | "brokerage"
+        | "cash_reserve"
+        | "debt"
+        | "expense"
+        | "hsa"
+        | "income"
+        | "ira"
+        | "roth_ira"
+        | "tax_deferred"
       retirement_strategy:
         | "debt_free"
         | "age"
@@ -1917,28 +1465,6 @@ export const Constants = {
   public: {
     Enums: {
       cash_reserve_strategy: ["fixed", "variable"],
-      command_item_type: [
-        "brokerage",
-        "brokerage_template",
-        "cash_reserve",
-        "cash_reserve_template",
-        "debt",
-        "debt_template",
-        "expense",
-        "expense_template",
-        "hsa",
-        "hsa_template",
-        "income",
-        "income_template",
-        "ira",
-        "ira_template",
-        "roth_ira",
-        "roth_ira_template",
-        "tax_deferred",
-        "tax_deferred_template",
-        "plan",
-        "plan_template",
-      ],
       command_sequence_ordering_type: ["predefined", "custom"],
       contribution_strategy: ["fixed", "percentage_of_income", "max"],
       debt_payment_strategy: [
@@ -1967,6 +1493,17 @@ export const Constants = {
       income_type: ["ordinary"],
       insufficient_funds_strategy: ["none", "minimum_only", "full"],
       ira_contribution_strategy: ["fixed", "percentage_of_income", "max"],
+      model_name: [
+        "brokerage",
+        "cash_reserve",
+        "debt",
+        "expense",
+        "hsa",
+        "income",
+        "ira",
+        "roth_ira",
+        "tax_deferred",
+      ],
       retirement_strategy: [
         "debt_free",
         "age",

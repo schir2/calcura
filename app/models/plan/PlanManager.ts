@@ -21,6 +21,8 @@ import {RothIraManager} from "~/models/rothIra/RothIraManager";
 import eventBus from "~/utils/eventBus";
 import type {Command} from "#shared/types/Command";
 import {ContributionType} from "#shared/types/ContributionType";
+import type {CommandSequenceWithRelations} from "#shared/types/CommandSequence";
+import type {ModelName} from "#shared/types/ModelName";
 
 export enum FundType {
     Taxable = "taxable",
@@ -36,6 +38,7 @@ export type PlanManagers = {
     roth_ira: RothIraManager[];
     ira: IraIManager[];
     brokerage: BrokerageManager[];
+    hsa: HSAManager[];
 }
 
 
@@ -50,7 +53,8 @@ export default class PlanManager extends BaseOrchestrator<Plan, PlanState, PlanM
             brokerage: this.config.brokerages.map((brokerage) => new BrokerageManager(this, brokerage)),
             ira: this.config.iras.map((ira) => new IraIManager(this, ira)),
             roth_ira: this.config.roth_iras.map((rothIra) => new RothIraManager(this, rothIra)),
-            tax_deferred: this.config.tax_deferreds.map((taxDeferred) => new TaxDeferredManager(this, taxDeferred))
+            tax_deferred: this.config.tax_deferreds.map((taxDeferred) => new TaxDeferredManager(this, taxDeferred)),
+            hsa: []
         }
     }
 
@@ -452,27 +456,16 @@ export default class PlanManager extends BaseOrchestrator<Plan, PlanState, PlanM
         })
     }
 
-    getCommands(): Command[] {
-        if (this.config.command_sequences.length > 0) {
-            return this.config.command_sequences[0].commands
-        }
-        return []
-    }
-
-    getCommandsForSequence(commandSequenceId: number): Command[] {
-        return this.config.command_sequences.find((commandSequence) => commandSequence.id === commandSequenceId)?.commands ?? []
-    }
-
-    simulate(commandSequenceId?: number, maxIterations: number = 60): PlanState[] {
+    simulate(commandSequence?: CommandSequenceWithRelations, maxIterations: number = 60): PlanState[] {
         this.reset()
-        const commands = commandSequenceId ? this.getCommandsForSequence(commandSequenceId) : []
+        const commands: Command[] = commandSequence ? commandSequence.command_sequence_commands.map(command_sequence_command => command_sequence_command.command) : []
         maxIterations = Math.min(maxIterations, this.config.life_expectancy - this.config.age + 1)
         for (let i = 0; i < maxIterations; i++) {
             let manager: BaseManager<any, any> | undefined = undefined
             if (commands) {
                 commands.forEach(command => {
                     if (command.is_active) {
-                        manager = this.getManagerById(command.item_type, Number(command.item_id))
+                        manager = this.getManagerById(command.model_name, Number(command.model_id))
                         manager?.process()
                         manager?.advanceTimePeriod()
                     }
@@ -498,7 +491,7 @@ export default class PlanManager extends BaseOrchestrator<Plan, PlanState, PlanM
         manager.advanceTimePeriod()
     }
 
-    getManagerById<T extends BaseManager<any, any>>(managerName: keyof PlanManager['managers'], id: number): T {
+    getManagerById<T extends BaseManager<any, any>>(managerName:ModelName, id: number): T {
         const manager = this.managers[managerName].find((manager) => manager.getConfig().id === id);
         if (manager === undefined) {
             eventBus.emit('error', {

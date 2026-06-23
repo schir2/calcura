@@ -119,15 +119,15 @@ const activeExpensesAndDebts = computed((): { expenses: Expense[], debts: Debt[]
         const currentPlan = planManager.value.getConfig() as Plan
         for (const command of commands) {
           if (command.is_active) {
-            if (command.item_type === 'debt') {
+            if (command.model_name === 'debt') {
               for (const debt of currentPlan.debts) {
-                if (command.item_id === debt.id) {
+                if (command.model_id === debt.id) {
                   result.debts.push(debt)
                 }
               }
-            } else if (command.item_type === 'expense') {
+            } else if (command.model_name === 'expense') {
               for (const expense of currentPlan.expenses) {
-                if (command.item_id === expense.id) {
+                if (command.model_id === expense.id) {
                   result.expenses.push(expense)
                 }
               }

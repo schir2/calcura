@@ -9,22 +9,37 @@
 -- ================================================
 -- SECTION 1: on_financial_item_insert
 -- Fires AFTER INSERT on each of the 9 financial item
--- tables. Creates one command row for the new item.
+-- tables. Creates one command row for the new item,
+-- then links it to every command_sequence on that plan.
 -- ================================================
 
 CREATE OR REPLACE FUNCTION on_income_insert()
 RETURNS TRIGGER LANGUAGE plpgsql SECURITY DEFINER
 SET search_path = public
 AS $$
+DECLARE
+    v_command_id BIGINT;
 BEGIN
-    INSERT INTO command (item_type, item_id, action, creator_id, editor_id)
+    INSERT INTO command (model_name, model_id, action, creator_id, editor_id)
     VALUES (
-        'income'::command_item_type,
+        'income'::command_model_name,
         NEW.id,
         'process',
         COALESCE(NEW.creator_id, auth.uid()),
         COALESCE(NEW.creator_id, auth.uid())
-    );
+    )
+    RETURNING id INTO v_command_id;
+
+    INSERT INTO command_sequence_command (sequence_id, command_id, "order", is_active)
+    SELECT
+        cs.id,
+        v_command_id,
+        COALESCE((SELECT MAX("order") FROM command_sequence_command WHERE sequence_id = cs.id), 0) + 1,
+        TRUE
+    FROM command_sequence cs
+    WHERE cs.plan_id = NEW.plan_id
+    ON CONFLICT (sequence_id, command_id) DO NOTHING;
+
     RETURN NEW;
 END;
 $$;
@@ -33,15 +48,29 @@ CREATE OR REPLACE FUNCTION on_expense_insert()
 RETURNS TRIGGER LANGUAGE plpgsql SECURITY DEFINER
 SET search_path = public
 AS $$
+DECLARE
+    v_command_id BIGINT;
 BEGIN
-    INSERT INTO command (item_type, item_id, action, creator_id, editor_id)
+    INSERT INTO command (model_name, model_id, action, creator_id, editor_id)
     VALUES (
-        'expense'::command_item_type,
+        'expense'::command_model_name,
         NEW.id,
         'process',
         COALESCE(NEW.creator_id, auth.uid()),
         COALESCE(NEW.creator_id, auth.uid())
-    );
+    )
+    RETURNING id INTO v_command_id;
+
+    INSERT INTO command_sequence_command (sequence_id, command_id, "order", is_active)
+    SELECT
+        cs.id,
+        v_command_id,
+        COALESCE((SELECT MAX("order") FROM command_sequence_command WHERE sequence_id = cs.id), 0) + 1,
+        TRUE
+    FROM command_sequence cs
+    WHERE cs.plan_id = NEW.plan_id
+    ON CONFLICT (sequence_id, command_id) DO NOTHING;
+
     RETURN NEW;
 END;
 $$;
@@ -50,15 +79,29 @@ CREATE OR REPLACE FUNCTION on_debt_insert()
 RETURNS TRIGGER LANGUAGE plpgsql SECURITY DEFINER
 SET search_path = public
 AS $$
+DECLARE
+    v_command_id BIGINT;
 BEGIN
-    INSERT INTO command (item_type, item_id, action, creator_id, editor_id)
+    INSERT INTO command (model_name, model_id, action, creator_id, editor_id)
     VALUES (
-        'debt'::command_item_type,
+        'debt'::command_model_name,
         NEW.id,
         'process',
         COALESCE(NEW.creator_id, auth.uid()),
         COALESCE(NEW.creator_id, auth.uid())
-    );
+    )
+    RETURNING id INTO v_command_id;
+
+    INSERT INTO command_sequence_command (sequence_id, command_id, "order", is_active)
+    SELECT
+        cs.id,
+        v_command_id,
+        COALESCE((SELECT MAX("order") FROM command_sequence_command WHERE sequence_id = cs.id), 0) + 1,
+        TRUE
+    FROM command_sequence cs
+    WHERE cs.plan_id = NEW.plan_id
+    ON CONFLICT (sequence_id, command_id) DO NOTHING;
+
     RETURN NEW;
 END;
 $$;
@@ -67,15 +110,29 @@ CREATE OR REPLACE FUNCTION on_cash_reserve_insert()
 RETURNS TRIGGER LANGUAGE plpgsql SECURITY DEFINER
 SET search_path = public
 AS $$
+DECLARE
+    v_command_id BIGINT;
 BEGIN
-    INSERT INTO command (item_type, item_id, action, creator_id, editor_id)
+    INSERT INTO command (model_name, model_id, action, creator_id, editor_id)
     VALUES (
-        'cash_reserve'::command_item_type,
+        'cash_reserve'::command_model_name,
         NEW.id,
         'process',
         COALESCE(NEW.creator_id, auth.uid()),
         COALESCE(NEW.creator_id, auth.uid())
-    );
+    )
+    RETURNING id INTO v_command_id;
+
+    INSERT INTO command_sequence_command (sequence_id, command_id, "order", is_active)
+    SELECT
+        cs.id,
+        v_command_id,
+        COALESCE((SELECT MAX("order") FROM command_sequence_command WHERE sequence_id = cs.id), 0) + 1,
+        TRUE
+    FROM command_sequence cs
+    WHERE cs.plan_id = NEW.plan_id
+    ON CONFLICT (sequence_id, command_id) DO NOTHING;
+
     RETURN NEW;
 END;
 $$;
@@ -84,15 +141,29 @@ CREATE OR REPLACE FUNCTION on_brokerage_insert()
 RETURNS TRIGGER LANGUAGE plpgsql SECURITY DEFINER
 SET search_path = public
 AS $$
+DECLARE
+    v_command_id BIGINT;
 BEGIN
-    INSERT INTO command (item_type, item_id, action, creator_id, editor_id)
+    INSERT INTO command (model_name, model_id, action, creator_id, editor_id)
     VALUES (
-        'brokerage'::command_item_type,
+        'brokerage'::command_model_name,
         NEW.id,
         'process',
         COALESCE(NEW.creator_id, auth.uid()),
         COALESCE(NEW.creator_id, auth.uid())
-    );
+    )
+    RETURNING id INTO v_command_id;
+
+    INSERT INTO command_sequence_command (sequence_id, command_id, "order", is_active)
+    SELECT
+        cs.id,
+        v_command_id,
+        COALESCE((SELECT MAX("order") FROM command_sequence_command WHERE sequence_id = cs.id), 0) + 1,
+        TRUE
+    FROM command_sequence cs
+    WHERE cs.plan_id = NEW.plan_id
+    ON CONFLICT (sequence_id, command_id) DO NOTHING;
+
     RETURN NEW;
 END;
 $$;
@@ -101,15 +172,29 @@ CREATE OR REPLACE FUNCTION on_ira_insert()
 RETURNS TRIGGER LANGUAGE plpgsql SECURITY DEFINER
 SET search_path = public
 AS $$
+DECLARE
+    v_command_id BIGINT;
 BEGIN
-    INSERT INTO command (item_type, item_id, action, creator_id, editor_id)
+    INSERT INTO command (model_name, model_id, action, creator_id, editor_id)
     VALUES (
-        'ira'::command_item_type,
+        'ira'::command_model_name,
         NEW.id,
         'process',
         COALESCE(NEW.creator_id, auth.uid()),
         COALESCE(NEW.creator_id, auth.uid())
-    );
+    )
+    RETURNING id INTO v_command_id;
+
+    INSERT INTO command_sequence_command (sequence_id, command_id, "order", is_active)
+    SELECT
+        cs.id,
+        v_command_id,
+        COALESCE((SELECT MAX("order") FROM command_sequence_command WHERE sequence_id = cs.id), 0) + 1,
+        TRUE
+    FROM command_sequence cs
+    WHERE cs.plan_id = NEW.plan_id
+    ON CONFLICT (sequence_id, command_id) DO NOTHING;
+
     RETURN NEW;
 END;
 $$;
@@ -118,15 +203,29 @@ CREATE OR REPLACE FUNCTION on_roth_ira_insert()
 RETURNS TRIGGER LANGUAGE plpgsql SECURITY DEFINER
 SET search_path = public
 AS $$
+DECLARE
+    v_command_id BIGINT;
 BEGIN
-    INSERT INTO command (item_type, item_id, action, creator_id, editor_id)
+    INSERT INTO command (model_name, model_id, action, creator_id, editor_id)
     VALUES (
-        'roth_ira'::command_item_type,
+        'roth_ira'::command_model_name,
         NEW.id,
         'process',
         COALESCE(NEW.creator_id, auth.uid()),
         COALESCE(NEW.creator_id, auth.uid())
-    );
+    )
+    RETURNING id INTO v_command_id;
+
+    INSERT INTO command_sequence_command (sequence_id, command_id, "order", is_active)
+    SELECT
+        cs.id,
+        v_command_id,
+        COALESCE((SELECT MAX("order") FROM command_sequence_command WHERE sequence_id = cs.id), 0) + 1,
+        TRUE
+    FROM command_sequence cs
+    WHERE cs.plan_id = NEW.plan_id
+    ON CONFLICT (sequence_id, command_id) DO NOTHING;
+
     RETURN NEW;
 END;
 $$;
@@ -135,15 +234,29 @@ CREATE OR REPLACE FUNCTION on_hsa_insert()
 RETURNS TRIGGER LANGUAGE plpgsql SECURITY DEFINER
 SET search_path = public
 AS $$
+DECLARE
+    v_command_id BIGINT;
 BEGIN
-    INSERT INTO command (item_type, item_id, action, creator_id, editor_id)
+    INSERT INTO command (model_name, model_id, action, creator_id, editor_id)
     VALUES (
-        'hsa'::command_item_type,
+        'hsa'::command_model_name,
         NEW.id,
         'process',
         COALESCE(NEW.creator_id, auth.uid()),
         COALESCE(NEW.creator_id, auth.uid())
-    );
+    )
+    RETURNING id INTO v_command_id;
+
+    INSERT INTO command_sequence_command (sequence_id, command_id, "order", is_active)
+    SELECT
+        cs.id,
+        v_command_id,
+        COALESCE((SELECT MAX("order") FROM command_sequence_command WHERE sequence_id = cs.id), 0) + 1,
+        TRUE
+    FROM command_sequence cs
+    WHERE cs.plan_id = NEW.plan_id
+    ON CONFLICT (sequence_id, command_id) DO NOTHING;
+
     RETURN NEW;
 END;
 $$;
@@ -152,15 +265,29 @@ CREATE OR REPLACE FUNCTION on_tax_deferred_insert()
 RETURNS TRIGGER LANGUAGE plpgsql SECURITY DEFINER
 SET search_path = public
 AS $$
+DECLARE
+    v_command_id BIGINT;
 BEGIN
-    INSERT INTO command (item_type, item_id, action, creator_id, editor_id)
+    INSERT INTO command (model_name, model_id, action, creator_id, editor_id)
     VALUES (
-        'tax_deferred'::command_item_type,
+        'tax_deferred'::command_model_name,
         NEW.id,
         'process',
         COALESCE(NEW.creator_id, auth.uid()),
         COALESCE(NEW.creator_id, auth.uid())
-    );
+    )
+    RETURNING id INTO v_command_id;
+
+    INSERT INTO command_sequence_command (sequence_id, command_id, "order", is_active)
+    SELECT
+        cs.id,
+        v_command_id,
+        COALESCE((SELECT MAX("order") FROM command_sequence_command WHERE sequence_id = cs.id), 0) + 1,
+        TRUE
+    FROM command_sequence cs
+    WHERE cs.plan_id = NEW.plan_id
+    ON CONFLICT (sequence_id, command_id) DO NOTHING;
+
     RETURN NEW;
 END;
 $$;
@@ -215,7 +342,7 @@ RETURNS TRIGGER LANGUAGE plpgsql SECURITY DEFINER
 SET search_path = public
 AS $$
 BEGIN
-    DELETE FROM command WHERE item_type = 'income'::command_item_type AND item_id = OLD.id;
+    DELETE FROM command WHERE model_name = 'income'::command_model_name AND model_id = OLD.id;
     RETURN OLD;
 END;
 $$;
@@ -225,7 +352,7 @@ RETURNS TRIGGER LANGUAGE plpgsql SECURITY DEFINER
 SET search_path = public
 AS $$
 BEGIN
-    DELETE FROM command WHERE item_type = 'expense'::command_item_type AND item_id = OLD.id;
+    DELETE FROM command WHERE model_name = 'expense'::command_model_name AND model_id = OLD.id;
     RETURN OLD;
 END;
 $$;
@@ -235,7 +362,7 @@ RETURNS TRIGGER LANGUAGE plpgsql SECURITY DEFINER
 SET search_path = public
 AS $$
 BEGIN
-    DELETE FROM command WHERE item_type = 'debt'::command_item_type AND item_id = OLD.id;
+    DELETE FROM command WHERE model_name = 'debt'::command_model_name AND model_id = OLD.id;
     RETURN OLD;
 END;
 $$;
@@ -245,7 +372,7 @@ RETURNS TRIGGER LANGUAGE plpgsql SECURITY DEFINER
 SET search_path = public
 AS $$
 BEGIN
-    DELETE FROM command WHERE item_type = 'cash_reserve'::command_item_type AND item_id = OLD.id;
+    DELETE FROM command WHERE model_name = 'cash_reserve'::command_model_name AND model_id = OLD.id;
     RETURN OLD;
 END;
 $$;
@@ -255,7 +382,7 @@ RETURNS TRIGGER LANGUAGE plpgsql SECURITY DEFINER
 SET search_path = public
 AS $$
 BEGIN
-    DELETE FROM command WHERE item_type = 'brokerage'::command_item_type AND item_id = OLD.id;
+    DELETE FROM command WHERE model_name = 'brokerage'::command_model_name AND model_id = OLD.id;
     RETURN OLD;
 END;
 $$;
@@ -265,7 +392,7 @@ RETURNS TRIGGER LANGUAGE plpgsql SECURITY DEFINER
 SET search_path = public
 AS $$
 BEGIN
-    DELETE FROM command WHERE item_type = 'ira'::command_item_type AND item_id = OLD.id;
+    DELETE FROM command WHERE model_name = 'ira'::command_model_name AND model_id = OLD.id;
     RETURN OLD;
 END;
 $$;
@@ -275,7 +402,7 @@ RETURNS TRIGGER LANGUAGE plpgsql SECURITY DEFINER
 SET search_path = public
 AS $$
 BEGIN
-    DELETE FROM command WHERE item_type = 'roth_ira'::command_item_type AND item_id = OLD.id;
+    DELETE FROM command WHERE model_name = 'roth_ira'::command_model_name AND model_id = OLD.id;
     RETURN OLD;
 END;
 $$;
@@ -285,7 +412,7 @@ RETURNS TRIGGER LANGUAGE plpgsql SECURITY DEFINER
 SET search_path = public
 AS $$
 BEGIN
-    DELETE FROM command WHERE item_type = 'hsa'::command_item_type AND item_id = OLD.id;
+    DELETE FROM command WHERE model_name = 'hsa'::command_model_name AND model_id = OLD.id;
     RETURN OLD;
 END;
 $$;
@@ -295,7 +422,7 @@ RETURNS TRIGGER LANGUAGE plpgsql SECURITY DEFINER
 SET search_path = public
 AS $$
 BEGIN
-    DELETE FROM command WHERE item_type = 'tax_deferred'::command_item_type AND item_id = OLD.id;
+    DELETE FROM command WHERE model_name = 'tax_deferred'::command_model_name AND model_id = OLD.id;
     RETURN OLD;
 END;
 $$;
@@ -370,9 +497,8 @@ CREATE TRIGGER trg_plan_created
 -- SECTION 4: on_command_sequence_created
 -- Fires AFTER INSERT on command_sequence.
 -- Finds all commands for items already linked to the
--- new sequence's plan (via all 9 junction tables) and
--- inserts a command_sequence_command row for each,
--- with sequential order values starting at 1.
+-- new sequence's plan via direct plan_id FK and inserts
+-- a command_sequence_command row for each.
 -- ================================================
 
 CREATE OR REPLACE FUNCTION on_command_sequence_created()
@@ -383,79 +509,68 @@ DECLARE
     v_command_id BIGINT;
     v_order      INTEGER := 1;
 BEGIN
-    -- Collect all commands associated with the plan via all junction tables,
-    -- ordered by command id for deterministic ordering.
     FOR v_command_id IN
         WITH plan_commands AS (
-            -- incomes
             SELECT c.id AS command_id
-            FROM plan_incomes pi
-            JOIN command c ON c.item_type = 'income'::command_item_type AND c.item_id = pi.income_id
-            WHERE pi.plan_id = NEW.plan_id
+            FROM income i
+            JOIN command c ON c.model_name = 'income'::command_model_name AND c.model_id = i.id
+            WHERE i.plan_id = NEW.plan_id
 
             UNION ALL
 
-            -- expenses
             SELECT c.id
-            FROM plan_expenses pe
-            JOIN command c ON c.item_type = 'expense'::command_item_type AND c.item_id = pe.expense_id
-            WHERE pe.plan_id = NEW.plan_id
+            FROM expense e
+            JOIN command c ON c.model_name = 'expense'::command_model_name AND c.model_id = e.id
+            WHERE e.plan_id = NEW.plan_id
 
             UNION ALL
 
-            -- debts
             SELECT c.id
-            FROM plan_debts pd
-            JOIN command c ON c.item_type = 'debt'::command_item_type AND c.item_id = pd.debt_id
-            WHERE pd.plan_id = NEW.plan_id
+            FROM debt d
+            JOIN command c ON c.model_name = 'debt'::command_model_name AND c.model_id = d.id
+            WHERE d.plan_id = NEW.plan_id
 
             UNION ALL
 
-            -- cash reserves
             SELECT c.id
-            FROM plan_cash_reserves pcr
-            JOIN command c ON c.item_type = 'cash_reserve'::command_item_type AND c.item_id = pcr.cash_reserve_id
-            WHERE pcr.plan_id = NEW.plan_id
+            FROM cash_reserve cr
+            JOIN command c ON c.model_name = 'cash_reserve'::command_model_name AND c.model_id = cr.id
+            WHERE cr.plan_id = NEW.plan_id
 
             UNION ALL
 
-            -- brokerages
             SELECT c.id
-            FROM plan_brokerages pb
-            JOIN command c ON c.item_type = 'brokerage'::command_item_type AND c.item_id = pb.brokerage_id
-            WHERE pb.plan_id = NEW.plan_id
+            FROM brokerage b
+            JOIN command c ON c.model_name = 'brokerage'::command_model_name AND c.model_id = b.id
+            WHERE b.plan_id = NEW.plan_id
 
             UNION ALL
 
-            -- iras
             SELECT c.id
-            FROM plan_iras pira
-            JOIN command c ON c.item_type = 'ira'::command_item_type AND c.item_id = pira.ira_id
-            WHERE pira.plan_id = NEW.plan_id
+            FROM ira i
+            JOIN command c ON c.model_name = 'ira'::command_model_name AND c.model_id = i.id
+            WHERE i.plan_id = NEW.plan_id
 
             UNION ALL
 
-            -- roth iras
             SELECT c.id
-            FROM plan_roth_iras prira
-            JOIN command c ON c.item_type = 'roth_ira'::command_item_type AND c.item_id = prira.roth_ira_id
-            WHERE prira.plan_id = NEW.plan_id
+            FROM roth_ira ri
+            JOIN command c ON c.model_name = 'roth_ira'::command_model_name AND c.model_id = ri.id
+            WHERE ri.plan_id = NEW.plan_id
 
             UNION ALL
 
-            -- hsas
             SELECT c.id
-            FROM plan_hsas ph
-            JOIN command c ON c.item_type = 'hsa'::command_item_type AND c.item_id = ph.hsa_id
-            WHERE ph.plan_id = NEW.plan_id
+            FROM hsa h
+            JOIN command c ON c.model_name = 'hsa'::command_model_name AND c.model_id = h.id
+            WHERE h.plan_id = NEW.plan_id
 
             UNION ALL
 
-            -- tax deferreds
             SELECT c.id
-            FROM plan_tax_deferreds ptd
-            JOIN command c ON c.item_type = 'tax_deferred'::command_item_type AND c.item_id = ptd.tax_deferred_id
-            WHERE ptd.plan_id = NEW.plan_id
+            FROM tax_deferred td
+            JOIN command c ON c.model_name = 'tax_deferred'::command_item_type AND c.model_id = td.id
+            WHERE td.plan_id = NEW.plan_id
         )
         SELECT command_id FROM plan_commands ORDER BY command_id
     LOOP
@@ -472,521 +587,3 @@ $$;
 CREATE TRIGGER trg_command_sequence_created
     AFTER INSERT ON command_sequence
     FOR EACH ROW EXECUTE FUNCTION on_command_sequence_created();
-
-
--- ================================================
--- SECTION 5: on_plan_item_junction_insert
--- Fires AFTER INSERT on each of the 9 junction tables.
--- Finds the command row for the newly linked item and
--- inserts a command_sequence_command row into every
--- command_sequence belonging to that plan.
--- Uses INSERT ... ON CONFLICT DO NOTHING for idempotency.
--- Each junction table has a distinct item FK column name,
--- so a dedicated function is required per junction table.
--- ================================================
-
-CREATE OR REPLACE FUNCTION on_plan_incomes_insert()
-RETURNS TRIGGER LANGUAGE plpgsql SECURITY DEFINER
-SET search_path = public
-AS $$
-DECLARE
-    v_command_id BIGINT;
-BEGIN
-    SELECT id INTO v_command_id
-    FROM command
-    WHERE item_type = 'income'::command_item_type AND item_id = NEW.income_id
-    LIMIT 1;
-
-    IF v_command_id IS NULL THEN
-        RETURN NEW;
-    END IF;
-
-    INSERT INTO command_sequence_command (sequence_id, command_id, "order", is_active)
-    SELECT
-        cs.id,
-        v_command_id,
-        COALESCE((SELECT MAX("order") FROM command_sequence_command WHERE sequence_id = cs.id), 0) + 1,
-        TRUE
-    FROM command_sequence cs
-    WHERE cs.plan_id = NEW.plan_id
-    ON CONFLICT (sequence_id, command_id) DO NOTHING;
-
-    RETURN NEW;
-END;
-$$;
-
-CREATE OR REPLACE FUNCTION on_plan_expenses_insert()
-RETURNS TRIGGER LANGUAGE plpgsql SECURITY DEFINER
-SET search_path = public
-AS $$
-DECLARE
-    v_command_id BIGINT;
-BEGIN
-    SELECT id INTO v_command_id
-    FROM command
-    WHERE item_type = 'expense'::command_item_type AND item_id = NEW.expense_id
-    LIMIT 1;
-
-    IF v_command_id IS NULL THEN
-        RETURN NEW;
-    END IF;
-
-    INSERT INTO command_sequence_command (sequence_id, command_id, "order", is_active)
-    SELECT
-        cs.id,
-        v_command_id,
-        COALESCE((SELECT MAX("order") FROM command_sequence_command WHERE sequence_id = cs.id), 0) + 1,
-        TRUE
-    FROM command_sequence cs
-    WHERE cs.plan_id = NEW.plan_id
-    ON CONFLICT (sequence_id, command_id) DO NOTHING;
-
-    RETURN NEW;
-END;
-$$;
-
-CREATE OR REPLACE FUNCTION on_plan_debts_insert()
-RETURNS TRIGGER LANGUAGE plpgsql SECURITY DEFINER
-SET search_path = public
-AS $$
-DECLARE
-    v_command_id BIGINT;
-BEGIN
-    SELECT id INTO v_command_id
-    FROM command
-    WHERE item_type = 'debt'::command_item_type AND item_id = NEW.debt_id
-    LIMIT 1;
-
-    IF v_command_id IS NULL THEN
-        RETURN NEW;
-    END IF;
-
-    INSERT INTO command_sequence_command (sequence_id, command_id, "order", is_active)
-    SELECT
-        cs.id,
-        v_command_id,
-        COALESCE((SELECT MAX("order") FROM command_sequence_command WHERE sequence_id = cs.id), 0) + 1,
-        TRUE
-    FROM command_sequence cs
-    WHERE cs.plan_id = NEW.plan_id
-    ON CONFLICT (sequence_id, command_id) DO NOTHING;
-
-    RETURN NEW;
-END;
-$$;
-
-CREATE OR REPLACE FUNCTION on_plan_cash_reserves_insert()
-RETURNS TRIGGER LANGUAGE plpgsql SECURITY DEFINER
-SET search_path = public
-AS $$
-DECLARE
-    v_command_id BIGINT;
-BEGIN
-    SELECT id INTO v_command_id
-    FROM command
-    WHERE item_type = 'cash_reserve'::command_item_type AND item_id = NEW.cash_reserve_id
-    LIMIT 1;
-
-    IF v_command_id IS NULL THEN
-        RETURN NEW;
-    END IF;
-
-    INSERT INTO command_sequence_command (sequence_id, command_id, "order", is_active)
-    SELECT
-        cs.id,
-        v_command_id,
-        COALESCE((SELECT MAX("order") FROM command_sequence_command WHERE sequence_id = cs.id), 0) + 1,
-        TRUE
-    FROM command_sequence cs
-    WHERE cs.plan_id = NEW.plan_id
-    ON CONFLICT (sequence_id, command_id) DO NOTHING;
-
-    RETURN NEW;
-END;
-$$;
-
-CREATE OR REPLACE FUNCTION on_plan_brokerages_insert()
-RETURNS TRIGGER LANGUAGE plpgsql SECURITY DEFINER
-SET search_path = public
-AS $$
-DECLARE
-    v_command_id BIGINT;
-BEGIN
-    SELECT id INTO v_command_id
-    FROM command
-    WHERE item_type = 'brokerage'::command_item_type AND item_id = NEW.brokerage_id
-    LIMIT 1;
-
-    IF v_command_id IS NULL THEN
-        RETURN NEW;
-    END IF;
-
-    INSERT INTO command_sequence_command (sequence_id, command_id, "order", is_active)
-    SELECT
-        cs.id,
-        v_command_id,
-        COALESCE((SELECT MAX("order") FROM command_sequence_command WHERE sequence_id = cs.id), 0) + 1,
-        TRUE
-    FROM command_sequence cs
-    WHERE cs.plan_id = NEW.plan_id
-    ON CONFLICT (sequence_id, command_id) DO NOTHING;
-
-    RETURN NEW;
-END;
-$$;
-
-CREATE OR REPLACE FUNCTION on_plan_iras_insert()
-RETURNS TRIGGER LANGUAGE plpgsql SECURITY DEFINER
-SET search_path = public
-AS $$
-DECLARE
-    v_command_id BIGINT;
-BEGIN
-    SELECT id INTO v_command_id
-    FROM command
-    WHERE item_type = 'ira'::command_item_type AND item_id = NEW.ira_id
-    LIMIT 1;
-
-    IF v_command_id IS NULL THEN
-        RETURN NEW;
-    END IF;
-
-    INSERT INTO command_sequence_command (sequence_id, command_id, "order", is_active)
-    SELECT
-        cs.id,
-        v_command_id,
-        COALESCE((SELECT MAX("order") FROM command_sequence_command WHERE sequence_id = cs.id), 0) + 1,
-        TRUE
-    FROM command_sequence cs
-    WHERE cs.plan_id = NEW.plan_id
-    ON CONFLICT (sequence_id, command_id) DO NOTHING;
-
-    RETURN NEW;
-END;
-$$;
-
-CREATE OR REPLACE FUNCTION on_plan_roth_iras_insert()
-RETURNS TRIGGER LANGUAGE plpgsql SECURITY DEFINER
-SET search_path = public
-AS $$
-DECLARE
-    v_command_id BIGINT;
-BEGIN
-    SELECT id INTO v_command_id
-    FROM command
-    WHERE item_type = 'roth_ira'::command_item_type AND item_id = NEW.roth_ira_id
-    LIMIT 1;
-
-    IF v_command_id IS NULL THEN
-        RETURN NEW;
-    END IF;
-
-    INSERT INTO command_sequence_command (sequence_id, command_id, "order", is_active)
-    SELECT
-        cs.id,
-        v_command_id,
-        COALESCE((SELECT MAX("order") FROM command_sequence_command WHERE sequence_id = cs.id), 0) + 1,
-        TRUE
-    FROM command_sequence cs
-    WHERE cs.plan_id = NEW.plan_id
-    ON CONFLICT (sequence_id, command_id) DO NOTHING;
-
-    RETURN NEW;
-END;
-$$;
-
-CREATE OR REPLACE FUNCTION on_plan_hsas_insert()
-RETURNS TRIGGER LANGUAGE plpgsql SECURITY DEFINER
-SET search_path = public
-AS $$
-DECLARE
-    v_command_id BIGINT;
-BEGIN
-    SELECT id INTO v_command_id
-    FROM command
-    WHERE item_type = 'hsa'::command_item_type AND item_id = NEW.hsa_id
-    LIMIT 1;
-
-    IF v_command_id IS NULL THEN
-        RETURN NEW;
-    END IF;
-
-    INSERT INTO command_sequence_command (sequence_id, command_id, "order", is_active)
-    SELECT
-        cs.id,
-        v_command_id,
-        COALESCE((SELECT MAX("order") FROM command_sequence_command WHERE sequence_id = cs.id), 0) + 1,
-        TRUE
-    FROM command_sequence cs
-    WHERE cs.plan_id = NEW.plan_id
-    ON CONFLICT (sequence_id, command_id) DO NOTHING;
-
-    RETURN NEW;
-END;
-$$;
-
-CREATE OR REPLACE FUNCTION on_plan_tax_deferreds_insert()
-RETURNS TRIGGER LANGUAGE plpgsql SECURITY DEFINER
-SET search_path = public
-AS $$
-DECLARE
-    v_command_id BIGINT;
-BEGIN
-    SELECT id INTO v_command_id
-    FROM command
-    WHERE item_type = 'tax_deferred'::command_item_type AND item_id = NEW.tax_deferred_id
-    LIMIT 1;
-
-    IF v_command_id IS NULL THEN
-        RETURN NEW;
-    END IF;
-
-    INSERT INTO command_sequence_command (sequence_id, command_id, "order", is_active)
-    SELECT
-        cs.id,
-        v_command_id,
-        COALESCE((SELECT MAX("order") FROM command_sequence_command WHERE sequence_id = cs.id), 0) + 1,
-        TRUE
-    FROM command_sequence cs
-    WHERE cs.plan_id = NEW.plan_id
-    ON CONFLICT (sequence_id, command_id) DO NOTHING;
-
-    RETURN NEW;
-END;
-$$;
-
--- Attach junction insert triggers
-CREATE TRIGGER trg_plan_incomes_insert
-    AFTER INSERT ON plan_incomes
-    FOR EACH ROW EXECUTE FUNCTION on_plan_incomes_insert();
-
-CREATE TRIGGER trg_plan_expenses_insert
-    AFTER INSERT ON plan_expenses
-    FOR EACH ROW EXECUTE FUNCTION on_plan_expenses_insert();
-
-CREATE TRIGGER trg_plan_debts_insert
-    AFTER INSERT ON plan_debts
-    FOR EACH ROW EXECUTE FUNCTION on_plan_debts_insert();
-
-CREATE TRIGGER trg_plan_cash_reserves_insert
-    AFTER INSERT ON plan_cash_reserves
-    FOR EACH ROW EXECUTE FUNCTION on_plan_cash_reserves_insert();
-
-CREATE TRIGGER trg_plan_brokerages_insert
-    AFTER INSERT ON plan_brokerages
-    FOR EACH ROW EXECUTE FUNCTION on_plan_brokerages_insert();
-
-CREATE TRIGGER trg_plan_iras_insert
-    AFTER INSERT ON plan_iras
-    FOR EACH ROW EXECUTE FUNCTION on_plan_iras_insert();
-
-CREATE TRIGGER trg_plan_roth_iras_insert
-    AFTER INSERT ON plan_roth_iras
-    FOR EACH ROW EXECUTE FUNCTION on_plan_roth_iras_insert();
-
-CREATE TRIGGER trg_plan_hsas_insert
-    AFTER INSERT ON plan_hsas
-    FOR EACH ROW EXECUTE FUNCTION on_plan_hsas_insert();
-
-CREATE TRIGGER trg_plan_tax_deferreds_insert
-    AFTER INSERT ON plan_tax_deferreds
-    FOR EACH ROW EXECUTE FUNCTION on_plan_tax_deferreds_insert();
-
-
--- ================================================
--- SECTION 6: on_plan_item_junction_delete
--- Fires AFTER DELETE on each of the 9 junction tables.
--- Finds the command row for the removed item and deletes
--- all command_sequence_command rows from sequences
--- belonging to that plan.
--- ================================================
-
-CREATE OR REPLACE FUNCTION on_plan_incomes_delete()
-RETURNS TRIGGER LANGUAGE plpgsql SECURITY DEFINER
-SET search_path = public
-AS $$
-BEGIN
-    DELETE FROM command_sequence_command
-    WHERE command_id IN (
-        SELECT id FROM command
-        WHERE item_type = 'income'::command_item_type AND item_id = OLD.income_id
-    )
-    AND sequence_id IN (
-        SELECT id FROM command_sequence WHERE plan_id = OLD.plan_id
-    );
-    RETURN OLD;
-END;
-$$;
-
-CREATE OR REPLACE FUNCTION on_plan_expenses_delete()
-RETURNS TRIGGER LANGUAGE plpgsql SECURITY DEFINER
-SET search_path = public
-AS $$
-BEGIN
-    DELETE FROM command_sequence_command
-    WHERE command_id IN (
-        SELECT id FROM command
-        WHERE item_type = 'expense'::command_item_type AND item_id = OLD.expense_id
-    )
-    AND sequence_id IN (
-        SELECT id FROM command_sequence WHERE plan_id = OLD.plan_id
-    );
-    RETURN OLD;
-END;
-$$;
-
-CREATE OR REPLACE FUNCTION on_plan_debts_delete()
-RETURNS TRIGGER LANGUAGE plpgsql SECURITY DEFINER
-SET search_path = public
-AS $$
-BEGIN
-    DELETE FROM command_sequence_command
-    WHERE command_id IN (
-        SELECT id FROM command
-        WHERE item_type = 'debt'::command_item_type AND item_id = OLD.debt_id
-    )
-    AND sequence_id IN (
-        SELECT id FROM command_sequence WHERE plan_id = OLD.plan_id
-    );
-    RETURN OLD;
-END;
-$$;
-
-CREATE OR REPLACE FUNCTION on_plan_cash_reserves_delete()
-RETURNS TRIGGER LANGUAGE plpgsql SECURITY DEFINER
-SET search_path = public
-AS $$
-BEGIN
-    DELETE FROM command_sequence_command
-    WHERE command_id IN (
-        SELECT id FROM command
-        WHERE item_type = 'cash_reserve'::command_item_type AND item_id = OLD.cash_reserve_id
-    )
-    AND sequence_id IN (
-        SELECT id FROM command_sequence WHERE plan_id = OLD.plan_id
-    );
-    RETURN OLD;
-END;
-$$;
-
-CREATE OR REPLACE FUNCTION on_plan_brokerages_delete()
-RETURNS TRIGGER LANGUAGE plpgsql SECURITY DEFINER
-SET search_path = public
-AS $$
-BEGIN
-    DELETE FROM command_sequence_command
-    WHERE command_id IN (
-        SELECT id FROM command
-        WHERE item_type = 'brokerage'::command_item_type AND item_id = OLD.brokerage_id
-    )
-    AND sequence_id IN (
-        SELECT id FROM command_sequence WHERE plan_id = OLD.plan_id
-    );
-    RETURN OLD;
-END;
-$$;
-
-CREATE OR REPLACE FUNCTION on_plan_iras_delete()
-RETURNS TRIGGER LANGUAGE plpgsql SECURITY DEFINER
-SET search_path = public
-AS $$
-BEGIN
-    DELETE FROM command_sequence_command
-    WHERE command_id IN (
-        SELECT id FROM command
-        WHERE item_type = 'ira'::command_item_type AND item_id = OLD.ira_id
-    )
-    AND sequence_id IN (
-        SELECT id FROM command_sequence WHERE plan_id = OLD.plan_id
-    );
-    RETURN OLD;
-END;
-$$;
-
-CREATE OR REPLACE FUNCTION on_plan_roth_iras_delete()
-RETURNS TRIGGER LANGUAGE plpgsql SECURITY DEFINER
-SET search_path = public
-AS $$
-BEGIN
-    DELETE FROM command_sequence_command
-    WHERE command_id IN (
-        SELECT id FROM command
-        WHERE item_type = 'roth_ira'::command_item_type AND item_id = OLD.roth_ira_id
-    )
-    AND sequence_id IN (
-        SELECT id FROM command_sequence WHERE plan_id = OLD.plan_id
-    );
-    RETURN OLD;
-END;
-$$;
-
-CREATE OR REPLACE FUNCTION on_plan_hsas_delete()
-RETURNS TRIGGER LANGUAGE plpgsql SECURITY DEFINER
-SET search_path = public
-AS $$
-BEGIN
-    DELETE FROM command_sequence_command
-    WHERE command_id IN (
-        SELECT id FROM command
-        WHERE item_type = 'hsa'::command_item_type AND item_id = OLD.hsa_id
-    )
-    AND sequence_id IN (
-        SELECT id FROM command_sequence WHERE plan_id = OLD.plan_id
-    );
-    RETURN OLD;
-END;
-$$;
-
-CREATE OR REPLACE FUNCTION on_plan_tax_deferreds_delete()
-RETURNS TRIGGER LANGUAGE plpgsql SECURITY DEFINER
-SET search_path = public
-AS $$
-BEGIN
-    DELETE FROM command_sequence_command
-    WHERE command_id IN (
-        SELECT id FROM command
-        WHERE item_type = 'tax_deferred'::command_item_type AND item_id = OLD.tax_deferred_id
-    )
-    AND sequence_id IN (
-        SELECT id FROM command_sequence WHERE plan_id = OLD.plan_id
-    );
-    RETURN OLD;
-END;
-$$;
-
--- Attach junction delete triggers
-CREATE TRIGGER trg_plan_incomes_delete
-    AFTER DELETE ON plan_incomes
-    FOR EACH ROW EXECUTE FUNCTION on_plan_incomes_delete();
-
-CREATE TRIGGER trg_plan_expenses_delete
-    AFTER DELETE ON plan_expenses
-    FOR EACH ROW EXECUTE FUNCTION on_plan_expenses_delete();
-
-CREATE TRIGGER trg_plan_debts_delete
-    AFTER DELETE ON plan_debts
-    FOR EACH ROW EXECUTE FUNCTION on_plan_debts_delete();
-
-CREATE TRIGGER trg_plan_cash_reserves_delete
-    AFTER DELETE ON plan_cash_reserves
-    FOR EACH ROW EXECUTE FUNCTION on_plan_cash_reserves_delete();
-
-CREATE TRIGGER trg_plan_brokerages_delete
-    AFTER DELETE ON plan_brokerages
-    FOR EACH ROW EXECUTE FUNCTION on_plan_brokerages_delete();
-
-CREATE TRIGGER trg_plan_iras_delete
-    AFTER DELETE ON plan_iras
-    FOR EACH ROW EXECUTE FUNCTION on_plan_iras_delete();
-
-CREATE TRIGGER trg_plan_roth_iras_delete
-    AFTER DELETE ON plan_roth_iras
-    FOR EACH ROW EXECUTE FUNCTION on_plan_roth_iras_delete();
-
-CREATE TRIGGER trg_plan_hsas_delete
-    AFTER DELETE ON plan_hsas
-    FOR EACH ROW EXECUTE FUNCTION on_plan_hsas_delete();
-
-CREATE TRIGGER trg_plan_tax_deferreds_delete
-    AFTER DELETE ON plan_tax_deferreds
-    FOR EACH ROW EXECUTE FUNCTION on_plan_tax_deferreds_delete();

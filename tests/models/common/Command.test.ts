@@ -5,25 +5,25 @@ import {compareAndSyncCommands} from "~/utils/commandUtils";
 describe("compareAndSyncCommands", () => {
     it("should add a new command to the list", () => {
         const prevCommands: Command[] = [
-            {name: "cmd1", id: 1, order: 1,  label: "Command 1", item_type: "income", model_id: 1, action: "process"}
+            {name: "cmd1", id: 1, order: 1,  label: "Command 1", model_name: "income", model_id: 1, action: "process"}
         ];
         const newCommands: Command[] = [
-            {name: "cmd1", id: 1, order: 1,  label: "Command 1", item_type: "income", model_id: 1, action: "process"},
-            {name: "cmd2", id: 2, order: 2,  label: "Command 2", item_type: "debt", model_id: 2, action: "process"}
+            {name: "cmd1", id: 1, order: 1,  label: "Command 1", model_name: "income", model_id: 1, action: "process"},
+            {name: "cmd2", id: 2, order: 2,  label: "Command 2", model_name: "debt", model_id: 2, action: "process"}
         ];
 
         const result = compareAndSyncCommands(prevCommands, newCommands);
         expect(result).toHaveLength(2);
-        expect(result).toContainEqual({name: "cmd2", id: 2, order: 2,  label: "Command 2", item_type: "debt", model_id: 2, action: "process"});
+        expect(result).toContainEqual({name: "cmd2", id: 2, order: 2,  label: "Command 2", model_name: "debt", model_id: 2, action: "process"});
     });
 
     it("should remove a command from the list", () => {
         const prevCommands: Command[] = [
-            {name: "cmd1", id: 1, order: 1,  label: "Command 1", item_type: "income", model_id: 1, action: "process"},
-            {name: "cmd2", id: 2, order: 2,  label: "Command 2", item_type: "debt", model_id: 2, action: "process"}
+            {name: "cmd1", id: 1, order: 1,  label: "Command 1", model_name: "income", model_id: 1, action: "process"},
+            {name: "cmd2", id: 2, order: 2,  label: "Command 2", model_name: "debt", model_id: 2, action: "process"}
         ];
         const newCommands: Command[] = [
-            {name: "cmd1", id: 1, order: 1,  label: "Command 1", item_type: "income", model_id: 1, action: "process"}
+            {name: "cmd1", id: 1, order: 1,  label: "Command 1", model_name: "income", model_id: 1, action: "process"}
         ];
 
         const result = compareAndSyncCommands(prevCommands, newCommands);
@@ -33,10 +33,10 @@ describe("compareAndSyncCommands", () => {
 
     it("should return the same list if no changes are made", () => {
         const prevCommands: Command[] = [
-            {name: "cmd1", id: 1, order: 1,  label: "Command 1", item_type: "income", model_id: 1, action: "process"}
+            {name: "cmd1", id: 1, order: 1,  label: "Command 1", model_name: "income", model_id: 1, action: "process"}
         ];
         const newCommands: Command[] = [
-            {name: "cmd1", id: 1, order: 2,  label: "Command 1", item_type: "income", model_id: 1, action: "process"}
+            {name: "cmd1", id: 1, order: 2,  label: "Command 1", model_name: "income", model_id: 1, action: "process"}
         ];
 
         const result = compareAndSyncCommands(prevCommands, newCommands);
@@ -45,10 +45,10 @@ describe("compareAndSyncCommands", () => {
 
     it("should not allow more than one change at a time (adding and removing)", () => {
         const prevCommands: Command[] = [
-            {name: "cmd1", id: 1, order: 1,  label: "Command 1", item_type: "income", model_id: 1, action: "process"}
+            {name: "cmd1", id: 1, order: 1,  label: "Command 1", model_name: "income", model_id: 1, action: "process"}
         ];
         const newCommands: Command[] = [
-            {name: "cmd2", id: 2, order: 2,  label: "Command 2", item_type: "debt", model_id: 2, action: "process"}
+            {name: "cmd2", id: 2, order: 2,  label: "Command 2", model_name: "debt", model_id: 2, action: "process"}
         ];
 
         const result = compareAndSyncCommands(prevCommands, newCommands);
@@ -58,17 +58,17 @@ describe("compareAndSyncCommands", () => {
     it("should handle an empty previousCommands array and add the new command", () => {
         const prevCommands: Command[] = [];
         const newCommands: Command[] = [
-            {name: "cmd1", id: 1, order: 1,  label: "Command 1", item_type: "income", model_id: 1, action: "process"}
+            {name: "cmd1", id: 1, order: 1,  label: "Command 1", model_name: "income", model_id: 1, action: "process"}
         ];
 
         const result = compareAndSyncCommands(prevCommands, newCommands);
         expect(result).toHaveLength(1);
-        expect(result).toContainEqual({name: "cmd1", id: 1, order: 1,  label: "Command 1", item_type: "income", model_id: 1, action: "process"});
+        expect(result).toContainEqual({name: "cmd1", id: 1, order: 1,  label: "Command 1", model_name: "income", model_id: 1, action: "process"});
     });
 
     it("should handle an empty newCommands array and remove the old command", () => {
         const prevCommands: Command[] = [
-            {name: "cmd1", id: 1, order: 2,  label: "Command 1", item_type: "income", model_id: 1, action: "process"}
+            {name: "cmd1", id: 1, order: 2,  label: "Command 1", model_name: "income", model_id: 1, action: "process"}
         ];
         const newCommands: Command[] = [];
 
@@ -78,16 +78,16 @@ describe("compareAndSyncCommands", () => {
 
     it("should only remove the correct command", () => {
         const prevCommands: Command[] = [
-            {name: "cmd1", id: 1, order: 1,  label: "Command 1", item_type: "income", model_id: 1, action: "process"},
-            {name: "cmd2", id: 1, order: 2,  label: "Command 2", item_type: "debt", model_id: 2, action: "process"}
+            {name: "cmd1", id: 1, order: 1,  label: "Command 1", model_name: "income", model_id: 1, action: "process"},
+            {name: "cmd2", id: 1, order: 2,  label: "Command 2", model_name: "debt", model_id: 2, action: "process"}
         ];
         const newCommands: Command[] = [
-            {name: "cmd2", id: 1, order: 2,  label: "Command 2", item_type: "debt", model_id: 2, action: "process"}
+            {name: "cmd2", id: 1, order: 2,  label: "Command 2", model_name: "debt", model_id: 2, action: "process"}
         ];
 
         const result = compareAndSyncCommands(prevCommands, newCommands);
         expect(result).toHaveLength(1);
-        expect(result).toContainEqual({name: "cmd2", id: 1, order: 2,  label: "Command 2", item_type: "debt", model_id: 2, action: "process"});
-        expect(result).not.toContainEqual({name: "cmd1", id: 1, order: 1,  label: "Command 1", item_type: "income", model_id: 1, action: "process"});
+        expect(result).toContainEqual({name: "cmd2", id: 1, order: 2,  label: "Command 2", model_name: "debt", model_id: 2, action: "process"});
+        expect(result).not.toContainEqual({name: "cmd1", id: 1, order: 1,  label: "Command 1", model_name: "income", model_id: 1, action: "process"});
     });
 });

@@ -50,7 +50,7 @@ Replace the Django backend entirely with Supabase. All financial data (plans, in
 All Django models are represented as Postgres tables in Supabase. A single migration file (or a sequence) defines: all enums (frequency, contribution strategies, retirement strategies, etc.), all financial tables with audit columns (created_at, edited_at, creator_id, editor_id), all template tables, all M2M junction tables, and the commands/command sequence tables.
 
 Key schema changes from the Django original:
-- `Command.content_type_id + object_id` → `item_type text enum + item_id bigint` (discriminated pair, no ContentType abstraction)
+- `Command.content_type_id + object_id` → `model_name text enum + model_id bigint` (discriminated pair, no ContentType abstraction)
 - `ira.income_id`, `roth_ira.income_id`, `tax_deferred.income_id` → moved to `plan_iras.income_id`, `plan_roth_iras.income_id`, `plan_tax_deferreds.income_id` (plan-specific income association)
 - `GlossaryTerm` table is not created
 

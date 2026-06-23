@@ -10,7 +10,7 @@ values
 insert into plan (name, inflation_rate, growth_rate, tax_rate, life_expectancy, creator_id)
 values ('CSC Test Plan', 0.03, 0.07, 0.25, 90, '00000000-0000-0000-0000-000000000001');
 
-insert into command (item_type, item_id, action, creator_id)
+insert into command (model_name, model_id, action, creator_id)
 values
     ('plan', 1, 'cmd_1', '00000000-0000-0000-0000-000000000001'),
     ('plan', 2, 'cmd_2', '00000000-0000-0000-0000-000000000001');
