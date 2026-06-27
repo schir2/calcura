@@ -581,5 +581,5 @@ CREATE INDEX idx_hsa_plan_id ON hsa (plan_id);
 CREATE INDEX idx_tax_deferred_plan_id ON tax_deferred (plan_id);
 
 CREATE INDEX idx_command_sequence_plan_id ON command_sequence (plan_id);
-CREATE INDEX idx_command_model_name ON command (model_name);
+CREATE INDEX idx_model_name ON command (model_name);
 CREATE INDEX idx_command_model_id ON command (model_id);

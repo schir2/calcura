@@ -1,10 +1,10 @@
 <template>
-  <TaxDeferredInvestmentList :taxDeferredInvestments="taxDeferredInvestments"
+  <TaxDeferredList :taxDeferreds="taxDeferredInvestments"
                              @create="handleCreateTaxDeferredInvestment"
                              @update="handleUpdateTaxDeferredInvestment"
                              @delete="handleDeleteTaxDeferredInvestment"
                              :incomes="incomes"
-  ></TaxDeferredInvestmentList>
+  ></TaxDeferredList>
 </template>
 <script setup lang="ts">
 import type {TaxDeferred, TaxDeferredInsert, TaxDeferredUpdate} from "#shared/types/TaxDeferred";

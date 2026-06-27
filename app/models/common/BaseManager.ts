@@ -27,7 +27,7 @@ export default abstract class BaseManager<TConfig, TState extends BaseState> {
 
     reset(): void {
         this.states = []
-        this.createInitialState()
+        this._createInitialState()
     }
 
     getInitialState(): TState {

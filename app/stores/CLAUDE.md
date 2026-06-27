@@ -37,11 +37,10 @@ export const useXxxStore = defineStore('xxx', () => {
 
 ## What stores must NOT do
 
-- **No direct Supabase queries** — use composables in `composables/api/` for data fetching
 - **No business logic** — that lives in `models/`
-- **No `$fetch` calls** — the Django API is gone; all data goes through `useSupabaseClient()`
-- **No `useApi`** (the old Django CRUD wrapper) — domain composables will migrate to Supabase client directly
+- **No `$fetch` calls** — the Django API is gone
+- **No `useApi`** — the old Django CRUD wrapper is deleted; all DB access uses `useSupabaseClient()` directly inside stores via `modelStoreFactory`
 
 ## Adding a new store
 
-Only add a store for global reactive state that multiple components need. Domain data (plans, incomes, etc.) should live in composables using `useState` or be fetched per-component — stores are for cross-cutting state like auth and theme.
+Domain data stores are created via `modelStoreFactory`. Only reach for a manual `defineStore` for cross-cutting state that doesn't map to a DB table (e.g., `authStore`, `themeStore`, `useModalStore`).

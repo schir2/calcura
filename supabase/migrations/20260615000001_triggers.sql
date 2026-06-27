@@ -22,7 +22,7 @@ DECLARE
 BEGIN
     INSERT INTO command (model_name, model_id, action, creator_id, editor_id)
     VALUES (
-        'income'::command_model_name,
+        'income'::model_name,
         NEW.id,
         'process',
         COALESCE(NEW.creator_id, auth.uid()),
@@ -53,7 +53,7 @@ DECLARE
 BEGIN
     INSERT INTO command (model_name, model_id, action, creator_id, editor_id)
     VALUES (
-        'expense'::command_model_name,
+        'expense'::model_name,
         NEW.id,
         'process',
         COALESCE(NEW.creator_id, auth.uid()),
@@ -84,7 +84,7 @@ DECLARE
 BEGIN
     INSERT INTO command (model_name, model_id, action, creator_id, editor_id)
     VALUES (
-        'debt'::command_model_name,
+        'debt'::model_name,
         NEW.id,
         'process',
         COALESCE(NEW.creator_id, auth.uid()),
@@ -115,7 +115,7 @@ DECLARE
 BEGIN
     INSERT INTO command (model_name, model_id, action, creator_id, editor_id)
     VALUES (
-        'cash_reserve'::command_model_name,
+        'cash_reserve'::model_name,
         NEW.id,
         'process',
         COALESCE(NEW.creator_id, auth.uid()),
@@ -146,7 +146,7 @@ DECLARE
 BEGIN
     INSERT INTO command (model_name, model_id, action, creator_id, editor_id)
     VALUES (
-        'brokerage'::command_model_name,
+        'brokerage'::model_name,
         NEW.id,
         'process',
         COALESCE(NEW.creator_id, auth.uid()),
@@ -177,7 +177,7 @@ DECLARE
 BEGIN
     INSERT INTO command (model_name, model_id, action, creator_id, editor_id)
     VALUES (
-        'ira'::command_model_name,
+        'ira'::model_name,
         NEW.id,
         'process',
         COALESCE(NEW.creator_id, auth.uid()),
@@ -208,7 +208,7 @@ DECLARE
 BEGIN
     INSERT INTO command (model_name, model_id, action, creator_id, editor_id)
     VALUES (
-        'roth_ira'::command_model_name,
+        'roth_ira'::model_name,
         NEW.id,
         'process',
         COALESCE(NEW.creator_id, auth.uid()),
@@ -239,7 +239,7 @@ DECLARE
 BEGIN
     INSERT INTO command (model_name, model_id, action, creator_id, editor_id)
     VALUES (
-        'hsa'::command_model_name,
+        'hsa'::model_name,
         NEW.id,
         'process',
         COALESCE(NEW.creator_id, auth.uid()),
@@ -270,7 +270,7 @@ DECLARE
 BEGIN
     INSERT INTO command (model_name, model_id, action, creator_id, editor_id)
     VALUES (
-        'tax_deferred'::command_model_name,
+        'tax_deferred'::model_name,
         NEW.id,
         'process',
         COALESCE(NEW.creator_id, auth.uid()),
@@ -342,7 +342,7 @@ RETURNS TRIGGER LANGUAGE plpgsql SECURITY DEFINER
 SET search_path = public
 AS $$
 BEGIN
-    DELETE FROM command WHERE model_name = 'income'::command_model_name AND model_id = OLD.id;
+    DELETE FROM command WHERE model_name = 'income'::model_name AND model_id = OLD.id;
     RETURN OLD;
 END;
 $$;
@@ -352,7 +352,7 @@ RETURNS TRIGGER LANGUAGE plpgsql SECURITY DEFINER
 SET search_path = public
 AS $$
 BEGIN
-    DELETE FROM command WHERE model_name = 'expense'::command_model_name AND model_id = OLD.id;
+    DELETE FROM command WHERE model_name = 'expense'::model_name AND model_id = OLD.id;
     RETURN OLD;
 END;
 $$;
@@ -362,7 +362,7 @@ RETURNS TRIGGER LANGUAGE plpgsql SECURITY DEFINER
 SET search_path = public
 AS $$
 BEGIN
-    DELETE FROM command WHERE model_name = 'debt'::command_model_name AND model_id = OLD.id;
+    DELETE FROM command WHERE model_name = 'debt'::model_name AND model_id = OLD.id;
     RETURN OLD;
 END;
 $$;
@@ -372,7 +372,7 @@ RETURNS TRIGGER LANGUAGE plpgsql SECURITY DEFINER
 SET search_path = public
 AS $$
 BEGIN
-    DELETE FROM command WHERE model_name = 'cash_reserve'::command_model_name AND model_id = OLD.id;
+    DELETE FROM command WHERE model_name = 'cash_reserve'::model_name AND model_id = OLD.id;
     RETURN OLD;
 END;
 $$;
@@ -382,7 +382,7 @@ RETURNS TRIGGER LANGUAGE plpgsql SECURITY DEFINER
 SET search_path = public
 AS $$
 BEGIN
-    DELETE FROM command WHERE model_name = 'brokerage'::command_model_name AND model_id = OLD.id;
+    DELETE FROM command WHERE model_name = 'brokerage'::model_name AND model_id = OLD.id;
     RETURN OLD;
 END;
 $$;
@@ -392,7 +392,7 @@ RETURNS TRIGGER LANGUAGE plpgsql SECURITY DEFINER
 SET search_path = public
 AS $$
 BEGIN
-    DELETE FROM command WHERE model_name = 'ira'::command_model_name AND model_id = OLD.id;
+    DELETE FROM command WHERE model_name = 'ira'::model_name AND model_id = OLD.id;
     RETURN OLD;
 END;
 $$;
@@ -402,7 +402,7 @@ RETURNS TRIGGER LANGUAGE plpgsql SECURITY DEFINER
 SET search_path = public
 AS $$
 BEGIN
-    DELETE FROM command WHERE model_name = 'roth_ira'::command_model_name AND model_id = OLD.id;
+    DELETE FROM command WHERE model_name = 'roth_ira'::model_name AND model_id = OLD.id;
     RETURN OLD;
 END;
 $$;
@@ -412,7 +412,7 @@ RETURNS TRIGGER LANGUAGE plpgsql SECURITY DEFINER
 SET search_path = public
 AS $$
 BEGIN
-    DELETE FROM command WHERE model_name = 'hsa'::command_model_name AND model_id = OLD.id;
+    DELETE FROM command WHERE model_name = 'hsa'::model_name AND model_id = OLD.id;
     RETURN OLD;
 END;
 $$;
@@ -422,7 +422,7 @@ RETURNS TRIGGER LANGUAGE plpgsql SECURITY DEFINER
 SET search_path = public
 AS $$
 BEGIN
-    DELETE FROM command WHERE model_name = 'tax_deferred'::command_model_name AND model_id = OLD.id;
+    DELETE FROM command WHERE model_name = 'tax_deferred'::model_name AND model_id = OLD.id;
     RETURN OLD;
 END;
 $$;
@@ -513,63 +513,63 @@ BEGIN
         WITH plan_commands AS (
             SELECT c.id AS command_id
             FROM income i
-            JOIN command c ON c.model_name = 'income'::command_model_name AND c.model_id = i.id
+            JOIN command c ON c.model_name = 'income'::model_name AND c.model_id = i.id
             WHERE i.plan_id = NEW.plan_id
 
             UNION ALL
 
             SELECT c.id
             FROM expense e
-            JOIN command c ON c.model_name = 'expense'::command_model_name AND c.model_id = e.id
+            JOIN command c ON c.model_name = 'expense'::model_name AND c.model_id = e.id
             WHERE e.plan_id = NEW.plan_id
 
             UNION ALL
 
             SELECT c.id
             FROM debt d
-            JOIN command c ON c.model_name = 'debt'::command_model_name AND c.model_id = d.id
+            JOIN command c ON c.model_name = 'debt'::model_name AND c.model_id = d.id
             WHERE d.plan_id = NEW.plan_id
 
             UNION ALL
 
             SELECT c.id
             FROM cash_reserve cr
-            JOIN command c ON c.model_name = 'cash_reserve'::command_model_name AND c.model_id = cr.id
+            JOIN command c ON c.model_name = 'cash_reserve'::model_name AND c.model_id = cr.id
             WHERE cr.plan_id = NEW.plan_id
 
             UNION ALL
 
             SELECT c.id
             FROM brokerage b
-            JOIN command c ON c.model_name = 'brokerage'::command_model_name AND c.model_id = b.id
+            JOIN command c ON c.model_name = 'brokerage'::model_name AND c.model_id = b.id
             WHERE b.plan_id = NEW.plan_id
 
             UNION ALL
 
             SELECT c.id
             FROM ira i
-            JOIN command c ON c.model_name = 'ira'::command_model_name AND c.model_id = i.id
+            JOIN command c ON c.model_name = 'ira'::model_name AND c.model_id = i.id
             WHERE i.plan_id = NEW.plan_id
 
             UNION ALL
 
             SELECT c.id
             FROM roth_ira ri
-            JOIN command c ON c.model_name = 'roth_ira'::command_model_name AND c.model_id = ri.id
+            JOIN command c ON c.model_name = 'roth_ira'::model_name AND c.model_id = ri.id
             WHERE ri.plan_id = NEW.plan_id
 
             UNION ALL
 
             SELECT c.id
             FROM hsa h
-            JOIN command c ON c.model_name = 'hsa'::command_model_name AND c.model_id = h.id
+            JOIN command c ON c.model_name = 'hsa'::model_name AND c.model_id = h.id
             WHERE h.plan_id = NEW.plan_id
 
             UNION ALL
 
             SELECT c.id
             FROM tax_deferred td
-            JOIN command c ON c.model_name = 'tax_deferred'::command_item_type AND c.model_id = td.id
+            JOIN command c ON c.model_name = 'tax_deferred'::model_name AND c.model_id = td.id
             WHERE td.plan_id = NEW.plan_id
         )
         SELECT command_id FROM plan_commands ORDER BY command_id

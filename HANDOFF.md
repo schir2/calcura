@@ -34,7 +34,7 @@ See the full PRD: GitHub issue #1 on schir2/calcura.
   - `profiles` table with `user_id UUID → auth.users`, `birthday`, `life_expectancy`, `is_admin BOOLEAN DEFAULT FALSE`
   - `income_id` removed from `ira`, `roth_ira`, `tax_deferred` item tables — lives on `plan_iras`, `plan_roth_iras`, `plan_tax_deferreds` junction tables instead (plan-specific association)
   - `hsa` and `hsa_template` tables added; `plan_hsas` junction table added
-  - `command` table uses `model_name command_model_name` enum + `model_id BIGINT` (replaces Django ContentType)
+  - `command` table uses `model_name model_name` enum + `model_id BIGINT` (replaces Django ContentType)
   - All template junction tables included
 - Migration confirmed running on local Supabase instance (user verified)
 

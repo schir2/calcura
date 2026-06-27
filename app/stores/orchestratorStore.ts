@@ -13,22 +13,25 @@ export const orchestratorStore = defineStore('orchestrator', () => {
     const taxDeferredStore = useTaxDeferredStore()
     const rothIraStore = useRothIraStore()
     const iraStore = useIraStore()
-    const brokerageStore = useHsaStore()
+    const brokerageStore = useBrokerageStore()
+    const hsaStore = useHsaStore()
     const commandSequenceStore = useCommandSequenceStore()
 
     async function load(id: number) {
-        await Promise.all([
+        const [fetchedPlan] = await Promise.all([
             planStore.fetch(id),
-            expenseStore.fetchByColumn('plan_id', planId.value),
-            cashReserveStore.fetchByColumn('plan_id', planId.value),
-            debtStore.fetchByColumn('plan_id', planId.value),
-            incomeStore.fetchByColumn('plan_id', planId.value),
-            taxDeferredStore.fetchByColumn('plan_id', planId.value),
-            rothIraStore.fetchByColumn('plan_id', planId.value),
-            iraStore.fetchByColumn('plan_id', planId.value),
-            brokerageStore.fetchByColumn('plan_id', planId.value),
+            expenseStore.fetchByColumn('plan_id', id),
+            cashReserveStore.fetchByColumn('plan_id', id),
+            debtStore.fetchByColumn('plan_id', id),
+            incomeStore.fetchByColumn('plan_id', id),
+            taxDeferredStore.fetchByColumn('plan_id', id),
+            rothIraStore.fetchByColumn('plan_id', id),
+            iraStore.fetchByColumn('plan_id', id),
+            brokerageStore.fetchByColumn('plan_id', id),
+            hsaStore.fetchByColumn('plan_id', id),
             commandSequenceStore.fetchByPlan(id),
         ])
+        plan.value = fetchedPlan
         loaded.value = true
     }
 
@@ -49,10 +52,10 @@ export const orchestratorStore = defineStore('orchestrator', () => {
             debts: debtStore.list,
             tax_deferreds: taxDeferredStore.list,
             brokerages: brokerageStore.list,
+            hsas: hsaStore.list,
             iras: iraStore.list,
             roth_iras: rothIraStore.list,
-            command_sequences: commandSequenceStore.list
-
+            command_sequences: commandSequenceStore.list,
         }
     })
 
@@ -66,7 +69,10 @@ export const orchestratorStore = defineStore('orchestrator', () => {
     return {
         load,
         plan,
+        planId,
+        loaded,
         planWithRelations,
+        simulate,
     }
 
 })
