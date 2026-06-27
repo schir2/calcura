@@ -1,46 +1,26 @@
 <template>
-  <RothIraInvestmentList :rothIraInvestments="rothIraInvestments"
+  <RothIraInvestmentList :rothIraInvestments="rothIraStore.list"
                @create="handleCreateRothIraInvestment"
                @update="handleUpdateRothIraInvestment"
                @delete="handleDeleteRothIraInvestment"
   ></RothIraInvestmentList>
 </template>
 <script setup lang="ts">
-import type {RothIra, RothIraInsert, RothIraUpdate} from "#shared/types/RothIra";
+import type {RothIraInsert, RothIraUpdate} from "#shared/types/RothIra";
 
-import {useRothIraService} from "~/composables/api/useRothIraService";
+const rothIraStore = useRothIraStore()
 
-const rothIraInvestmentService = useRothIraService();
-
+onMounted(() => rothIraStore.fetchAll())
 
 async function handleCreateRothIraInvestment(insert: RothIraInsert) {
-  await rothIraInvestmentService.create(insert)
-  await loadRothIraInvestments();
+  await rothIraStore.create(insert)
 }
 
 async function handleDeleteRothIraInvestment(id: number) {
-  await rothIraInvestmentService.remove(id)
-  await loadRothIraInvestments();
+  await rothIraStore.purge(id)
 }
 
 async function handleUpdateRothIraInvestment(id: number, update: RothIraUpdate) {
-  await rothIraInvestmentService.update(id, update)
-  await loadRothIraInvestments();
+  await rothIraStore.patch(id, update)
 }
-
-const rothIraInvestments = ref<RothIra[]>([])
-const loading = ref<boolean>(true);
-
-async function loadRothIraInvestments() {
-  try {
-    rothIraInvestments.value = await rothIraInvestmentService.list();
-  } catch (error) {
-    console.error('Error loading rothIraInvestments:', error);
-  }
-  loading.value = false;
-}
-
-onMounted(async () => {
-  await loadRothIraInvestments();
-});
 </script>

@@ -1,14 +1,12 @@
 <script setup lang="ts">
-import type {Debt} from "#shared/types/Debt";
-
 const route = useRoute()
 const debtId = Number(route.params.id)
-const debt = ref<Debt | null>(null);
-const debtService = useDebtService()
-onMounted(async () => {
-  if (debtId) {
-    debt.value = await debtService.get(debtId)
-  }
+
+const debtStore = useDebtStore()
+const debt = computed(() => debtStore.get(debtId))
+
+onMounted(() => {
+  if (debtId) debtStore.fetch(debtId)
 })
 </script>
 <template>

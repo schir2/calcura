@@ -1,46 +1,26 @@
 <template>
-  <CashReserveList :cashReserves="cashReserves"
+  <CashReserveList :cashReserves="cashReserveStore.list"
                @create="handleCreateCashReserve"
                @update="handleUpdateCashReserve"
                @delete="handleDeleteCashReserve"
   ></CashReserveList>
 </template>
 <script setup lang="ts">
-import type {CashReserve, CashReserveInsert, CashReserveUpdate} from "#shared/types/CashReserve";
+import type {CashReserveInsert, CashReserveUpdate} from "#shared/types/CashReserve";
 
-import {useCashReserveService} from "~/composables/api/useCashReserveService";
+const cashReserveStore = useCashReserveStore()
 
-const cashReserveService = useCashReserveService();
-
+onMounted(() => cashReserveStore.fetchAll())
 
 async function handleCreateCashReserve(insert: CashReserveInsert) {
-  await cashReserveService.create(insert)
-  await loadCashReserves();
+  await cashReserveStore.create(insert)
 }
 
 async function handleDeleteCashReserve(id: number) {
-  await cashReserveService.remove(id)
-  await loadCashReserves();
+  await cashReserveStore.purge(id)
 }
 
 async function handleUpdateCashReserve(id: number, update: CashReserveUpdate) {
-  await cashReserveService.update(id, update)
-  await loadCashReserves();
+  await cashReserveStore.patch(id, update)
 }
-
-const cashReserves = ref<CashReserve[]>([])
-const loading = ref<boolean>(true);
-
-async function loadCashReserves() {
-  try {
-    cashReserves.value = await cashReserveService.list();
-  } catch (error) {
-    console.error('Error loading cash-reserves:', error);
-  }
-  loading.value = false;
-}
-
-onMounted(async () => {
-  await loadCashReserves();
-});
 </script>

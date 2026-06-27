@@ -1,46 +1,26 @@
 <template>
-  <ExpenseList :expenses="expenses"
+  <ExpenseList :expenses="expenseStore.list"
                @create="handleCreateExpense"
                @update="handleUpdateExpense"
                @delete="handleDeleteExpense"
   ></ExpenseList>
 </template>
 <script setup lang="ts">
-import type {Expense, ExpenseInsert, ExpenseUpdate} from "#shared/types/Expense";
+import type {ExpenseInsert, ExpenseUpdate} from "#shared/types/Expense";
 
-import {useExpenseService} from "~/composables/api/useExpenseService";
+const expenseStore = useExpenseStore()
 
-const expenseService = useExpenseService();
-
+onMounted(() => expenseStore.fetchAll())
 
 async function handleCreateExpense(insert: ExpenseInsert) {
-  await expenseService.create(insert)
-  await loadExpenses();
+  await expenseStore.create(insert)
 }
 
 async function handleDeleteExpense(id: number) {
-  await expenseService.remove(id)
-  await loadExpenses();
+  await expenseStore.purge(id)
 }
 
 async function handleUpdateExpense(id: number, update: ExpenseUpdate) {
-  await expenseService.update(id, update)
-  await loadExpenses();
+  await expenseStore.patch(id, update)
 }
-
-const expenses = ref<Expense[]>([])
-const loading = ref<boolean>(true);
-
-async function loadExpenses() {
-  try {
-    expenses.value = await expenseService.list();
-  } catch (error) {
-    console.error('Error loading expenses:', error);
-  }
-  loading.value = false;
-}
-
-onMounted(async () => {
-  await loadExpenses();
-});
 </script>

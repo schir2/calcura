@@ -1,18 +1,14 @@
 <script lang="ts" setup>
-import type {Plan, PlanInsert, PlanUpdate} from "#shared/types/Plan";
-import {usePlanService} from "~/composables/api/usePlanService";
+import type {PlanInsert, PlanUpdate} from "#shared/types/Plan";
 
-
-const planService = usePlanService()
-const {data: plans, refresh: refreshPlans} = useAsyncData(() => {
-  return planService.list()
-})
-
+const planStore = usePlanStore()
 const showModal = ref(false)
 
+onMounted(() => planStore.fetchAll())
+
 async function handleCreatePlan(insert: PlanInsert) {
-  await planService.create(insert)
-  await refreshPlans();
+  await planStore.create(insert)
+  showModal.value = false
 }
 
 function handleClickCreatePlan() {
@@ -20,18 +16,12 @@ function handleClickCreatePlan() {
 }
 
 async function handleDeletePlan(id: number) {
-  await planService.remove(id)
-  await refreshPlans();
+  await planStore.purge(id)
 }
 
 async function handleUpdatePlan(id: number, update: PlanUpdate) {
-  await planService.update(id, update)
-  await refreshPlans();
+  await planStore.patch(id, update)
 }
-
-onMounted(async () => {
-  await refreshPlans();
-});
 </script>
 
 <template>
@@ -55,11 +45,9 @@ onMounted(async () => {
         @update="handleUpdatePlan"
         @cancel="showModal = false"
     />
-
-
   </n-modal>
   <PlanList
-      :plans="plans ?? []"
+      :plans="planStore.list"
       @duplicate="handleCreatePlan"
       @update="handleUpdatePlan"
       @delete="handleDeletePlan"

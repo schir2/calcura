@@ -1,44 +1,26 @@
 <template>
-  <n-skeleton v-if="loading" text :repeat="2"/>
-  <IncomeList v-else :incomes="incomes"
+  <IncomeList :incomes="incomeStore.list"
               @create="handleCreateIncome"
               @update="handleUpdateIncome"
               @delete="handleDeleteIncome"
   ></IncomeList>
 </template>
 <script setup lang="ts">
-import type {Income, IncomeInsert, IncomeUpdate} from "#shared/types/Income";
+import type {IncomeInsert, IncomeUpdate} from "#shared/types/Income";
 
-const incomes = ref<Income[]>([]);
-const {create, update, list, remove} = useIncomeService();
-const loading = ref<boolean>(false);
+const incomeStore = useIncomeStore()
 
+onMounted(() => incomeStore.fetchAll())
 
 async function handleCreateIncome(insert: IncomeInsert) {
-  await create(insert)
-  await loadIncomes();
+  await incomeStore.create(insert)
 }
 
 async function handleDeleteIncome(id: number) {
-  await remove(id)
-  await loadIncomes();
+  await incomeStore.purge(id)
 }
 
 async function handleUpdateIncome(id: number, update: IncomeUpdate) {
-  await update(id, update)
-  await loadIncomes();
+  await incomeStore.patch(id, update)
 }
-
-async function loadIncomes() {
-  try {
-    incomes.value = await list();
-  } catch (error) {
-    console.error('Error loading incomes:', error);
-  }
-  loading.value = false;
-}
-
-onMounted(async () => {
-  await loadIncomes()
-})
 </script>

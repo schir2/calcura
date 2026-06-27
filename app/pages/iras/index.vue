@@ -1,46 +1,26 @@
 <template>
-  <IraInvestmentList :iraInvestments="iraInvestments"
+  <IraInvestmentList :iraInvestments="iraStore.list"
                @create="handleCreateIraInvestment"
                @update="handleUpdateIraInvestment"
                @delete="handleDeleteIraInvestment"
   ></IraInvestmentList>
 </template>
 <script setup lang="ts">
-import type {Ira, IraInsert, IraUpdate} from "#shared/types/Ira";
+import type {IraInsert, IraUpdate} from "#shared/types/Ira";
 
-import {useIraService} from "~/composables/api/useIraService";
+const iraStore = useIraStore()
 
-const iraInvestmentService = useIraService();
-
+onMounted(() => iraStore.fetchAll())
 
 async function handleCreateIraInvestment(insert: IraInsert) {
-  await iraInvestmentService.create(insert)
-  await loadIraInvestments();
+  await iraStore.create(insert)
 }
 
 async function handleDeleteIraInvestment(id: number) {
-  await iraInvestmentService.remove(id)
-  await loadIraInvestments();
+  await iraStore.purge(id)
 }
 
 async function handleUpdateIraInvestment(id: number, update: IraUpdate) {
-  await iraInvestmentService.update(id, update)
-  await loadIraInvestments();
+  await iraStore.patch(id, update)
 }
-
-const iraInvestments = ref<Ira[]>([])
-const loading = ref<boolean>(true);
-
-async function loadIraInvestments() {
-  try {
-    iraInvestments.value = await iraInvestmentService.list();
-  } catch (error) {
-    console.error('Error loading iras:', error);
-  }
-  loading.value = false;
-}
-
-onMounted(async () => {
-  await loadIraInvestments();
-});
 </script>

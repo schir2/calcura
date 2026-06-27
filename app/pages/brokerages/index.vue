@@ -1,46 +1,26 @@
 <template>
-  <BrokerageInvestmentList :brokerageInvestments="brokerageInvestments"
+  <BrokerageInvestmentList :brokerageInvestments="brokerageStore.list"
                @create="handleCreateBrokerageInvestment"
                @update="handleUpdateBrokerageInvestment"
                @delete="handleDeleteBrokerageInvestment"
   ></BrokerageInvestmentList>
 </template>
 <script setup lang="ts">
-import type {Brokerage, BrokerageInsert, BrokerageUpdate} from "#shared/types/Brokerage";
+import type {BrokerageInsert, BrokerageUpdate} from "#shared/types/Brokerage";
 
-import {useBrokerageService} from "~/composables/api/useBrokerageService";
+const brokerageStore = useBrokerageStore()
 
-const brokerageInvestmentService = useBrokerageService();
-
+onMounted(() => brokerageStore.fetchAll())
 
 async function handleCreateBrokerageInvestment(insert: BrokerageInsert) {
-  await brokerageInvestmentService.create(insert)
-  await loadBrokerageInvestments();
+  await brokerageStore.create(insert)
 }
 
 async function handleDeleteBrokerageInvestment(id: number) {
-  await brokerageInvestmentService.remove(id)
-  await loadBrokerageInvestments();
+  await brokerageStore.purge(id)
 }
 
 async function handleUpdateBrokerageInvestment(id: number, update: BrokerageUpdate) {
-  await brokerageInvestmentService.update(id, update)
-  await loadBrokerageInvestments();
+  await brokerageStore.patch(id, update)
 }
-
-const brokerageInvestments = ref<Brokerage[]>([])
-const loading = ref<boolean>(true);
-
-async function loadBrokerageInvestments() {
-  try {
-    brokerageInvestments.value = await brokerageInvestmentService.list();
-  } catch (error) {
-    console.error('Error loading brokerageInvestments:', error);
-  }
-  loading.value = false;
-}
-
-onMounted(async () => {
-  await loadBrokerageInvestments();
-});
 </script>

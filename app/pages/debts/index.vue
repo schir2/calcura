@@ -1,46 +1,26 @@
 <template>
-  <DebtList :debts="debts"
+  <DebtList :debts="debtStore.list"
                @create="handleCreateDebt"
                @update="handleUpdateDebt"
                @delete="handleDeleteDebt"
   ></DebtList>
 </template>
 <script setup lang="ts">
-import type {Debt, DebtInsert, DebtUpdate} from "#shared/types/Debt";
+import type {DebtInsert, DebtUpdate} from "#shared/types/Debt";
 
-import {useDebtService} from "~/composables/api/useDebtService";
+const debtStore = useDebtStore()
 
-const debtService = useDebtService();
-
+onMounted(() => debtStore.fetchAll())
 
 async function handleCreateDebt(insert: DebtInsert) {
-  await debtService.create(insert)
-  await loadDebts();
+  await debtStore.create(insert)
 }
 
 async function handleDeleteDebt(id: number) {
-  await debtService.remove(id)
-  await loadDebts();
+  await debtStore.purge(id)
 }
 
 async function handleUpdateDebt(id: number, update: DebtUpdate) {
-  await debtService.update(id, update)
-  await loadDebts();
+  await debtStore.patch(id, update)
 }
-
-const debts = ref<Debt[]>([])
-const loading = ref<boolean>(true);
-
-async function loadDebts() {
-  try {
-    debts.value = await debtService.list();
-  } catch (error) {
-    console.error('Error loading debts:', error);
-  }
-  loading.value = false;
-}
-
-onMounted(async () => {
-  await loadDebts();
-});
 </script>

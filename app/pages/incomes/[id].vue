@@ -8,39 +8,25 @@ import type {Income} from "#shared/types/Income";
 
 const route = useRoute()
 const incomeId = Number(route.params.id)
-const income = ref<Income | null>(null)
 
-const incomeService = useIncomeService()
-const loading = ref<boolean>(false);
-
-async function handleDeleteIncome(income: Income) {
-  await incomeService.remove(income.id)
-  await loadIncome();
-}
-
-async function handleUpdateIncome(income: Income) {
-  await incomeService.update(income.id, income)
-  await loadIncome();
-}
-
-async function loadIncome() {
-  try {
-    income.value = await incomeService.get(incomeId)
-  } catch (error) {
-  } finally {
-    loading.value = false;
-  }
-}
+const incomeStore = useIncomeStore()
+const income = computed(() => incomeStore.get(incomeId))
 
 onMounted(async () => {
-  await loadIncome();
+  await incomeStore.fetch(incomeId)
   useHead({
-    title: `Income: ${income.value.name}`,
+    title: `Income: ${income.value?.name ?? ''}`,
     meta: [
       {name: 'description', content: 'Calcura: Dashboard'}
     ],
   })
-});
+})
 
+async function handleDeleteIncome(inc: Income) {
+  await incomeStore.purge(inc.id)
+}
 
+async function handleUpdateIncome(inc: Income) {
+  await incomeStore.patch(inc.id, inc)
+}
 </script>

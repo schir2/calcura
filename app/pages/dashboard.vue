@@ -5,10 +5,11 @@ definePageMeta({
       layout: 'default',
     }
 )
-const {list} = usePlanService()
-const {data: plans, refresh, error} = useAsyncData('plans', () => list())
+const planStore = usePlanStore()
 const user = useSupabaseUser()
 const {profile} = storeToRefs(useProfileStore())
+
+onMounted(() => planStore.fetchAll())
 
 </script>
 <template>
@@ -16,7 +17,7 @@ const {profile} = storeToRefs(useProfileStore())
     <h1 class="full-width text-6xl text-center">Calcura Dashboard</h1>
     <p class="content text-lg text-center">Welcome back {{ user?.email }}</p>
     <div class="breakout grid grid-cols-2 gap-2">
-      <dashboard-plans v-if="plans?.length" :plans="plans"/>
+      <dashboard-plans v-if="planStore.list.length" :plans="planStore.list"/>
       <dashboard-profile v-if="profile" :profile="profile"/>
     </div>
   </div>
