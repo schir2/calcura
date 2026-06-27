@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import type {Plan, PlanUpdate} from "#shared/types/Plan"
 import type {IncomeInsert} from "#shared/types/Income"
-import type {ExpenseInsert} from "#shared/types/Expense"
-import type {DebtInsert} from "#shared/types/Debt"
+import type {Expense, ExpenseInsert} from "#shared/types/Expense"
+import type {Debt, DebtInsert} from "#shared/types/Debt"
 import type {CashReserveInsert} from "#shared/types/CashReserve"
 import type {TaxDeferredInsert} from "#shared/types/TaxDeferred"
 import type {BrokerageInsert} from "#shared/types/Brokerage"
@@ -11,8 +11,6 @@ import type {RothIraInsert} from "#shared/types/RothIra"
 import type {HsaInsert} from "#shared/types/Hsa"
 import type {ModelName} from "#shared/types/ModelName"
 import type {OrchestratorState} from "#shared/types/OrchestratorState"
-import type {Debt} from "#shared/types/Debt"
-import type {Expense} from "#shared/types/Expense"
 
 definePageMeta({
   layout: 'default',
@@ -37,18 +35,36 @@ const commandSequenceStore = useCommandSequenceStore()
 
 onMounted(() => orchestrator.load(planId))
 
-async function handleCreateModel(payload: {model: ModelName, data: unknown}) {
+async function handleCreateModel(payload: { model: ModelName, data: unknown }) {
   const insert = {...(payload.data as object), plan_id: planId}
   switch (payload.model) {
-    case 'income': await incomeStore.create(insert as IncomeInsert); break
-    case 'expense': await expenseStore.create(insert as ExpenseInsert); break
-    case 'debt': await debtStore.create(insert as DebtInsert); break
-    case 'cash_reserve': await cashReserveStore.create(insert as CashReserveInsert); break
-    case 'tax_deferred': await taxDeferredStore.create(insert as TaxDeferredInsert); break
-    case 'brokerage': await brokerageStore.create(insert as BrokerageInsert); break
-    case 'ira': await iraStore.create(insert as IraInsert); break
-    case 'roth_ira': await rothIraStore.create(insert as RothIraInsert); break
-    case 'hsa': await hsaStore.create(insert as HsaInsert); break
+    case 'income':
+      await incomeStore.create(insert as IncomeInsert);
+      break
+    case 'expense':
+      await expenseStore.create(insert as ExpenseInsert);
+      break
+    case 'debt':
+      await debtStore.create(insert as DebtInsert);
+      break
+    case 'cash_reserve':
+      await cashReserveStore.create(insert as CashReserveInsert);
+      break
+    case 'tax_deferred':
+      await taxDeferredStore.create(insert as TaxDeferredInsert);
+      break
+    case 'brokerage':
+      await brokerageStore.create(insert as BrokerageInsert);
+      break
+    case 'ira':
+      await iraStore.create(insert as IraInsert);
+      break
+    case 'roth_ira':
+      await rothIraStore.create(insert as RothIraInsert);
+      break
+    case 'hsa':
+      await hsaStore.create(insert as HsaInsert);
+      break
   }
 }
 
@@ -74,15 +90,15 @@ watchEffect(() => {
     activeCommandSequenceId.value = sequences[0]!.id
   }
   const commandSequence = activeCommandSequenceId.value
-    ? commandSequenceStore.get(activeCommandSequenceId.value)
-    : undefined
+      ? commandSequenceStore.get(activeCommandSequenceId.value)
+      : undefined
   planStates.value = orchestrator.simulate(commandSequence!) ?? null
 })
 
 provide('planStates', planStates)
 
-const activeExpensesAndDebts = computed((): {expenses: Expense[], debts: Debt[]} => {
-  const result: {expenses: Expense[], debts: Debt[]} = {expenses: [], debts: []}
+const activeExpensesAndDebts = computed((): { expenses: Expense[], debts: Debt[] } => {
+  const result: { expenses: Expense[], debts: Debt[] } = {expenses: [], debts: []}
   const plan = orchestrator.planWithRelations
   if (!activeCommandSequenceId.value || !plan) return result
   const commandSequence = commandSequenceStore.get(activeCommandSequenceId.value)
@@ -106,9 +122,9 @@ const activeExpensesAndDebts = computed((): {expenses: Expense[], debts: Debt[]}
     <n-spin :show="!orchestrator.loaded" style="grid-area:main">
       <div v-if="orchestrator.planWithRelations" class="space-y-2">
         <PlanDetailCard
-          :plan="orchestrator.planWithRelations"
-          @update="handleUpdatePlan"
-          @delete="handleDeletePlan"
+            :plan="orchestrator.planWithRelations"
+            @update="handleUpdatePlan"
+            @delete="handleDeletePlan"
         />
         <n-card>
           <template #header>
@@ -122,17 +138,21 @@ const activeExpensesAndDebts = computed((): {expenses: Expense[], debts: Debt[]}
                 Show Me the Data
               </n-button>
               <n-modal
-                class="max-w-[1800px] h-[720px]"
-                v-model:show="showDataTable"
-                :draggable="true"
-                preset="card">
+                  class="max-w-[1800px] h-[720px]"
+                  v-model:show="showDataTable"
+                  :draggable="true"
+                  preset="card">
                 <template #header>Plan Data</template>
                 <LazyPlanTable v-if="orchestrator.planWithRelations && planStates" :planStates="planStates"/>
               </n-modal>
             </h3>
           </template>
-          <ChildCreateButtonList @create-model="handleCreateModel($event)"/>
+          <PlanChildCreateButtonList @create-model="handleCreateModel($event)"/>
         </n-card>
+        <command-tabber
+            :command_sequences="commandSequenceStore.list"
+            v-model="activeCommandSequenceId"
+        />
       </div>
     </n-spin>
     <div class="space-y-2" style="grid-area:charts">

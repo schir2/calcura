@@ -65,7 +65,7 @@ function handleStepChange(payload: { value: number, oldValue: number }) {
 <!--        <n-button :disabled="currentStep  >= 3" type="primary" secondary @click="handleClickNextStep">Next</n-button>-->
 <!--        <n-button :disabled="currentStep  >= 3" type="primary" secondary @click="handleClickNextStep">Next</n-button>-->
 <!--      </n-button-group>-->
-      <FormActionButtons :mode="mode" @update="handleUpdate" @create="handleCreate" @cancel="handleCancel"/>
+      <FormActionButtons :variant="mode" @update="handleUpdate" @create="handleCreate" @cancel="handleCancel"/>
     </template>
   </n-card>
 </template>

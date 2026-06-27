@@ -9,7 +9,7 @@ export default defineNuxtConfig({
         'animate.css/animate.min.css',
 
     ],
-    devtools: {enabled: false},
+    devtools: {enabled: true},
     modules: [
       '@nuxtjs/supabase',
       '@vee-validate/nuxt',
@@ -97,6 +97,14 @@ export default defineNuxtConfig({
         },
         ssr: {
             noExternal: ['naive-ui', 'vueuc', '@css-render/vue3-ssr', '@iconify/vue'],
+        },
+    },
+    alias: {
+        cookie: 'cookie-es',
+    },
+    nitro: {
+        alias: {
+            cookie: 'cookie-es',
         },
     },
 })

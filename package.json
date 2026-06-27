@@ -28,6 +28,7 @@
     "animate.css": "^4.1.1",
     "chart.js": "^4.5.1",
     "chartjs-plugin-datalabels": "^2.2.0",
+    "cookie-es": "^3.1.1",
     "date-fns": "^4.1.0",
     "humanize-plus": "^1.8.2",
     "mitt": "^3.0.1",
