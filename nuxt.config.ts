@@ -1,7 +1,3 @@
-import AutoImport from 'unplugin-auto-import/vite'
-import {NaiveUiResolver} from 'unplugin-vue-components/resolvers'
-import Components from 'unplugin-vue-components/vite'
-
 export default defineNuxtConfig({
     future: {
         compatibilityVersion: 4
@@ -21,8 +17,17 @@ export default defineNuxtConfig({
       '@pinia/nuxt',
       '@vueuse/nuxt',
       '@nuxt/icon',
-      'nuxtjs-naive-ui',
+      '@bg-dev/nuxt-naiveui',
     ],
+    naiveui: {
+        colorModePreference: 'dark',
+        iconDownload: false,
+        themeConfig: {
+            shared: {},
+            light: {},
+            dark: {},
+        }
+    },
     supabase: {
         redirect: false,
         types: '~~/shared/types/database.types.ts',
@@ -43,9 +48,6 @@ export default defineNuxtConfig({
         serverBundle: {
             collections: ['uil', 'mdi',]
         }
-    },
-    build: {
-        transpile: ['vueuc', 'naive-ui', '@css-render/vue3-ssr'],
     },
     postcss: {
         plugins: {
@@ -73,29 +75,5 @@ export default defineNuxtConfig({
         server: {
             allowedHosts: ['calcura.org'],
         },
-        // optimizeDeps: {
-        //     include: ['vueuc', 'naive-ui', 'cookie'],
-        // },
-        // ssr: {
-        //     noExternal: ['vueuc', 'naive-ui', '@css-render/vue3-ssr'],
-        // },
-        plugins: [
-            AutoImport({
-                imports: [
-                    {
-                        'naive-ui': [
-                            'useDialog',
-                            'useMessage',
-                            'useNotification',
-                            'useLoadingBar'
-                        ]
-                    }
-                ]
-            }),
-            Components({
-                resolvers: [NaiveUiResolver()]
-            })
-        ]
     },
-
 })

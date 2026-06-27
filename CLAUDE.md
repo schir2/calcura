@@ -58,7 +58,7 @@ The app queries Supabase directly from the frontend via `@supabase/supabase-js`.
 
 - `useSupabaseClient()` — provided by `@nuxtjs/supabase`, available in any composable or component
 - `useSupabaseUser()` — reactive current user from Supabase Auth
-- Domain service composables in `composables/api/` wrap Supabase queries for each domain (plans, incomes, expenses, etc.)
+- Domain Pinia stores in `stores/` (via `modelStoreFactory`) are the canonical way to read and mutate domain data — call `store.fetchAll()` on mount, bind `store.list` in templates, call `store.create/patch/purge` for mutations
 
 **Field names are snake_case throughout** — PostgREST returns column names as defined in the schema. Do not add camelCase conversions. See [ADR 005](docs/adr/005-snake-case-field-names.md).
 

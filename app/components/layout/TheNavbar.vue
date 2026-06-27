@@ -21,13 +21,13 @@ async function handleLogout() {
         </span>
       </n-button>
       <ul class="flex items-center gap-2">
-        <ClientOnly>
+        <client-only>
           <n-button v-if="isAuthenticated" @click="handleLogout()">Logout</n-button>
           <n-button keyboard v-if="!isAuthenticated" @click="$router.push('/auth/login')">Login</n-button>
           <n-avatar circle v-if="isAuthenticated">
             <icon class="text-xl" name="mdi:user"/>
           </n-avatar>
-        </ClientOnly>
+        </client-only>
         <base-theme-switcher/>
       </ul>
     </nav>

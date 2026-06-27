@@ -1,9 +1,9 @@
 <template>
   <main>
-    <n-scrollbar class="h-screen">
+    <NaiveConfig>
       <n-loading-bar-provider>
-        <n-config-provider :theme="naiveTheme">
-          <n-message-provider>
+        <n-message-provider>
+          <n-scrollbar class="h-screen">
             <n-space vertical>
               <LayoutTheNavbar/>
               <n-layout has-sider class="min-h-nav-offset" :naive-scrollbar="false">
@@ -13,22 +13,17 @@
                 </n-layout>
               </n-layout>
             </n-space>
-          </n-message-provider>
-        </n-config-provider>
+          </n-scrollbar>
+        </n-message-provider>
       </n-loading-bar-provider>
-    </n-scrollbar>
+    </NaiveConfig>
   </main>
 </template>
 <script setup lang="ts">
-import {NConfigProvider, NMessageProvider} from 'naive-ui'
 import {useTitle} from "~/composables/useTitle";
 
 const {title} = useTitle()
 useHead({
   title: title
 })
-
-const themeStore = useThemeStore()
-const {theme, naiveTheme} = storeToRefs(themeStore)
-
 </script>

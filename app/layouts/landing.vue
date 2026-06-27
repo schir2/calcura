@@ -1,6 +1,6 @@
 <template>
-  <n-loading-bar-provider>
-    <n-config-provider :theme="darkTheme">
+  <NaiveConfig>
+    <n-loading-bar-provider>
       <n-message-provider>
         <LayoutTheNavbar/>
 
@@ -8,11 +8,10 @@
           <slot/>
         </div>
       </n-message-provider>
-    </n-config-provider>
-  </n-loading-bar-provider>
+    </n-loading-bar-provider>
+  </NaiveConfig>
 </template>
 <script setup lang="ts">
-import {darkTheme, NConfigProvider, NMessageProvider} from 'naive-ui'
 import {useTitle} from "~/composables/useTitle";
 
 const {title} = useTitle()

@@ -29,8 +29,7 @@
 </template>
 
 <script lang="ts" setup>
-
-const {naiveTheme: theme} = storeToRefs(useThemeStore())
+import {useThemeVars} from 'naive-ui'
 import {ArcElement, Chart as ChartJS, Legend, Tooltip} from 'chart.js'
 import {Pie} from 'vue-chartjs'
 import type {OrchestratorState} from "#shared/types/OrchestratorState";
@@ -39,6 +38,7 @@ type Props = {
   states: OrchestratorState[]
 }
 
+const themeVars = useThemeVars()
 
 const props = defineProps<Props>()
 const finalPlanState = computed((): OrchestratorState => props.states[props.states.length - 1])
@@ -62,10 +62,10 @@ const data = computed(() => {
     datasets: [
       {
         backgroundColor: [
-          theme.value.common.warningColor,
-          theme.value.common.infoColor,
-          theme.value.common.successColor,
-          theme.value.common.errorColor,
+          themeVars.value.warningColor,
+          themeVars.value.infoColor,
+          themeVars.value.successColor,
+          themeVars.value.errorColor,
         ],
         data: [
           finalPlanState.value.assets.tax_deferred.balance_end ?? 0,

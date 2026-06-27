@@ -8,6 +8,7 @@ This directory contains **UI/frontend-specific types only**. All other types liv
 |------|---------|
 | `Auth.ts` | Auth credentials type (Nuxt/Supabase auth wiring — app-layer only) |
 | `FormatType.ts` | Display formatting enum — used by UI formatters only |
+| `Modal.ts` | `ModalAction`, `DeletePayload`, `ModalPayload<TAction, TModel>` — types for `useModalStore` |
 
 ## What lives in `shared/types/`
 
