@@ -6,6 +6,8 @@ useHead(() => ({
   title: route.meta.title as string ?? null,
 }))
 
+const supabase = useSupabaseClient()
+
 </script>
 
 <template>

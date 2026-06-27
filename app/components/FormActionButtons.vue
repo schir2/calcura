@@ -1,10 +1,6 @@
 <script lang="ts" setup>
-
-import type {FormValidationError} from 'naive-ui'
-
 type Props = {
-  mode: 'edit' | 'create' | 'view'
-  errors?: FormValidationError[]
+  variant: 'create' | 'update'
 }
 const props = defineProps<Props>()
 const emit = defineEmits<{
@@ -12,23 +8,16 @@ const emit = defineEmits<{
   create: []
   cancel: []
 }>()
-const hasErrors = computed(() => props.errors && Object.keys(props.errors).length > 0)
 </script>
 <template>
-  <n-button-group v-if="mode !== 'view'">
-    <n-button secondary round v-if="mode ==='edit'" type="success" :disabled="hasErrors" @click="emit('update')">
+  <n-button-group>
+    <n-button secondary round v-if="variant === 'update'" type="success" @click="emit('update')">
       <template #icon>
         <Icon name="mdi:content-save"/>
       </template>
       <span>Save</span>
     </n-button>
-    <n-button secondary round v-if="mode==='edit'" type="warning" :disabled="hasErrors" @click="emit('create')">
-      <template #icon>
-        <Icon name="mdi:content-duplicate"/>
-      </template>
-      <span>Duplicate</span>
-    </n-button>
-    <n-button secondary round v-if="mode==='create'" type="success" :disabled="hasErrors" @click="emit('create')">
+    <n-button secondary round v-if="variant === 'create'" type="success" @click="emit('create')">
       <template #icon>
         <Icon name="mdi:content-save"/>
       </template>

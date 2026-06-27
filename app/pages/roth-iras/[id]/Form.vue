@@ -1,16 +1,7 @@
 <script setup lang="ts">
-import type {RothIra} from "#shared/types/RothIra";
-
 const route = useRoute()
-const rothIraInvestmentId = Number(route.params.id)
-const rothIraInvestment = ref<RothIra | null>(null);
-const rothIraInvestmentService = useRothIraInvestmentService()
-onMounted(async () => {
-  if (rothIraInvestmentId) {
-    rothIraInvestment.value = await rothIraInvestmentService.get(rothIraInvestmentId)
-  }
-})
+const rothIraId = Number(route.params.id)
 </script>
 <template>
-  <RothIraForm v-if="rothIraInvestment" mode="view" :initialValues="rothIraInvestment"></RothIraForm>
+  <RothIraUpdateForm :id="rothIraId" @update="() => {}" @cancel="() => {}" />
 </template>

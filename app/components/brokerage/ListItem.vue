@@ -1,7 +1,7 @@
 <script setup lang="ts">
 
-import type {Brokerage, BrokerageInsert, BrokerageUpdate} from "#shared/types/Brokerage";
-import {ModelName} from "#shared/types/ModelName";
+import type {Brokerage, BrokerageUpdate} from "#shared/types/Brokerage";
+import type {ModelName} from "#shared/types/ModelName";
 import {calculateBrokerageContribution} from "~/models/brokerage/BrokerageManager";
 import type {OrchestratorState} from "#shared/types/OrchestratorState";
 import type {Income} from "#shared/types/Income";
@@ -16,7 +16,6 @@ const {brokerage} = defineProps<Props>()
 const showModal = ref<boolean>(false)
 
 const emit = defineEmits<{
-  create: [insert: BrokerageInsert]
   update: [id: number, update: BrokerageUpdate]
   delete: [id: number]
   remove: [brokerage: Brokerage]
@@ -26,14 +25,8 @@ function handleDelete() {
   emit('delete', brokerage.id)
 }
 
-function handleUpdate(b: Brokerage) {
-  const {id, ...update} = b
-  emit('update', id, update as BrokerageUpdate)
-  showModal.value = false
-}
-
-function handleCreate(brokeragePartial: Partial<Brokerage>) {
-  emit('create', brokeragePartial as BrokerageInsert)
+function handleUpdate(id: number, update: BrokerageUpdate) {
+  emit('update', id, update)
   showModal.value = false
 }
 
@@ -64,10 +57,9 @@ const annualContribution = computed(() => {
 </script>
 <template>
   <n-modal v-model:show="showModal">
-    <BrokerageForm :initialValues="brokerage" mode="edit"
-                   @create="handleCreate"
-                   @update="handleUpdate"
-                   @cancel="handleClose"
+    <BrokerageUpdateForm :id="brokerage.id"
+                         @update="handleUpdate"
+                         @cancel="handleClose"
     />
   </n-modal>
 

@@ -1,6 +1,6 @@
 <script setup lang="ts">
 
-import type {Debt, DebtInsert, DebtUpdate} from "#shared/types/Debt";
+import type {Debt, DebtUpdate} from "#shared/types/Debt";
 import {calculateDebtPayment} from "~/models/debt/DebtManager";
 
 type Props = {
@@ -12,7 +12,6 @@ const props = defineProps<Props>()
 const showModal = ref<boolean>(false)
 
 const emit = defineEmits<{
-  create: [insert: DebtInsert]
   update: [id: number, update: DebtUpdate]
   delete: [id: number]
   remove: [debt: Debt]
@@ -22,14 +21,8 @@ function handleDelete() {
   emit('delete', props.debt.id)
 }
 
-function handleUpdate(debt: Debt) {
-  const {id, ...update} = debt
-  emit('update', id, update as DebtUpdate)
-  showModal.value = false
-}
-
-function handleCreate(debtPartial: Partial<Debt>) {
-  emit('create', debtPartial as DebtInsert)
+function handleUpdate(id: number, update: DebtUpdate) {
+  emit('update', id, update)
   showModal.value = false
 }
 
@@ -47,10 +40,9 @@ function handleEdit() {
 </script>
 <template>
   <n-modal v-model:show="showModal">
-    <DebtForm :initialValues="debt" mode="edit"
-              @create="handleCreate"
-              @update="handleUpdate"
-              @cancel="handleClose"
+    <DebtUpdateForm :id="debt.id"
+                   @update="handleUpdate"
+                   @cancel="handleClose"
     />
   </n-modal>
   <command-list-item

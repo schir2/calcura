@@ -1,9 +1,8 @@
 <template>
   <n-modal v-model:show="showModal">
-    <RothIraForm :initialValues="rothIra" mode="edit"
-                           @create="handleCreate"
-                           @update="handleUpdate"
-                           @cancel="handleClose"
+    <RothIraUpdateForm :id="rothIra.id"
+                      @update="handleUpdate"
+                      @cancel="handleClose"
     />
   </n-modal>
 
@@ -25,8 +24,8 @@
 </template>
 <script setup lang="ts">
 
-import type {RothIra, RothIraInsert, RothIraUpdate} from "#shared/types/RothIra";
-import {ModelName} from "#shared/types/ModelName";
+import type {RothIra, RothIraUpdate} from "#shared/types/RothIra";
+import type {ModelName} from "#shared/types/ModelName";
 import {calculateIraContribution} from "~/models/ira/IraIManager";
 
 type Props = {
@@ -38,7 +37,6 @@ const props = defineProps<Props>()
 const showModal = ref<boolean>(false)
 
 const emit = defineEmits<{
-  create: [insert: RothIraInsert]
   update: [id: number, update: RothIraUpdate]
   delete: [id: number]
   remove: [rothIra: RothIra]
@@ -48,14 +46,8 @@ function handleDelete() {
   emit('delete', props.rothIra.id)
 }
 
-function handleUpdate(r: RothIra) {
-  const { id, ...update } = r
-  emit('update', id, update as RothIraUpdate)
-  showModal.value = false
-}
-
-function handleCreate(rothIraPartial: Partial<RothIra>) {
-  emit('create', rothIraPartial as RothIraInsert)
+function handleUpdate(id: number, update: RothIraUpdate) {
+  emit('update', id, update)
   showModal.value = false
 }
 

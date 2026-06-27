@@ -1,9 +1,8 @@
 <template>
   <n-modal v-model:show="showModal">
-    <CashReserveForm :initialValues="cashReserve" mode="edit"
-                     @create="handleCreate"
-                     @update="handleUpdate"
-                     @cancel="handleClose"
+    <CashReserveUpdateForm :id="cashReserve.id"
+                           @update="handleUpdate"
+                           @cancel="handleClose"
     />
   </n-modal>
 
@@ -16,8 +15,8 @@
 </template>
 <script setup lang="ts">
 
-import type {CashReserve, CashReserveInsert, CashReserveUpdate} from "#shared/types/CashReserve";
-import {ModelName} from "#shared/types/ModelName";
+import type {CashReserve, CashReserveUpdate} from "#shared/types/CashReserve";
+import type {ModelName} from "#shared/types/ModelName";
 
 type Props = {
   cashReserve: CashReserve
@@ -28,7 +27,6 @@ const props = defineProps<Props>()
 const showModal = ref<boolean>(false)
 
 const emit = defineEmits<{
-  create: [insert: CashReserveInsert]
   update: [id: number, update: CashReserveUpdate]
   delete: [id: number]
   remove: [cashReserve: CashReserve]
@@ -38,14 +36,8 @@ function handleDelete() {
   emit('delete', props.cashReserve.id)
 }
 
-function handleUpdate(c: CashReserve) {
-  const { id, ...update } = c
-  emit('update', id, update as CashReserveUpdate)
-  showModal.value = false
-}
-
-function handleCreate(cashReservePartial: Partial<CashReserve>) {
-  emit('create', cashReservePartial as CashReserveInsert)
+function handleUpdate(id: number, update: CashReserveUpdate) {
+  emit('update', id, update)
   showModal.value = false
 }
 

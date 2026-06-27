@@ -1,38 +1,28 @@
 <script lang="ts" setup>
 import {type Debt, type DebtInsert, type DebtTemplate} from "#shared/types/Debt";
-import {useDebtTemplateService} from "~/composables/api/useDebtTemplateService";
 import {processTemplate} from "~/utils/templateProcessorUtils";
 import {debtDefaults} from "~/constants/DebtConstants";
 
-
 const showModal = ref(false);
 const activeDebtPartial = ref<Partial<Debt> | null>()
-const templateService = useDebtTemplateService()
-const templates = ref<Partial<Debt>[]>([])
-
-async function loadTemplates() {
-  templates.value = [debtDefaults]
-  const loadedTemplates = await templateService.list()
-  if (loadedTemplates.length > 0) {
-    loadedTemplates.forEach(debtTemplate => templates.value.push(processTemplate<Partial<Debt>, DebtTemplate, Debt>(debtDefaults, debtTemplate)));
-  }
-}
+const debtTemplateStore = useDebtTemplateStore()
+const templates = computed(() => [debtDefaults, ...debtTemplateStore.list.map(t => processTemplate<Partial<Debt>, DebtTemplate, Debt>(debtDefaults, t))])
 
 function handleOpenModal(debtTemplate: Partial<Debt>) {
   activeDebtPartial.value = debtTemplate
   showModal.value = true;
 }
 
-onMounted(async () => {
-  await loadTemplates()
+onMounted(() => {
+  debtTemplateStore.fetchAll()
 })
 
 const emit = defineEmits<{
   create: [insert: DebtInsert]
 }>()
 
-function handleCreate(debtPartial: Partial<Debt>) {
-  emit('create', debtPartial as DebtInsert)
+function handleCreate(insert: DebtInsert) {
+  emit('create', insert)
   showModal.value = false
 }
 
@@ -45,9 +35,9 @@ function handleClose() {
 <template>
   <n-thing>
     <n-modal v-model:show="showModal">
-      <DebtForm :initialValues="activeDebtPartial" mode="create"
-                @create="handleCreate"
-                @cancel="handleClose"
+      <DebtCreateForm :initial-values="activeDebtPartial"
+                      @create="handleCreate"
+                      @cancel="handleClose"
       />
     </n-modal>
     <n-button size="small" type="error" round v-if="templates" v-for="(debtTemplate, index) in templates"

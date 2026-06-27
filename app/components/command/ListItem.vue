@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import {ModelName} from "#shared/types/ModelName"
+import type {ModelName} from "#shared/types/ModelName"
 import type {IconName} from "~/components/base/Ico.vue";
 import {ModelTextColor} from "../../constants/ModelTextColor";
 

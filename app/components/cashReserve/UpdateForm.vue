@@ -1,18 +1,20 @@
 <script lang="ts" setup>
-import type { CashReserve, CashReserveInsert } from "#shared/types/CashReserve"
-import { cashReserveDefaults } from "~/constants/CashReserveConstants"
+import type { CashReserve, CashReserveUpdate } from "#shared/types/CashReserve"
 
-type Props = { initialValues?: Partial<CashReserve> }
+type Props = { id: number }
 const props = defineProps<Props>()
 
 const emit = defineEmits<{
-  create: [insert: CashReserveInsert]
+  update: [id: number, update: CashReserveUpdate]
   cancel: []
 }>()
 
-const model = ref<Partial<CashReserve>>({ ...cashReserveDefaults, ...props.initialValues })
-const { formRef, pending, rules, apiErrors, onSubmit } = useNaiveForm(model)
+const store = useCashReserveStore()
+const model = ref<Partial<CashReserve>>({})
+const isFetching = ref(true)
 const errorMessage = ref('')
+
+const { formRef, pending, rules, apiErrors, onSubmit } = useNaiveForm(model)
 rules.value = useCashReserveValidation(model).rules
 
 const cashReserveStrategyOptions = [
@@ -27,15 +29,27 @@ function parse(input: string) {
   return nums === '' ? null : Number.NaN
 }
 
+onMounted(async () => {
+  try {
+    const data = await store.fetch(props.id)
+    model.value = { ...data }
+  } catch {
+    emit('cancel')
+  } finally {
+    isFetching.value = false
+  }
+})
+
 function handleSubmit() {
   onSubmit(async () => {
-    const { id: _id, ...insert } = model.value as CashReserve
-    emit('create', insert as CashReserveInsert)
+    const { id: _id, ...update } = model.value as CashReserve
+    emit('update', props.id, update as CashReserveUpdate)
   })
 }
 </script>
 <template>
-  <n-card role="dialog" class="max-w-lg" :bordered="true">
+  <n-spin v-if="isFetching" />
+  <n-card v-else role="dialog" class="max-w-lg" :bordered="true">
     <template #header>
       <h3 class="text-2xl">Cash Reserve: {{ model.name }}</h3>
     </template>
@@ -82,7 +96,7 @@ function handleSubmit() {
     </template>
 
     <template #action>
-      <FormActionButtons variant="create" @create="handleSubmit" @cancel="emit('cancel')" />
+      <FormActionButtons variant="update" @update="handleSubmit" @cancel="emit('cancel')" />
     </template>
   </n-card>
 </template>

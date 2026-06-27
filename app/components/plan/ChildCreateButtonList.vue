@@ -16,7 +16,7 @@
   </n-button-group>
   <n-modal v-model:show="showModal">
     <component v-if="selectedChildProp"
-               :is="selectedChildProp.form" mode="create"
+               :is="selectedChildProp.form"
                @create="handleCreate($event)"
                @cancel="handleClose"
     />
@@ -25,27 +25,27 @@
 <script setup lang="ts">
 import type {ModelName} from "#shared/types/ModelName";
 import {
-  BrokerageForm,
-  CashReserveForm,
-  DebtForm,
-  ExpenseForm,
-  IncomeForm,
-  IraForm,
-  RothIraForm,
-  TaxDeferredForm,
+  BrokerageCreateForm,
+  CashReserveCreateForm,
+  DebtCreateForm,
+  ExpenseCreateForm,
+  IncomeCreateForm,
+  IraCreateForm,
+  RothIraCreateForm,
+  TaxDeferredCreateForm,
 } from "#components";
 
 type CreateButtonProps = { name: ModelName, label: string, form: Component, buttonType: string };
 
 const items: CreateButtonProps[] = [
-  {name: 'income', label: 'Income', form: IncomeForm, buttonType: 'primary'},
-  {name: 'expense', label: 'Expense', form: ExpenseForm, buttonType: 'warning'},
-  {name: 'debt', label: 'Debt', form: DebtForm, buttonType: 'error'},
-  {name: 'cash_reserve', label: 'Cash Reserve', form: CashReserveForm, buttonType: 'info'},
-  {name: 'tax_deferred', label: '401k', form: TaxDeferredForm, buttonType: 'info'},
-  {name: 'roth_ira', label: 'Roth', form: RothIraForm, buttonType: 'info'},
-  {name: 'ira', label: 'IRA', form: IraForm, buttonType: 'info'},
-  {name: 'brokerage', label: 'Brokerage', form: BrokerageForm, buttonType: 'info'},
+  {name: 'income', label: 'Income', form: IncomeCreateForm, buttonType: 'primary'},
+  {name: 'expense', label: 'Expense', form: ExpenseCreateForm, buttonType: 'warning'},
+  {name: 'debt', label: 'Debt', form: DebtCreateForm, buttonType: 'error'},
+  {name: 'cash_reserve', label: 'Cash Reserve', form: CashReserveCreateForm, buttonType: 'info'},
+  {name: 'tax_deferred', label: '401k', form: TaxDeferredCreateForm, buttonType: 'info'},
+  {name: 'roth_ira', label: 'Roth', form: RothIraCreateForm, buttonType: 'info'},
+  {name: 'ira', label: 'IRA', form: IraCreateForm, buttonType: 'info'},
+  {name: 'brokerage', label: 'Brokerage', form: BrokerageCreateForm, buttonType: 'info'},
 ];
 
 const showModal = ref<boolean>(false)

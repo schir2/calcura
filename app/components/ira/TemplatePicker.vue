@@ -1,9 +1,9 @@
 <template>
   <n-thing>
     <n-modal v-model:show="showModal">
-      <IraForm :initialValues="activeIraPartial" mode="create"
-               @create="handleCreate"
-               @cancel="handleClose"
+      <IraCreateForm :initial-values="activeIraPartial"
+                    @create="handleCreate"
+                    @cancel="handleClose"
       />
     </n-modal>
     <n-button size="small" type="info" round v-if="templates" v-for="(iraTemplate, index) in templates"
@@ -19,36 +19,29 @@
 </template>
 <script lang="ts" setup>
 import type {Ira, IraInsert, IraTemplate} from "#shared/types/Ira";
-import {useIraTemplateService} from "~/composables/api/useIraTemplateService";
 import {processTemplate} from "~/utils/templateProcessorUtils";
 import {iraDefaults} from "~/constants/IraConstants";
 
 const showModal = ref(false);
 const activeIraPartial = ref<Partial<Ira> | null>()
-const templateService = useIraTemplateService()
-const templates = ref<Partial<Ira>[]>([])
-
-async function loadTemplates() {
-  const loadedIraTemplates = await templateService.list()
-  templates.value = loadedIraTemplates.map(iraTemplate => processTemplate<Partial<Ira>, IraTemplate, Ira>(iraDefaults, iraTemplate));
-  templates.value.push(iraDefaults)
-}
+const iraTemplateStore = useIraTemplateStore()
+const templates = computed(() => [...iraTemplateStore.list.map(t => processTemplate<Partial<Ira>, IraTemplate, Ira>(iraDefaults, t)), iraDefaults])
 
 function handleOpenModal(iraTemplate: Partial<Ira>) {
   activeIraPartial.value = iraTemplate
   showModal.value = true;
 }
 
-onMounted(async () => {
-  await loadTemplates()
+onMounted(() => {
+  iraTemplateStore.fetchAll()
 })
 
 const emit = defineEmits<{
   create: [insert: IraInsert]
 }>()
 
-function handleCreate(iraPartial: Partial<Ira>) {
-  emit('create', iraPartial as IraInsert)
+function handleCreate(insert: IraInsert) {
+  emit('create', insert)
   showModal.value = false
 }
 

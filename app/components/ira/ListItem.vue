@@ -1,6 +1,6 @@
 <script setup lang="ts">
 
-import type {Ira, IraInsert, IraUpdate} from "#shared/types/Ira";
+import type {Ira, IraUpdate} from "#shared/types/Ira";
 import {calculateIraContribution} from "~/models/ira/IraIManager";
 
 type Props = {
@@ -12,7 +12,6 @@ const props = defineProps<Props>()
 const showModal = ref<boolean>(false)
 
 const emit = defineEmits<{
-  create: [insert: IraInsert]
   update: [id: number, update: IraUpdate]
   delete: [id: number]
   remove: [ira: Ira]
@@ -22,14 +21,8 @@ function handleDelete() {
   emit('delete', props.ira.id)
 }
 
-function handleUpdate(ira: Ira) {
-  const {id, ...update} = ira
-  emit('update', id, update as IraUpdate)
-  showModal.value = false
-}
-
-function handleCreate(iraPartial: Partial<Ira>) {
-  emit('create', iraPartial as IraInsert)
+function handleUpdate(id: number, update: IraUpdate) {
+  emit('update', id, update)
   showModal.value = false
 }
 
@@ -47,10 +40,9 @@ function handleEdit() {
 </script>
 <template>
   <n-modal v-model:show="showModal">
-    <IraForm :initialValues="ira" mode="edit"
-             @create="handleCreate"
-             @update="handleUpdate"
-             @cancel="handleClose"
+    <IraUpdateForm :id="ira.id"
+                  @update="handleUpdate"
+                  @cancel="handleClose"
     />
   </n-modal>
   <command-list-item

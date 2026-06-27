@@ -1,9 +1,8 @@
 <template>
   <n-modal v-model:show="showModal">
-    <ExpenseForm :initialValues="expense" mode="edit"
-                 @create="handleCreate"
-                 @update="handleUpdate"
-                 @cancel="handleClose"
+    <ExpenseUpdateForm :id="expense.id"
+                      @update="handleUpdate"
+                      @cancel="handleClose"
     />
   </n-modal>
   <command-list-item
@@ -27,7 +26,7 @@
 </template>
 <script setup lang="ts">
 
-import type {Expense, ExpenseInsert, ExpenseUpdate} from "#shared/types/Expense";
+import type {Expense, ExpenseUpdate} from "#shared/types/Expense";
 import {getAnnualAmount} from "~/utils";
 
 type Props = {
@@ -39,7 +38,6 @@ const props = defineProps<Props>()
 const showModal = ref<boolean>(false)
 
 const emit = defineEmits<{
-  create: [insert: ExpenseInsert]
   update: [id: number, update: ExpenseUpdate]
   delete: [id: number]
   remove: [expense: Expense]
@@ -49,14 +47,8 @@ function handleDelete() {
   emit('delete', props.expense.id)
 }
 
-function handleUpdate(expense: Expense) {
-  const {id, ...update} = expense
-  emit('update', id, update as ExpenseUpdate)
-  showModal.value = false
-}
-
-function handleCreate(expensePartial: Partial<Expense>) {
-  emit('create', expensePartial as ExpenseInsert)
+function handleUpdate(id: number, update: ExpenseUpdate) {
+  emit('update', id, update)
   showModal.value = false
 }
 

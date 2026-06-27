@@ -23,12 +23,12 @@ export default defineNuxtConfig({
       // and prevents Rollup tree-shaking on the client. naive-ui ships ESM
       // (es/index.mjs, sideEffects: false) so it tree-shakes natively.
       // We strip those entries here and rely on vite.ssr.noExternal instead.
-      (_opts: any, nuxt: any) => {
-        const naivePkgs = ['naive-ui', 'vueuc', '@css-render/vue3-ssr', '@iconify/vue']
-        nuxt.options.build.transpile = nuxt.options.build.transpile.filter(
-          (dep) => !naivePkgs.includes(dep as string),
-        )
-      },
+      // (_opts: any, nuxt: any) => {
+      //   const naivePkgs = ['naive-ui', 'vueuc', '@css-render/vue3-ssr', '@iconify/vue']
+      //   nuxt.options.build.transpile = nuxt.options.build.transpile.filter(
+      //     (dep) => !naivePkgs.includes(dep as string),
+      //   )
+      // },
     ],
     naiveui: {
         colorModePreference: 'dark',

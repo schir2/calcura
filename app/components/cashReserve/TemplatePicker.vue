@@ -1,9 +1,9 @@
 <template>
   <n-thing>
     <n-modal v-model:show="showModal">
-      <CashReserveForm :initialValues="activeCashReservePartial" mode="create"
-                       @create="handleCreate"
-                       @cancel="handleClose"
+      <CashReserveCreateForm :initial-values="activeCashReservePartial"
+                             @create="handleCreate"
+                             @cancel="handleClose"
       />
     </n-modal>
     <n-button size="small" type="info" round v-if="templates" v-for="(cashReserveTemplate, index) in templates"
@@ -23,38 +23,29 @@ import {
   type CashReserveInsert,
   type CashReserveTemplate
 } from "#shared/types/CashReserve";
-import {useCashReserveTemplateService} from "~/composables/api/useCashReserveTemplateService";
 import {processTemplate} from "~/utils/templateProcessorUtils";
 import {cashReserveDefaults} from "~/constants/CashReserveConstants";
 
 const showModal = ref(false);
 const activeCashReservePartial = ref<Partial<CashReserve> | null>()
-const templateService = useCashReserveTemplateService()
-const templates = ref<Partial<CashReserve>[]>([])
-
-async function loadTemplates() {
-  templates.value = [cashReserveDefaults]
-  const loadedTemplates = await templateService.list()
-  if (loadedTemplates.length > 0) {
-    loadedTemplates.forEach(cashReserveTemplate => templates.value.push(processTemplate<Partial<CashReserve>, CashReserveTemplate, CashReserve>(cashReserveDefaults, cashReserveTemplate)));
-  }
-}
+const cashReserveTemplateStore = useCashReserveTemplateStore()
+const templates = computed(() => [cashReserveDefaults, ...cashReserveTemplateStore.list.map(t => processTemplate<Partial<CashReserve>, CashReserveTemplate, CashReserve>(cashReserveDefaults, t))])
 
 function handleOpenModal(cashReserveTemplate: Partial<CashReserve>) {
   activeCashReservePartial.value = cashReserveTemplate
   showModal.value = true;
 }
 
-onMounted(async () => {
-  await loadTemplates()
+onMounted(() => {
+  cashReserveTemplateStore.fetchAll()
 })
 
 const emit = defineEmits<{
   create: [insert: CashReserveInsert]
 }>()
 
-function handleCreate(cashReservePartial: Partial<CashReserve>) {
-  emit('create', cashReservePartial as CashReserveInsert)
+function handleCreate(insert: CashReserveInsert) {
+  emit('create', insert)
   showModal.value = false
 }
 
