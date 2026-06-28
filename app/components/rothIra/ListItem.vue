@@ -7,7 +7,7 @@
   </n-modal>
 
   <command-list-item
-      @edit="handleEdit" @remove="handleRemove" @delete="handleDelete"
+      @edit="handleEdit" @delete="handleDelete"
       :title="rothIra.name"
       :modelName="'ira'"
       :tags="[
@@ -25,7 +25,6 @@
 <script setup lang="ts">
 
 import type {RothIra, RothIraUpdate} from "#shared/types/RothIra";
-import type {ModelName} from "#shared/types/ModelName";
 import {calculateIraContribution} from "~/models/ira/IraIManager";
 
 type Props = {
@@ -39,7 +38,6 @@ const showModal = ref<boolean>(false)
 const emit = defineEmits<{
   update: [id: number, update: RothIraUpdate]
   delete: [id: number]
-  remove: [rothIra: RothIra]
 }>()
 
 function handleDelete() {
@@ -49,10 +47,6 @@ function handleDelete() {
 function handleUpdate(id: number, update: RothIraUpdate) {
   emit('update', id, update)
   showModal.value = false
-}
-
-function handleRemove() {
-  emit('remove', props.rothIra)
 }
 
 function handleClose() {

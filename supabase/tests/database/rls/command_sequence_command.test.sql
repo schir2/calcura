@@ -12,8 +12,8 @@ values ('CSC Test Plan', 0.03, 0.07, 0.25, 90, '00000000-0000-0000-0000-00000000
 
 insert into command (model_name, model_id, action, creator_id)
 values
-    ('plan', 1, 'cmd_1', '00000000-0000-0000-0000-000000000001'),
-    ('plan', 2, 'cmd_2', '00000000-0000-0000-0000-000000000001');
+    ('income', 1, 'cmd_1', '00000000-0000-0000-0000-000000000001'),
+    ('expense', 2, 'cmd_2', '00000000-0000-0000-0000-000000000001');
 
 insert into command_sequence (name, plan_id, creator_id)
 select 'Test Sequence', id, '00000000-0000-0000-0000-000000000001' from plan where name = 'CSC Test Plan';
@@ -28,6 +28,7 @@ create temp table csc_test_vars as
 select cs.id as sequence_id, c.id as cmd2_id
 from command_sequence cs, command c
 where cs.name = 'Test Sequence' and c.action = 'cmd_2';
+grant select on csc_test_vars to authenticated;
 
 -- 1. owner sees own row
 set local role authenticated;

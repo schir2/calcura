@@ -46,6 +46,11 @@ select set_config(
        );
 $$;
 
+grant usage on schema tests to authenticated, anon;
+grant execute on function tests.jwt_authenticated(uuid) to authenticated, anon;
+grant execute on function tests.jwt_anon() to authenticated, anon;
+grant execute on function tests.jwt_admin(uuid) to authenticated, anon;
+
 select pass('test helpers loaded');
 
 select * from finish();

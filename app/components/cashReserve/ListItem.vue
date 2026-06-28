@@ -7,7 +7,7 @@
   </n-modal>
 
   <command-list-item
-      @edit="handleEdit" @remove="handleRemove" @delete="handleDelete"
+      @edit="handleEdit" @delete="handleDelete"
       :title="cashReserve.name"
       :modelName="'cash_reserve'">
   </command-list-item>
@@ -16,7 +16,6 @@
 <script setup lang="ts">
 
 import type {CashReserve, CashReserveUpdate} from "#shared/types/CashReserve";
-import type {ModelName} from "#shared/types/ModelName";
 
 type Props = {
   cashReserve: CashReserve
@@ -29,7 +28,6 @@ const showModal = ref<boolean>(false)
 const emit = defineEmits<{
   update: [id: number, update: CashReserveUpdate]
   delete: [id: number]
-  remove: [cashReserve: CashReserve]
 }>()
 
 function handleDelete() {
@@ -39,10 +37,6 @@ function handleDelete() {
 function handleUpdate(id: number, update: CashReserveUpdate) {
   emit('update', id, update)
   showModal.value = false
-}
-
-function handleRemove() {
-  emit('remove', props.cashReserve)
 }
 
 function handleClose() {

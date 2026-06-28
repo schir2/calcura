@@ -7,7 +7,7 @@
   </n-modal>
 
   <command-list-item
-      @edit="handleEdit" @remove="handleRemove" @delete="handleDelete"
+      @edit="handleEdit" @delete="handleDelete"
       :title="taxDeferred.name"
       :modelName="'ira'"
       :tags="[
@@ -20,7 +20,6 @@
 <script setup lang="ts">
 
 import type {TaxDeferred, TaxDeferredUpdate} from "#shared/types/TaxDeferred";
-import type {ModelName} from "#shared/types/ModelName";
 
 type Props = {
   taxDeferred: TaxDeferred
@@ -33,7 +32,6 @@ const showModal = ref<boolean>(false)
 const emit = defineEmits<{
   update: [id: number, update: TaxDeferredUpdate]
   delete: [id: number]
-  remove: [taxDeferred: TaxDeferred]
 }>()
 
 function handleDelete() {
@@ -43,10 +41,6 @@ function handleDelete() {
 function handleUpdate(id: number, update: TaxDeferredUpdate) {
   emit('update', id, update)
   showModal.value = false
-}
-
-function handleRemove() {
-  emit('remove', props.taxDeferred)
 }
 
 function handleClose() {

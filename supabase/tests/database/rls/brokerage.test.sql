@@ -7,8 +7,14 @@ values
     ('00000000-0000-0000-0000-000000000001', 'user_a@test.com', '', now(), now(), now(), 'authenticated', 'authenticated'),
     ('00000000-0000-0000-0000-000000000002', 'user_b@test.com', '', now(), now(), now(), 'authenticated', 'authenticated');
 
-insert into brokerage (name, growth_rate, initial_balance, creator_id)
-values ('Test Brokerage', 0.07, 10000, '00000000-0000-0000-0000-000000000001');
+insert into plan (name, inflation_rate, growth_rate, tax_rate, life_expectancy, creator_id)
+values ('RLS Test Plan', 0.03, 0.07, 0.25, 90, '00000000-0000-0000-0000-000000000001');
+
+create temp table t_plan as select id as plan_id from plan where name = 'RLS Test Plan';
+grant select on t_plan to authenticated;
+
+insert into brokerage (name, growth_rate, initial_balance, plan_id, creator_id)
+select 'Test Brokerage', 0.07, 10000, plan_id, '00000000-0000-0000-0000-000000000001' from t_plan;
 
 -- 1. owner sees own row
 set local role authenticated;
@@ -24,7 +30,7 @@ select is_empty('select * from brokerage', 'user_b cannot see user_a brokerage')
 set local role authenticated;
 select tests.jwt_authenticated('00000000-0000-0000-0000-000000000001');
 select lives_ok(
-    $$insert into brokerage (name, growth_rate, initial_balance, creator_id) values ('Brokerage 2', 0.08, 5000, '00000000-0000-0000-0000-000000000001')$$,
+    $$insert into brokerage (name, growth_rate, initial_balance, plan_id, creator_id) select 'Brokerage 2', 0.08, 5000, plan_id, '00000000-0000-0000-0000-000000000001' from t_plan$$,
     'user_a can insert own brokerage'
 );
 
@@ -32,7 +38,7 @@ select lives_ok(
 set local role authenticated;
 select tests.jwt_authenticated('00000000-0000-0000-0000-000000000002');
 select throws_ok(
-    $$insert into brokerage (name, growth_rate, initial_balance, creator_id) values ('Stolen', 0.07, 10000, '00000000-0000-0000-0000-000000000001')$$,
+    $$insert into brokerage (name, growth_rate, initial_balance, plan_id, creator_id) select 'Stolen', 0.07, 10000, plan_id, '00000000-0000-0000-0000-000000000001' from t_plan$$,
     '42501',
     NULL,
     'user_b cannot insert brokerage with user_a creator_id'

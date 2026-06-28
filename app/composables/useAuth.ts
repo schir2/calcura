@@ -25,7 +25,15 @@ export const useAuth = () => {
 
     async function logout() {
         const {error} = await supabase.auth.signOut()
-        if (error) throw error
+        if (!error) return
+
+        const {isAuthRetryableFetchError} = await import('@supabase/auth-js')
+        if (isAuthRetryableFetchError(error)) {
+            await supabase.auth.signOut({scope: 'local'})
+            return
+        }
+
+        throw error
     }
 
     return {isAuthenticated, login, loginWithGoogle, register, logout}

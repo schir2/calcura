@@ -16,6 +16,7 @@ select 'Test Sequence', id, '00000000-0000-0000-0000-000000000001' from plan whe
 -- Store plan_id for cross-role use
 create temp table cs_test_vars as
 select id as plan_id from plan where name = 'CS Test Plan';
+grant select on cs_test_vars to authenticated;
 
 -- 1. owner sees own row
 set local role authenticated;

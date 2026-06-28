@@ -14,7 +14,6 @@ const showModal = ref<boolean>(false)
 const emit = defineEmits<{
   update: [id: number, update: IraUpdate]
   delete: [id: number]
-  remove: [ira: Ira]
 }>()
 
 function handleDelete() {
@@ -24,10 +23,6 @@ function handleDelete() {
 function handleUpdate(id: number, update: IraUpdate) {
   emit('update', id, update)
   showModal.value = false
-}
-
-function handleRemove() {
-  emit('remove', props.ira)
 }
 
 function handleClose() {
@@ -46,7 +41,7 @@ function handleEdit() {
     />
   </n-modal>
   <command-list-item
-      @edit="handleEdit" @remove="handleRemove" @delete="handleDelete"
+      @edit="handleEdit" @delete="handleDelete"
       :title="ira.name"
       :modelName="'ira'"
       :tags="[

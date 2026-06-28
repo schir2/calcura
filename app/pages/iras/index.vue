@@ -1,9 +1,9 @@
 <template>
-  <IraInvestmentList :iraInvestments="iraStore.list"
+  <IraList :iras="iraStore.list"
                @create="handleCreateIraInvestment"
                @update="handleUpdateIraInvestment"
                @delete="handleDeleteIraInvestment"
-  ></IraInvestmentList>
+  ></IraList>
 </template>
 <script setup lang="ts">
 import type {IraInsert, IraUpdate} from "#shared/types/Ira";

@@ -5,9 +5,14 @@ const {isAuthenticated} = auth
 const message = useMessage()
 
 async function handleLogout() {
-  await auth.logout()
-  message.info('Logged out')
-  await router.push('/')
+  try {
+    await auth.logout()
+    message.info('Logged out')
+  } catch (error) {
+    message.error('Logout failed. Please try again.')
+  } finally {
+    await router.push('/')
+  }
 }
 
 </script>

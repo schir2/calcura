@@ -1,9 +1,9 @@
 <template>
-  <BrokerageInvestmentList :brokerageInvestments="brokerageStore.list"
+  <BrokerageList :brokerages="brokerageStore.list"
                @create="handleCreateBrokerageInvestment"
                @update="handleUpdateBrokerageInvestment"
                @delete="handleDeleteBrokerageInvestment"
-  ></BrokerageInvestmentList>
+  ></BrokerageList>
 </template>
 <script setup lang="ts">
 import type {BrokerageInsert, BrokerageUpdate} from "#shared/types/Brokerage";

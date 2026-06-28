@@ -1,7 +1,6 @@
 <script setup lang="ts">
 
 import type {Brokerage, BrokerageUpdate} from "#shared/types/Brokerage";
-import type {ModelName} from "#shared/types/ModelName";
 import {calculateBrokerageContribution} from "~/models/brokerage/BrokerageManager";
 import type {OrchestratorState} from "#shared/types/OrchestratorState";
 import type {Income} from "#shared/types/Income";
@@ -18,7 +17,6 @@ const showModal = ref<boolean>(false)
 const emit = defineEmits<{
   update: [id: number, update: BrokerageUpdate]
   delete: [id: number]
-  remove: [brokerage: Brokerage]
 }>()
 
 function handleDelete() {
@@ -28,10 +26,6 @@ function handleDelete() {
 function handleUpdate(id: number, update: BrokerageUpdate) {
   emit('update', id, update)
   showModal.value = false
-}
-
-function handleRemove() {
-  emit('remove', brokerage)
 }
 
 function handleClose() {
@@ -64,7 +58,7 @@ const annualContribution = computed(() => {
   </n-modal>
 
   <command-list-item
-      @edit="handleEdit" @remove="handleRemove" @delete="handleDelete"
+      @edit="handleEdit" @delete="handleDelete"
       :title="brokerage.name"
       :modelName="'ira'"
       :tags="[

@@ -6,7 +6,7 @@
     />
   </n-modal>
   <command-list-item
-      @edit="handleEdit" @remove="handleRemove" @delete="handleDelete"
+      @edit="handleEdit" @delete="handleDelete"
       :title="income.name"
       :modelName="'income'"
       :tags="[
@@ -37,7 +37,6 @@ const showModal = ref<boolean>(false)
 const emit = defineEmits<{
   update: [id: number, update: IncomeUpdate]
   delete: [id: number]
-  remove: [income: Income]
 }>()
 
 function handleDelete() {
@@ -47,10 +46,6 @@ function handleDelete() {
 function handleUpdate(id: number, update: IncomeUpdate) {
   emit('update', id, update)
   showModal.value = false
-}
-
-function handleRemove() {
-  emit('remove', props.income)
 }
 
 function handleClose() {

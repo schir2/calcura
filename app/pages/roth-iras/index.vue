@@ -1,9 +1,9 @@
 <template>
-  <RothIraInvestmentList :rothIraInvestments="rothIraStore.list"
+  <RothIraList :rothIras="rothIraStore.list"
                @create="handleCreateRothIraInvestment"
                @update="handleUpdateRothIraInvestment"
                @delete="handleDeleteRothIraInvestment"
-  ></RothIraInvestmentList>
+  ></RothIraList>
 </template>
 <script setup lang="ts">
 import type {RothIraInsert, RothIraUpdate} from "#shared/types/RothIra";

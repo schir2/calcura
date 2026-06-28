@@ -8,7 +8,7 @@ values
     ('00000000-0000-0000-0000-000000000002', 'user_b@test.com', '', now(), now(), now(), 'authenticated', 'authenticated');
 
 insert into command (model_name, model_id, action, creator_id)
-values ('plan', 1, 'test_action', '00000000-0000-0000-0000-000000000001');
+values ('income', 1, 'test_action', '00000000-0000-0000-0000-000000000001');
 
 -- 1. owner sees own row
 set local role authenticated;
@@ -32,7 +32,7 @@ select lives_ok(
 set local role authenticated;
 select tests.jwt_authenticated('00000000-0000-0000-0000-000000000002');
 select throws_ok(
-    $$insert into command (model_name, model_id, action, creator_id) values ('plan', 1, 'stolen', '00000000-0000-0000-0000-000000000001')$$,
+    $$insert into command (model_name, model_id, action, creator_id) values ('income', 1, 'stolen', '00000000-0000-0000-0000-000000000001')$$,
     '42501',
     NULL,
     'user_b cannot insert command with user_a creator_id'

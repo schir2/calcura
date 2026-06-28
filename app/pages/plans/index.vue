@@ -48,7 +48,6 @@ async function handleUpdatePlan(id: number, update: PlanUpdate) {
   </n-modal>
   <PlanList
       :plans="planStore.list"
-      @duplicate="handleCreatePlan"
       @update="handleUpdatePlan"
       @delete="handleDeletePlan"
   ></PlanList>
