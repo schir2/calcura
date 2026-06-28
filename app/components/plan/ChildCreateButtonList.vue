@@ -17,6 +17,7 @@
   <n-modal v-model:show="showModal">
     <component v-if="selectedChildProp"
                :is="selectedChildProp.form"
+               :initial-values="{ plan_id }"
                @create="handleCreate($event)"
                @cancel="handleClose"
     />
@@ -24,6 +25,9 @@
 </template>
 <script setup lang="ts">
 import type {ModelName} from "#shared/types/ModelName";
+
+const { plan_id } = defineProps<{ plan_id: number }>()
+
 import {
   BrokerageCreateForm,
   CashReserveCreateForm,

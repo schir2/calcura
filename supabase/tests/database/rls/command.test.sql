@@ -7,8 +7,13 @@ values
     ('00000000-0000-0000-0000-000000000001', 'user_a@test.com', '', now(), now(), now(), 'authenticated', 'authenticated'),
     ('00000000-0000-0000-0000-000000000002', 'user_b@test.com', '', now(), now(), now(), 'authenticated', 'authenticated');
 
-insert into command (model_name, model_id, action, creator_id)
-values ('income', 1, 'test_action', '00000000-0000-0000-0000-000000000001');
+-- Insert plan + income; the insert trigger creates the command row for user_a
+insert into plan (name, inflation_rate, growth_rate, tax_rate, life_expectancy, creator_id)
+values ('Command RLS Plan', 0.03, 0.07, 0.25, 90, '00000000-0000-0000-0000-000000000001');
+
+insert into income (name, gross_income, growth_rate, plan_id, creator_id)
+select 'Command RLS Income', 50000, 0.03, id, '00000000-0000-0000-0000-000000000001'
+from plan where name = 'Command RLS Plan';
 
 -- 1. owner sees own row
 set local role authenticated;
@@ -24,7 +29,7 @@ select is_empty('select * from command', 'user_b cannot see user_a command');
 set local role authenticated;
 select tests.jwt_authenticated('00000000-0000-0000-0000-000000000001');
 select lives_ok(
-    $$insert into command (model_name, model_id, action, creator_id) values ('income', 2, 'another_action', '00000000-0000-0000-0000-000000000001')$$,
+    $$insert into command (model_name, model_id, action, creator_id) values ('expense', 999, 'another_action', '00000000-0000-0000-0000-000000000001')$$,
     'user_a can insert own command'
 );
 
@@ -32,7 +37,7 @@ select lives_ok(
 set local role authenticated;
 select tests.jwt_authenticated('00000000-0000-0000-0000-000000000002');
 select throws_ok(
-    $$insert into command (model_name, model_id, action, creator_id) values ('income', 1, 'stolen', '00000000-0000-0000-0000-000000000001')$$,
+    $$insert into command (model_name, model_id, action, creator_id) values ('expense', 999, 'stolen', '00000000-0000-0000-0000-000000000001')$$,
     '42501',
     NULL,
     'user_b cannot insert command with user_a creator_id'

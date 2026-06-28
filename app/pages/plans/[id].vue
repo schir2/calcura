@@ -36,7 +36,7 @@ const commandSequenceStore = useCommandSequenceStore()
 onMounted(() => orchestrator.load(planId))
 
 async function handleCreateModel(payload: { model: ModelName, data: unknown }) {
-  const insert = {...(payload.data as object), plan_id: planId}
+  const insert = payload.data
   switch (payload.model) {
     case 'income':
       await incomeStore.create(insert as IncomeInsert);
@@ -223,7 +223,7 @@ const activeExpensesAndDebts = computed((): { expenses: Expense[], debts: Debt[]
               </n-modal>
             </h3>
           </template>
-          <PlanChildCreateButtonList @create-model="handleCreateModel($event)"/>
+          <PlanChildCreateButtonList :plan_id="planId" @create-model="handleCreateModel($event)"/>
         </n-card>
         <command-tabber
             :command_sequences="commandSequenceStore.list"
