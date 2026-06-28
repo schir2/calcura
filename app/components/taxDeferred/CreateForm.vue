@@ -369,7 +369,7 @@ function handleSubmit() {
     </template>
 
     <template #action>
-      <FormActionButtons vahriant="create" @create="handleSubmit" @cancel="emit('cancel')" />
+      <FormActionButtons variant="create" @create="handleSubmit" @cancel="emit('cancel')" />
     </template>
   </n-card>
 </template>

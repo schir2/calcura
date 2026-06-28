@@ -55,7 +55,7 @@ const {formRef, modelRef, rules, handleCreate, handleUpdate, handleCancel} =
     </template>
 
     <template #action>
-      <FormActionButtons :mode="mode" @update="handleUpdate"
+      <FormActionButtons :variant="mode === 'edit' ? 'update' : 'create'" @update="handleUpdate"
                          @create="handleCreate" @cancel="handleCancel"/>
     </template>
   </n-card>
