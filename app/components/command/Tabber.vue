@@ -1,18 +1,19 @@
 <script lang="ts" setup>
-import type {CommandSequence} from "#shared/types/CommandSequence";
+import type {CommandSequenceWithRelations} from "#shared/types/CommandSequence";
+import type {PlanWithRelations} from "#shared/types/Plan";
 import type {ModelName} from "#shared/types/ModelName";
 
 type Props = {
-  command_sequences: CommandSequence[]
+  command_sequences: CommandSequenceWithRelations[]
+  plan: PlanWithRelations
 }
 const props = defineProps<Props>()
-const activeTab = defineModel<number>('activeTab');
+const activeTab = defineModel<number | null>();
 
 const emit = defineEmits<{
   update: [payload: { modelName: ModelName, id: number, data: Record<string, unknown> }]
   delete: [payload: { modelName: ModelName, id: number }]
   remove: [payload: { modelName: ModelName, data: unknown }]
-  'update-sequence': [sequence: CommandSequence]
   'delete-sequence': [id: number]
   'create-sequence': []
 }>()
@@ -45,10 +46,10 @@ const closeable = computed(() => {
       <template #tab>{{ commandSequence.name }}</template>
       <CommandSequence
           :commandSequence="commandSequence"
+          :plan="plan"
           @update="$emit('update', $event)"
           @delete="$emit('delete', $event)"
           @remove="$emit('remove', $event)"
-          @update-sequence="$emit('update-sequence', $event)"
       />
     </n-tab-pane>
   </n-tabs>

@@ -1,14 +1,14 @@
 <script setup lang="ts">
 import type {Plan, PlanUpdate} from "#shared/types/Plan"
-import type {IncomeInsert} from "#shared/types/Income"
-import type {Expense, ExpenseInsert} from "#shared/types/Expense"
-import type {Debt, DebtInsert} from "#shared/types/Debt"
-import type {CashReserveInsert} from "#shared/types/CashReserve"
-import type {TaxDeferredInsert} from "#shared/types/TaxDeferred"
-import type {BrokerageInsert} from "#shared/types/Brokerage"
-import type {IraInsert} from "#shared/types/Ira"
-import type {RothIraInsert} from "#shared/types/RothIra"
-import type {HsaInsert} from "#shared/types/Hsa"
+import type {IncomeInsert, IncomeUpdate} from "#shared/types/Income"
+import type {Expense, ExpenseInsert, ExpenseUpdate} from "#shared/types/Expense"
+import type {Debt, DebtInsert, DebtUpdate} from "#shared/types/Debt"
+import type {CashReserveInsert, CashReserveUpdate} from "#shared/types/CashReserve"
+import type {TaxDeferredInsert, TaxDeferredUpdate} from "#shared/types/TaxDeferred"
+import type {BrokerageInsert, BrokerageUpdate} from "#shared/types/Brokerage"
+import type {IraInsert, IraUpdate} from "#shared/types/Ira"
+import type {RothIraInsert, RothIraUpdate} from "#shared/types/RothIra"
+import type {HsaInsert, HsaUpdate} from "#shared/types/Hsa"
 import type {ModelName} from "#shared/types/ModelName"
 import type {OrchestratorState} from "#shared/types/OrchestratorState"
 
@@ -66,6 +66,78 @@ async function handleCreateModel(payload: { model: ModelName, data: unknown }) {
       await hsaStore.create(insert as HsaInsert);
       break
   }
+  await commandSequenceStore.fetchByPlan(planId)
+}
+
+async function handleUpdateModel(payload: { modelName: ModelName, id: number, data: Record<string, unknown> }) {
+  const {modelName, id, data} = payload
+  switch (modelName) {
+    case 'income':
+      await incomeStore.patch(id, data as IncomeUpdate);
+      break
+    case 'expense':
+      await expenseStore.patch(id, data as ExpenseUpdate);
+      break
+    case 'debt':
+      await debtStore.patch(id, data as DebtUpdate);
+      break
+    case 'cash_reserve':
+      await cashReserveStore.patch(id, data as CashReserveUpdate);
+      break
+    case 'tax_deferred':
+      await taxDeferredStore.patch(id, data as TaxDeferredUpdate);
+      break
+    case 'brokerage':
+      await brokerageStore.patch(id, data as BrokerageUpdate);
+      break
+    case 'ira':
+      await iraStore.patch(id, data as IraUpdate);
+      break
+    case 'roth_ira':
+      await rothIraStore.patch(id, data as RothIraUpdate);
+      break
+    case 'hsa':
+      await hsaStore.patch(id, data as HsaUpdate);
+      break
+  }
+}
+
+async function handleDeleteModel(payload: { modelName: ModelName, id: number }) {
+  const {modelName, id} = payload
+  switch (modelName) {
+    case 'income':
+      await incomeStore.purge(id);
+      break
+    case 'expense':
+      await expenseStore.purge(id);
+      break
+    case 'debt':
+      await debtStore.purge(id);
+      break
+    case 'cash_reserve':
+      await cashReserveStore.purge(id);
+      break
+    case 'tax_deferred':
+      await taxDeferredStore.purge(id);
+      break
+    case 'brokerage':
+      await brokerageStore.purge(id);
+      break
+    case 'ira':
+      await iraStore.purge(id);
+      break
+    case 'roth_ira':
+      await rothIraStore.purge(id);
+      break
+    case 'hsa':
+      await hsaStore.purge(id);
+      break
+  }
+  await commandSequenceStore.fetchByPlan(planId)
+}
+
+async function handleDeleteSequence(id: number) {
+  await commandSequenceStore.purge(id)
 }
 
 async function handleUpdatePlan(plan: Partial<Plan>) {

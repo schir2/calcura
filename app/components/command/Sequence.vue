@@ -1,14 +1,15 @@
 <script setup lang="ts">
-import type {Command} from "#shared/types/Command";
 import draggable from 'vuedraggable';
-import type {CommandSequence} from "#shared/types/CommandSequence";
-import type {PlanWithRelations as Plan} from "#shared/types/Plan";
+import type {CommandSequenceWithRelations} from "#shared/types/CommandSequence";
+import type {CommandSequenceCommandWithRelations} from "#shared/types/CommandSequenceCommand";
+import type {PlanWithRelations} from "#shared/types/Plan";
 import type {ModelName} from "#shared/types/ModelName";
 import {
   BrokerageListItem,
   CashReserveListItem,
   DebtListItem,
   ExpenseListItem,
+  HsaListItem,
   IncomeListItem,
   IraListItem,
   RothIraListItem,
@@ -16,13 +17,15 @@ import {
 } from "#components";
 
 type Props = {
-  commandSequence: CommandSequence,
-  plan: Plan,
+  commandSequence: CommandSequenceWithRelations,
+  plan: PlanWithRelations,
 }
 
 const props = defineProps<Props>()
-const commandsRef = ref(props.commandSequence.commands)
-watch(() => props.commandSequence.commands, (newCommands) => {
+const commandSequenceStore = useCommandSequenceStore()
+
+const commandsRef = ref<CommandSequenceCommandWithRelations[]>([...props.commandSequence.command_sequence_commands])
+watch(() => props.commandSequence.command_sequence_commands, (newCommands) => {
   commandsRef.value = [...newCommands];
 }, {deep: true});
 
@@ -30,28 +33,11 @@ const emit = defineEmits<{
   update: [payload: { modelName: ModelName, id: number, data: Record<string, unknown> }]
   delete: [payload: { modelName: ModelName, id: number }]
   remove: [payload: { modelName: ModelName, data: unknown }]
-  'update-sequence': [sequence: CommandSequence]
 }>()
 
-const reorderedCommands = computed(() => {
-  let order = 0
-  return commandsRef.value.map((command: Command) => {
-    order++
-    return {
-      ...command,
-      order: order
-    }
-  })
-})
-
 function onChange() {
-
   drag.value = false
-  emit('update-sequence', {
-        ...props.commandSequence,
-        commands: reorderedCommands.value
-      }
-  )
+  commandSequenceStore.reorder(props.commandSequence.id, commandsRef.value.map(csc => csc.id))
 }
 
 function setDefaultOrder() {
@@ -64,80 +50,60 @@ function setDefaultOrder() {
     'roth_ira': 6,
     'ira': 7,
     'brokerage': 8,
+    'hsa': 9,
   };
 
-  commandsRef.value = [...commandsRef.value].sort((a, b) => {
-    return (orderPriority[a.modelName] || 100) - (orderPriority[b.modelName] || 100);
-  }).map((command, index) => ({
-    ...command,
-    order: index + 1
-  }));
-
-  emit('update-sequence', {
-    ...props.commandSequence,
-    commands: commandsRef.value
+  const ordered = [...commandsRef.value].sort((a, b) => {
+    return (orderPriority[a.command.model_name] ?? 100) - (orderPriority[b.command.model_name] ?? 100);
   });
+
+  commandSequenceStore.reorder(props.commandSequence.id, ordered.map(csc => csc.id));
 }
 
-
-function getRelatedModelById(plan: Plan, modelName: ModelName, id: number) {
-  const name = `${modelName}s`
-  return plan[name].find(elem => elem.id === id)
-}
-
-function renderComponent(plan: Plan, modelName: ModelName, modelId: number) {
-  const data = getRelatedModelById(plan, modelName, modelId);
-  if (!data) return null;
-
-  let component = null;
-  let props = {};
+function renderComponent(plan: PlanWithRelations, modelName: ModelName, modelId: number) {
   switch (modelName) {
-    case 'expense':
-      component = ExpenseListItem;
-      props = {expense: data};
-      break;
-    case 'tax_deferred':
-      component = TaxDeferredListItem;
-      props = {taxDeferred: data, incomes: plan.incomes};
-      break;
-    case 'brokerage':
-      component = BrokerageListItem;
-      props = {brokerage: data, incomes: plan.incomes};
-      break;
-    case 'cash_reserve':
-      component = CashReserveListItem;
-      props = {cashReserve: data};
-      break;
-    case 'debt':
-      component = DebtListItem;
-      props = {debt: data};
-      break;
-    case 'income':
-      component = IncomeListItem;
-      props = {income: data};
-      break;
-    case 'ira':
-      component = IraListItem;
-      props = {ira: data};
-      break;
-    case 'roth_ira':
-      component = RothIraListItem;
-      props = {rothIra: data};
-      break;
+    case 'expense': {
+      const expense = plan.expenses.find(elem => elem.id === modelId);
+      return expense ? h(ExpenseListItem, {expense}) : null;
+    }
+    case 'tax_deferred': {
+      const taxDeferred = plan.tax_deferreds.find(elem => elem.id === modelId);
+      return taxDeferred ? h(TaxDeferredListItem, {taxDeferred, incomes: plan.incomes}) : null;
+    }
+    case 'brokerage': {
+      const brokerage = plan.brokerages.find(elem => elem.id === modelId);
+      return brokerage ? h(BrokerageListItem, {brokerage, incomes: plan.incomes}) : null;
+    }
+    case 'cash_reserve': {
+      const cashReserve = plan.cash_reserves.find(elem => elem.id === modelId);
+      return cashReserve ? h(CashReserveListItem, {cashReserve}) : null;
+    }
+    case 'debt': {
+      const debt = plan.debts.find(elem => elem.id === modelId);
+      return debt ? h(DebtListItem, {debt}) : null;
+    }
+    case 'income': {
+      const income = plan.incomes.find(elem => elem.id === modelId);
+      return income ? h(IncomeListItem, {income}) : null;
+    }
+    case 'ira': {
+      const ira = plan.iras.find(elem => elem.id === modelId);
+      return ira ? h(IraListItem, {ira}) : null;
+    }
+    case 'roth_ira': {
+      const rothIra = plan.roth_iras.find(elem => elem.id === modelId);
+      return rothIra ? h(RothIraListItem, {rothIra}) : null;
+    }
+    case 'hsa': {
+      const hsa = plan.hsas.find(elem => elem.id === modelId);
+      return hsa ? h(HsaListItem, {hsa}) : null;
+    }
   }
-
-  return h(component, props);
+  return null;
 }
 
-function updateCommandState(command: Command, newValue: boolean) {
-  const index = commandsRef.value.findIndex(c => c.model_id === command.model_id);
-  if (index !== -1) {
-    commandsRef.value[index].is_active = newValue;
-    emit('update-sequence', {
-      ...props.commandSequence,
-      commands: commandsRef.value
-    });
-  }
+function updateCommandState(csc: CommandSequenceCommandWithRelations) {
+  commandSequenceStore.toggleCommand(csc.id, props.commandSequence.id);
 }
 
 
@@ -165,20 +131,20 @@ function handleRemove(modelName: ModelName, data: unknown) {
              :animation="300"
              item-key="id"
              @end="onChange">
-    <template #item="{element: command} : {element: Command}">
+    <template #item="{element: command} : {element: CommandSequenceCommandWithRelations}">
       <div class="flex gap-2 items-center border-skin-base/30 bg-skin-surface rounded border p-1">
         <base-ico class="text-2xl text-skin-primary/80 drag-handle cursor-move" name="drag"/>
         <n-switch
             :round="false"
             size="small"
             :value="command.is_active"
-            @update:value="(newValue) => updateCommandState(command, newValue)"
+            @update:value="() => updateCommandState(command)"
         />
         <component
-            :is="renderComponent(plan, command.model_name, command.model_id)"
-            @update="(id, update) => handleUpdate(command.model_name, id, update)"
-            @delete="(id) => handleDelete(command.model_name, id)"
-            @remove="(entity) => handleRemove(command.model_name, entity)"
+            :is="renderComponent(plan, command.command.model_name, command.command.model_id)"
+            @update="(id, update) => handleUpdate(command.command.model_name, id, update)"
+            @delete="(id) => handleDelete(command.command.model_name, id)"
+            @remove="(entity) => handleRemove(command.command.model_name, entity)"
         />
       </div>
     </template>

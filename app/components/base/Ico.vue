@@ -19,6 +19,7 @@ const iconMap = {
   taxDeferred: 'mdi:finance',
   brokerage: 'mdi:finance',
   ira: 'mdi:finance',
+  hsa: 'mdi:medical-bag',
   rothIra: 'mdi:finance',
   cashReserve: 'mdi:bank',
   debt: 'mdi:trending-down',

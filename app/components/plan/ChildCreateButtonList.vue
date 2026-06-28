@@ -29,6 +29,7 @@ import {
   CashReserveCreateForm,
   DebtCreateForm,
   ExpenseCreateForm,
+  HsaCreateForm,
   IncomeCreateForm,
   IraCreateForm,
   RothIraCreateForm,
@@ -46,6 +47,7 @@ const items: CreateButtonProps[] = [
   {name: 'roth_ira', label: 'Roth', form: RothIraCreateForm, buttonType: 'info'},
   {name: 'ira', label: 'IRA', form: IraCreateForm, buttonType: 'info'},
   {name: 'brokerage', label: 'Brokerage', form: BrokerageCreateForm, buttonType: 'info'},
+  {name: 'hsa', label: 'HSA', form: HsaCreateForm, buttonType: 'info'},
 ];
 
 const showModal = ref<boolean>(false)
