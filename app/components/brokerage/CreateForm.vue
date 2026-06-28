@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import type { Brokerage, BrokerageInsert } from "#shared/types/Brokerage"
+import { brokerageRules } from "~/utils/validators/brokerageRules"
 import { brokerageDefaults } from "~/constants/BrokerageConstants"
-import { useBrokerageValidator } from "~/composables/validators/useBrokerageValidator"
 
 type Props = { initialValues?: Partial<Brokerage> }
 const props = defineProps<Props>()
@@ -14,7 +14,7 @@ const emit = defineEmits<{
 const model = ref<Partial<Brokerage>>({ ...brokerageDefaults, ...props.initialValues })
 const { formRef, pending, rules, apiErrors, onSubmit } = useNaiveForm(model)
 const errorMessage = ref('')
-rules.value = useBrokerageValidator(model).rules
+rules.value = brokerageRules(model).rules
 
 function handleSubmit() {
   onSubmit(async () => {

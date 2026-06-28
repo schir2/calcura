@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import type { CashReserve, CashReserveInsert } from "#shared/types/CashReserve"
+import { cashReserveRules } from "~/utils/validators/cashReserveRules"
 import { cashReserveDefaults } from "~/constants/CashReserveConstants"
 
 type Props = { initialValues?: Partial<CashReserve> }
@@ -13,7 +14,7 @@ const emit = defineEmits<{
 const model = ref<Partial<CashReserve>>({ ...cashReserveDefaults, ...props.initialValues })
 const { formRef, pending, rules, apiErrors, onSubmit } = useNaiveForm(model)
 const errorMessage = ref('')
-rules.value = useCashReserveValidation(model).rules
+rules.value = cashReserveRules(model).rules
 
 const cashReserveStrategyOptions = [
   { label: 'Fixed', value: 'fixed' },

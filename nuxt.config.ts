@@ -18,17 +18,6 @@ export default defineNuxtConfig({
       '@vueuse/nuxt',
       '@nuxt/icon',
       '@bg-dev/nuxt-naiveui',
-      // @bg-dev/nuxt-naiveui v2 adds naive-ui packages to build.transpile in
-      // production, which inlines them wholesale into the Nitro server bundle
-      // and prevents Rollup tree-shaking on the client. naive-ui ships ESM
-      // (es/index.mjs, sideEffects: false) so it tree-shakes natively.
-      // We strip those entries here and rely on vite.ssr.noExternal instead.
-      // (_opts: any, nuxt: any) => {
-      //   const naivePkgs = ['naive-ui', 'vueuc', '@css-render/vue3-ssr', '@iconify/vue']
-      //   nuxt.options.build.transpile = nuxt.options.build.transpile.filter(
-      //     (dep) => !naivePkgs.includes(dep as string),
-      //   )
-      // },
     ],
     naiveui: {
         colorModePreference: 'dark',
@@ -52,7 +41,6 @@ export default defineNuxtConfig({
         dirs: [
             'constants',
             'composables/api',
-            'composables/validators',
         ]
     },
     icon: {

@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import type { Plan, PlanUpdate } from "#shared/types/Plan"
+import { planRules } from "~/utils/validators/planRules"
 
 type Props = { id: number }
 const props = defineProps<Props>()
@@ -14,7 +15,7 @@ const model = ref<Partial<Plan>>({})
 const isFetching = ref(true)
 
 const { formRef, pending, rules, apiErrors, onSubmit } = useNaiveForm(model)
-rules.value = usePlanValidator(model).rules
+rules.value = planRules(model).rules
 
 const currentStep = ref(1)
 

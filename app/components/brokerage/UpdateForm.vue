@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import type { Brokerage, BrokerageUpdate } from "#shared/types/Brokerage"
-import { useBrokerageValidator } from "~/composables/validators/useBrokerageValidator"
+import { brokerageRules } from "~/utils/validators/brokerageRules"
 
 type Props = { id: number }
 const props = defineProps<Props>()
@@ -16,7 +16,7 @@ const isFetching = ref(true)
 const errorMessage = ref('')
 
 const { formRef, pending, rules, apiErrors, onSubmit } = useNaiveForm(model)
-rules.value = useBrokerageValidator(model).rules
+rules.value = brokerageRules(model).rules
 
 onMounted(async () => {
   try {

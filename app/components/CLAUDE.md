@@ -90,6 +90,10 @@ create: [insert: IncomePartial]
 
 **Aggregator components** that tunnel events from multiple domains through a single channel (e.g. `CommandTabber`) must wrap payloads with `{ modelName, data }` to carry routing metadata rather than using namespaced event names.
 
+### Styling
+- All color/radius/elevation follows [`docs/design-system.md`](../../docs/design-system.md). Color = `skin` tokens (`bg-skin-*`, `text-skin-*`); never raw Tailwind colors (`text-red-500`, `text-white`).
+- Tailwind is for layout/spacing only; always use a NaiveUI component when one exists.
+
 ### NaiveUI
 - Use NaiveUI components (`n-form`, `n-input`, `n-button`, etc.) — not raw HTML form elements
 - Avoid inline styles; use Tailwind classes

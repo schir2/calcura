@@ -1,5 +1,9 @@
 # pages/ — Conventions
 
+## Styling
+
+All color/radius/elevation follows [`docs/design-system.md`](../../docs/design-system.md). Color = `skin` tokens (`bg-skin-*`, `text-skin-*`); never raw Tailwind colors. Tailwind for layout/spacing only; use NaiveUI components when they exist.
+
 ## Routing
 
 Nuxt 3 file-based routing. File paths map directly to URL paths.

@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import type { RothIra, RothIraUpdate } from "#shared/types/RothIra"
+import { rothIraRules } from "~/utils/validators/rothIraRules"
 
 type Props = { id: number }
 const props = defineProps<Props>()
@@ -15,7 +16,7 @@ const isFetching = ref(true)
 const errorMessage = ref('')
 
 const { formRef, pending, rules, apiErrors, onSubmit } = useNaiveForm(model)
-rules.value = useRothIraValidation(model).rules
+rules.value = rothIraRules(model).rules
 
 onMounted(async () => {
   try {

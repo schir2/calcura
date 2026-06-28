@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import type { Debt, DebtUpdate, DebtPaymentStrategy } from "#shared/types/Debt"
+import { debtRules } from "~/utils/validators/debtRules"
 import { calculateDebtPayment } from "~/models/debt/DebtManager"
 import { FORM_LABEL_ALIGN, FORM_LABEL_PLACEMENT } from "~/constants/FormConstants"
 import type { Frequency } from "#shared/types/Frequency"
@@ -18,7 +19,7 @@ const isFetching = ref(true)
 const errorMessage = ref('')
 
 const { formRef, pending, rules, apiErrors, onSubmit } = useNaiveForm(model)
-rules.value = useDebtValidation(model).rules
+rules.value = debtRules(model).rules
 
 export type DebtProjection = {
   data: number[]

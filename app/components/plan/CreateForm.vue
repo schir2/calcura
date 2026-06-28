@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import type { Plan, PlanInsert } from "#shared/types/Plan"
+import { planRules } from "~/utils/validators/planRules"
 import { planDefaults } from "~/constants/planConstants"
 
 type Props = { initialValues?: Partial<Plan> }
@@ -12,7 +13,7 @@ const emit = defineEmits<{
 
 const model = ref<Partial<Plan>>({ ...planDefaults, ...props.initialValues })
 const { formRef, pending, rules, apiErrors, onSubmit } = useNaiveForm(model)
-rules.value = usePlanValidator(model).rules
+rules.value = planRules(model).rules
 
 const currentStep = ref(1)
 

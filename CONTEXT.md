@@ -5,9 +5,6 @@
 ### Form Defaults (`*defaults`)
 Typed objects (e.g. `taxDeferredDefaults: TaxDeferredInsert`) that pre-fill a create form when no template is selected. Typed against Supabase `*Insert` types so the compiler catches schema drift. Live in `constants/` — not in `types/`.
 
-### Validation Bounds
-The min/max/required scalar constraints used in validator composables (e.g. `MIN_NAME_LENGTH`, `MAX_GROWTH_RATE`). Distinct from form defaults — bounds constrain what is valid, defaults set what is shown initially.
-
 ### Templates
 User-selectable starting points stored in Supabase (`*_template` tables). When a template is selected, `processTemplate()` merges its values over the form defaults — template wins, defaults fill gaps. Templates are above defaults in the hierarchy: Template → Default → nothing.
 
@@ -19,6 +16,20 @@ A form component that receives a full entity (with `id`) as a prop. Emits `updat
 
 ### `useCrudForm`
 Composable that manages form state and validation only. Returns `{ formRef, modelRef, rules, validate }`. Does not own emit logic — that lives in the form component. Generic over whatever Supabase type the caller passes (`*Insert` for create, full entity for edit).
+
+## Glossary — Design System
+
+### Design token
+A named, reusable styling value (a color, radius, or elevation) defined once and referenced everywhere. In this app, tokens are CSS custom properties in `app/assets/css/tailwind.css` — the single source of truth. See [ADR 008](docs/adr/008-design-tokens-tailwind-source-of-truth.md) and [docs/design-system.md](docs/design-system.md).
+
+### Skin token
+The public Tailwind API over the color tokens: `bg-skin-*`, `text-skin-*`, `border-skin-*`, `ring-skin-*`, `fill-skin-*`. Each resolves to a CSS var via the `withOpacity()` helper. Components use skin tokens, never raw Tailwind colors (`text-red-500`, `text-white`).
+
+### Semantic color role
+A token named for its *meaning*, not its hue: `primary`, `secondary`, `error`, `success`, `warning`, `info`, `base`, `muted`, `surface`. Styling references the role so recoloring the brand is one var edit.
+
+### Brand palette
+The concrete color values currently assigned to the semantic roles. Lives entirely in `tailwind.css`. Initially seeded from NaiveUI's default theme, then evolved independently. NaiveUI is pointed *at* the palette (downstream), not the source of it.
 
 ## Naming Conventions
 

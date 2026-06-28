@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import type { Ira, IraInsert } from "#shared/types/Ira"
+import { iraRules } from "~/utils/validators/iraRules"
 import { iraDefaults } from "~/constants/IraConstants"
 
 type Props = { initialValues?: Partial<Ira> }
@@ -13,7 +14,7 @@ const emit = defineEmits<{
 const model = ref<Partial<Ira>>({ ...iraDefaults, ...props.initialValues })
 const { formRef, pending, rules, apiErrors, onSubmit } = useNaiveForm(model)
 const errorMessage = ref('')
-rules.value = useIraValidation(model).rules
+rules.value = iraRules(model).rules
 
 function handleSubmit() {
   onSubmit(async () => {

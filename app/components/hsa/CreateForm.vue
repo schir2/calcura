@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import type {Hsa, HsaInsert} from "#shared/types/Hsa"
+import { hsaRules } from "~/utils/validators/hsaRules"
 import {hsaDefaults} from "~/constants/HsaConstants"
-import {useHsaValidator} from "~/composables/validators/useHsaValidator"
 
 type Props = { initialValues?: Partial<Hsa> }
 const props = defineProps<Props>()
@@ -14,7 +14,7 @@ const emit = defineEmits<{
 const model = ref<Partial<Hsa>>({...hsaDefaults, ...props.initialValues})
 const {formRef, pending, rules, apiErrors, onSubmit} = useNaiveForm(model)
 const errorMessage = ref('')
-rules.value = useHsaValidator(model).rules
+rules.value = hsaRules(model).rules
 
 function handleSubmit() {
   onSubmit(async () => {

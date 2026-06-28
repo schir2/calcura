@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import type { Debt, DebtInsert, DebtPaymentStrategy } from "#shared/types/Debt"
+import { debtRules } from "~/utils/validators/debtRules"
 import { calculateDebtPayment } from "~/models/debt/DebtManager"
 import { FORM_LABEL_ALIGN, FORM_LABEL_PLACEMENT } from "~/constants/FormConstants"
 import type { Frequency } from "#shared/types/Frequency"
@@ -16,7 +17,7 @@ const emit = defineEmits<{
 const model = ref<Partial<Debt>>({ ...debtDefaults, ...props.initialValues })
 const { formRef, pending, rules, apiErrors, onSubmit } = useNaiveForm(model)
 const errorMessage = ref('')
-rules.value = useDebtValidation(model).rules
+rules.value = debtRules(model).rules
 
 export type DebtProjection = {
   data: number[]

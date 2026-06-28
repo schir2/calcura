@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import type {Hsa, HsaUpdate} from "#shared/types/Hsa"
-import {useHsaValidator} from "~/composables/validators/useHsaValidator"
+import { hsaRules } from "~/utils/validators/hsaRules"
 
 type Props = { id: number }
 const props = defineProps<Props>()
@@ -16,7 +16,7 @@ const isFetching = ref(true)
 const errorMessage = ref('')
 
 const {formRef, pending, rules, apiErrors, onSubmit} = useNaiveForm(model)
-rules.value = useHsaValidator(model).rules
+rules.value = hsaRules(model).rules
 
 onMounted(async () => {
   try {

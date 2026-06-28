@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import type { CashReserve, CashReserveUpdate } from "#shared/types/CashReserve"
+import { cashReserveRules } from "~/utils/validators/cashReserveRules"
 
 type Props = { id: number }
 const props = defineProps<Props>()
@@ -15,7 +16,7 @@ const isFetching = ref(true)
 const errorMessage = ref('')
 
 const { formRef, pending, rules, apiErrors, onSubmit } = useNaiveForm(model)
-rules.value = useCashReserveValidation(model).rules
+rules.value = cashReserveRules(model).rules
 
 const cashReserveStrategyOptions = [
   { label: 'Fixed', value: 'fixed' },

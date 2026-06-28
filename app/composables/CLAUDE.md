@@ -10,7 +10,6 @@ composables/
 ├── useLoading.ts           # Loading bar state
 ├── useTitle.ts             # Page title helper
 ├── useCrudForm.ts          # Form state management
-├── useCrudFormWithValidation.ts
 ├── useRepo.ts
 ├── useCurrentTime.ts
 └── validators/             # Vee-Validate schema composables

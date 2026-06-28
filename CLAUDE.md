@@ -2,6 +2,9 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
+## Information Reporting
+When reporting information to me, be extremly concise and sacrafice grammer for the sake of concision.
+
 ## Commands
 
 ```bash
@@ -30,7 +33,7 @@ supabase gen types typescript --local > shared/types/database.types.ts  # Regene
 
 ## Tech Stack
 
-- **Framework:** Nuxt 3 + Vue 3
+- **Framework:** Nuxt 4 + Vue 3
 - **UI:** NaiveUI + Tailwind CSS
 - **State:** Pinia stores + mitt event bus
 - **Forms:** Vee-Validate + Yup
@@ -107,6 +110,16 @@ Components under `components/` are grouped by domain (`brokerage/`, `debt/`, `in
 - `types/[Domain].ts` — config and state types per financial entity; all snake_case
 - `types/Auth.ts` — auth-related types (Supabase session, credentials)
 
+## Styling & Design System
+
+**All color/radius/elevation styling follows [`docs/design-system.md`](docs/design-system.md). Read it before styling anything.**
+
+The short version:
+- **CSS variables in `app/assets/css/tailwind.css` are the single source of truth** for color. Tailwind `skin` tokens and NaiveUI both read from them. See [ADR 008](docs/adr/008-design-tokens-tailwind-source-of-truth.md).
+- Use `skin` tokens (`bg-skin-*`, `text-skin-*`, `border-skin-*`) for color — **never raw Tailwind colors** (`text-red-500`, `text-white`) in app/dashboard components.
+- **Always use a NaiveUI component when one exists.** Tailwind is for layout/spacing only.
+- To recolor the app, edit the CSS vars — never patch colors per-component.
+
 ## Architecture Decisions
 
 Key decisions are documented in `docs/adr/`. Read these before making changes that touch:
@@ -116,6 +129,7 @@ Key decisions are documented in `docs/adr/`. Read these before making changes th
 - Field naming → ADR 005
 - IRA income association → ADR 006
 - Auth redirect → ADR 007
+- Design tokens / styling → ADR 008
 
 ## Change Communication Protocol
 

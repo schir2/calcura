@@ -1,9 +1,9 @@
 <script lang="ts" setup>
 import { Bar } from 'vue-chartjs'
 import type { Income, IncomeUpdate } from "#shared/types/Income"
+import { incomeRules } from "~/utils/validators/incomeRules"
 import { BarElement, CategoryScale, Chart as ChartJS, Legend, LinearScale, Title, Tooltip } from 'chart.js'
 import { getAnnualAmount } from "~/utils"
-import { useIncomeValidation } from "~/composables/validators/useIncomeValidator"
 import type { Frequency } from "#shared/types/Frequency"
 import { FORM_LABEL_ALIGN, FORM_LABEL_PLACEMENT, FORM_MODAL_WIDTH_CLASS } from "~/constants/FormConstants"
 
@@ -21,7 +21,7 @@ const isFetching = ref(true)
 const errorMessage = ref('')
 
 const { formRef, pending, rules, apiErrors, onSubmit } = useNaiveForm(model)
-rules.value = useIncomeValidation(model).rules
+rules.value = incomeRules(model).rules
 
 ChartJS.register(Title, Tooltip, Legend, BarElement, CategoryScale, LinearScale)
 

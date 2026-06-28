@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import type { TaxDeferred, TaxDeferredInsert } from "#shared/types/TaxDeferred"
+import { taxDeferredRules } from "~/utils/validators/taxDeferredRules"
 import { getTaxDeferredElectiveContributionLimit } from "~/utils"
 import { taxDeferredDefaults } from "~/constants/TaxDeferredConstants"
 
@@ -15,7 +16,7 @@ const incomeStore = useIncomeStore()
 const model = ref<Partial<TaxDeferred>>({ ...taxDeferredDefaults, ...props.initialValues })
 const { formRef, pending, rules, apiErrors, onSubmit } = useNaiveForm(model)
 const errorMessage = ref('')
-rules.value = useTaxDeferredValidator(model).rules
+rules.value = taxDeferredRules(model).rules
 
 function handleSubmit() {
   onSubmit(async () => {

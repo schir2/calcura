@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import type { TaxDeferred, TaxDeferredUpdate } from "#shared/types/TaxDeferred"
+import { taxDeferredRules } from "~/utils/validators/taxDeferredRules"
 import { getTaxDeferredElectiveContributionLimit } from "~/utils"
 
 type Props = { id: number }
@@ -17,7 +18,7 @@ const isFetching = ref(true)
 const errorMessage = ref('')
 
 const { formRef, pending, rules, apiErrors, onSubmit } = useNaiveForm(model)
-rules.value = useTaxDeferredValidator(model).rules
+rules.value = taxDeferredRules(model).rules
 
 onMounted(async () => {
   try {

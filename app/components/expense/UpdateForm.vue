@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import type { Expense, ExpenseUpdate } from "#shared/types/Expense"
+import { expenseRules } from "~/utils/validators/expenseRules"
 import { getAnnualAmount } from "~/utils"
 import { FORM_LABEL_ALIGN, FORM_LABEL_PLACEMENT, FORM_MODAL_WIDTH_CLASS } from "~/constants/FormConstants"
 
@@ -17,7 +18,7 @@ const isFetching = ref(true)
 const errorMessage = ref('')
 
 const { formRef, pending, rules, apiErrors, onSubmit } = useNaiveForm(model)
-rules.value = useExpenseValidation(model).rules
+rules.value = expenseRules(model).rules
 
 onMounted(async () => {
   try {

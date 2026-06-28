@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import type { RothIra, RothIraInsert } from "#shared/types/RothIra"
+import { rothIraRules } from "~/utils/validators/rothIraRules"
 import { rothIraDefaults } from "~/constants/RothIraConstants"
 
 type Props = { initialValues?: Partial<RothIra> }
@@ -13,7 +14,7 @@ const emit = defineEmits<{
 const model = ref<Partial<RothIra>>({ ...rothIraDefaults, ...props.initialValues })
 const { formRef, pending, rules, apiErrors, onSubmit } = useNaiveForm(model)
 const errorMessage = ref('')
-rules.value = useRothIraValidation(model).rules
+rules.value = rothIraRules(model).rules
 
 function handleSubmit() {
   onSubmit(async () => {

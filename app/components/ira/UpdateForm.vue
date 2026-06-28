@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import type { Ira, IraUpdate } from "#shared/types/Ira"
+import { iraRules } from "~/utils/validators/iraRules"
 
 type Props = { id: number }
 const props = defineProps<Props>()
@@ -15,7 +16,7 @@ const isFetching = ref(true)
 const errorMessage = ref('')
 
 const { formRef, pending, rules, apiErrors, onSubmit } = useNaiveForm(model)
-rules.value = useIraValidation(model).rules
+rules.value = iraRules(model).rules
 
 onMounted(async () => {
   try {

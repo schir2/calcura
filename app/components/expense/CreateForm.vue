@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import type { Expense, ExpenseInsert } from "#shared/types/Expense"
+import { expenseRules } from "~/utils/validators/expenseRules"
 import { expenseDefaults } from "~/constants/ExpenseConstants"
 import { getAnnualAmount } from "~/utils"
 import { FORM_LABEL_ALIGN, FORM_LABEL_PLACEMENT, FORM_MODAL_WIDTH_CLASS } from "~/constants/FormConstants"
@@ -15,7 +16,7 @@ const emit = defineEmits<{
 const model = ref<Partial<Expense>>({ ...expenseDefaults, ...props.initialValues })
 const { formRef, pending, rules, apiErrors, onSubmit } = useNaiveForm(model)
 const errorMessage = ref('')
-rules.value = useExpenseValidation(model).rules
+rules.value = expenseRules(model).rules
 
 function handleSubmit() {
   onSubmit(async () => {
