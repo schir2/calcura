@@ -13,7 +13,6 @@ const activeTab = defineModel<number | null>();
 const emit = defineEmits<{
   update: [payload: { modelName: ModelName, id: number, data: Record<string, unknown> }]
   delete: [payload: { modelName: ModelName, id: number }]
-  remove: [payload: { modelName: ModelName, data: unknown }]
   'delete-sequence': [id: number]
   'create-sequence': []
 }>()
@@ -49,7 +48,6 @@ const closeable = computed(() => {
           :plan="plan"
           @update="$emit('update', $event)"
           @delete="$emit('delete', $event)"
-          @remove="$emit('remove', $event)"
       />
     </n-tab-pane>
   </n-tabs>

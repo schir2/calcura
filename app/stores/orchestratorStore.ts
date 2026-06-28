@@ -59,6 +59,10 @@ export const orchestratorStore = defineStore('orchestrator', () => {
         }
     })
 
+    async function reloadPlan(id: number) {
+        plan.value = await planStore.fetch(id)
+    }
+
     function simulate(commandSequence: CommandSequenceWithRelations) {
         if (!planWithRelations.value) return
         const planManager = new PlanManager(planWithRelations.value)
@@ -68,6 +72,7 @@ export const orchestratorStore = defineStore('orchestrator', () => {
 
     return {
         load,
+        reloadPlan,
         plan,
         planId,
         loaded,

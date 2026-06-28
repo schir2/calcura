@@ -22,6 +22,7 @@ async function handleDeletePlan(id: number) {
 async function handleUpdatePlan(id: number, update: PlanUpdate) {
   await planStore.patch(id, update)
 }
+
 </script>
 
 <template>
@@ -40,9 +41,8 @@ async function handleUpdatePlan(id: number, update: PlanUpdate) {
         Create New Plan
       </h3>
     </template>
-    <plan-form
+    <PlanCreateForm
         @create="handleCreatePlan"
-        @update="handleUpdatePlan"
         @cancel="showModal = false"
     />
   </n-modal>

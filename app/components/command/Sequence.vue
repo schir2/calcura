@@ -32,7 +32,6 @@ watch(() => props.commandSequence.command_sequence_commands, (newCommands) => {
 const emit = defineEmits<{
   update: [payload: { modelName: ModelName, id: number, data: Record<string, unknown> }]
   delete: [payload: { modelName: ModelName, id: number }]
-  remove: [payload: { modelName: ModelName, data: unknown }]
 }>()
 
 function onChange() {
@@ -116,10 +115,6 @@ function handleUpdate(modelName: ModelName, id: number, data: Record<string, unk
 function handleDelete(modelName: ModelName, id: number) {
   emit("delete", {modelName, id})
 }
-
-function handleRemove(modelName: ModelName, data: unknown) {
-  emit("remove", {modelName, data})
-}
 </script>
 <template>
   <n-button @click="setDefaultOrder">Reset</n-button>
@@ -144,7 +139,6 @@ function handleRemove(modelName: ModelName, data: unknown) {
             :is="renderComponent(plan, command.command.model_name, command.command.model_id)"
             @update="(id, update) => handleUpdate(command.command.model_name, id, update)"
             @delete="(id) => handleDelete(command.command.model_name, id)"
-            @remove="(entity) => handleRemove(command.command.model_name, entity)"
         />
       </div>
     </template>

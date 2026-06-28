@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type {Plan, PlanUpdate} from "#shared/types/Plan"
+import type {PlanUpdate} from "#shared/types/Plan"
 import type {IncomeInsert, IncomeUpdate} from "#shared/types/Income"
 import type {Expense, ExpenseInsert, ExpenseUpdate} from "#shared/types/Expense"
 import type {Debt, DebtInsert, DebtUpdate} from "#shared/types/Debt"
@@ -140,14 +140,18 @@ async function handleDeleteSequence(id: number) {
   await commandSequenceStore.purge(id)
 }
 
-async function handleUpdatePlan(plan: Partial<Plan>) {
-  if (!plan.id) return
-  const {id, ...update} = plan
-  await planStore.patch(id, update as PlanUpdate)
+async function handleCreateSequence() {
+  const seq = await commandSequenceStore.create({ plan_id: planId, name: 'New Sequence' })
+  await commandSequenceStore.fetch(seq.id)
 }
 
-async function handleDeletePlan(plan: Plan) {
-  await planStore.purge(plan.id)
+async function handleUpdatePlan(id: number, update: PlanUpdate) {
+  await planStore.patch(id, update)
+  await orchestrator.reloadPlan(id)
+}
+
+async function handleDeletePlan(id: number) {
+  await planStore.purge(id)
   await navigateTo('/plans')
 }
 
@@ -223,7 +227,12 @@ const activeExpensesAndDebts = computed((): { expenses: Expense[], debts: Debt[]
         </n-card>
         <command-tabber
             :command_sequences="commandSequenceStore.list"
+            :plan="orchestrator.planWithRelations"
             v-model="activeCommandSequenceId"
+            @update="handleUpdateModel"
+            @delete="handleDeleteModel"
+            @delete-sequence="handleDeleteSequence"
+            @create-sequence="handleCreateSequence"
         />
       </div>
     </n-spin>

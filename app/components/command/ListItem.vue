@@ -64,7 +64,7 @@ const textClass = computed<string>(() => {
           </slot>
         </span>
         <slot name="actions">
-          <ListItemButtons size="small" @edit="$emit('edit')" @remove="$emit('remove')" @delete="$emit('delete')"/>
+          <ListItemButtons size="small" @update="$emit('edit')" @delete="$emit('delete')"/>
         </slot>
       </div>
     </div>

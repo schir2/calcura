@@ -15,7 +15,7 @@
 
       <label class="flex justify-between hover:cursor-pointer hover:bg-skin-surface-hover p-3">
         <span class="flex gap-3 items-center">
-          <input type="radio" v-model="model" :value="income"/>
+          <input type="radio" v-model="model" :value="income.id"/>
           <span class="text-lg">{{ income.name }}</span>
           <n-tag>
             {{ income.income_type }}
@@ -44,18 +44,11 @@
 import type {Income} from "#shared/types/Income";
 import {getAnnualAmount} from "~/utils";
 
-const incomeService = useIncomeService()
-
 type Props = {
   incomes: Income[] | undefined
 }
 
 const props = defineProps<Props>()
 const model = defineModel()
-
-
-onMounted(async () => {
-
-})
 
 </script>

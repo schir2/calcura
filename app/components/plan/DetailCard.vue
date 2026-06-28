@@ -1,6 +1,6 @@
 <script setup lang="ts">
 
-import type {Plan} from "#shared/types/Plan";
+import type {Plan, PlanUpdate} from "#shared/types/Plan";
 
 type Props = {
   plan: Plan
@@ -10,21 +10,20 @@ const props = defineProps<Props>()
 
 const showModal = ref<boolean>(false)
 const showDetail = ref<boolean>(false)
+const showDeletePopConfirm = ref<boolean>(false)
 
-const emit = defineEmits(['delete', 'update', 'create']);
+const emit = defineEmits<{
+  update: [id: number, update: PlanUpdate]
+  delete: [id: number]
+}>()
 
 function handleDelete() {
-  emit('delete', props.plan);
+  showDeletePopConfirm.value = false
+  emit('delete', props.plan.id)
 }
 
-function handleUpdate(plan: Partial<Plan>) {
-  emit('update', plan)
-  showModal.value = false;
-}
-
-
-function handleCreate(planPartial: Partial<Plan>) {
-  emit('create', planPartial)
+function handleUpdate(id: number, update: PlanUpdate) {
+  emit('update', id, update)
   showModal.value = false;
 }
 
@@ -39,12 +38,7 @@ function handleEdit() {
 <template>
 
   <n-modal v-model:show="showModal">
-    <PlanForm :initialValues="plan" mode="edit"
-              @delete="handleDelete"
-              @create="handleCreate"
-              @update="handleUpdate"
-              @cancel="handleClose"
-    />
+    <PlanUpdateForm :id="plan.id" @update="handleUpdate" @cancel="handleClose" />
   </n-modal>
   <n-card size="small">
     <template #header>
@@ -67,12 +61,31 @@ function handleEdit() {
           </template>
           Edit
         </n-button>
-        <n-button type="error" secondary round @click="handleDelete">
+        <n-popconfirm v-model:show="showDeletePopConfirm">
           <template #icon>
-            <Icon name="mdi:delete"/>
+            <Icon class="text-6xl text-skin-error" name="mdi:delete"/>
           </template>
-          Delete
-        </n-button>
+          <template #action>
+            <n-button tertiary round @click="showDeletePopConfirm=false">Cancel</n-button>
+            <n-button tertiary type="error" round @click="handleDelete">
+              <template #icon><Icon name="mdi:delete"/></template>
+              Delete
+            </n-button>
+          </template>
+          <template #trigger>
+            <n-button type="error" secondary round>
+              <template #icon>
+                <Icon name="mdi:delete"/>
+              </template>
+              Delete
+            </n-button>
+          </template>
+          <div class="max-w-md px-3 pe-3">
+            <h2 class="text-xl my-3 text-skin-error font-semibold">Delete Plan</h2>
+            <p>Are you sure you want to delete this plan?</p>
+            <p class="text-skin-info text-xs mb-2">This will permanently remove the plan and all associated data.</p>
+          </div>
+        </n-popconfirm>
       </n-button-group>
     </template>
 

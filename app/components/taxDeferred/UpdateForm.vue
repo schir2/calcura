@@ -133,8 +133,8 @@ function handleSubmit() {
             <n-input-number class="w-full" v-model:value="model.growth_rate" placeholder="Annual Growth Rate"/>
           </n-form-item>
         </section>
-        <n-form-item path="income" label="Income">
-          <IncomeSelector :incomes="incomeStore.list" v-model="model.income"/>
+        <n-form-item path="income_id" label="Income">
+          <IncomeSelector :incomes="incomeStore.list" v-model="model.income_id"/>
         </n-form-item>
 
         <n-form-item path="elective_contribution_strategy"
