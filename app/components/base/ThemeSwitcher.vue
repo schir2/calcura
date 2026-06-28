@@ -1,5 +1,9 @@
 <script lang="ts" setup>
-const { colorMode, toggleColorMode } = useNaiveColorMode()
+const { colorMode, colorModePreference } = useNaiveColorMode()
+
+function toggleColorMode() {
+  colorModePreference.set(colorMode.value === 'dark' ? 'light' : 'dark')
+}
 </script>
 <template>
   <n-button circle v-if="colorMode === 'dark'" @click="toggleColorMode()">
