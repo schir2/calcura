@@ -27,6 +27,28 @@ Callback parameters, locals, and all runtime identifiers use complete, meaningfu
 
 Generic type parameters (`T`, `TState`, `TConfig`, `TRow`) are exempt — they follow standard TypeScript convention and operate only in the type system.
 
+## Glossary — Simulation
+
+### Command
+A pointer to a domain entity that can participate in the simulation: `model_name` (e.g. `'tax_deferred'`) + `model_id`. A command is plan-scoped and shared across all sequences on that plan.
+
+### Command Sequence
+A named, ordered list of commands associated with a plan. A plan always has at least one sequence (auto-created by trigger on plan INSERT). Multiple sequences let the user compare different activation/ordering strategies.
+
+### Command Sequence Command (CSC)
+The junction record linking a Command to a Sequence. Carries `order` (integer, 1-based) and `is_active` (boolean). These are per-sequence — the same command can be active in one sequence and inactive in another.
+
+### Active Command
+A CSC where `is_active = true`. The simulation processes **only** active commands. Inactive commands are skipped entirely — the corresponding manager does not run at all that year. There is no "passive processing" mode.
+
+### `ordering_type`
+A **live sort directive** on a Command Sequence that determines how active commands are ordered for execution — `predefined` or `custom`.
+
+- `predefined` — commands are sorted on the fly by the canonical model-priority algorithm (income → debt → expense → cash_reserve → tax_deferred → roth_ira → ira → brokerage → hsa). `csc.order` is **ignored** in this mode; switching to predefined does not rewrite it.
+- `custom` — commands are sorted by the user's drag order stored in `csc.order`.
+
+The simulation branches on `ordering_type`: under `predefined` it applies the priority algorithm; under `custom` it sorts by `csc.order`. So `csc.order` is authoritative only when `ordering_type = 'custom'`.
+
 ## Decisions
 
 ### Shared validation bounds live in `constants/shared.ts`

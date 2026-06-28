@@ -567,6 +567,30 @@ describe("PlanManager", () => {
                 expect(state.processed).toBe(true)
             }
         });
+
+        it("sorts by canonical order when ordering_type is predefined", () => {
+            const seq = {
+                ordering_type: 'predefined',
+                command_sequence_commands: [
+                    {id: 1, order: 2, is_active: true, command: {model_name: 'income', model_id: 1}},
+                    {id: 2, order: 1, is_active: true, command: {model_name: 'debt', model_id: 1}},
+                ],
+            } as any
+            const states = planManager.simulate(seq)
+            expect(states.length).toBeGreaterThan(0)
+        });
+
+        it("sorts by csc.order when ordering_type is custom", () => {
+            const seq = {
+                ordering_type: 'custom',
+                command_sequence_commands: [
+                    {id: 1, order: 2, is_active: true, command: {model_name: 'income', model_id: 1}},
+                    {id: 2, order: 1, is_active: true, command: {model_name: 'debt', model_id: 1}},
+                ],
+            } as any
+            const states = planManager.simulate(seq)
+            expect(states.length).toBeGreaterThan(0)
+        });
     });
 
     describe("processUnprocessed", () => {

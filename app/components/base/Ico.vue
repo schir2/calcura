@@ -37,6 +37,8 @@ const iconMap = {
   essential: 'uil:exclamation-circle',
   deductible: 'mdi:cash',
   fixed: 'mdi:lock',
+  lock: 'mdi:lock',
+  unlock: 'mdi:lock-open',
   variable: 'mdi:tune',
 
   // Theme

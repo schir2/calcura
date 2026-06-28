@@ -20,10 +20,11 @@ import {BaseOrchestrator} from "~/models/common/BaseOrchestrator";
 import {ContributionError} from "~/utils/errors/ContributionError";
 import {RothIraManager} from "~/models/rothIra/RothIraManager";
 import eventBus from "~/utils/eventBus";
-import type {Command} from "#shared/types/Command";
 import {ContributionType} from "#shared/types/ContributionType";
 import type {CommandSequenceWithRelations} from "#shared/types/CommandSequence";
+import type {CommandSequenceCommandWithRelations} from "#shared/types/CommandSequenceCommand";
 import type {ModelName} from "#shared/types/ModelName";
+import {predefinedOrderRank} from "~/constants/CommandOrder";
 import {HsaManager} from "~/models/hsa/HsaManager";
 
 export enum FundType {
@@ -558,19 +559,21 @@ export default class PlanManager extends BaseOrchestrator<PlanWithRelations, Orc
 
     simulate(commandSequence?: CommandSequenceWithRelations, maxIterations: number = 60): OrchestratorState[] {
         this.reset()
-        const commands: Command[] = commandSequence ? commandSequence.command_sequence_commands.map(commandSequenceCommand => commandSequenceCommand.command) : []
+        const activeCommands: CommandSequenceCommandWithRelations[] = commandSequence
+            ? [...commandSequence.command_sequence_commands]
+                .sort((a, b) => commandSequence.ordering_type === 'predefined'
+                    ? predefinedOrderRank(a.command.model_name) - predefinedOrderRank(b.command.model_name)
+                    : a.order - b.order
+                )
+                .filter(csc => csc.is_active)
+            : []
         maxIterations = Math.min(maxIterations, this.config.life_expectancy - this.config.age + 1)
         for (let i = 0; i < maxIterations; i++) {
-            let manager: BaseManager<any, any> | undefined = undefined
-            if (commands) {
-                commands.forEach(command => {
-                    if (command.is_active) {
-                        manager = this.getManagerById(command.model_name, Number(command.model_id))
-                        manager?.process()
-                        manager?.advanceTimePeriod()
-                    }
-                })
-            }
+            activeCommands.forEach(csc => {
+                const manager = this.getManagerById(csc.command.model_name, Number(csc.command.model_id))
+                manager?.process()
+                manager?.advanceTimePeriod()
+            })
             this.process()
             if (this.canRetire()) {
                 return this.states

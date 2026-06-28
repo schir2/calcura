@@ -5,7 +5,7 @@ import type {
     CommandSequenceWithRelations
 } from '#shared/types/CommandSequence'
 
-const QUERY = '*, command_sequence_commands:command_sequence_command(*, command(*))'
+const QUERY = '*, command_sequence_commands:command_sequence_command(*, command(*)).order(order)'
 
 export const useCommandSequenceStore = defineStore('command_sequence', () => {
     const client = useSupabaseClient<Database>()
@@ -19,7 +19,10 @@ export const useCommandSequenceStore = defineStore('command_sequence', () => {
     }
 
     function set(id: number, value: CommandSequenceWithRelations) {
-        map.value[id] = value
+        map.value[id] = {
+            ...value,
+            command_sequence_commands: [...value.command_sequence_commands].sort((a, b) => a.order - b.order),
+        }
     }
 
     function remove(id: number) {

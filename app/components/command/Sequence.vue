@@ -4,6 +4,7 @@ import type {CommandSequenceWithRelations} from "#shared/types/CommandSequence";
 import type {CommandSequenceCommandWithRelations} from "#shared/types/CommandSequenceCommand";
 import type {PlanWithRelations} from "#shared/types/Plan";
 import type {ModelName} from "#shared/types/ModelName";
+import {predefinedOrderRank} from "~/constants/CommandOrder";
 import {
   BrokerageListItem,
   CashReserveListItem,
@@ -34,40 +35,35 @@ const emit = defineEmits<{
   delete: [payload: { modelName: ModelName, id: number }]
 }>()
 
-const PREDEFINED_ORDER: Record<ModelName, number> = {
-  'income': 1,
-  'debt': 2,
-  'expense': 3,
-  'cash_reserve': 4,
-  'tax_deferred': 5,
-  'roth_ira': 6,
-  'ira': 7,
-  'brokerage': 8,
-  'hsa': 9,
-}
+const isPredefined = computed(() => props.commandSequence.ordering_type === 'predefined')
 
 async function onChange() {
   drag.value = false
   await commandSequenceStore.reorder(props.commandSequence.id, commandsRef.value.map(csc => csc.id))
-  if (props.commandSequence.ordering_type !== 'custom') {
+  if (isPredefined.value) {
     await commandSequenceStore.patch(props.commandSequence.id, {ordering_type: 'custom'})
   }
 }
 
 async function applyPredefinedOrder() {
-  const ordered = [...commandsRef.value].sort((a, b) =>
-      (PREDEFINED_ORDER[a.command.model_name] ?? 100) - (PREDEFINED_ORDER[b.command.model_name] ?? 100)
-  )
-  commandsRef.value = ordered
-  await commandSequenceStore.reorder(props.commandSequence.id, ordered.map(csc => csc.id))
+  sortCommandsRefPredefined()
   await commandSequenceStore.patch(props.commandSequence.id, {ordering_type: 'predefined'})
 }
 
-async function handleOrderingTypeChange(value: 'predefined' | 'custom') {
-  if (value === 'predefined') {
-    await applyPredefinedOrder()
-  }
+async function setCustom() {
+  await commandSequenceStore.patch(props.commandSequence.id, {ordering_type: 'custom'})
 }
+
+function sortCommandsRefPredefined() {
+  commandsRef.value = [...commandsRef.value].sort((a, b) =>
+      predefinedOrderRank(a.command.model_name) - predefinedOrderRank(b.command.model_name)
+  )
+}
+
+watch(isPredefined, (locked) => {
+  if (locked) sortCommandsRefPredefined()
+  else commandsRef.value = [...props.commandSequence.command_sequence_commands]
+})
 
 function renderComponent(plan: PlanWithRelations, modelName: ModelName, modelId: number) {
   switch (modelName) {
@@ -122,7 +118,6 @@ async function updateCommandState(csc: CommandSequenceCommandWithRelations) {
   }
 }
 
-
 const drag = ref<boolean>(false)
 
 function handleUpdate(modelName: ModelName, id: number, data: Record<string, unknown>) {
@@ -133,18 +128,30 @@ function handleDelete(modelName: ModelName, id: number) {
   emit("delete", {modelName, id})
 }
 </script>
+
 <template>
-  <div class="flex items-center gap-2 mb-2">
-    <span class="text-sm text-skin-muted">Order:</span>
-    <n-radio-group
-        :value="commandSequence.ordering_type"
-        size="small"
-        @update:value="handleOrderingTypeChange"
+  <div
+      class="flex items-center gap-2.5 px-2.5 py-1.5 mb-2 rounded border text-xs"
+      :class="isPredefined
+        ? 'border-blue-200 bg-blue-50 dark:bg-blue-950/30'
+        : 'border-skin-base/20 bg-skin-surface'"
+  >
+    <n-button
+        size="tiny"
+        :type="isPredefined ? 'info' : 'default'"
+        :secondary="isPredefined"
+        @click="isPredefined ? setCustom() : applyPredefinedOrder()"
     >
-      <n-radio-button value="predefined">Predefined</n-radio-button>
-      <n-radio-button value="custom">Custom</n-radio-button>
-    </n-radio-group>
+      <template #icon>
+        <base-ico :name="isPredefined ? 'lock' : 'unlock'"/>
+      </template>
+      {{ isPredefined ? 'Locked — predefined' : 'Unlocked — custom' }}
+    </n-button>
+    <span :class="isPredefined ? 'text-blue-600 dark:text-blue-300' : 'text-skin-muted'">
+      {{ isPredefined ? 'income → debt → expense → savings' : 'drag handles to reorder' }}
+    </span>
   </div>
+
   <draggable class="dragArea list-group w-full space-y-1"
              v-model="commandsRef"
              group="commands"
@@ -152,10 +159,14 @@ function handleDelete(modelName: ModelName, id: number) {
              @start="drag=true"
              :animation="300"
              item-key="id"
+             :disabled="isPredefined"
              @end="onChange">
     <template #item="{element: command} : {element: CommandSequenceCommandWithRelations}">
       <div class="flex gap-2 items-center border-skin-base/30 bg-skin-surface rounded border p-1">
-        <base-ico class="text-2xl text-skin-primary/80 drag-handle cursor-move" name="drag"/>
+        <base-ico
+            :class="['text-2xl drag-handle', isPredefined ? 'opacity-20 cursor-not-allowed' : 'text-skin-primary/80 cursor-move']"
+            name="drag"
+        />
         <n-switch
             :round="false"
             size="small"
@@ -170,5 +181,4 @@ function handleDelete(modelName: ModelName, id: number) {
       </div>
     </template>
   </draggable>
-
 </template>

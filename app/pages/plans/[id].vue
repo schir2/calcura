@@ -140,6 +140,10 @@ async function handleDeleteSequence(id: number) {
   await commandSequenceStore.purge(id)
 }
 
+async function handleRenameSequence(id: number, name: string) {
+  await commandSequenceStore.patch(id, {name})
+}
+
 async function handleCreateSequence() {
   const seq = await commandSequenceStore.create({ plan_id: planId, name: 'New Sequence' })
   await commandSequenceStore.fetch(seq.id)
@@ -232,6 +236,7 @@ const activeExpensesAndDebts = computed((): { expenses: Expense[], debts: Debt[]
             @update="handleUpdateModel"
             @delete="handleDeleteModel"
             @delete-sequence="handleDeleteSequence"
+            @rename-sequence="handleRenameSequence"
             @create-sequence="handleCreateSequence"
         />
       </div>
@@ -245,6 +250,7 @@ const activeExpensesAndDebts = computed((): { expenses: Expense[], debts: Debt[]
       </div>
     </div>
   </div>
+
 </template>
 
 <style scoped>
