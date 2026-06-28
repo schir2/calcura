@@ -111,17 +111,16 @@ export const useCommandSequenceStore = defineStore('command_sequence', () => {
             .sort((a, b) => a.order - b.order)
     }
 
-    async function toggleCommand(cscId: number, sequenceId: number): Promise<void> {
+    async function toggleCommand(cscId: number, sequenceId: number, newValue: boolean): Promise<void> {
         const sequence = map.value[sequenceId]
         const csc = sequence?.command_sequence_commands.find(c => c.id === cscId)
         if (!csc) return
-        const nextActive = !csc.is_active
         const {error} = await client
             .from('command_sequence_command')
-            .update({is_active: nextActive})
+            .update({is_active: newValue})
             .eq('id', cscId)
         if (error) throw error
-        csc.is_active = nextActive
+        csc.is_active = newValue
     }
 
     return {

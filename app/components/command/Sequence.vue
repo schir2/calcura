@@ -34,29 +34,39 @@ const emit = defineEmits<{
   delete: [payload: { modelName: ModelName, id: number }]
 }>()
 
-function onChange() {
-  drag.value = false
-  commandSequenceStore.reorder(props.commandSequence.id, commandsRef.value.map(csc => csc.id))
+const PREDEFINED_ORDER: Record<ModelName, number> = {
+  'income': 1,
+  'debt': 2,
+  'expense': 3,
+  'cash_reserve': 4,
+  'tax_deferred': 5,
+  'roth_ira': 6,
+  'ira': 7,
+  'brokerage': 8,
+  'hsa': 9,
 }
 
-function setDefaultOrder() {
-  const orderPriority: Record<ModelName, number> = {
-    'income': 1,
-    'debt': 2,
-    'expense': 3,
-    'cash_reserve': 4,
-    'tax_deferred': 5,
-    'roth_ira': 6,
-    'ira': 7,
-    'brokerage': 8,
-    'hsa': 9,
-  };
+async function onChange() {
+  drag.value = false
+  await commandSequenceStore.reorder(props.commandSequence.id, commandsRef.value.map(csc => csc.id))
+  if (props.commandSequence.ordering_type !== 'custom') {
+    await commandSequenceStore.patch(props.commandSequence.id, {ordering_type: 'custom'})
+  }
+}
 
-  const ordered = [...commandsRef.value].sort((a, b) => {
-    return (orderPriority[a.command.model_name] ?? 100) - (orderPriority[b.command.model_name] ?? 100);
-  });
+async function applyPredefinedOrder() {
+  const ordered = [...commandsRef.value].sort((a, b) =>
+      (PREDEFINED_ORDER[a.command.model_name] ?? 100) - (PREDEFINED_ORDER[b.command.model_name] ?? 100)
+  )
+  commandsRef.value = ordered
+  await commandSequenceStore.reorder(props.commandSequence.id, ordered.map(csc => csc.id))
+  await commandSequenceStore.patch(props.commandSequence.id, {ordering_type: 'predefined'})
+}
 
-  commandSequenceStore.reorder(props.commandSequence.id, ordered.map(csc => csc.id));
+async function handleOrderingTypeChange(value: 'predefined' | 'custom') {
+  if (value === 'predefined') {
+    await applyPredefinedOrder()
+  }
 }
 
 function renderComponent(plan: PlanWithRelations, modelName: ModelName, modelId: number) {
@@ -101,8 +111,15 @@ function renderComponent(plan: PlanWithRelations, modelName: ModelName, modelId:
   return null;
 }
 
-function updateCommandState(csc: CommandSequenceCommandWithRelations) {
-  commandSequenceStore.toggleCommand(csc.id, props.commandSequence.id);
+async function updateCommandState(csc: CommandSequenceCommandWithRelations) {
+  const prev = csc.is_active
+  const next = !prev
+  csc.is_active = next
+  try {
+    await commandSequenceStore.toggleCommand(csc.id, props.commandSequence.id, next)
+  } catch {
+    csc.is_active = prev
+  }
 }
 
 
@@ -117,7 +134,17 @@ function handleDelete(modelName: ModelName, id: number) {
 }
 </script>
 <template>
-  <n-button @click="setDefaultOrder">Reset</n-button>
+  <div class="flex items-center gap-2 mb-2">
+    <span class="text-sm text-skin-muted">Order:</span>
+    <n-radio-group
+        :value="commandSequence.ordering_type"
+        size="small"
+        @update:value="handleOrderingTypeChange"
+    >
+      <n-radio-button value="predefined">Predefined</n-radio-button>
+      <n-radio-button value="custom">Custom</n-radio-button>
+    </n-radio-group>
+  </div>
   <draggable class="dragArea list-group w-full space-y-1"
              v-model="commandsRef"
              group="commands"
