@@ -2,7 +2,7 @@ import type {FormRules} from "naive-ui";
 import type {Ref} from "vue";
 import type {Ira} from "#shared/types/Ira";
 
-export function useIraValidation(modelRef: Ref<Partial<Ira>>) {
+export function iraRules(modelRef: Ref<Partial<Ira>>) {
     const rules: FormRules = {
         name: [
             {required: true, message: "Name is required", trigger: ["blur", "change"]},

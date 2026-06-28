@@ -1,7 +1,7 @@
 import type {FormItemRule, FormRules} from "naive-ui";
 import type {Debt} from "#shared/types/Debt";
 
-export function useDebtValidation(modelRef: Ref<Partial<Debt>>) {
+export function debtRules(modelRef: Ref<Partial<Debt>>) {
     function validatePaymentFixedAmount(rule: FormItemRule, value: number | undefined) {
         if (modelRef.value.payment_strategy === 'fixed') {
             if (value === null || value === undefined) {

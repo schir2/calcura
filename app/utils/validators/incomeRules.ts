@@ -2,7 +2,7 @@ import type {FormRules} from "naive-ui";
 import type {Ref} from "vue";
 import type {Income} from "#shared/types/Income";
 
-export function useIncomeValidation(modelRef: Ref<Partial<Income>>) {
+export function incomeRules(modelRef: Ref<Partial<Income>>) {
     const rules: FormRules = {
         name: [
             {required: true, message: "Income name is required", trigger: ["blur", "change"]},

@@ -1,7 +1,7 @@
 import type {FormItemRule, FormRules} from "naive-ui";
 import type {Hsa} from "#shared/types/Hsa";
 
-export function useHsaValidator(modelRef: Ref<Partial<Hsa>>) {
+export function hsaRules(modelRef: Ref<Partial<Hsa>>) {
     function validateContributionFixedAmount(rule: FormItemRule, value: number | undefined) {
         if (modelRef.value.contribution_strategy === "fixed" && (value === null || value === undefined)) {
             return new Error("Fixed contribution amount is required when Fixed Contribution strategy is selected");

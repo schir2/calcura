@@ -1,7 +1,7 @@
 import type {FormItemRule, FormRules} from "naive-ui";
 import type {Plan} from '#shared/types/Plan'
 
-export function usePlanValidator(modelRef: Ref<Partial<Plan>>) {
+export function planRules(modelRef: Ref<Partial<Plan>>) {
     function validateRetirementAge(rule: FormItemRule, value: number | undefined) {
         if (modelRef.value.retirement_strategy === 'age') {
             if (value === null || value === undefined) {

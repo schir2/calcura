@@ -1,7 +1,7 @@
 import type {TaxDeferred} from "#shared/types/TaxDeferred";
 import type {FormItemRule, FormRules} from "naive-ui";
 
-export function useTaxDeferredValidator(modelRef: Ref<Partial<TaxDeferred>>) {
+export function taxDeferredRules(modelRef: Ref<Partial<TaxDeferred>>) {
     function validateContributionFixedAmount(rule: FormItemRule, value: number | undefined) {
         if (modelRef.value.elective_contribution_strategy === "fixed" && (value === null || value === undefined)) {
             return new Error("Fixed contribution amount is required when Fixed Contribution strategy is selected");

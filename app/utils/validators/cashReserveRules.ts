@@ -2,7 +2,7 @@ import type {FormItemRule, FormRules} from "naive-ui";
 import type {Ref} from "vue";
 import type {CashReserve} from "#shared/types/CashReserve";
 
-export function useCashReserveValidation(modelRef: Ref<Partial<CashReserve>>) {
+export function cashReserveRules(modelRef: Ref<Partial<CashReserve>>) {
     function validateReserveAmount(rule: FormItemRule, value: number | undefined) {
         if (modelRef.value.cash_reserve_strategy === "fixed") {
             if (value === null || value === undefined) {

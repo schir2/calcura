@@ -2,7 +2,7 @@ import type {FormRules} from "naive-ui";
 import type {Ref} from "vue";
 import type {Expense} from "#shared/types/Expense";
 
-export function useExpenseValidation(modelRef: Ref<Partial<Expense>>) {
+export function expenseRules(modelRef: Ref<Partial<Expense>>) {
     const rules: FormRules = {
         name: [
             {required: true, message: "Expense name is required", trigger: ["blur", "change"]},

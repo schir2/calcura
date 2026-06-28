@@ -1,7 +1,7 @@
 import type {FormItemRule, FormRules} from "naive-ui";
 import type {RothIra} from "#shared/types/RothIra";
 
-export function useRothIraValidation(modelRef: Ref<Partial<RothIra>>) {
+export function rothIraRules(modelRef: Ref<Partial<RothIra>>) {
     function validateContributionFixedAmount(rule: FormItemRule, value: number | undefined) {
         if (modelRef.value.contribution_strategy === 'fixed') {
             if (value === null || value === undefined) {
