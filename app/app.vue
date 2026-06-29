@@ -2,8 +2,13 @@
 
 const route = useRoute()
 
+const { colorMode } = useNaiveColorMode()
+
 useHead(() => ({
   title: route.meta.title as string ?? null,
+  htmlAttrs: {
+    class: colorMode.value === 'dark' ? 'dark' : '',
+  },
 }))
 
 const supabase = useSupabaseClient()
