@@ -171,3 +171,6 @@ Before making any file changes, follow this step-through workflow by default:
 - Use `Partial<Model>` or `*Partial` types as emit payloads — use `*Insert` / `*Update` instead
 - Use untyped `defineEmits(['create', 'update'])` — always type your emits
 - Add new `*Partial` type aliases — they are deprecated
+
+### Git — never switch or create branches
+**Never run `git checkout`/`git switch`/`git branch` to change or create branches, and never create a new branch, unless I explicitly ask.** Do all work on whatever branch is currently checked out. I handle branching and committing myself.
