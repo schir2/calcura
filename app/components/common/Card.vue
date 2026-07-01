@@ -3,16 +3,15 @@
 </script>
 
 <template>
-  <div class="p-6 rounded-lg shadow-md bg-skin-base">
-    <div v-if="$slots.header">
+  <n-card>
+    <template v-if="$slots.header" #header>
       <slot name="header"></slot>
-    </div>
+    </template>
     <slot/>
-    <div v-if="$slots.footer">
+    <template v-if="$slots.footer" #footer>
       <slot name="footer"></slot>
-    </div>
-  </div>
-
+    </template>
+  </n-card>
 </template>
 
 <style scoped>

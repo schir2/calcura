@@ -1,10 +1,10 @@
 <template>
   <n-card
-      :style="selectedStyles">
+      :class="selected ? 'border-skin-success bg-skin-surface-hover transition-colors' : ''">
     <template #header>
       <label class="flex justify-between cursor-pointer text-skin-primary items-center">
         <span>{{ title }}</span>
-        <input type="radio" v-model="model" :value="value"></input>
+        <n-radio :checked="selected" :value="value" @change="model = value"/>
       </label>
     </template>
     <template #default>
@@ -16,7 +16,6 @@
   </n-card>
 </template>
 <script lang="ts" setup>
-import {darkTheme} from 'naive-ui'
 
 type Props = {
   title: string
@@ -29,14 +28,5 @@ const props = defineProps<Props>()
 
 const selected = computed(() => {
   return props.value === model.value
-})
-
-const selectedStyles = computed(() => {
-  if (!selected.value) return {}
-  return {
-    border: `1px solid ${darkTheme.common.successColor}`,
-    backgroundColor: darkTheme.common.hoverColor,
-    transition: 'background-color 0.3s, border-color 0.3s'
-  }
 })
 </script>

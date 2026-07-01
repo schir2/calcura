@@ -167,16 +167,43 @@ export const darkColorTokens: ColorTokens = {
     'alpha-overlay': '10, 10, 10, 0.8',
 }
 
+/*
+ * Radius + elevation scales. Unlike color, these are not run through NaiveUI's
+ * seemly color-math, so they need no light/dark literal split — a single scale
+ * emitted into :root suffices. Tailwind reads them via var() in tailwind.config.ts
+ * (borderRadius / boxShadow); NaiveUI's common gets the literal radius for parity.
+ *
+ * Radius seeded from NaiveUI borderRadius (3px) / borderRadiusSmall (2px);
+ * elevation seeded from NaiveUI boxShadow1/2/3.
+ */
+export type ScaleTokens = Record<string, string>
+
+export const radiusTokens: ScaleTokens = {
+    'radius-sm': '2px',
+    'radius': '3px',
+    'radius-lg': '6px',
+    'radius-xl': '8px',
+    'radius-2xl': '12px',
+    'radius-3xl': '16px',
+}
+
+export const elevationTokens: ScaleTokens = {
+    'elevation-1': '0 1px 2px -2px rgba(0, 0, 0, .08), 0 3px 6px 0 rgba(0, 0, 0, .06), 0 5px 12px 4px rgba(0, 0, 0, .04)',
+    'elevation-2': '0 3px 6px -4px rgba(0, 0, 0, .12), 0 6px 16px 0 rgba(0, 0, 0, .08), 0 9px 28px 8px rgba(0, 0, 0, .05)',
+    'elevation-3': '0 6px 16px -9px rgba(0, 0, 0, .08), 0 9px 28px 0 rgba(0, 0, 0, .05), 0 12px 48px 16px rgba(0, 0, 0, .03)',
+}
+
 /** Wrap a triplet/quad token value as a literal CSS color for NaiveUI (seemly-safe). */
 function toColor(value: string): string {
     return value.split(',').length === 4 ? `rgba(${value})` : `rgb(${value})`
 }
 
-/** Emit the CSS custom properties for both modes (consumed by Tailwind skin tokens). */
+/** Emit the CSS custom properties (colors for both modes; radius + elevation once). */
 export function buildThemeCss(): string {
-    const toVars = (tokens: ColorTokens) =>
+    const toVars = (tokens: Record<string, string>) =>
         Object.entries(tokens).map(([name, value]) => `--${name}:${value};`).join('')
-    return `:root{${toVars(lightColorTokens)}}html.dark{${toVars(darkColorTokens)}}`
+    const scales = toVars(radiusTokens) + toVars(elevationTokens)
+    return `:root{${toVars(lightColorTokens)}${scales}}html.dark{${toVars(darkColorTokens)}}`
 }
 
 /**
@@ -223,5 +250,10 @@ export function buildNaiveCommon(tokens: ColorTokens) {
 
         borderColor: toColor(tokens['border-base']),
         dividerColor: toColor(tokens['border-muted']),
+
+        // Radius parity — keep NaiveUI's internal rounding on the same scale as
+        // the Tailwind rounded-* utilities (literal values; var() is not seemly-safe).
+        borderRadius: radiusTokens['radius'],
+        borderRadiusSmall: radiusTokens['radius-sm'],
     }
 }

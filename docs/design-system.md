@@ -61,10 +61,10 @@ Semantic role names. Use the role, not a raw color — `bg-skin-error`, never `b
 `base` · `muted` · `primary` · `secondary` · `tertiary` · `accent` · `error` · `success` · `warning` · `info`
 
 ### Radius
-A native radius scale (seeded from NaiveUI's `borderRadius`). Use Tailwind's `rounded-*` utilities bound to the scale; do not hardcode `rounded-[7px]`.
+A native radius scale defined in `app/theme/palette.ts` (`radiusTokens`, seeded from NaiveUI's `borderRadius` `3px` / `borderRadiusSmall` `2px`), emitted as CSS vars (`--radius-sm` · `--radius` · `--radius-lg` · `--radius-xl` · `--radius-2xl` · `--radius-3xl`) and bound to Tailwind's `rounded-*` utilities. Use `rounded` · `rounded-sm` · `rounded-md` · `rounded-lg` · `rounded-xl` · `rounded-2xl` · `rounded-3xl` (`rounded-none` / `rounded-full` unchanged); do not hardcode `rounded-[7px]`. NaiveUI's own rounding is set from the same scale via `common.borderRadius` for parity.
 
 ### Elevation
-Shadow/elevation tokens for raised surfaces. Use the elevation utilities; do not write one-off `shadow-[...]`.
+Shadow/elevation tokens for raised surfaces, defined in `app/theme/palette.ts` (`elevationTokens`, seeded from NaiveUI's `boxShadow1/2/3`) and emitted as CSS vars (`--elevation-1` · `--elevation-2` · `--elevation-3`). Use `shadow-elevation-1` · `shadow-elevation-2` · `shadow-elevation-3` (or the semantic aliases `shadow` · `shadow-md` · `shadow-lg`); do not write one-off `shadow-[...]`.
 
 > Spacing is **not** tokenized here — use Tailwind's built-in spacing scale (`gap-*`, `p-*`, `m-*`) for layout.
 
@@ -86,6 +86,7 @@ Shadow/elevation tokens for raised surfaces. Use the elevation utilities; do not
 | `bodyColor` | `bg-base` |
 | `cardColor` / `modalColor` / `popoverColor` / `tableColor` | `bg-surface` |
 | `borderColor` / `dividerColor` | `border-base` / `border-muted` |
+| `borderRadius` / `borderRadiusSmall` | `radius` / `radius-sm` (from `radiusTokens`) |
 
 To extend NaiveUI coverage, add the key to `buildNaiveCommon()` pointing at a palette token.
 

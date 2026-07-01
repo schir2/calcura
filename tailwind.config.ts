@@ -55,6 +55,33 @@ export default {
                 '14': 'repeat(14, minmax(0, 1fr))',
                 '15': 'repeat(15, minmax(0, 1fr))',
             },
+
+            // Radius scale — tokens in app/theme/palette.ts, emitted as CSS vars.
+            // rounded / rounded-sm / rounded-lg ... resolve to the tokens; 'full'
+            // and 'none' stay as-is. See docs/design-system.md, ADR 008.
+            borderRadius: {
+                'none': '0px',
+                'sm': 'var(--radius-sm)',
+                'DEFAULT': 'var(--radius)',
+                'md': 'var(--radius)',
+                'lg': 'var(--radius-lg)',
+                'xl': 'var(--radius-xl)',
+                '2xl': 'var(--radius-2xl)',
+                '3xl': 'var(--radius-3xl)',
+                'full': '9999px',
+            },
+
+            // Elevation scale — shadow-elevation-1/2/3 for raised surfaces, plus
+            // semantic shadow/shadow-md/shadow-lg bound to the same tokens.
+            boxShadow: {
+                'none': 'none',
+                'elevation-1': 'var(--elevation-1)',
+                'elevation-2': 'var(--elevation-2)',
+                'elevation-3': 'var(--elevation-3)',
+                'DEFAULT': 'var(--elevation-1)',
+                'md': 'var(--elevation-2)',
+                'lg': 'var(--elevation-3)',
+            },
             textColor: {
                 skin: {
                     'base': withOpacity('text-base'),

@@ -46,7 +46,7 @@ const textClass = computed<string>(() => {
           <span class="flex justify-between items-center gap-0.5">
             <slot name="tags">
               <template v-for="tag in tags" :key="tag.label">
-                <span class="rounded-full text-skin-success/50 broder border-skin-success/50" v-if="!tag.hide">
+                <span class="rounded-full text-skin-success/50 border border-skin-success/50" v-if="!tag.hide">
                   <n-tooltip v-if="tag.iconName">
                     <template #trigger><base-ico :name="tag.iconName"></base-ico></template>
                     <span class="capitalize" v-if="tag.label">{{ tag.label }}</span>
