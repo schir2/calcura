@@ -1,3 +1,5 @@
+import {buildNaiveCommon, darkColorTokens, lightColorTokens} from './app/theme/palette'
+
 export default defineNuxtConfig({
     future: {
         compatibilityVersion: 4
@@ -12,7 +14,6 @@ export default defineNuxtConfig({
     devtools: {enabled: true},
     modules: [
       '@nuxtjs/supabase',
-      '@vee-validate/nuxt',
       '@nuxt/test-utils/module',
       '@pinia/nuxt',
       '@vueuse/nuxt',
@@ -23,9 +24,12 @@ export default defineNuxtConfig({
         colorModePreference: 'dark',
         iconDownload: false,
         themeConfig: {
+            // Literal colors built from the shared palette (app/theme/palette.ts).
+            // NaiveUI can't consume var() (it runs seemly color-math), so it gets
+            // resolved per-mode values; the same palette also feeds the CSS vars.
             shared: {},
-            light: {},
-            dark: {},
+            light: {common: buildNaiveCommon(lightColorTokens)},
+            dark: {common: buildNaiveCommon(darkColorTokens)},
         }
     },
     supabase: {
@@ -62,12 +66,6 @@ export default defineNuxtConfig({
             bodyAttrs: {
                 class: 'bg-skin-base text-skin-base'
             }
-        }
-    },
-    runtimeConfig: {
-        public: {
-            apiBaseUrl: process.env.API_BASE_URL ?? 'http://localhost:8000/api',
-            apiHost: process.env.API_HOST ?? 'localhost:8000',
         }
     },
     vite: {

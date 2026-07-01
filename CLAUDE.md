@@ -36,7 +36,7 @@ supabase gen types typescript --local > shared/types/database.types.ts  # Regene
 - **Framework:** Nuxt 4 + Vue 3
 - **UI:** NaiveUI + Tailwind CSS
 - **State:** Pinia stores + mitt event bus
-- **Forms:** Vee-Validate + Yup
+- **Forms:** NaiveUI `<n-form>` with `FormRules` (see `app/utils/validators/`)
 - **Charts:** Chart.js via vue-chartjs
 - **Testing:** Vitest + @vue/test-utils + happy-dom
 - **Backend:** Supabase (Postgres + PostgREST + Auth)
@@ -115,10 +115,10 @@ Components under `components/` are grouped by domain (`brokerage/`, `debt/`, `in
 **All color/radius/elevation styling follows [`docs/design-system.md`](docs/design-system.md). Read it before styling anything.**
 
 The short version:
-- **CSS variables in `app/assets/css/tailwind.css` are the single source of truth** for color. Tailwind `skin` tokens and NaiveUI both read from them. See [ADR 008](docs/adr/008-design-tokens-tailwind-source-of-truth.md).
+- **`app/theme/palette.ts` is the single source of truth** for color. It generates the CSS vars (consumed by Tailwind `skin` tokens) and the NaiveUI theme (literal values — NaiveUI can't read `var()`). See [ADR 008](docs/adr/008-design-tokens-tailwind-source-of-truth.md).
 - Use `skin` tokens (`bg-skin-*`, `text-skin-*`, `border-skin-*`) for color — **never raw Tailwind colors** (`text-red-500`, `text-white`) in app/dashboard components.
 - **Always use a NaiveUI component when one exists.** Tailwind is for layout/spacing only.
-- To recolor the app, edit the CSS vars — never patch colors per-component.
+- To recolor the app, edit `palette.ts` — never patch colors per-component or in `tailwind.css`.
 
 ## Architecture Decisions
 

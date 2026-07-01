@@ -16,7 +16,7 @@ A financial planning app that simulates year-by-year financial outcomes — inco
 | Framework | Nuxt 3 + Vue 3 |
 | UI | NaiveUI + Tailwind CSS |
 | State | Pinia |
-| Forms | Vee-Validate + Yup |
+| Forms | NaiveUI FormRules |
 | Charts | Chart.js via vue-chartjs |
 | Backend | Supabase (Postgres + PostgREST + Auth) |
 | Testing | Vitest + @vue/test-utils |

@@ -36,8 +36,8 @@ components/
 - Example: `:growth-rate="income.growth_rate"` — prop is camelCase, data is snake_case
 
 ### Forms
-- Use Vee-Validate for all form validation
-- Schema validators live in `composables/validators/use[Domain]Validator.ts`
+- Use NaiveUI `<n-form :rules>` for all form validation
+- Rules live in `utils/validators/[domain]Rules.ts` (see `app/utils/validators/CLAUDE.md`)
 - Form field names must match snake_case interface properties exactly
 
 ### Emits

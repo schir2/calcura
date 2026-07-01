@@ -11,10 +11,7 @@ composables/
 ├── useTitle.ts             # Page title helper
 ├── useCrudForm.ts          # Form state management
 ├── useRepo.ts
-├── useCurrentTime.ts
-└── validators/             # Vee-Validate schema composables
-    ├── usePlanValidator.ts
-    └── ...
+└── useCurrentTime.ts
 ```
 
 ## Auth composable (`useAuth.ts`)
@@ -34,6 +31,4 @@ Wraps `supabase.auth.*` methods. Do not call Supabase auth methods directly in c
 - **No Supabase calls in components** — call composables; keep components dumb
 - **Import `Database` type** from `#shared/types/database.types` when calling `useSupabaseClient<Database>()` for full type safety
 
-## Validator composables (`validators/`)
-
-Each domain has a Vee-Validate schema composable. These define `yup` schemas for form validation. Field names in schemas must match the snake_case interface names from `types/`.
+Form validation rules live in `utils/validators/`, not here — see `app/utils/validators/CLAUDE.md`.
