@@ -34,6 +34,7 @@ const iconMap = {
   growthRate: 'mdi:trending-up',
   inflation: 'mdi:trending-up',
   interest: 'mdi:trending-up',
+  trendingDown: 'mdi:trending-down',
   essential: 'uil:exclamation-circle',
   deductible: 'mdi:cash',
   fixed: 'mdi:lock',
