@@ -74,7 +74,7 @@ async function handleLogin() {
         await auth.login(credentialsRef.value.email, credentialsRef.value.password)
         message.success('Login Successful')
         loadingBar.finish()
-        await router.push('/')
+        await router.push('/dashboard')
       } catch (error: any) {
         message.error(error?.message ?? 'Login failed')
         loadingBar.error()

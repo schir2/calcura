@@ -60,6 +60,25 @@ A **live sort directive** on a Command Sequence that determines how active comma
 
 The simulation branches on `ordering_type`: under `predefined` it applies the priority algorithm; under `custom` it sorts by `csc.order`. So `csc.order` is authoritative only when `ordering_type = 'custom'`.
 
+## Glossary — Plan Detail Visualization
+
+### Trajectory (spine)
+The plan detail page is organized around the user's financial journey **over time**, not around single-year snapshots. The primary/focal element is a master time-series chart of the whole journey; every other chart is a breakdown of a component of that trajectory. A retirement verdict ("can you retire, and when") is the headline crowning the trajectory. Framing chosen over an account-snapshot layout and a forces-teardown layout — the forces (tax, inflation, interest) become a secondary drill-down layer, not the page's top-level organizing principle. (Grill session 2026-07-01.)
+
+## Glossary — Dashboard / Tools
+
+### Tool
+The umbrella concept for a self-contained feature surfaced as a **card on the dashboard**. The dashboard (`/dashboard`) is a hub — a grid of Tool cards — not a data page. A Tool is either **available** (links to a real route) or **coming-soon** (renders as a non-interactive placeholder card). Only the Planner is available today. (Grill session 2026-07-01.)
+
+### Planner
+The Tool for building and simulating retirement plans. Its card links to the plan listing page (`/plans`), which opens a plan detail page (`/plans/[id]`) where all domain entities (income, expense, debt, brokerage, IRA, etc.) are created and edited. The Planner is the first — currently only — available Tool.
+
+### Visualizer
+A category of Tool: an interactive, educational feature that *visualizes* how a financial concept works (e.g. **Debt Visualizer**, **Investment Visualizer**, **Compound Interest**). Visualizers are distinct from a plan's own entities — the *Debt Visualizer* is an educational Tool and has nothing to do with the deleted `/debts` CRUD page. All Visualizers are coming-soon placeholders for now. Do **not** name a Visualizer after a bare domain (`debt`, `investment`) alone — the "Visualizer" qualifier is what keeps it separate from plan entities.
+
+### Learn / Articles
+A reference library of educational articles (e.g. how 401(k)s work, platform explainers). Surfaced as a Tool card. Tools cross-reference relevant Articles. Coming-soon for now.
+
 ## Decisions
 
 ### Shared validation bounds live in `constants/shared.ts`

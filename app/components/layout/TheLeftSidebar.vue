@@ -1,33 +1,45 @@
 <script setup lang="ts">
 import type {MenuOption} from 'naive-ui'
 import {Icon} from '#components'
+import {tools, isAvailable} from '~/constants/tools'
 
 function renderIcon(name: string) {
-  return () => h(Icon, {name: name})
+  return () => h(Icon, {name})
 }
 
-function renderLabel(label: string, to: string) {
+function renderLink(label: string, to: string) {
   return () => h('span', {class: 'n-menu-label'}, [
     h(resolveComponent('NuxtLink'), {to, class: 'n-menu-link'}, () => label)
   ])
 }
 
+function renderComingSoon(label: string) {
+  return () => h('span', {class: 'flex items-center gap-2'}, [
+    h('span', label),
+    h('span', {class: 'text-xs text-skin-muted'}, 'soon'),
+  ])
+}
+
 const {isAuthenticated} = useAuth()
 const collapsed = ref<boolean>(false)
+
 const menuOptions: MenuOption[] = [
-  {label: renderLabel('Home', '/'), key: 'home', icon: renderIcon('uil:home'),},
-  {label: renderLabel('Dashboard', '/dashboard'), key: 'dashboard', icon: renderIcon('uil:create-dashboard'),},
-  {label: renderLabel('Plans', '/plans'), key: 'plans', icon: renderIcon('mdi:flower-poppy'),},
-  {label: renderLabel('Incomes', '/incomes'), key: 'incomes', icon: renderIcon('mdi:cash'),},
-  {label: renderLabel('Expenses', '/expenses'), key: 'expenses', icon: renderIcon('mdi:cart-outline'),},
-  {label: renderLabel('Debts', '/debts'), key: 'debts', icon: renderIcon('mdi:credit-card-outline'),},
-  {label: renderLabel('Brokerages', '/brokerages'), key: 'brokerages', icon: renderIcon('mdi:chart-line'),},
-  {label: renderLabel('Cash Reserves', '/cash-reserves'), key: 'cash-reserves', icon: renderIcon('mdi:piggy-bank-outline'),},
-  {label: renderLabel('IRAs', '/iras'), key: 'iras', icon: renderIcon('mdi:bank-outline'),},
-  {label: renderLabel('Roth IRAs', '/roth-iras'), key: 'roth-iras', icon: renderIcon('mdi:bank-plus'),},
-  {label: renderLabel('401ks', '/401ks'), key: '401ks', icon: renderIcon('mdi:briefcase-outline'),},
+  {
+    key: 'dashboard',
+    icon: renderIcon('uil:create-dashboard'),
+    label: renderLink('Dashboard', '/dashboard'),
+  },
+  ...tools.map((tool): MenuOption => ({
+    key: tool.id,
+    icon: renderIcon(tool.icon),
+    disabled: !isAvailable(tool),
+    label: isAvailable(tool)
+        ? renderLink(tool.label, tool.route!)
+        : renderComingSoon(tool.label),
+  })),
 ]
 </script>
+
 <template>
   <div class="mr-2">
     <n-layout-sider

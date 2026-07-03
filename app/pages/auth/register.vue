@@ -1,10 +1,5 @@
 <template>
-  <div v-if="registrationSuccess" class="text-center">
-    <h2 class="text-xl font-semibold mb-2">Check your email</h2>
-    <p>We sent a verification link to <strong>{{ registeredEmail }}</strong>. Please click the link in the email to activate your account before logging in.</p>
-    <n-button class="mt-4" @click="$router.push('/auth/login/')">Go to Login</n-button>
-  </div>
-  <n-form v-else-if="!isAuthenticated" ref="registrationForm" :model="registration" :rules="rules">
+  <n-form v-if="!isAuthenticated" ref="registrationForm" :model="registration" :rules="rules">
     <n-form-item path="email" label="Email">
       <n-input placeholder="Email" v-model:value="registration.email"></n-input>
     </n-form-item>
@@ -41,8 +36,6 @@ const message = useMessage()
 const loadingBar = useLoadingBar()
 const isRegisterLoading = ref<boolean>(false)
 const isLogoutLoading = ref<boolean>(false)
-const registrationSuccess = ref<boolean>(false)
-const registeredEmail = ref<string>('')
 
 type Registration = {
   email: string
@@ -92,9 +85,9 @@ async function handleRegister() {
       loadingBar.start()
       try {
         await auth.register(registration.value.email, registration.value.password)
-        registeredEmail.value = registration.value.email
-        registrationSuccess.value = true
+        message.success('Registration Successful')
         loadingBar.finish()
+        await router.push('/dashboard')
       } catch (error: any) {
         message.error(error?.message ?? 'Registration failed')
         loadingBar.error()

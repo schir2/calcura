@@ -1,59 +1,20 @@
 <script lang="ts" setup>
+import {tools} from '~/constants/tools'
 
 definePageMeta({
-      title: 'Calcura Dashboard',
-      layout: 'default',
-    }
-)
-const planStore = usePlanStore()
-const user = useSupabaseUser()
-const {profile} = storeToRefs(useProfileStore())
-
-onMounted(() => planStore.fetchAll())
-
+  title: 'Calcura Dashboard',
+  layout: 'default',
+})
 </script>
+
 <template>
-  <div class="content-grid space-y-8">
-    <h1 class="full-width text-6xl text-center">Calcura Dashboard</h1>
-    <p class="content text-lg text-center">Welcome back {{ user?.email }}</p>
-    <div class="breakout grid grid-cols-2 gap-2">
-      <dashboard-plans v-if="planStore.list.length" :plans="planStore.list"/>
-      <dashboard-profile v-if="profile" :profile="profile"/>
+  <div class="max-w-6xl mx-auto px-4 space-y-8 py-6">
+    <header class="space-y-1">
+      <h1 class="text-4xl">Dashboard</h1>
+      <p class="text-skin-muted text-lg">Pick a tool to get started.</p>
+    </header>
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <DashboardToolCard v-for="tool in tools" :key="tool.id" :tool="tool"/>
     </div>
   </div>
 </template>
-<style scoped>
-.content-grid {
-  --padding-inline: 1rem;
-  --content-max-width: 900px;
-  --breakout-max-width: 1200px;
-
-  --breakout-size: calc(
-      (var(--breakout-max-width) - var(--content-max-width)) / 2
-  );
-
-  display: grid;
-  grid-template-columns:
-    [full-width-start] minmax(var(--padding-inline), 1fr)
-    [breakout-start] minmax(0, var(--breakout-size))
-    [content-start] min(
-      100% - (var(--padding-inline) * 2),
-      var(--content-max-width)
-    )
-    [content-end]
-    minmax(0, var(--breakout-size)) [breakout-end]
-    minmax(var(--padding-inline), 1fr) [full-width-end];
-}
-
-.content-grid > .content {
-  grid-column: content;
-}
-
-.content-grid > .breakout {
-  grid-column: breakout;
-}
-
-.content-grid > .full-width {
-  grid-column: full-width;
-}
-</style>

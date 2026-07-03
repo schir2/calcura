@@ -13,12 +13,12 @@ export default defineNuxtConfig({
     ],
     devtools: {enabled: true},
     modules: [
-      '@nuxtjs/supabase',
-      '@nuxt/test-utils/module',
-      '@pinia/nuxt',
-      '@vueuse/nuxt',
-      '@nuxt/icon',
-      '@bg-dev/nuxt-naiveui',
+        '@nuxtjs/supabase',
+        '@nuxt/test-utils/module',
+        '@pinia/nuxt',
+        '@vueuse/nuxt',
+        '@nuxt/icon',
+        '@bg-dev/nuxt-naiveui',
     ],
     naiveui: {
         colorModePreference: 'dark',

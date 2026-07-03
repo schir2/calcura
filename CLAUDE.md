@@ -150,6 +150,9 @@ Before making any file changes, follow this step-through workflow by default:
 
 ## Conventions
 
+### Code style
+- **Use as few comments as possible — only when absolutely necessary.** Prefer self-documenting code (clear names, small functions) over explanatory comments. Do not add comments that restate what the code already says. Reserve comments for genuinely non-obvious rationale ("why", not "what").
+
 ### Do
 - Keep business logic in `models/`, not in components or stores
 - Use `useSupabaseClient()` in composables for all DB access
