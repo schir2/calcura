@@ -1,5 +1,21 @@
 import PlanManager from "~/models/plan/PlanManager";
 import type {CommandSequenceWithRelations} from "#shared/types/CommandSequence";
+import type {ManagerStates} from "#shared/types/ManagerStates";
+import type {ModelName} from "#shared/types/ModelName";
+import type {BaseState} from "#shared/types/BaseState";
+import type BaseManager from "~/models/common/BaseManager";
+
+function snapshotManagerStates(planManager: PlanManager): ManagerStates {
+    const result: ManagerStates = {}
+    for (const [modelName, managers] of Object.entries(planManager.managers) as [ModelName, BaseManager<any, any>[]][]) {
+        const byId: Record<number, BaseState[]> = {}
+        for (const manager of managers) {
+            byId[manager.getConfig().id] = manager.getStates()
+        }
+        result[modelName] = byId
+    }
+    return result
+}
 
 export const orchestratorStore = defineStore('orchestrator', () => {
     const planId = ref<number | null>(null)
@@ -66,8 +82,8 @@ export const orchestratorStore = defineStore('orchestrator', () => {
     function simulate(commandSequence: CommandSequenceWithRelations) {
         if (!planWithRelations.value) return
         const planManager = new PlanManager(planWithRelations.value)
-        return planManager.simulate(commandSequence)
-
+        const states = planManager.simulate(commandSequence)
+        return {states, managerStates: snapshotManagerStates(planManager)}
     }
 
     return {
