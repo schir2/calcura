@@ -2,13 +2,13 @@
 import type {PlanInsert, PlanUpdate} from "#shared/types/Plan";
 
 const planStore = usePlanStore()
+const {results, pending, refresh} = usePlanSimulations()
 const showModal = ref(false)
-
-onMounted(() => planStore.fetchAll())
 
 async function handleCreatePlan(insert: PlanInsert) {
   await planStore.create(insert)
   showModal.value = false
+  await refresh()
 }
 
 function handleClickCreatePlan() {
@@ -17,12 +17,13 @@ function handleClickCreatePlan() {
 
 async function handleDeletePlan(id: number) {
   await planStore.purge(id)
+  await refresh()
 }
 
 async function handleUpdatePlan(id: number, update: PlanUpdate) {
   await planStore.patch(id, update)
+  await refresh()
 }
-
 </script>
 
 <template>
@@ -46,9 +47,26 @@ async function handleUpdatePlan(id: number, update: PlanUpdate) {
         @cancel="showModal = false"
     />
   </n-modal>
+
+  <div v-if="pending && !results.length" class="plan-grid-skeleton">
+    <n-card v-for="n in 3" :key="n" size="small">
+      <n-skeleton text :repeat="2"/>
+      <n-skeleton class="mt-3" height="130px" :sharp="false"/>
+    </n-card>
+  </div>
   <PlanList
-      :plans="planStore.list"
+      v-else
+      :results="results"
+      :loading="pending"
       @update="handleUpdatePlan"
       @delete="handleDeletePlan"
-  ></PlanList>
+  />
 </template>
+
+<style scoped>
+.plan-grid-skeleton {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+  gap: 1rem;
+}
+</style>
