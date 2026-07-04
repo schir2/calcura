@@ -60,6 +60,40 @@ A **live sort directive** on a Command Sequence that determines how active comma
 
 The simulation branches on `ordering_type`: under `predefined` it applies the priority algorithm; under `custom` it sorts by `csc.order`. So `csc.order` is authoritative only when `ordering_type = 'custom'`.
 
+### Manager State History
+The per-entity year-by-year `TState[]` held privately on each `BaseManager` (`this.states`, exposed via `manager.getStates()`). Distinct from [[Command Sequence]]'s aggregate output: `OrchestratorState` collapses the same figures by *category* (`assets.taxable`, `assets.cash_reserve`, …) and discards per-entity granularity. The real per-item series a subgraph needs already exists here — it is simply not surfaced to the frontend today. (Grill session 2026-07-03.)
+
+## Glossary — Retirement Expenses
+
+Expenses behave differently before and after the retirement boundary. Two fields on the
+`expense` row model this (both defaulted so existing plans and the #65 timeline extension are
+unchanged). (Grill session 2026-07-03.)
+
+### Retirement Spending Percentage (`retirement_spending_percentage`)
+The portion of an expense's `amount` that applies once the plan is retired. A percent, default
+`100`. `0` = the expense stops at retirement (commuting, work clothes); `100` = continues
+unchanged (groceries, utilities); between = partial reduction (dining out); **above `100` is
+allowed** = the expense grows in retirement (healthcare, travel). Applied uniformly to the
+(already inflation-grown) `amount` for every retired year — **no special-casing**: it multiplies
+every expense the same way, including `is_retirement_only` ones. During working years it does
+not apply (the amount is used as-is). Validated with a domain-specific
+`MAX_RETIREMENT_SPENDING_PERCENTAGE` (proposed `500`), not the shared `MAX_PERCENTAGE=100`.
+Entered via an `n-input-number` (not a slider — a slider can't cleanly exceed 100%). `100` is
+the "unaffected" value, so no separate disable toggle is needed.
+
+### Retirement-Only Expense (`is_retirement_only`)
+A boolean, default `false`. When `true`, the expense contributes **nothing during working
+years** and only begins at the retirement boundary (long-term care, Medigap). Needed because a
+percentage-of-working-amount alone can't express it — the working amount is `0`, so any
+percentage of it is `0`. This is the one scenario the slider can't cover; the bool covers it.
+It does not interact specially with the percentage: once retired, a retirement-only expense is
+scaled by `retirement_spending_percentage` like any other.
+
+### Retirement boundary
+The year at which the plan becomes retired. Today `retired` exists on `OrchestratorState` but
+is never flipped and retirement is only a loop-stop; issues #65/#66 make retirement an ongoing
+simulated state, at which point retirement-expense logic keys off that same signal.
+
 ## Glossary — Plan Detail Visualization
 
 ### Trajectory (spine)
@@ -79,7 +113,15 @@ A category of Tool: an interactive, educational feature that *visualizes* how a 
 ### Learn / Articles
 A reference library of educational articles (e.g. how 401(k)s work, platform explainers). Surfaced as a Tool card. Tools cross-reference relevant Articles. Coming-soon for now.
 
+## Glossary — Plan Detail Visualization (cont.)
+
+### Rich List Item (proposed)
+The redesigned command-sequence list item: an expanded, more informative rendering of a single [[Command]] (one financial entity) inside a Command Sequence, replacing today's terse title + tags + summary in `command/ListItem.vue`. Aims to surface the entity's active configuration (strategy, key params), its real value, and a per-item subgraph sourced from [[Manager State History]]. It is a *learn-and-play* surface — its inline explainers cross-reference the [[Learn / Articles]] library rather than owning long-form content. (Grill session 2026-07-03.)
+
 ## Decisions
+
+### Rich List Item subgraphs show real attributed simulation output, not standalone projections
+The [[Rich List Item]] subgraph is sourced from [[Manager State History]] (the entity's real per-year states inside the full simulation) — **not** a decoupled per-item projection like `brokerage/ProjectionChart.vue`. Rationale: a standalone projection ignores contribution limits, command ordering, and the retirement cutoff, so it would show a *different* number than the plan actually produces — two conflicting curves for one account. The engine math needs no change; the work is plumbing per-manager state out through the store to the item. The subgraph is independently droppable if that plumbing balloons — first thing to cut, not a blocker for the rest of the redesign. (Grill session 2026-07-03.)
 
 ### Shared validation bounds live in `constants/shared.ts`
 Cross-domain bounds (`MIN_NAME_LENGTH=3`, `MAX_NAME_LENGTH=32`, `MIN_GROWTH_RATE=0`, `MAX_GROWTH_RATE=200`, `DEFAULT_GROWTH_RATE=6`, `MIN_PERCENTAGE=0`, `MAX_PERCENTAGE=100`) are extracted from `planConstants.ts` into a new `constants/shared.ts`. The differing name lengths across domains (2, 3, 50) were drift, not intent — standardised to min=3, max=32.

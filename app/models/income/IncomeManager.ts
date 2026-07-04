@@ -11,8 +11,13 @@ export class IncomeManager extends BaseManager<Income, IncomeState> {
     }
 
     createNextState(previousState: IncomeState): IncomeState {
+        // Income stops after retirement (#66). Zeroing gross_income here cascades to everything
+        // that reads it — plan income totals and contribution calcs (401k/IRA percentage_of_income,
+        // employer match) that pull `incomeManager.getCurrentState().gross_income` directly.
         return {
-            gross_income: previousState.gross_income + this.getGrowthAmount(previousState.gross_income),
+            gross_income: this.orchestrator.getCurrentState().retired
+                ? 0
+                : previousState.gross_income + this.getGrowthAmount(previousState.gross_income),
             processed: false,
         }
     }

@@ -526,7 +526,14 @@ export default class PlanManager extends BaseOrchestrator<PlanWithRelations, Orc
         return this._managers.debt.reduce((total, debtManager) => total + debtManager.getCurrentState().principal_start_of_year, 0)
     }
 
+    isRetired(): boolean {
+        return this.states.length > 0 && this.getCurrentState().retired
+    }
+
     getGrossIncome() {
+        if (this.isRetired()) {
+            return 0
+        }
         return this._managers.income.reduce((grossIncome, incomeManager) => grossIncome + incomeManager.getCurrentState().gross_income, 0)
     }
 
@@ -557,7 +564,78 @@ export default class PlanManager extends BaseOrchestrator<PlanWithRelations, Orc
         })
     }
 
-    simulate(commandSequence?: CommandSequenceWithRelations, maxIterations: number = 60): OrchestratorState[] {
+    private liquidateFromManager(manager: BaseManager<any, any>, amount: number): number {
+        const states = manager.getStates()
+        const upcoming = states[states.length - 1] as { balance_start_of_year?: number }
+        const justProcessed = states[states.length - 2] as { balance_end_of_year?: number } | undefined
+        const available = upcoming?.balance_start_of_year ?? 0
+        const taken = Math.min(available, Math.max(0, amount))
+        if (upcoming) upcoming.balance_start_of_year = available - taken
+        if (justProcessed && justProcessed.balance_end_of_year !== undefined) {
+            justProcessed.balance_end_of_year -= taken
+        }
+        return taken
+    }
+
+    withdrawFromSavings(amountNeeded: number): number {
+        let remaining = Math.max(0, amountNeeded)
+        let raised = 0
+        const tiers: { bucket: 'taxable' | 'tax_deferred' | 'tax_exempt', managers: BaseManager<any, any>[] }[] = [
+            {bucket: 'taxable', managers: this._managers.brokerage},
+            {bucket: 'tax_deferred', managers: [...this._managers.tax_deferred, ...this._managers.ira, ...this._managers.hsa]},
+            {bucket: 'tax_exempt', managers: this._managers.roth_ira},
+        ]
+        for (const tier of tiers) {
+            if (remaining <= 0) break
+            const state = this.getCurrentState()
+            const available = state.assets[tier.bucket].balance_end
+            const take = Math.min(available, remaining)
+            if (take <= 0) continue
+            state.assets[tier.bucket].balance_end = available - take
+            this.updateCurrentState(state)
+            let toReduce = take
+            for (const manager of tier.managers) {
+                if (toReduce <= 0) break
+                toReduce -= this.liquidateFromManager(manager, toReduce)
+            }
+            remaining -= take
+            raised += take
+        }
+        return raised
+    }
+
+    private drawDownForRetirement(): void {
+        const shortfall = this.getCurrentState().liabilities.expense.shortfall
+        if (shortfall <= 0) return
+        const raised = this.withdrawFromSavings(shortfall)
+        if (raised <= 0) return
+        const state = this.getCurrentState()
+        this.updateCurrentState({
+            ...state,
+            liabilities: {
+                ...state.liabilities,
+                expense: {
+                    ...state.liabilities.expense,
+                    paid: state.liabilities.expense.paid + raised,
+                    shortfall: state.liabilities.expense.shortfall - raised,
+                    balance_end: state.liabilities.expense.shortfall - raised,
+                    paid_lifetime: state.liabilities.expense.paid_lifetime + raised,
+                    shortfall_lifetime: state.liabilities.expense.shortfall_lifetime - raised,
+                },
+            },
+        })
+    }
+
+    getDepletionAge(): number | null {
+        for (const state of this.states) {
+            if (state.retired && state.liabilities.expense.shortfall > 0.01) {
+                return state.plan.age
+            }
+        }
+        return null
+    }
+
+    simulate(commandSequence?: CommandSequenceWithRelations, maxIterations: number = 120): OrchestratorState[] {
         this.reset()
         const activeCommands: CommandSequenceCommandWithRelations[] = commandSequence
             ? [...commandSequence.command_sequence_commands]
@@ -574,9 +652,12 @@ export default class PlanManager extends BaseOrchestrator<PlanWithRelations, Orc
                 manager?.process()
                 manager?.advanceTimePeriod()
             })
+            if (this.isRetired()) {
+                this.drawDownForRetirement()
+            }
             this.process()
-            if (this.canRetire()) {
-                return this.states
+            if (!this.getCurrentState().retired && this.canRetire()) {
+                this.updateCurrentState({...this.getCurrentState(), retired: true})
             }
             if (i === maxIterations - 1) {
                 break

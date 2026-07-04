@@ -546,19 +546,117 @@ describe("PlanManager", () => {
     });
 
     describe("simulate", () => {
-        it("should correctly simulate the plan over multiple years", () => {
-            // age strategy: age=30, retirement_age=65 → 36 states (ages 30–65)
+        it("should simulate the full lifetime through life expectancy", () => {
+            // age strategy: age=30, retirement_age=65, life_expectancy=85
+            // → runs past retirement to life expectancy: 56 states (ages 30–85)
             const states = planManager.simulate()
-            expect(states.length).toBe(36)
-            expect(states[states.length - 1].plan.age).toBe(65)
-            expect(states[states.length - 1].retired).toBe(false)
+            expect(states.length).toBe(56)
+            expect(states[states.length - 1].plan.age).toBe(85)
+            expect(states[states.length - 1].retired).toBe(true)
+        });
+
+        it("latches `retired` at the retirement year and keeps it set through the end", () => {
+            const states = planManager.simulate()
+            const preRetire = states.find(state => state.plan.age === 64)!
+            const atRetire = states.find(state => state.plan.age === 65)!
+            expect(preRetire.retired).toBe(false)
+            expect(atRetire.retired).toBe(true)
+            expect(states.filter(state => state.plan.age < 65).every(state => !state.retired)).toBe(true)
+            expect(states.filter(state => state.plan.age >= 65).every(state => state.retired)).toBe(true)
+        });
+
+        it("stops income after retirement (#66)", () => {
+            // age strategy retires at 65; income is the last full year at 65, zero from 66 on
+            const states = planManager.simulate()
+            const working = states.find(state => state.plan.age === 50)!
+            const retirementYear = states.find(state => state.plan.age === 65)!
+            const retired = states.find(state => state.plan.age === 70)!
+            expect(working.income.gross).toBe(150_000)
+            expect(retirementYear.income.gross).toBe(150_000)
+            expect(retired.income.gross).toBe(0)
+        });
+
+        it("stops income-driven contributions after retirement (#66)", () => {
+            // income (percentage_of_income) drives the 401k elective contribution; once income
+            // stops, the contribution must fall to zero (no phantom contributions)
+            const seq = {
+                ordering_type: 'predefined',
+                command_sequence_commands: [
+                    {id: 1, order: 1, is_active: true, command: {model_name: 'income', model_id: 1}},
+                    {id: 2, order: 2, is_active: true, command: {model_name: 'tax_deferred', model_id: 1}},
+                ],
+            } as any
+            planManager.simulate(seq)
+            const taxDeferredStates = planManager.getManagerById('tax_deferred', 1).getStates()
+            const processed = taxDeferredStates.filter(state => state.processed)
+            const lastProcessed = processed[processed.length - 1]
+            expect(processed.some(state => (state.elective_contribution ?? 0) > 0)).toBe(true)
+            expect(lastProcessed.elective_contribution).toBe(0)
+        });
+
+        it("draws down savings for retirement expenses and detects depletion (#67)", () => {
+            // income 60k (net 42k) > expense 40k while working; retire at 61 → income off from 62.
+            // Only 30k in a brokerage → drawdown exhausts it and the money runs out at 62.
+            const config = {
+                ...planConfig,
+                age: 60, retirement_age: 61, life_expectancy: 70, retirement_strategy: 'age',
+                incomes: [{id: 1, name: 'Salary', gross_income: 60_000, growth_rate: 0, income_type: 'ordinary', frequency: 'annual'}],
+                expenses: [{id: 1, name: 'Living', frequency: 'annual', amount: 40_000, expense_type: 'fixed', growth_rate: 0, is_essential: true, is_tax_deductible: false, grows_with_inflation: false}],
+                brokerages: [{id: 1, name: 'Brokerage', growth_rate: 0, initial_balance: 30_000, contribution_strategy: 'fixed', contribution_percentage: 0, contribution_fixed_amount: 0}],
+                tax_deferreds: [], iras: [], roth_iras: [], hsas: [], debts: [], cash_reserves: [],
+            }
+            const manager = new PlanManager(config as any)
+            const seq = {
+                ordering_type: 'predefined',
+                command_sequence_commands: [
+                    {id: 1, order: 1, is_active: true, command: {model_name: 'income', model_id: 1}},
+                    {id: 2, order: 2, is_active: true, command: {model_name: 'expense', model_id: 1}},
+                    {id: 3, order: 3, is_active: true, command: {model_name: 'brokerage', model_id: 1}},
+                ],
+            } as any
+            const states = manager.simulate(seq)
+            // brokerage (taxable) is drawn down in retirement
+            const preRetire = states.find(state => state.plan.age === 61)!
+            const afterDrawdown = states.find(state => state.plan.age === 62)!
+            expect(preRetire.assets.taxable.balance_end).toBe(30_000)
+            expect(afterDrawdown.assets.taxable.balance_end).toBe(0)
+            // money runs out the first retired year savings can't cover the shortfall
+            expect(manager.getDepletionAge()).toBe(62)
+        });
+
+        it("lasts to life expectancy when savings are ample — no depletion (#67)", () => {
+            const config = {
+                ...planConfig,
+                age: 60, retirement_age: 61, life_expectancy: 70, retirement_strategy: 'age',
+                incomes: [{id: 1, name: 'Salary', gross_income: 60_000, growth_rate: 0, income_type: 'ordinary', frequency: 'annual'}],
+                expenses: [{id: 1, name: 'Living', frequency: 'annual', amount: 40_000, expense_type: 'fixed', growth_rate: 0, is_essential: true, is_tax_deductible: false, grows_with_inflation: false}],
+                brokerages: [{id: 1, name: 'Brokerage', growth_rate: 0, initial_balance: 2_000_000, contribution_strategy: 'fixed', contribution_percentage: 0, contribution_fixed_amount: 0}],
+                tax_deferreds: [], iras: [], roth_iras: [], hsas: [], debts: [], cash_reserves: [],
+            }
+            const manager = new PlanManager(config as any)
+            const seq = {
+                ordering_type: 'predefined',
+                command_sequence_commands: [
+                    {id: 1, order: 1, is_active: true, command: {model_name: 'income', model_id: 1}},
+                    {id: 2, order: 2, is_active: true, command: {model_name: 'expense', model_id: 1}},
+                    {id: 3, order: 3, is_active: true, command: {model_name: 'brokerage', model_id: 1}},
+                ],
+            } as any
+            const states = manager.simulate(seq)
+            const last = states[states.length - 1]
+            expect(manager.getDepletionAge()).toBeNull()
+            // savings were tapped (declined) but survived, and retired expenses were fully covered
+            expect(last.assets.taxable.balance_end).toBeLessThan(2_000_000)
+            expect(last.assets.taxable.balance_end).toBeGreaterThan(0)
+            const retiredStates = states.filter(state => state.retired)
+            expect(retiredStates.every(state => state.liabilities.expense.shortfall <= 0.01)).toBe(true)
         });
 
         it("should execute all commands if provided", () => {
             const emptySequence = {command_sequence_commands: []} as any
             const states = planManager.simulate(emptySequence)
-            expect(states.length).toBe(36)
-            expect(states[states.length - 1].plan.age).toBe(65)
+            expect(states.length).toBe(56)
+            expect(states[states.length - 1].plan.age).toBe(85)
         });
 
         it("should correctly process unprocessed states for all managers", () => {
