@@ -15,6 +15,8 @@ understand *why* the codebase is shaped the way it is.
 | [005](005-snake-case-field-names.md) | snake_case throughout TypeScript types | Accepted |
 | [006](006-income-id-on-junction-tables.md) | IRA income association lives on junction table | Accepted |
 | [007](007-supabase-redirect-false.md) | Disable @nuxtjs/supabase redirect middleware | Accepted |
+| [008](008-design-tokens-tailwind-source-of-truth.md) | Design tokens: palette.ts as single source of truth | Accepted |
+| [009](009-hsa-not-income-linked.md) | HSA is not income-linked; health-insurance modeling deferred | Accepted |
 
 ## Format
 
