@@ -1,4 +1,4 @@
-const PUBLIC_ROUTES = ['/auth/login', '/auth/register', '/auth/verify', '/auth/unauthorized', '/']
+const PUBLIC_ROUTES = ['/auth/login', '/auth/register', '/auth/verify', '/auth/callback', '/auth/unauthorized', '/']
 
 export default defineNuxtRouteMiddleware((to) => {
     const user = useSupabaseUser()
