@@ -11,6 +11,7 @@ import type {RothIraInsert, RothIraUpdate} from "#shared/types/RothIra"
 import type {HsaInsert, HsaUpdate} from "#shared/types/Hsa"
 import type {ModelName} from "#shared/types/ModelName"
 import type {OrchestratorState} from "#shared/types/OrchestratorState"
+import type {ManagerStates} from "#shared/types/ManagerStates"
 
 definePageMeta({
   layout: 'default',
@@ -161,6 +162,7 @@ async function handleDeletePlan(id: number) {
 
 const activeCommandSequenceId = ref<number | null>(null)
 const planStates = ref<OrchestratorState[] | null>(null)
+const managerStates = ref<ManagerStates | null>(null)
 const showDataTable = ref<boolean>(false)
 
 watchEffect(() => {
@@ -172,10 +174,13 @@ watchEffect(() => {
   const commandSequence = activeCommandSequenceId.value
       ? commandSequenceStore.get(activeCommandSequenceId.value)
       : undefined
-  planStates.value = orchestrator.simulate(commandSequence!) ?? null
+  const result = orchestrator.simulate(commandSequence!)
+  planStates.value = result?.states ?? null
+  managerStates.value = result?.managerStates ?? null
 })
 
 provide('planStates', planStates)
+provide('managerStates', managerStates)
 
 const activeExpensesAndDebts = computed((): { expenses: Expense[], debts: Debt[] } => {
   const result: { expenses: Expense[], debts: Debt[] } = {expenses: [], debts: []}
