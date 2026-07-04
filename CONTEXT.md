@@ -99,6 +99,10 @@ simulated state, at which point retirement-expense logic keys off that same sign
 ### Trajectory (spine)
 The plan detail page is organized around the user's financial journey **over time**, not around single-year snapshots. The primary/focal element is a master time-series chart of the whole journey; every other chart is a breakdown of a component of that trajectory. A retirement verdict ("can you retire, and when") is the headline crowning the trajectory. Framing chosen over an account-snapshot layout and a forces-teardown layout — the forces (tax, inflation, interest) become a secondary drill-down layer, not the page's top-level organizing principle. (Grill session 2026-07-01.)
 
+The spine chart is a **stacked-area "net worth over time"**: the four asset buckets + un-invested cash as colored bands climbing over the years, optional net-worth line overlaid. Matches the industry convention (ProjectionLab, Boldin, Empower all lead with this). Debt is **not** stacked below the axis in the spine — it gets its own dedicated paydown chart in the liabilities section. Pie/donut charts are reserved for true single-instant composition snapshots (e.g. current asset allocation), never for journey data — this is why the old expense/gross-savings pies felt wrong. (Grill session 2026-07-04.)
+
+Below the hero, the page is a **single vertical scroll of three domain sections — Income, Investments, Liabilities** (in that order), each a labeled section header + its own charts/stats. Chosen over a tabbed variant (everything-visible beats one-domain-at-a-time for the "see the whole picture" goal). Confirmed against a clickable prototype 2026-07-04. Section accent colors: Income = green, Investments = blue, Liabilities = red. (Grill session 2026-07-04.)
+
 ## Glossary — Dashboard / Tools
 
 ### Tool
@@ -116,7 +120,32 @@ A reference library of educational articles (e.g. how 401(k)s work, platform exp
 ## Glossary — Plan Detail Visualization (cont.)
 
 ### Rich List Item (proposed)
-The redesigned command-sequence list item: an expanded, more informative rendering of a single [[Command]] (one financial entity) inside a Command Sequence, replacing today's terse title + tags + summary in `command/ListItem.vue`. Aims to surface the entity's active configuration (strategy, key params), its real value, and a per-item subgraph sourced from [[Manager State History]]. It is a *learn-and-play* surface — its inline explainers cross-reference the [[Learn / Articles]] library rather than owning long-form content. (Grill session 2026-07-03.)
+The redesigned command-sequence list item: an expanded, more informative rendering of a single [[Command]] (one financial entity) inside a Command Sequence, replacing today's terse title + tags + summary in `command/ListItem.vue`. Aims to surface the entity's active configuration (strategy, key params), its real value, and a per-item subgraph sourced from [[Manager State History]]. It is a *learn-and-play* surface. (Grill session 2026-07-03.)
+
+### Rich List Item density model (collapse / expand)
+Two persistent resting states — **collapsed** (compact row: essentials + mini-sparkline) and **expanded** (full subgraph + config + education affordance) — defaulting to **collapsed** so the sequence opens tidy and scannable. Controlled at two scopes: a **per-item** chevron (study one entity) and a **global** expand-all / collapse-all on the sequence header (bulk). A third, **transient** layer overrides both: the moment a drag starts, every card collapses regardless of state (rich cards are un-draggable); on drop, each card restores its prior per-item state. Drag only occurs in `custom` [[`ordering_type`]] mode (it is disabled under `predefined`), so the drag-collapse only fires where reordering is possible. Precedence, one chain not three fighting booleans: **drag override → per-item state ← seeded by global toggle**. Nothing about expand state is persisted server-side. (Grill session 2026-07-04.)
+
+### Headline Value
+The single most decision-relevant number shown on a collapsed [[Rich List Item]], sourced from [[Manager State History]] (real sim), not a static config field. It is the **punchline**, not the annual flow — domain-defined:
+- Investments (brokerage / IRA / Roth / tax-deferred / HSA) → **projected balance at retirement**; annual contribution demoted to a secondary chip.
+- Cash Reserve → **target reserve** it builds toward (+ whether funded).
+- Income → **annual gross**, current year.
+- Expense → **annual amount**, current year.
+- Debt → **remaining principal** + payoff year.
+
+The collapsed sparkline shows the trajectory that lands on the Headline Value. Open edge cases (defer to prototype): what the investment headline shows when the plan never reaches retirement / the sim doesn't converge, and which year counts as "current" for income/expense (assume year 0). (Grill session 2026-07-04.)
+
+### Rich List Item ownership boundary
+The `command/Sequence.vue` **wrapper** keeps owning the **drag handle** and the **active `n-switch`** — correct because `is_active` and `order` are per-CSC (per-sequence), while the entity's config and [[Manager State History]] are shared across all sequences. The [[Rich List Item]] owns everything else (icon, name, chips, [[Headline Value]], sparkline, expand chevron, edit/delete actions) and composes visually into one seamless card. Collapsed contents: **icon · name · strategy chip · headline value · sparkline · chevron · actions**. When `is_active = false` the whole card dims/desaturates and the sparkline greys/flattens, making "off / not contributing" instantly legible. (Grill session 2026-07-04.)
+
+### Facet (Rich List Item)
+A humanized, strategy-aware display chip declared by the **domain** `ListItem.vue` and passed down to the shared card — a richer extension of today's `tags[]` prop. The domain wrapper interprets raw config into meaning (`contribution_strategy='percentage_of_income', pct=10` → "10% of income"; `='max'` → "Maxing out"); the shared card renders facets dumbly and knows nothing domain-specific. Rejected alternative: a central per-domain descriptor schema — it would pull domain knowledge into a central registry and break the dumb-card / smart-wrapper split the codebase already uses. Collapsed shows the primary strategy facet only; the full facet set is expand-only. (Grill session 2026-07-04.)
+
+### `managerStates` provide (per-entity plumbing)
+How [[Manager State History]] reaches the [[Rich List Item]]. In `[id].vue`'s existing simulate `watchEffect`, immediately after `orchestrator.simulate(seq)`, snapshot per-entity states into a reactive `Record<modelName, Record<modelId, TState[]>>` and `provide('managerStates', …)` — a second, more granular provide alongside the existing `provide('planStates', …)`. Items inject and look up `managerStates[modelName]?.[modelId]`. Chosen over providing the live `orchestrator` object + version counter, which would leak a non-reactive engine object into components and violate the engine's pure/non-reactive mandate. The `PlanManager.getManagerById(modelName, modelId).getStates()` accessor this relies on already exists and is tested (`PlanManager.test.ts`). Known risk (prototype must verify, not a blocker): sparklines only refresh if editing an entity retriggers that `watchEffect` → re-simulate; the chain exists today for the aggregate charts. (Grill session 2026-07-04.)
+
+### Education affordance (content-less for now)
+The [[Rich List Item]] reserves a *place* for educational hints (tooltips / an info affordance answering "what is this, what's it for") but ships **no content** — the [[Learn / Articles]] library that would supply it does not exist yet. The design must degrade gracefully when the blurb/article is absent (the affordance hides or no-ops), and light up automatically once content exists — no rework. Authoring the content is explicitly a **future, separate effort**, out of scope for the list-item redesign. (Grill session 2026-07-04.)
 
 ## Decisions
 
