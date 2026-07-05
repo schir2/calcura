@@ -44,8 +44,6 @@ const headlineValue = computed(() => series.value[series.value.length - 1] ?? 0)
 
 const strategyFacet = computed<RichFacet>(() => {
   switch (hsa.contribution_strategy) {
-    case 'percentage_of_income':
-      return {label: `${hsa.contribution_percentage ?? 0}% of income`, icon: 'growthRate'}
     case 'max':
       return {label: 'Maxing out', icon: 'fixed'}
     default:
