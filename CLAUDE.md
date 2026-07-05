@@ -136,7 +136,7 @@ Key decisions are documented in `docs/adr/`. Read these before making changes th
 - HSA not income-linked / health modeling deferred → ADR 010
 - Strategy-input control (stacked rows with inline reveal, over cards) → ADR 011
 
-Plan detail redesign (three views: Overview / Simulation / Report; Entity Workspace; income-linking) is specified in [`docs/design/plan-detail-redesign.md`](docs/design/plan-detail-redesign.md); its domain vocabulary lives in `CONTEXT.md`.
+Plan detail redesign (three views: Overview / Simulation / Report; Entity Workspace; income-linking) is specified in [`docs/design/plan-detail-redesign.md`](docs/design/plan-detail-redesign.md); its domain vocabulary lives in `CONTEXT.md`. To build out per-domain Entity Workspace drawers (issues #101, #102, #114–#120), follow [`docs/design/entity-workspace-implementation.md`](docs/design/entity-workspace-implementation.md).
 
 ## Change Communication Protocol
 
