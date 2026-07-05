@@ -51,6 +51,8 @@ const planConfig: Plan = {
             is_essential: true,
             is_tax_deductible: false,
             grows_with_inflation: false,
+            retirement_spending_percentage: 100,
+            is_retirement_only: false,
         }
     ],
     debts: [],
@@ -256,6 +258,56 @@ describe("ExpenseManager", () => {
         })
     })
 
+
+    describe('retirement spending', () => {
+        function makeManager(overrides: Partial<Plan['expenses'][number]>) {
+            planManager = new PlanManager({
+                ...planConfig,
+                expenses: [{...planConfig.expenses[0], amount: 100, frequency: 'annual', ...overrides}]
+            })
+            return planManager.getManagerById('expense', 1)
+        }
+
+        it('working year uses full amount even when a retirement percentage is set', () => {
+            expenseManager = makeManager({retirement_spending_percentage: 50})
+            expect(expenseManager.calculatePayment()).toBe(100)
+        })
+
+        it('retirement-only expense is zero while working', () => {
+            expenseManager = makeManager({is_retirement_only: true})
+            expect(expenseManager.calculatePayment()).toBe(0)
+        })
+
+        it('stops at retirement (0%)', () => {
+            expenseManager = makeManager({retirement_spending_percentage: 0})
+            planManager.getCurrentState().retired = true
+            expect(expenseManager.calculatePayment()).toBe(0)
+        })
+
+        it('continues unchanged at retirement (100%)', () => {
+            expenseManager = makeManager({retirement_spending_percentage: 100})
+            planManager.getCurrentState().retired = true
+            expect(expenseManager.calculatePayment()).toBe(100)
+        })
+
+        it('reduces at retirement (50%)', () => {
+            expenseManager = makeManager({retirement_spending_percentage: 50})
+            planManager.getCurrentState().retired = true
+            expect(expenseManager.calculatePayment()).toBe(50)
+        })
+
+        it('grows at retirement (150%)', () => {
+            expenseManager = makeManager({retirement_spending_percentage: 150})
+            planManager.getCurrentState().retired = true
+            expect(expenseManager.calculatePayment()).toBe(150)
+        })
+
+        it('retirement-only expense is active and scaled after retirement', () => {
+            expenseManager = makeManager({is_retirement_only: true, retirement_spending_percentage: 150})
+            planManager.getCurrentState().retired = true
+            expect(expenseManager.calculatePayment()).toBe(150)
+        })
+    })
 
     describe('createNextState', () => {
         it('no growth — base_amount unchanged, growth_amount 0', () => {

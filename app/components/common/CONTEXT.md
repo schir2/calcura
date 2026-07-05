@@ -72,7 +72,8 @@ CSS vars, so `constants/ModelChartColor.ts` resolves the live palette var at run
 
 ## Migration status
 
-`common/RichListItem.vue` **coexists** with the legacy `command/ListItem.vue` (old slot API). Only
-`brokerage` is migrated; the other eight domains still use the legacy card and keep working. As
-#84–91 land, each domain moves to `common/RichListItem`; delete `command/ListItem.vue` once the last
-domain is migrated (folds into #92 cleanup).
+**Complete.** All nine domains (brokerage, income, expense, debt, cash_reserve, tax_deferred,
+roth_ira, ira, hsa) render `common/RichListItem`. The legacy `command/ListItem.vue` slot card and
+the throwaway prototype (`app/pages/prototype/rich-list-item.vue`,
+`app/components/prototype/richListItem/`) have been deleted (#92). This card is now the single list
+row for every entity, inside a command sequence or on a plain listing page.

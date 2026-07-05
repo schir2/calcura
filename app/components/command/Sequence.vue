@@ -206,8 +206,8 @@ function handleDelete(modelName: ModelName, id: number) {
             :expanded="isRowExpanded(command.id)"
             :is-active="command.is_active"
             @toggle="() => toggleRow(command.id)"
-            @update="(id, update) => handleUpdate(command.command.model_name, id, update)"
-            @delete="(id) => handleDelete(command.command.model_name, id)"
+            @update="(id: number, update: Record<string, unknown>) => handleUpdate(command.command.model_name, id, update)"
+            @delete="(id: number) => handleDelete(command.command.model_name, id)"
         />
       </div>
     </template>

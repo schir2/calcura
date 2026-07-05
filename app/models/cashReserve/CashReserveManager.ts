@@ -45,9 +45,8 @@ export class CashReserveManager extends BaseManager<CashReserve, CashReserveStat
     processImplementation() {
         const currentState = this.getCurrentState();
         const contributionRequested = this.calculateContribution()
-        const contribution = this.orchestrator.requestFunds(contributionRequested, FundType.Taxed)
+        const contribution = this.orchestrator.requestAndWithdraw(contributionRequested, FundType.Taxed)
         const cashReserveEndOfYear = currentState.cash_reserve_start_of_year + contribution;
-        this.orchestrator.withdraw(contribution, FundType.Taxed)
         this.orchestrator.contribute(cashReserveEndOfYear, ContributionType.CashReserve)
         this.updateCurrentState({
             ...currentState,

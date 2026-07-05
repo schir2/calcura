@@ -163,7 +163,19 @@ async function handleDeletePlan(id: number) {
 const activeCommandSequenceId = ref<number | null>(null)
 const planStates = ref<OrchestratorState[] | null>(null)
 const managerStates = ref<ManagerStates | null>(null)
-const showDataTable = ref<boolean>(false)
+
+type PlanView = 'overview' | 'simulation' | 'report'
+const PLAN_VIEWS: PlanView[] = ['overview', 'simulation', 'report']
+const router = useRouter()
+const activeView = computed<PlanView>({
+  get() {
+    const view = route.query.view
+    return PLAN_VIEWS.includes(view as PlanView) ? view as PlanView : 'overview'
+  },
+  set(view) {
+    router.replace({query: {...route.query, view}})
+  },
+})
 
 watchEffect(() => {
   if (!orchestrator.loaded) return
@@ -203,58 +215,56 @@ const activeExpensesAndDebts = computed((): { expenses: Expense[], debts: Debt[]
 </script>
 
 <template>
-  <div class="grid plan-container">
-    <n-spin :show="!orchestrator.loaded" style="grid-area:main">
-      <div v-if="orchestrator.planWithRelations" class="space-y-2">
-        <PlanDetailCard
-            :plan="orchestrator.planWithRelations"
-            @update="handleUpdatePlan"
-            @delete="handleDeletePlan"
-        />
-        <n-card>
-          <template #header>
-            <h3 class="text-xl flex items-center gap-2">
-              <base-ico class="text-skin-success" name="create"/>
-              <span>Add Your Stuff</span>
-              <n-button type="primary" @click="showDataTable = true">
-                <template #icon>
-                  <base-ico name="table"/>
+  <n-spin :show="!orchestrator.loaded">
+    <div v-if="orchestrator.planWithRelations" class="space-y-2">
+      <PlanDetailCard
+          :plan="orchestrator.planWithRelations"
+          @update="handleUpdatePlan"
+          @delete="handleDeletePlan"
+      />
+      <n-tabs v-model:value="activeView" type="line" animated>
+        <n-tab-pane name="overview" tab="Overview">
+          <h2 class="text-2xl">Overview</h2>
+        </n-tab-pane>
+        <n-tab-pane name="simulation" tab="Simulation">
+          <div class="grid plan-container">
+            <div class="space-y-2" style="grid-area:main">
+              <n-card>
+                <template #header>
+                  <h3 class="text-xl flex items-center gap-2">
+                    <base-ico class="text-skin-success" name="create"/>
+                    <span>Add Your Stuff</span>
+                  </h3>
                 </template>
-                Show Me the Data
-              </n-button>
-              <n-modal
-                  class="max-w-[1800px] h-[720px]"
-                  v-model:show="showDataTable"
-                  :draggable="true"
-                  preset="card">
-                <template #header>Plan Data</template>
-                <LazyPlanTable v-if="orchestrator.planWithRelations && planStates" :planStates="planStates"/>
-              </n-modal>
-            </h3>
-          </template>
-          <PlanChildCreateButtonList :plan_id="planId" @create-model="handleCreateModel($event)"/>
-        </n-card>
-        <command-tabber
-            :command_sequences="commandSequenceStore.list"
-            :plan="orchestrator.planWithRelations"
-            v-model="activeCommandSequenceId"
-            @update="handleUpdateModel"
-            @delete="handleDeleteModel"
-            @delete-sequence="handleDeleteSequence"
-            @rename-sequence="handleRenameSequence"
-            @create-sequence="handleCreateSequence"
-        />
-      </div>
-    </n-spin>
-    <div class="space-y-2" style="grid-area:charts">
-      <div class="grid grid-cols-2 gap-2">
-        <LazyChartExpensePie :expenses="activeExpensesAndDebts.expenses" :debts="activeExpensesAndDebts.debts"/>
-        <LazyPlanChartGrossSavings v-if="planStates" :states="planStates"/>
-        <LazyPlanChartGrowth v-if="planStates" :states="planStates"/>
-        <LazyPlanChartExpensesOverTime v-if="planStates" :states="planStates"/>
-      </div>
+                <PlanChildCreateButtonList :plan_id="planId" @create-model="handleCreateModel($event)"/>
+              </n-card>
+              <command-tabber
+                  :command_sequences="commandSequenceStore.list"
+                  :plan="orchestrator.planWithRelations"
+                  v-model="activeCommandSequenceId"
+                  @update="handleUpdateModel"
+                  @delete="handleDeleteModel"
+                  @delete-sequence="handleDeleteSequence"
+                  @rename-sequence="handleRenameSequence"
+                  @create-sequence="handleCreateSequence"
+              />
+            </div>
+            <div class="space-y-2" style="grid-area:charts">
+              <div class="grid grid-cols-2 gap-2">
+                <LazyChartExpensePie :expenses="activeExpensesAndDebts.expenses" :debts="activeExpensesAndDebts.debts"/>
+                <LazyPlanChartGrossSavings v-if="planStates" :states="planStates"/>
+                <LazyPlanChartGrowth v-if="planStates" :states="planStates"/>
+                <LazyPlanChartExpensesOverTime v-if="planStates" :states="planStates"/>
+              </div>
+            </div>
+          </div>
+        </n-tab-pane>
+        <n-tab-pane name="report" tab="Report">
+          <LazyPlanTable v-if="planStates" :planStates="planStates"/>
+        </n-tab-pane>
+      </n-tabs>
     </div>
-  </div>
+  </n-spin>
 
 </template>
 

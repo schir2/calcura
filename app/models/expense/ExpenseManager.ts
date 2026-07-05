@@ -38,7 +38,11 @@ export class ExpenseManager extends BaseManager<Expense, ExpenseState> {
 
     calculatePayment(): number {
         const currentState = this.getCurrentState()
-        return this._calculatePayment(currentState.base_amount);
+        const basePayment = this._calculatePayment(currentState.base_amount)
+        if (!this.orchestrator.isRetired()) {
+            return this.config.is_retirement_only ? 0 : basePayment
+        }
+        return basePayment * this.config.retirement_spending_percentage / 100
     }
 
     private _calculatePayment(baseAmount: number): number {

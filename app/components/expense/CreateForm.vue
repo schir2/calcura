@@ -90,6 +90,16 @@ function handleSubmit() {
         <n-form-item path="grows_with_inflation" label="Grows With Inflation">
           <n-switch v-model:value="model.grows_with_inflation" suffix="%"/>
         </n-form-item>
+
+        <n-form-item path="retirement_spending_percentage" label="Retirement Spending %">
+          <n-input-number v-model:value="model.retirement_spending_percentage"
+                          :min="MIN_RETIREMENT_SPENDING_PERCENTAGE"
+                          :max="MAX_RETIREMENT_SPENDING_PERCENTAGE"/>
+        </n-form-item>
+
+        <n-form-item path="is_retirement_only" label="Retirement Only">
+          <n-switch v-model:value="model.is_retirement_only"/>
+        </n-form-item>
       </n-form>
     </template>
 

@@ -102,7 +102,7 @@ export class TaxDeferredManager extends BaseManager<TaxDeferred, TaxDeferredStat
                 if (this.getConfig().elective_contribution_strategy === 'until_company_match') {
                     employerContribution = employerMatchLimit
                 } else {
-                    electiveContribution = this.orchestrator.requestFunds(this.calculateElectiveContribution(), FundType.Taxable)
+                    electiveContribution = this.orchestrator.requestWithdrawable(this.calculateElectiveContribution(), FundType.Taxable)
                     const employerMatch = electiveContribution * ((this.config.employer_match_percentage ?? 0) / 100);
                     employerContribution = Math.min(employerMatch, employerMatchLimit)
                 }
@@ -176,7 +176,7 @@ export class TaxDeferredManager extends BaseManager<TaxDeferred, TaxDeferredStat
         const currentState = this.getCurrentState()
         const employerContributionRequest = this.calculateEmployerContribution()
         const electiveContributionRequest = this.calculateElectiveContribution();
-        const electiveContributionReturned = this.orchestrator.requestFunds(electiveContributionRequest, FundType.Taxable)
+        const electiveContributionReturned = this.orchestrator.requestWithdrawable(electiveContributionRequest, FundType.Taxable)
         const {
             contribution,
             employerContribution,

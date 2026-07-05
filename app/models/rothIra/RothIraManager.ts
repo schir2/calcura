@@ -55,8 +55,7 @@ export class RothIraManager extends BaseManager<RothIra, RothIraState> {
     processImplementation() {
         const currentState = this.getCurrentState()
         const contributionRequest = this.calculateContribution()
-        const contribution = this.orchestrator.requestFunds(contributionRequest, FundType.Taxed)
-        this.orchestrator.withdraw(contribution, FundType.Taxed)
+        const contribution = this.orchestrator.requestAndWithdraw(contributionRequest, FundType.Taxed)
         const growthAmount = calculateGrowthAmount(
             currentState.balance_start_of_year,
             this.config.growth_rate,

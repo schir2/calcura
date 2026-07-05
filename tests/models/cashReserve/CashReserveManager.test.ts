@@ -61,6 +61,8 @@ const planConfig: Plan = {
             is_essential: true,
             is_tax_deductible: false,
             grows_with_inflation: true,
+            retirement_spending_percentage: 100,
+            is_retirement_only: false,
         },
         {
             id: 2,
@@ -72,6 +74,8 @@ const planConfig: Plan = {
             is_essential: false,
             is_tax_deductible: false,
             grows_with_inflation: true,
+            retirement_spending_percentage: 100,
+            is_retirement_only: false,
         },
         {
             id: 3,
@@ -83,6 +87,8 @@ const planConfig: Plan = {
             is_essential: false,
             is_tax_deductible: false,
             grows_with_inflation: true,
+            retirement_spending_percentage: 100,
+            is_retirement_only: false,
         }],
     debts: [],
     tax_deferreds: [],

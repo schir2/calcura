@@ -193,6 +193,8 @@ CREATE TABLE expense
     is_essential         BOOLEAN      NOT NULL DEFAULT FALSE,
     grows_with_inflation BOOLEAN      NOT NULL DEFAULT FALSE,
     is_tax_deductible    BOOLEAN      NOT NULL DEFAULT FALSE,
+    retirement_spending_percentage NUMERIC NOT NULL DEFAULT 100,
+    is_retirement_only   BOOLEAN      NOT NULL DEFAULT FALSE,
     created_at           TIMESTAMPTZ  NOT NULL DEFAULT now(),
     edited_at            TIMESTAMPTZ  NOT NULL DEFAULT now(),
     creator_id           UUID                  DEFAULT auth.uid() REFERENCES auth.users (id) ON DELETE SET NULL,

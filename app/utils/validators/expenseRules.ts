@@ -19,6 +19,10 @@ export function expenseRules(modelRef: Ref<Partial<Expense>>) {
         ],
         frequency: [
             {required: true, message: "Frequency is required", trigger: ["blur", "change"]}
+        ],
+        retirement_spending_percentage: [
+            {type: "number", min: MIN_RETIREMENT_SPENDING_PERCENTAGE, message: `Must be at least ${MIN_RETIREMENT_SPENDING_PERCENTAGE}%.`, trigger: ["blur", "change"]},
+            {type: "number", max: MAX_RETIREMENT_SPENDING_PERCENTAGE, message: `Must not exceed ${MAX_RETIREMENT_SPENDING_PERCENTAGE}%.`, trigger: ["blur", "change"]}
         ]
     };
 

@@ -290,6 +290,29 @@ export default class PlanManager extends BaseOrchestrator<PlanWithRelations, Orc
         return adjustForInsufficientFunds(requestedAmount, availableFunds, this.config.insufficient_funds_strategy, minimum)
     }
 
+    availableCapital(fundType: FundType): number {
+        const currentState = this.getCurrentState()
+        switch (fundType) {
+            case FundType.Taxable:
+                return currentState.cash.taxable
+            case FundType.Taxed:
+                return currentState.cash.net
+            default:
+                throw new Error(`Unsupported fund type: ${fundType}`);
+        }
+    }
+
+    requestWithdrawable(requestedAmount: number, fundType: FundType, minimum?: number): number {
+        const requested = this.requestFunds(requestedAmount, fundType, minimum)
+        return Math.max(Math.min(requested, this.availableCapital(fundType)), 0)
+    }
+
+    requestAndWithdraw(requestedAmount: number, fundType: FundType, minimum?: number): number {
+        const amount = this.requestWithdrawable(requestedAmount, fundType, minimum)
+        this.withdraw(amount, fundType)
+        return amount
+    }
+
 
     protected _adjustContributionLimit(currentState: OrchestratorState, adjustment: number, contributionLimitType: ContributionLimitType): OrchestratorState {
         if (adjustment < 0) {
@@ -335,7 +358,7 @@ export default class PlanManager extends BaseOrchestrator<PlanWithRelations, Orc
     }
 
     requestAndPayExpense(amountRequested: number): number {
-        const amountPaid = this.requestFunds(amountRequested, FundType.Taxed)
+        const amountPaid = this.requestWithdrawable(amountRequested, FundType.Taxed)
         const shortfall = amountRequested - amountPaid
         this.withdraw(amountPaid, FundType.Taxed)
         const currentState = this.getCurrentState()
@@ -464,6 +487,7 @@ export default class PlanManager extends BaseOrchestrator<PlanWithRelations, Orc
     }
 
     withdraw(amount: number, fundType: FundType, minimum?: number): void {
+        if (amount <= 0) return
         const currentState = this.getCurrentState();
         switch (fundType) {
             case FundType.Taxable: {

@@ -44,8 +44,7 @@ export class HsaManager extends BaseManager<Hsa, HsaState> {
     processImplementation() {
         const currentState = this.getCurrentState()
         const contributionRequest = this.calculateContribution()
-        const contribution = this.orchestrator.requestFunds(contributionRequest, FundType.Taxable)
-        this.orchestrator.withdraw(contribution, FundType.Taxable)
+        const contribution = this.orchestrator.requestAndWithdraw(contributionRequest, FundType.Taxable)
         const growthAmount = calculateGrowthAmount(
             currentState.balance_start_of_year,
             this.config.growth_rate,

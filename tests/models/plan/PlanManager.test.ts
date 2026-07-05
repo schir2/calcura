@@ -65,6 +65,8 @@ describe("PlanManager", () => {
                     is_essential: true,
                     is_tax_deductible: false,
                     grows_with_inflation: true,
+                    retirement_spending_percentage: 100,
+                    is_retirement_only: false,
                 },
                 {
                     id: 2,
@@ -76,6 +78,8 @@ describe("PlanManager", () => {
                     is_essential: false,
                     is_tax_deductible: false,
                     grows_with_inflation: true,
+                    retirement_spending_percentage: 100,
+                    is_retirement_only: false,
                 },
                 {
                     id: 3,
@@ -87,6 +91,8 @@ describe("PlanManager", () => {
                     is_essential: false,
                     is_tax_deductible: false,
                     grows_with_inflation: true,
+                    retirement_spending_percentage: 100,
+                    is_retirement_only: false,
                 }],
             debts: [
                 {
@@ -416,6 +422,18 @@ describe("PlanManager", () => {
             );
         });
 
+        it("does not throw on a zero withdrawal when taxed capital is negative (#103)", () => {
+            const currentState = planManager.getCurrentState();
+            currentState.cash.net = -5000;
+            expect(() => planManager.withdraw(0, FundType.Taxed)).not.toThrow();
+        });
+
+        it("does not throw on a zero withdrawal when taxable capital is negative (#103)", () => {
+            const currentState = planManager.getCurrentState();
+            currentState.cash.taxable = -5000;
+            expect(() => planManager.withdraw(0, FundType.Taxable)).not.toThrow();
+        });
+
         it("should throw an error for invalid fund type", () => {
             expect(() => planManager.withdraw(10000, "invalid" as FundType)).toThrow(
                 "Invalid fund type"
@@ -601,7 +619,7 @@ describe("PlanManager", () => {
                 ...planConfig,
                 age: 60, retirement_age: 61, life_expectancy: 70, retirement_strategy: 'age',
                 incomes: [{id: 1, name: 'Salary', gross_income: 60_000, growth_rate: 0, income_type: 'ordinary', frequency: 'annual'}],
-                expenses: [{id: 1, name: 'Living', frequency: 'annual', amount: 40_000, expense_type: 'fixed', growth_rate: 0, is_essential: true, is_tax_deductible: false, grows_with_inflation: false}],
+                expenses: [{id: 1, name: 'Living', frequency: 'annual', amount: 40_000, expense_type: 'fixed', growth_rate: 0, is_essential: true, is_tax_deductible: false, grows_with_inflation: false, retirement_spending_percentage: 100, is_retirement_only: false}],
                 brokerages: [{id: 1, name: 'Brokerage', growth_rate: 0, initial_balance: 30_000, contribution_strategy: 'fixed', contribution_percentage: 0, contribution_fixed_amount: 0}],
                 tax_deferreds: [], iras: [], roth_iras: [], hsas: [], debts: [], cash_reserves: [],
             }
@@ -629,7 +647,7 @@ describe("PlanManager", () => {
                 ...planConfig,
                 age: 60, retirement_age: 61, life_expectancy: 70, retirement_strategy: 'age',
                 incomes: [{id: 1, name: 'Salary', gross_income: 60_000, growth_rate: 0, income_type: 'ordinary', frequency: 'annual'}],
-                expenses: [{id: 1, name: 'Living', frequency: 'annual', amount: 40_000, expense_type: 'fixed', growth_rate: 0, is_essential: true, is_tax_deductible: false, grows_with_inflation: false}],
+                expenses: [{id: 1, name: 'Living', frequency: 'annual', amount: 40_000, expense_type: 'fixed', growth_rate: 0, is_essential: true, is_tax_deductible: false, grows_with_inflation: false, retirement_spending_percentage: 100, is_retirement_only: false}],
                 brokerages: [{id: 1, name: 'Brokerage', growth_rate: 0, initial_balance: 2_000_000, contribution_strategy: 'fixed', contribution_percentage: 0, contribution_fixed_amount: 0}],
                 tax_deferreds: [], iras: [], roth_iras: [], hsas: [], debts: [], cash_reserves: [],
             }
@@ -650,6 +668,55 @@ describe("PlanManager", () => {
             expect(last.assets.taxable.balance_end).toBeGreaterThan(0)
             const retiredStates = states.filter(state => state.retired)
             expect(retiredStates.every(state => state.liabilities.expense.shortfall <= 0.01)).toBe(true)
+        });
+
+        it("does not throw in retirement under 'full' insufficient-funds strategy (#103)", () => {
+            const config = {
+                ...planConfig,
+                age: 60, retirement_age: 61, life_expectancy: 70, retirement_strategy: 'age',
+                insufficient_funds_strategy: 'full',
+                incomes: [{id: 1, name: 'Salary', gross_income: 60_000, growth_rate: 0, income_type: 'ordinary', frequency: 'annual'}],
+                expenses: [{id: 1, name: 'Living', frequency: 'annual', amount: 40_000, expense_type: 'fixed', growth_rate: 0, is_essential: true, is_tax_deductible: false, grows_with_inflation: false, retirement_spending_percentage: 100, is_retirement_only: false}],
+                brokerages: [{id: 1, name: 'Brokerage', growth_rate: 0, initial_balance: 2_000_000, contribution_strategy: 'fixed', contribution_percentage: 0, contribution_fixed_amount: 0}],
+                tax_deferreds: [], iras: [], roth_iras: [], hsas: [], debts: [], cash_reserves: [],
+            }
+            const manager = new PlanManager(config as any)
+            const seq = {
+                ordering_type: 'predefined',
+                command_sequence_commands: [
+                    {id: 1, order: 1, is_active: true, command: {model_name: 'income', model_id: 1}},
+                    {id: 2, order: 2, is_active: true, command: {model_name: 'expense', model_id: 1}},
+                    {id: 3, order: 3, is_active: true, command: {model_name: 'brokerage', model_id: 1}},
+                ],
+            } as any
+            expect(() => manager.simulate(seq)).not.toThrow()
+            const retiredStates = manager.getStates().filter(state => state.retired)
+            expect(retiredStates.length).toBeGreaterThan(0)
+            expect(retiredStates.every(state => state.liabilities.expense.shortfall <= 0.01)).toBe(true)
+        });
+
+        it("does not throw when every contribution manager runs into retirement under 'full' (#103)", () => {
+            const config = {
+                ...planConfig,
+                age: 60, retirement_age: 61, life_expectancy: 65, retirement_strategy: 'age',
+                insufficient_funds_strategy: 'full',
+            }
+            const manager = new PlanManager(config as any)
+            const seq = {
+                ordering_type: 'custom',
+                command_sequence_commands: [
+                    {id: 1, order: 1, is_active: true, command: {model_name: 'income', model_id: 1}},
+                    {id: 2, order: 2, is_active: true, command: {model_name: 'expense', model_id: 1}},
+                    {id: 3, order: 3, is_active: true, command: {model_name: 'debt', model_id: 1}},
+                    {id: 4, order: 4, is_active: true, command: {model_name: 'tax_deferred', model_id: 1}},
+                    {id: 5, order: 5, is_active: true, command: {model_name: 'brokerage', model_id: 1}},
+                    {id: 6, order: 6, is_active: true, command: {model_name: 'roth_ira', model_id: 1}},
+                    {id: 7, order: 7, is_active: true, command: {model_name: 'ira', model_id: 1}},
+                    {id: 8, order: 8, is_active: true, command: {model_name: 'hsa', model_id: 1}},
+                    {id: 9, order: 9, is_active: true, command: {model_name: 'cash_reserve', model_id: 1}},
+                ],
+            } as any
+            expect(() => manager.simulate(seq)).not.toThrow()
         });
 
         it("should execute all commands if provided", () => {

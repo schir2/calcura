@@ -463,9 +463,11 @@ export type Database = {
           growth_rate: number
           id: number
           is_essential: boolean
+          is_retirement_only: boolean
           is_tax_deductible: boolean
           name: string
           plan_id: number
+          retirement_spending_percentage: number
         }
         Insert: {
           amount: number
@@ -479,9 +481,11 @@ export type Database = {
           growth_rate: number
           id?: never
           is_essential?: boolean
+          is_retirement_only?: boolean
           is_tax_deductible?: boolean
           name: string
           plan_id: number
+          retirement_spending_percentage?: number
         }
         Update: {
           amount?: number
@@ -495,9 +499,11 @@ export type Database = {
           growth_rate?: number
           id?: never
           is_essential?: boolean
+          is_retirement_only?: boolean
           is_tax_deductible?: boolean
           name?: string
           plan_id?: number
+          retirement_spending_percentage?: number
         }
         Relationships: [
           {
