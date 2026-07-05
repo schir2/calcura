@@ -3,7 +3,6 @@ import {assertDefined, calculateGrowthAmount} from "~/utils";
 import type {HsaState} from "#shared/types/HsaState";
 import BaseManager from "~/models/common/BaseManager";
 import {FundType} from "~/models/plan/PlanManager";
-import eventBus from "~/utils/eventBus";
 import {ContributionType} from "#shared/types/ContributionType";
 import {HSA_CONTRIBUTION_LIMIT_2024} from "~/constants/HsaConstants";
 
@@ -71,12 +70,6 @@ export function calculateHsaContribution(hsaConfig: Hsa, hsaLimit: number = HSA_
         case 'fixed':
             contribution = hsaConfig.contribution_fixed_amount ?? 0
             break
-        case 'percentage_of_income':
-            eventBus.emit('warning', {
-                scope: 'hsaManager:percentageOfIncomeUnsupported',
-                message: 'HSA does not support percentage_of_income; contribution set to 0'
-            })
-            return 0
         case 'max':
             contribution = hsaLimit
             break
