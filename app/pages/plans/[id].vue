@@ -12,6 +12,8 @@ import type {HsaInsert, HsaUpdate} from "#shared/types/Hsa"
 import type {ModelName} from "#shared/types/ModelName"
 import type {OrchestratorState} from "#shared/types/OrchestratorState"
 import type {ManagerStates} from "#shared/types/ManagerStates"
+import OverviewPrototype from "~/components/plan/overview-prototype/OverviewPrototype.vue" // PROTOTYPE #94
+import EntityWorkspace from "~/components/common/EntityWorkspace.vue"
 
 definePageMeta({
   layout: 'default',
@@ -68,6 +70,7 @@ async function handleCreateModel(payload: { model: ModelName, data: unknown }) {
       break
   }
   await commandSequenceStore.fetchByPlan(planId)
+  await orchestrator.reloadPlan(planId)
 }
 
 async function handleUpdateModel(payload: { modelName: ModelName, id: number, data: Record<string, unknown> }) {
@@ -160,6 +163,34 @@ async function handleDeletePlan(id: number) {
   await navigateTo('/plans')
 }
 
+const showEditModal = ref(false)
+const showDeleteConfirm = ref(false)
+
+async function handleEditPlan(id: number, update: PlanUpdate) {
+  await handleUpdatePlan(id, update)
+  showEditModal.value = false
+}
+
+const usd = (value: number) =>
+  new Intl.NumberFormat('en-US', {style: 'currency', currency: 'USD', maximumFractionDigits: 0}).format(value ?? 0)
+
+const retirementGoalText = computed(() => {
+  const plan = orchestrator.planWithRelations
+  if (!plan) return ''
+  switch (plan.retirement_strategy) {
+    case 'age':
+      return `Retire at age ${plan.retirement_age}`
+    case 'debt_free':
+      return 'Retire when debt-free'
+    case 'percent_rule':
+      return `Retire at ${usd(plan.retirement_income_goal)}/yr income`
+    case 'target_savings':
+      return `Retire with ${usd(plan.retirement_savings_amount)} saved`
+    default:
+      return `Retire at age ${plan.retirement_age}`
+  }
+})
+
 const activeCommandSequenceId = ref<number | null>(null)
 const planStates = ref<OrchestratorState[] | null>(null)
 const managerStates = ref<ManagerStates | null>(null)
@@ -194,6 +225,10 @@ watchEffect(() => {
 provide('planStates', planStates)
 provide('managerStates', managerStates)
 
+const activeCommandSequence = computed(() =>
+    activeCommandSequenceId.value ? commandSequenceStore.get(activeCommandSequenceId.value) ?? null : null
+)
+
 const activeExpensesAndDebts = computed((): { expenses: Expense[], debts: Debt[] } => {
   const result: { expenses: Expense[], debts: Debt[] } = {expenses: [], debts: []}
   const plan = orchestrator.planWithRelations
@@ -216,15 +251,36 @@ const activeExpensesAndDebts = computed((): { expenses: Expense[], debts: Debt[]
 
 <template>
   <n-spin :show="!orchestrator.loaded">
-    <div v-if="orchestrator.planWithRelations" class="space-y-2">
-      <PlanDetailCard
-          :plan="orchestrator.planWithRelations"
-          @update="handleUpdatePlan"
-          @delete="handleDeletePlan"
-      />
+    <div v-if="orchestrator.planWithRelations" class="max-w-6xl mx-auto px-4 space-y-6 py-6">
+      <header class="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
+        <div class="space-y-1">
+          <h1 class="text-4xl">{{ orchestrator.planWithRelations.name }}</h1>
+          <p class="text-skin-muted text-lg">{{ retirementGoalText }}</p>
+        </div>
+        <n-button-group size="small">
+          <n-button type="warning" secondary round @click="showEditModal = true">
+            <template #icon><Icon name="mdi:edit"/></template>
+            Edit
+          </n-button>
+          <n-popconfirm v-model:show="showDeleteConfirm" @positive-click="handleDeletePlan(planId)">
+            <template #trigger>
+              <n-button type="error" secondary round>
+                <template #icon><Icon name="mdi:delete"/></template>
+                Delete
+              </n-button>
+            </template>
+            Delete this plan and all its data permanently?
+          </n-popconfirm>
+        </n-button-group>
+      </header>
+
+      <n-modal v-model:show="showEditModal">
+        <PlanUpdateForm :id="planId" @update="handleEditPlan" @cancel="showEditModal = false"/>
+      </n-modal>
+
       <n-tabs v-model:value="activeView" type="line" animated>
         <n-tab-pane name="overview" tab="Overview">
-          <h2 class="text-2xl">Overview</h2>
+          <OverviewPrototype v-if="planStates" :states="planStates" :plan="orchestrator.planWithRelations" @create-model="handleCreateModel"/>
         </n-tab-pane>
         <n-tab-pane name="simulation" tab="Simulation">
           <div class="grid plan-container">
@@ -264,6 +320,7 @@ const activeExpensesAndDebts = computed((): { expenses: Expense[], debts: Debt[]
         </n-tab-pane>
       </n-tabs>
     </div>
+    <EntityWorkspace :command-sequence="activeCommandSequence"/>
   </n-spin>
 
 </template>
