@@ -7,7 +7,15 @@
     "deny": [
       "Read(.env*)",
       "Edit(.env*)",
-      "Write(.env*)"
+      "Write(.env*)",
+      "Bash(npm run dev:*)",
+      "Bash(npm run dev)",
+      "Bash(npm run preview:*)",
+      "Bash(npm run preview)",
+      "Bash(nuxt dev:*)",
+      "Bash(npx nuxt dev:*)",
+      "Bash(pnpm dev:*)",
+      "Bash(pnpm run dev:*)"
     ]
   }
 }
