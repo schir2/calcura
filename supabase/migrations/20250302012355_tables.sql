@@ -291,7 +291,8 @@ CREATE TABLE hsa
     name                      TEXT                  NOT NULL,
     growth_rate               NUMERIC               NOT NULL,
     initial_balance           NUMERIC               NOT NULL,
-    contribution_strategy     contribution_strategy NOT NULL DEFAULT 'fixed',
+    contribution_strategy     contribution_strategy NOT NULL DEFAULT 'fixed'
+        CHECK (contribution_strategy IN ('fixed', 'max')),
     contribution_percentage   NUMERIC,
     contribution_fixed_amount NUMERIC,
     created_at                TIMESTAMPTZ           NOT NULL DEFAULT now(),
@@ -448,7 +449,8 @@ CREATE TABLE hsa_template
     name                      TEXT                  NOT NULL,
     growth_rate               NUMERIC               NOT NULL,
     initial_balance           NUMERIC               NOT NULL,
-    contribution_strategy     contribution_strategy NOT NULL DEFAULT 'fixed',
+    contribution_strategy     contribution_strategy NOT NULL DEFAULT 'fixed'
+        CHECK (contribution_strategy IN ('fixed', 'max')),
     contribution_percentage   NUMERIC,
     contribution_fixed_amount NUMERIC,
     description               TEXT,
