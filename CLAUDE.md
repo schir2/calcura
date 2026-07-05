@@ -7,8 +7,10 @@ When reporting information to me, be extremly concise and sacrafice grammer for 
 
 ## Commands
 
+**NEVER start the dev server yourself** (`npm run dev` / `nuxt dev` / `npm run preview`, in any tool including Bash and PowerShell, foreground or background). The user runs it. If you need to verify something in the running app, ask the user to start it or to check for you.
+
 ```bash
-npm run dev          # Start Nuxt development server
+npm run dev          # Start Nuxt development server — USER RUNS THIS, never Claude
 npm run build        # Build for production
 npm test             # Run Vitest unit tests
 npm run coverage     # Generate test coverage report
@@ -132,6 +134,7 @@ Key decisions are documented in `docs/adr/`. Read these before making changes th
 - Design tokens / styling → ADR 008
 - Retirement decumulation (command-driven, per-bucket taxed) → ADR 009
 - HSA not income-linked / health modeling deferred → ADR 010
+- Strategy-input control (stacked rows with inline reveal, over cards) → ADR 011
 
 Plan detail redesign (three views: Overview / Simulation / Report; Entity Workspace; income-linking) is specified in [`docs/design/plan-detail-redesign.md`](docs/design/plan-detail-redesign.md); its domain vocabulary lives in `CONTEXT.md`.
 
@@ -169,6 +172,7 @@ Before making any file changes, follow this step-through workflow by default:
 - Use `*Insert` / `*Update` Supabase-derived types for emit payloads and page handlers
 
 ### Don't
+- **Start the dev server or preview server** (`npm run dev`, `nuxt dev`, `npm run preview`) in any tool, foreground or background — the user owns running the app
 - Add camelCase ↔ snake_case conversion utilities
 - Call `$fetch` with CSRF headers (the Django API is gone)
 - Put API calls directly in components — use composables
