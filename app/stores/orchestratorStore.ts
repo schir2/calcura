@@ -5,6 +5,18 @@ import type {ModelName} from "#shared/types/ModelName";
 import type {BaseState} from "#shared/types/BaseState";
 import type BaseManager from "~/models/common/BaseManager";
 
+const RELATION_KEY: Record<ModelName, string> = {
+    income: 'incomes',
+    expense: 'expenses',
+    debt: 'debts',
+    cash_reserve: 'cash_reserves',
+    tax_deferred: 'tax_deferreds',
+    brokerage: 'brokerages',
+    ira: 'iras',
+    roth_ira: 'roth_iras',
+    hsa: 'hsas',
+}
+
 function snapshotManagerStates(planManager: PlanManager): ManagerStates {
     const result: ManagerStates = {}
     for (const [modelName, managers] of Object.entries(planManager.managers) as [ModelName, BaseManager<any, any>[]][]) {
@@ -86,6 +98,23 @@ export const orchestratorStore = defineStore('orchestrator', () => {
         return {states, managerStates: snapshotManagerStates(planManager)}
     }
 
+    function simulateEntityPreview(
+        modelName: ModelName,
+        entity: {id: number} & Record<string, unknown>,
+        commandSequence: CommandSequenceWithRelations
+    ): BaseState[] | null {
+        if (!planWithRelations.value) return null
+        const key = RELATION_KEY[modelName]
+        const current = planWithRelations.value[key as keyof typeof planWithRelations.value] as {id: number}[]
+        const overridden = {
+            ...planWithRelations.value,
+            [key]: current.map(item => (item.id === entity.id ? {...item, ...entity} : item)),
+        }
+        const planManager = new PlanManager(overridden)
+        planManager.simulate(commandSequence)
+        return snapshotManagerStates(planManager)[modelName]?.[entity.id] ?? null
+    }
+
     return {
         load,
         reloadPlan,
@@ -94,6 +123,7 @@ export const orchestratorStore = defineStore('orchestrator', () => {
         loaded,
         planWithRelations,
         simulate,
+        simulateEntityPreview,
     }
 
 })
