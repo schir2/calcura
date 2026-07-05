@@ -61,15 +61,10 @@ function handleSubmit() {
         </section>
 
         <n-form-item label="Contribution Strategy" path="contribution_strategy">
-          <div class="grid grid-cols-3 gap-3 w-full">
+          <div class="grid grid-cols-2 gap-3 w-full">
             <CommonRadioCard v-model="model.contribution_strategy" :value="'fixed'" title="Fixed">
               <n-form-item label="Fixed Contribution Amount" path="contribution_fixed_amount">
                 <n-input-number class="w-full" v-model:value="model.contribution_fixed_amount" placeholder="Enter fixed amount"/>
-              </n-form-item>
-            </CommonRadioCard>
-            <CommonRadioCard v-model="model.contribution_strategy" :value="'percentage_of_income'" title="Percentage of Income">
-              <n-form-item label="Contribution Percentage (%)" path="contribution_percentage">
-                <n-input-number class="w-full" v-model:value="model.contribution_percentage" placeholder="Enter percentage"/>
               </n-form-item>
             </CommonRadioCard>
             <CommonRadioCard v-model="model.contribution_strategy" :value="'max'" title="Max Out"/>
