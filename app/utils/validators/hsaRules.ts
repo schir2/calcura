@@ -9,13 +9,6 @@ export function hsaRules(modelRef: Ref<Partial<Hsa>>) {
         return true;
     }
 
-    function validateContributionPercentage(rule: FormItemRule, value: number | undefined) {
-        if (modelRef.value.contribution_strategy === "percentage_of_income" && (value === null || value === undefined)) {
-            return new Error("Contribution Percentage is required when Percentage of Income Contribution strategy is selected");
-        }
-        return true;
-    }
-
     const rules: FormRules = {
         name: [
             {required: true, message: "Name is required", trigger: ["blur", "change"]},
@@ -33,11 +26,6 @@ export function hsaRules(modelRef: Ref<Partial<Hsa>>) {
         ],
         contribution_strategy: [
             {required: true, message: "Contribution strategy is required", trigger: ["blur", "change"]}
-        ],
-        contribution_percentage: [
-            {validator: validateContributionPercentage, trigger: ["blur", "change"]},
-            {type: "number", min: MIN_PERCENTAGE, message: `Contribution percentage must be at least ${MIN_PERCENTAGE}`, trigger: ["blur", "change"]},
-            {type: "number", max: MAX_PERCENTAGE, message: `Contribution percentage must be at most ${MAX_PERCENTAGE}`, trigger: ["blur", "change"]}
         ],
         contribution_fixed_amount: [
             {validator: validateContributionFixedAmount, trigger: ["blur", "change"]},
