@@ -130,6 +130,10 @@ Key decisions are documented in `docs/adr/`. Read these before making changes th
 - IRA income association → ADR 006
 - Auth redirect → ADR 007
 - Design tokens / styling → ADR 008
+- Retirement decumulation (command-driven, per-bucket taxed) → ADR 009
+- HSA not income-linked / health modeling deferred → ADR 010
+
+Plan detail redesign (three views: Overview / Simulation / Report; Entity Workspace; income-linking) is specified in [`docs/design/plan-detail-redesign.md`](docs/design/plan-detail-redesign.md); its domain vocabulary lives in `CONTEXT.md`.
 
 ## Change Communication Protocol
 
