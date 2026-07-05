@@ -104,6 +104,10 @@ The spine chart is a **stacked-area "net worth over time"**: the four asset buck
 Below the hero, the page is a **single vertical scroll of three domain sections — Income, Investments, Liabilities** (in that order), each a labeled section header + its own charts/stats. Chosen over a tabbed variant (everything-visible beats one-domain-at-a-time for the "see the whole picture" goal). Confirmed against a clickable prototype 2026-07-04. Section accent colors: Income = green, Investments = blue, Liabilities = red. (Grill session 2026-07-04.)
 
 ### Entity Workspace
+**Implementation guide for building each domain's Workspace:
+[`docs/design/entity-workspace-implementation.md`](docs/design/entity-workspace-implementation.md)** —
+read it before working #101/#102/#114–#120.
+
 The surface for adding or editing any plan entity, opened from the dashboard (toolbar "＋ Add", per-section add buttons, empty-state CTAs, or clicking an entity in a chart/legend/stat). **Two-pane on desktop, stacked on mobile** (form first). Left pane = the settings form (inputs first — cursor lands in the first field, no scrolling). Right pane = a **live projection** that reacts to the inputs in real time (baseline "saved plan" line vs the edited line, with an at-retirement delta) plus an **education panel** ("who it's for", when-to-use bullets, article link). Replaces the old plain-form modal. Confirmed against prototype 2026-07-04 — the two-pane drawer (settings + live graph) is the locked interaction model. (Grill session 2026-07-04.)
 
 
