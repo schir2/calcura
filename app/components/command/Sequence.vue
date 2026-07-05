@@ -77,7 +77,7 @@ function renderComponent(plan: PlanWithRelations, modelName: ModelName, modelId:
     }
     case 'brokerage': {
       const brokerage = plan.brokerages.find(elem => elem.id === modelId);
-      return brokerage ? h(BrokerageListItem, {brokerage, incomes: plan.incomes}) : null;
+      return brokerage ? h(BrokerageListItem, {brokerage}) : null;
     }
     case 'cash_reserve': {
       const cashReserve = plan.cash_reserves.find(elem => elem.id === modelId);
@@ -120,6 +120,26 @@ async function updateCommandState(csc: CommandSequenceCommandWithRelations) {
 
 const drag = ref<boolean>(false)
 
+// Collapse/expand state. Per-item overrides seed from the global toggle; a transient drag
+// collapses everything while dragging and restores per-item state on drop.
+// Precedence: drag override → per-item state ← global toggle.
+const expandedOverrides = reactive(new Map<number, boolean>())
+const globalExpanded = ref<boolean>(false)
+
+function isRowExpanded(cscId: number): boolean {
+  if (drag.value) return false
+  return expandedOverrides.has(cscId) ? expandedOverrides.get(cscId)! : globalExpanded.value
+}
+
+function toggleRow(cscId: number) {
+  expandedOverrides.set(cscId, !isRowExpanded(cscId))
+}
+
+function setAllExpanded(expanded: boolean) {
+  globalExpanded.value = expanded
+  expandedOverrides.clear()
+}
+
 function handleUpdate(modelName: ModelName, id: number, data: Record<string, unknown>) {
   emit("update", {modelName, id, data})
 }
@@ -150,6 +170,13 @@ function handleDelete(modelName: ModelName, id: number) {
     <span :class="isPredefined ? 'text-blue-600 dark:text-blue-300' : 'text-skin-muted'">
       {{ isPredefined ? 'income → debt → expense → savings' : 'drag handles to reorder' }}
     </span>
+    <span class="flex-1"/>
+    <n-button size="tiny" quaternary @click="setAllExpanded(!globalExpanded)">
+      <template #icon>
+        <base-ico :name="globalExpanded ? 'up' : 'down'"/>
+      </template>
+      {{ globalExpanded ? 'Collapse all' : 'Expand all' }}
+    </n-button>
   </div>
 
   <draggable class="dragArea list-group w-full space-y-1"
@@ -162,7 +189,8 @@ function handleDelete(modelName: ModelName, id: number) {
              :disabled="isPredefined"
              @end="onChange">
     <template #item="{element: command} : {element: CommandSequenceCommandWithRelations}">
-      <div class="flex gap-2 items-center border-skin-base/30 bg-skin-surface rounded border p-1">
+      <div class="flex gap-2 items-center border-skin-base/30 bg-skin-surface rounded border p-1 transition"
+           :class="{'opacity-40 grayscale': !command.is_active}">
         <base-ico
             :class="['text-2xl drag-handle', isPredefined ? 'opacity-20 cursor-not-allowed' : 'text-skin-primary/80 cursor-move']"
             name="drag"
@@ -175,6 +203,9 @@ function handleDelete(modelName: ModelName, id: number) {
         />
         <component
             :is="renderComponent(plan, command.command.model_name, command.command.model_id)"
+            :expanded="isRowExpanded(command.id)"
+            :is-active="command.is_active"
+            @toggle="() => toggleRow(command.id)"
             @update="(id, update) => handleUpdate(command.command.model_name, id, update)"
             @delete="(id) => handleDelete(command.command.model_name, id)"
         />
