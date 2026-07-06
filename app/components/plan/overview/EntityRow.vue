@@ -7,12 +7,15 @@ const props = defineProps<{
   hueName: 'blue' | 'green' | 'violet' | 'amber' | 'teal' | 'red' | 'slate'
 }>()
 
+const emit = defineEmits<{ select: [] }>()
+
 const {hue} = useChartColors()
 </script>
 
 <template>
   <div class="flex items-center gap-2.5 rounded-lg border border-skin-base/40 bg-skin-surface
-              px-3 py-2 mb-1.5 hover:bg-skin-surface-hover cursor-pointer transition-colors">
+              px-3 py-2 mb-1.5 hover:bg-skin-surface-hover cursor-pointer transition-colors"
+       @click="emit('select')">
     <span class="w-2.5 h-2.5 rounded-sm flex-none" :style="{background: hue(hueName, 1)}"/>
     <span class="font-medium text-sm text-skin-base truncate">{{ name }}</span>
     <span class="ml-auto font-semibold text-sm text-skin-secondary tabular-nums">

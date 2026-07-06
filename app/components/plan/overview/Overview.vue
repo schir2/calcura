@@ -17,6 +17,7 @@ import DebtPaydown from '~/components/plan/chart/DebtPaydown.vue'
 import SectionHead from './SectionHead.vue'
 import EntityRow from './EntityRow.vue'
 import VerdictHero from './VerdictHero.vue'
+import EntityPicker from '~/components/common/EntityPicker.vue'
 import {overviewStats} from './stats'
 import {WORKSPACE_ENABLED_MODELS} from '~/stores/workspaceStore'
 
@@ -53,28 +54,74 @@ function onCreated(data: unknown) {
 }
 
 type HueName = 'blue' | 'green' | 'violet' | 'amber' | 'teal'
+type EntityRef = { model: ModelName; id: number; name: string }
+
 const accounts = computed(() => {
   const p = props.plan
-  if (!p) return [] as { name: string; amount: number; hueName: HueName }[]
+  if (!p) return [] as { model: ModelName; id: number; name: string; amount: number; hueName: HueName }[]
   return [
-    ...p.tax_deferreds.map(e => ({name: e.name, amount: e.initial_balance, hueName: 'blue' as HueName})),
-    ...p.brokerages.map(e => ({name: e.name, amount: e.initial_balance, hueName: 'green' as HueName})),
-    ...p.roth_iras.map(e => ({name: e.name, amount: e.initial_balance, hueName: 'violet' as HueName})),
-    ...p.iras.map(e => ({name: e.name, amount: e.initial_balance, hueName: 'violet' as HueName})),
-    ...p.hsas.map(e => ({name: e.name, amount: e.initial_balance, hueName: 'teal' as HueName})),
-    ...p.cash_reserves.map(e => ({name: e.name, amount: e.initial_amount, hueName: 'amber' as HueName})),
+    ...p.tax_deferreds.map(e => ({model: 'tax_deferred' as ModelName, id: e.id, name: e.name, amount: e.initial_balance, hueName: 'blue' as HueName})),
+    ...p.brokerages.map(e => ({model: 'brokerage' as ModelName, id: e.id, name: e.name, amount: e.initial_balance, hueName: 'green' as HueName})),
+    ...p.roth_iras.map(e => ({model: 'roth_ira' as ModelName, id: e.id, name: e.name, amount: e.initial_balance, hueName: 'violet' as HueName})),
+    ...p.iras.map(e => ({model: 'ira' as ModelName, id: e.id, name: e.name, amount: e.initial_balance, hueName: 'violet' as HueName})),
+    ...p.hsas.map(e => ({model: 'hsa' as ModelName, id: e.id, name: e.name, amount: e.initial_balance, hueName: 'teal' as HueName})),
+    ...p.cash_reserves.map(e => ({model: 'cash_reserve' as ModelName, id: e.id, name: e.name, amount: e.initial_amount, hueName: 'amber' as HueName})),
   ]
 })
 
 const expenseRows = computed(() => {
   const p = props.plan
-  if (!p) return [] as { name: string; amount: number; hueName: 'blue' | 'amber' }[]
+  if (!p) return [] as { id: number; name: string; amount: number; hueName: 'blue' | 'amber' }[]
   return p.expenses.map(e => ({
+    id: e.id,
     name: e.name,
     amount: getAnnualAmount(e.amount, e.frequency),
     hueName: (e.is_essential ? 'blue' : 'amber') as 'blue' | 'amber',
   }))
 })
+
+function openEntity(model: ModelName, id: number) {
+  workspace.open(model, id)
+}
+
+function categoryEntities(category: string): EntityRef[] {
+  const p = props.plan
+  if (!p) return []
+  switch (category) {
+    case 'cash_reserve': return p.cash_reserves.map(e => ({model: 'cash_reserve', id: e.id, name: e.name}))
+    case 'taxable': return p.brokerages.map(e => ({model: 'brokerage', id: e.id, name: e.name}))
+    case 'tax_exempt': return [
+      ...p.roth_iras.map(e => ({model: 'roth_ira' as ModelName, id: e.id, name: e.name})),
+      ...p.iras.map(e => ({model: 'ira' as ModelName, id: e.id, name: e.name})),
+    ]
+    case 'tax_deferred': return p.tax_deferreds.map(e => ({model: 'tax_deferred', id: e.id, name: e.name}))
+    default: return []
+  }
+}
+
+const CATEGORY_ADD_MODEL: Record<string, ModelName> = {
+  cash_reserve: 'cash_reserve', taxable: 'brokerage', tax_exempt: 'roth_ira', tax_deferred: 'tax_deferred',
+}
+
+const pickerOpen = ref(false)
+const pickerEntities = ref<EntityRef[]>([])
+const pickerAddModel = ref<ModelName | undefined>()
+
+function onCategorySelect(category: string) {
+  const list = categoryEntities(category)
+  if (list.length === 0) return
+  if (list.length === 1) {
+    workspace.open(list[0]!.model, list[0]!.id)
+    return
+  }
+  pickerEntities.value = list
+  pickerAddModel.value = CATEGORY_ADD_MODEL[category]
+  pickerOpen.value = true
+}
+
+function onPickerAdd(model: ModelName) {
+  if (props.plan) workspace.openCreate(model, props.plan.id)
+}
 
 const debtPrincipal = computed(() =>
   (props.plan?.debts ?? []).reduce((sum, d) => sum + (d.principal ?? 0), 0))
@@ -97,7 +144,7 @@ const paidOffAge = computed(() => {
           <span class="text-sm text-skin-muted">every account stacked · peak {{ fmtUsd(stats.peakNetWorth) }}</span>
         </div>
       </template>
-      <NetWorthSpine :states="states" :height="360"/>
+      <NetWorthSpine :states="states" :height="360" @category-select="onCategorySelect"/>
     </n-card>
 
     <SectionHead
@@ -108,7 +155,8 @@ const paidOffAge = computed(() => {
       <n-card title="Your income sources">
         <template v-if="plan && plan.incomes.length">
           <EntityRow v-for="inc in plan.incomes" :key="inc.id"
-                     :name="inc.name" :amount="inc.gross_income" suffix="/yr" hue-name="green"/>
+                     :name="inc.name" :amount="inc.gross_income" suffix="/yr" hue-name="green"
+                     @select="openEntity('income', inc.id)"/>
         </template>
         <div v-else class="text-sm text-skin-muted py-6 text-center">No income yet.</div>
       </n-card>
@@ -131,7 +179,8 @@ const paidOffAge = computed(() => {
       <n-card title="Your expenses">
         <template v-if="expenseRows.length">
           <EntityRow v-for="(exp, i) in expenseRows" :key="i"
-                     :name="exp.name" :amount="exp.amount" suffix="/yr" :hue-name="exp.hueName"/>
+                     :name="exp.name" :amount="exp.amount" suffix="/yr" :hue-name="exp.hueName"
+                     @select="openEntity('expense', exp.id)"/>
         </template>
         <div v-else class="text-sm text-skin-muted py-6 text-center">No expenses yet.</div>
       </n-card>
@@ -151,7 +200,7 @@ const paidOffAge = computed(() => {
       </template>
     </SectionHead>
     <div class="grid grid-cols-1 xl:grid-cols-2 gap-3">
-      <n-card title="Balances by account"><NetWorthSpine :states="states" :height="260"/></n-card>
+      <n-card title="Balances by account"><NetWorthSpine :states="states" :height="260" @category-select="onCategorySelect"/></n-card>
       <n-card>
         <template #header>
           <div class="flex items-baseline justify-between">
@@ -161,7 +210,8 @@ const paidOffAge = computed(() => {
         </template>
         <template v-if="accounts.length">
           <EntityRow v-for="(acc, i) in accounts" :key="i"
-                     :name="acc.name" :amount="acc.amount" :hue-name="acc.hueName"/>
+                     :name="acc.name" :amount="acc.amount" :hue-name="acc.hueName"
+                     @select="openEntity(acc.model, acc.id)"/>
         </template>
         <div v-else class="text-sm text-skin-muted py-6 text-center">No accounts yet.</div>
       </n-card>
@@ -189,6 +239,13 @@ const paidOffAge = computed(() => {
         </div>
       </n-card>
     </div>
+
+    <EntityPicker
+        v-model:show="pickerOpen"
+        :entities="pickerEntities"
+        :add-model="pickerAddModel"
+        @select="openEntity"
+        @add="onPickerAdd"/>
 
     <n-modal :show="createModel !== null" @update:show="(v: boolean) => { if (!v) createModel = null }">
       <component

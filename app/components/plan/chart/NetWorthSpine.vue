@@ -11,16 +11,24 @@ import {chartCategoryHue} from '~/theme/palette'
 ChartJS.register(Title, Tooltip, Legend, LineElement, PointElement, CategoryScale, LinearScale, Filler)
 
 const props = withDefaults(defineProps<{ states: OrchestratorState[]; height?: number }>(), {height: 340})
+const emit = defineEmits<{ categorySelect: [category: string] }>()
 const {hue, ink} = useChartColors()
 
 // bottom -> top of the stack; grouped by asset category per CONTEXT.md (never one band per account)
 const bands = [
-  {label: 'Un-invested Cash', hue: chartCategoryHue.cash, get: (s: OrchestratorState) => s.cash.net},
-  {label: 'Cash Reserve', hue: chartCategoryHue.cash_reserve, get: (s: OrchestratorState) => s.assets.cash_reserve.balance_end},
-  {label: 'Taxable', hue: chartCategoryHue.taxable, get: (s: OrchestratorState) => s.assets.taxable.balance_end},
-  {label: 'Roth (Tax-Exempt)', hue: chartCategoryHue.tax_exempt, get: (s: OrchestratorState) => s.assets.tax_exempt.balance_end},
-  {label: 'Tax-Deferred', hue: chartCategoryHue.tax_deferred, get: (s: OrchestratorState) => s.assets.tax_deferred.balance_end},
+  {label: 'Un-invested Cash', category: 'cash', hue: chartCategoryHue.cash, get: (s: OrchestratorState) => s.cash.net},
+  {label: 'Cash Reserve', category: 'cash_reserve', hue: chartCategoryHue.cash_reserve, get: (s: OrchestratorState) => s.assets.cash_reserve.balance_end},
+  {label: 'Taxable', category: 'taxable', hue: chartCategoryHue.taxable, get: (s: OrchestratorState) => s.assets.taxable.balance_end},
+  {label: 'Roth (Tax-Exempt)', category: 'tax_exempt', hue: chartCategoryHue.tax_exempt, get: (s: OrchestratorState) => s.assets.tax_exempt.balance_end},
+  {label: 'Tax-Deferred', category: 'tax_deferred', hue: chartCategoryHue.tax_deferred, get: (s: OrchestratorState) => s.assets.tax_deferred.balance_end},
 ]
+
+// 'cash' is un-invested cash — no entity to edit, so it is not a click target.
+function selectBand(datasetIndex: number) {
+  const band = bands[datasetIndex]
+  if (!band || band.category === 'cash') return
+  emit('categorySelect', band.category)
+}
 
 const labels = computed(() => props.states.map(s => `Age ${s.plan.age}`))
 const retireIndex = computed(() => props.states.findIndex(s => s.retired))
@@ -84,8 +92,15 @@ const options = computed(() => ({
   responsive: true,
   maintainAspectRatio: false,
   interaction: {mode: 'index' as const, intersect: false},
+  onClick: (event: any, _els: any, chart: any) => {
+    const hit = chart.getElementsAtEventForMode(event, 'nearest', {intersect: true}, false)
+    if (hit.length) selectBand(hit[0].datasetIndex)
+  },
   plugins: {
-    legend: {labels: {color: ink('label'), usePointStyle: true, boxWidth: 8}},
+    legend: {
+      labels: {color: ink('label'), usePointStyle: true, boxWidth: 8},
+      onClick: (_e: any, item: any) => selectBand(item.datasetIndex),
+    },
     tooltip: {callbacks: {label: (c: any) => `${c.dataset.label}: ${fmtUsdCompact(c.parsed.y)}`}},
   },
   scales: {
