@@ -16,6 +16,11 @@ const {formRef, pending, rules, apiErrors, onSubmit} = useNaiveForm(model)
 const errorMessage = ref('')
 rules.value = hsaRules(model).rules
 
+const STRATEGY_OPTIONS = [
+  {value: 'fixed', label: 'Fixed', hint: 'A set amount each year'},
+  {value: 'max', label: 'Max', hint: 'Contribute the IRS limit'},
+]
+
 function handleSubmit() {
   onSubmit(async () => {
     const {id: _id, ...insert} = model.value as Hsa
@@ -42,20 +47,18 @@ function handleSubmit() {
           </n-form-item>
 
           <n-form-item label="Growth Rate (%)" path="growth_rate">
-            <n-input-number class="w-full" v-model:value="model.growth_rate" placeholder="Enter growth rate"/>
+            <base-number-slider v-model="model.growth_rate" :min="0" :max="15" :step="0.5"/>
           </n-form-item>
         </section>
 
-        <n-form-item label="Contribution Strategy" path="contribution_strategy">
-          <div class="grid grid-cols-2 gap-3 w-full">
-            <CommonRadioCard v-model="model.contribution_strategy" :value="'fixed'" title="Fixed">
-              <n-form-item label="Fixed Contribution Amount" path="contribution_fixed_amount">
-                <n-input-number class="w-full" v-model:value="model.contribution_fixed_amount" placeholder="Enter fixed amount"/>
-              </n-form-item>
-            </CommonRadioCard>
-            <CommonRadioCard v-model="model.contribution_strategy" :value="'max'" title="Max Out"/>
-          </div>
-        </n-form-item>
+        <div class="text-sm font-medium text-skin-base mb-2">Contribution</div>
+        <common-strategy-rows v-model="model.contribution_strategy" :options="STRATEGY_OPTIONS">
+          <template #fixed>
+            <n-form-item label="Amount / yr" path="contribution_fixed_amount" :show-feedback="false">
+              <base-number-slider v-model="model.contribution_fixed_amount" :min="0" :max="8300" :step="100"/>
+            </n-form-item>
+          </template>
+        </common-strategy-rows>
       </n-form>
     </template>
 

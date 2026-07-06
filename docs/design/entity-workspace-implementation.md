@@ -1,9 +1,11 @@
 # Entity Workspace — implementation guide (per-domain build-out)
 
-**Status:** the shell + the brokerage proof are built (#95). This guide tells the next agent
-how to convert the remaining domain forms into Workspace drawers: investments
-(#116 tax_deferred, #117 IRA, #118 Roth IRA, #119 HSA, #120 cash_reserve), income (#101),
-debt (#114), expense (#115), and the ListItem wiring (#102).
+**Status:** the shell + the brokerage proof (#95) and the **HSA** conversion (#119) are built —
+use either as the reference. Create **and** edit route through the drawer for any domain in
+`WORKSPACE_ENABLED_MODELS`, and the live preview works in create mode too (§3). This guide tells
+the next agent how to convert the remaining domain forms into Workspace drawers: investments
+(#116 tax_deferred, #117 IRA, #118 Roth IRA, #120 cash_reserve), income (#101), debt (#114),
+expense (#115), and the remaining ListItem wiring (#102).
 
 Read alongside: `CONTEXT.md` ("Entity Workspace", "Uniform Workspace across all domains",
 "Projection readout is per-domain", "Strategy-input control — Variant C", "Workspace input
@@ -41,7 +43,7 @@ controls"), `docs/design/plan-detail-redesign.md`, and ADR 011.
 | `app/components/base/NumberSlider.vue` | Paired `n-input-number` + `n-slider`; number authoritative, may exceed the slider soft cap. |
 | `app/components/common/EntityProjection.vue` | The **investment** readout. Per-domain readouts are new sibling components. |
 | `app/components/brokerage/WorkspaceForm.vue` | Reference form: full fields + `StrategyRows` + submit + live preview. Copy its shape. |
-| `app/stores/orchestratorStore.ts` | `simulateEntityPreview(modelName, entity, commandSequence)` — the what-if engine. |
+| `app/stores/orchestratorStore.ts` | `simulateEntityPreview(modelName, entity, commandSequence)` — the what-if engine (handles edit **and** create). Exports `PREVIEW_TEMP_ID` — the sentinel id create-mode forms pass for the not-yet-persisted entity. |
 
 ---
 
@@ -50,8 +52,10 @@ controls"), `docs/design/plan-detail-redesign.md`, and ADR 011.
 ```
 user edits a field in <XxxWorkspaceForm>            (local reactive `model`, NOT persisted)
    → watch(model) debounced 300ms
-   → orchestrator.simulateEntityPreview(modelName, {...model, id}, commandSequence)
-        clones planWithRelations, substitutes THIS entity's config with the form values,
+   → orchestrator.simulateEntityPreview(modelName, {...model, id: id ?? PREVIEW_TEMP_ID}, commandSequence)
+        clones planWithRelations; EDIT mode substitutes THIS entity's config with the form values;
+        CREATE mode appends the not-yet-persisted entity (keyed by PREVIEW_TEMP_ID) AND injects a
+        synthetic active 'process' command so it actually simulates (see below);
         runs the real PlanManager.simulate(), returns this entity's state[] (BaseState[])
    → emit('preview', states)
    → EntityWorkspace holds previewStates → passes to the projection component
@@ -71,6 +75,15 @@ Key point: **the form is submit-based** (nothing persists until Save). The live 
 map (`RELATION_KEY` in `orchestratorStore.ts`). All nine domains are already in that map;
 no change needed there.
 
+**Create-mode preview (why the synthetic command matters).** The simulation loop only processes
+entities that are referenced by an *active command* in the sequence (`getManagerById(model_name,
+model_id)`). On real insert a DB trigger creates that `'process'` command; during a create-mode
+*preview* nothing is persisted, so `simulateEntityPreview` appends the working entity to the
+relations **and** synthesizes a matching active `'process'` command in a cloned sequence.
+Without both, a brand-new entity simulates to a flat line (never contributes/grows). This is
+already handled in `orchestratorStore.ts` — the only per-domain requirement is that the form
+passes `id ?? PREVIEW_TEMP_ID` (not `[]`) in create mode.
+
 ---
 
 ## 4. How to add a domain Workspace (step-by-step)
@@ -83,8 +96,11 @@ no change needed there.
    - Render the domain's fields; use `<base-number-slider>` for rate/amount/percentage fields
      and `<common-strategy-rows>` for any strategy enum (see §5).
    - Recompute the preview (debounced) on `watch(model, …, {deep:true})` via
-     `orchestrator.simulateEntityPreview('<domain>', {...model, id}, commandSequence)` and
-     `emit('preview', states)`. Emit `[]` in create mode (no id → placeholder).
+     `orchestrator.simulateEntityPreview('<domain>', {...model, id: id ?? PREVIEW_TEMP_ID}, commandSequence)`
+     and `emit('preview', states)`. Works in **both** create and edit mode — import
+     `PREVIEW_TEMP_ID` from `~/stores/orchestratorStore` and pass it when `id` is null so the
+     not-yet-persisted entity is simulated (§3). Only emit `[]` when there is no `commandSequence`.
+     Do **not** early-return on `id === null` (the old brokerage copy did — it's been fixed).
    - On submit: `patch` (edit) or `create` + `commandSequenceStore.fetchByPlan(planId)` (create),
      then `emit('saved')`.
 2. **Create `app/components/<domain>/Projection.vue`** (or reuse `EntityProjection` only if the
@@ -92,10 +108,28 @@ no change needed there.
 3. **Register both in `common/EntityWorkspace.vue`** — add a `case '<domain>':` to the
    `formComponent` switch, and add a parallel `projectionComponent` switch (see §7 — this
    dispatch must be added; today the projection is hard-coded to investment).
-4. **Wire the ListItem** — in `<domain>/ListItem.vue`, change the "edit" affordance to
-   `workspace.open('<domain>', entity.id)` and delete the old local `n-modal` + `UpdateForm`
-   usage (that's issue #102's job, but do it for your domain as you convert it).
+4. **Enable the slide-out for create + edit** — add `'<domain>'` to `WORKSPACE_ENABLED_MODELS`
+   in `stores/workspaceStore.ts`. This is the single switch that makes both entry points use
+   the drawer instead of the legacy modals:
+   - **Create — two entry points, both already gated on `WORKSPACE_ENABLED_MODELS`:**
+     `plan/ChildCreateButtonList.vue` (the Simulation add-buttons) and
+     `plan/overview-prototype/VariantA.vue` (the Overview "Add income / Add account / Add
+     expense / Add debt" buttons) both call `workspace.openCreate(name, plan_id)` for enabled
+     models and fall back to the legacy `n-modal` + `CreateForm` otherwise. Adding your model to
+     the list flips **both** automatically — no per-entry wiring needed. If you add a *new* create
+     entry point elsewhere, gate it the same way.
+   - **Edit:** in `<domain>/ListItem.vue`, change the "edit" affordance to
+     `workspace.open('<domain>', entity.id)` and delete the old local `n-modal` + `UpdateForm`
+     usage (that's issue #102's job, but do it for your domain as you convert it).
+   - **Not a live path:** `<domain>/TemplatePicker.vue` still references the legacy `CreateForm`,
+     but only `debt/List.vue` renders a picker today — the brokerage/hsa/etc. pickers are unused.
+     Leave them; converting template-instantiation to the drawer (needs `openCreate` to accept
+     seed values) is out of scope until a picker is actually wired up.
 5. Leave the education panel as the shared placeholder (do not write real copy — #106).
+
+**Migration order note:** a domain isn't "done" until it's in `WORKSPACE_ENABLED_MODELS` AND its
+`formComponent`/`projectionComponent` cases exist — otherwise create opens an empty drawer. Do
+those together. Un-migrated domains keep working through the legacy modal until their turn.
 
 ---
 
@@ -211,9 +245,11 @@ add it.** tax_deferred's current form already has one; carry it over.
 ## 10. Related issues & decisions
 
 - **#95** — the shell + brokerage proof (done). Reference implementation.
+- **#119** — HSA conversion (done). Second reference — the `fixed | max`, not-income-linked case,
+  and the first to prove create-mode preview end to end.
 - **#101** — income Workspace + income-linking (one entity, two views).
 - **#102** — wire Simulation ListItems to open the Workspace.
 - **#114** debt, **#115** expense, **#116** tax_deferred, **#117** IRA, **#118** Roth IRA,
-  **#119** HSA, **#120** cash_reserve — the per-domain build-outs.
+  **#120** cash_reserve — the remaining per-domain build-outs.
 - **#106** — education panel content (placeholder until then). **#107** — baseline-vs-edited delta.
 - **ADR 006** income_id linkage · **ADR 010** HSA not linked · **ADR 011** strategy-input control.

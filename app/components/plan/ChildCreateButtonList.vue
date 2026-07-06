@@ -25,8 +25,11 @@
 </template>
 <script setup lang="ts">
 import type {ModelName} from "#shared/types/ModelName";
+import {WORKSPACE_ENABLED_MODELS} from "~/stores/workspaceStore";
 
 const { plan_id } = defineProps<{ plan_id: number }>()
+
+const workspace = useWorkspaceStore()
 
 import {
   BrokerageCreateForm,
@@ -62,6 +65,10 @@ const emit = defineEmits<{
 }>()
 
 function handleOpenCreateModal(item: CreateButtonProps) {
+  if (WORKSPACE_ENABLED_MODELS.includes(item.name)) {
+    workspace.openCreate(item.name, plan_id)
+    return
+  }
   selectedChildProp.value = item
   showModal.value = true;
 }

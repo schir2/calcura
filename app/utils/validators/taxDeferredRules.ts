@@ -20,6 +20,25 @@ export function taxDeferredRules(modelRef: Ref<Partial<TaxDeferred>>) {
         if (modelRef.value.elective_contribution_strategy === 'percentage_of_income' && (value === null || value === undefined)) {
             return new Error("Income is required for Percentage of Income Contribution Strategy");
         }
+        return true;
+    }
+
+    function requiredWhenEmployer(strategy: string, message: string) {
+        return (rule: FormItemRule, value: number | undefined) => {
+            if (modelRef.value.employer_contributes
+                && modelRef.value.employer_contribution_strategy === strategy
+                && (value === null || value === undefined)) {
+                return new Error(message);
+            }
+            return true;
+        };
+    }
+
+    function validateEmployerStrategy(rule: FormItemRule, value: string | undefined) {
+        if (modelRef.value.employer_contributes && (value === null || value === undefined)) {
+            return new Error("Employer contribution strategy is required when the employer contributes");
+        }
+        return true;
     }
 
     const rules: FormRules = {
@@ -53,24 +72,24 @@ export function taxDeferredRules(modelRef: Ref<Partial<TaxDeferred>>) {
             {type: "number", min: MIN_BALANCE, message: "Elective contribution fixed amount must be at least 0", trigger: ["blur", "change"]}
         ],
         employer_contribution_strategy: [
-            {required: true, message: "Employer contribution strategy is required", trigger: ["blur", "change"]}
+            {validator: validateEmployerStrategy, trigger: ["blur", "change"]}
         ],
         employer_compensation_match_percentage: [
-            {required: true, type: "number", message: "Employer compensation match percentage is required", trigger: ["blur", "change"]},
+            {validator: requiredWhenEmployer('percentage_of_compensation', 'Employer compensation match percentage is required'), trigger: ["blur", "change"]},
             {type: "number", min: MIN_PERCENTAGE, message: `Employer compensation match percentage must be at least ${MIN_PERCENTAGE}`, trigger: ["blur", "change"]},
             {type: "number", max: MAX_PERCENTAGE, message: `Employer compensation match percentage must be at most ${MAX_PERCENTAGE}`, trigger: ["blur", "change"]}
         ],
         employer_contribution_fixed_amount: [
-            {required: true, type: "number", message: "Employer contribution fixed amount is required", trigger: ["blur", "change"]},
+            {validator: requiredWhenEmployer('fixed', 'Employer contribution fixed amount is required'), trigger: ["blur", "change"]},
             {type: "number", min: MIN_BALANCE, message: "Employer contribution fixed amount must be at least 0", trigger: ["blur", "change"]}
         ],
         employer_match_percentage: [
-            {required: true, type: "number", message: "Employer match percentage is required", trigger: ["blur", "change"]},
+            {validator: requiredWhenEmployer('percentage_of_contribution', 'Employer match percentage is required'), trigger: ["blur", "change"]},
             {type: "number", min: MIN_PERCENTAGE, message: `Employer match percentage must be at least ${MIN_PERCENTAGE}`, trigger: ["blur", "change"]},
             {type: "number", max: MAX_PERCENTAGE, message: `Employer match percentage must be at most ${MAX_PERCENTAGE}`, trigger: ["blur", "change"]}
         ],
         employer_match_percentage_limit: [
-            {required: true, type: "number", message: "Employer match percentage limit is required", trigger: ["blur", "change"]},
+            {validator: requiredWhenEmployer('percentage_of_contribution', 'Employer match percentage limit is required'), trigger: ["blur", "change"]},
             {type: "number", min: MIN_PERCENTAGE, message: `Employer match percentage limit must be at least ${MIN_PERCENTAGE}`, trigger: ["blur", "change"]},
             {type: "number", max: MAX_PERCENTAGE, message: `Employer match percentage limit must be at most ${MAX_PERCENTAGE}`, trigger: ["blur", "change"]}
         ]

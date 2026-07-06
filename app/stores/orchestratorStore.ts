@@ -1,9 +1,14 @@
 import PlanManager from "~/models/plan/PlanManager";
 import type {CommandSequenceWithRelations} from "#shared/types/CommandSequence";
+import type {CommandSequenceCommandWithRelations} from "#shared/types/CommandSequenceCommand";
 import type {ManagerStates} from "#shared/types/ManagerStates";
 import type {ModelName} from "#shared/types/ModelName";
 import type {BaseState} from "#shared/types/BaseState";
 import type BaseManager from "~/models/common/BaseManager";
+
+// Sentinel id for a not-yet-persisted entity being previewed in create mode. Negative so it
+// never collides with a real BIGINT-identity id; used by WorkspaceForms for the live projection.
+export const PREVIEW_TEMP_ID = -1
 
 const RELATION_KEY: Record<ModelName, string> = {
     income: 'incomes',
@@ -106,12 +111,47 @@ export const orchestratorStore = defineStore('orchestrator', () => {
         if (!planWithRelations.value) return null
         const key = RELATION_KEY[modelName]
         const current = planWithRelations.value[key as keyof typeof planWithRelations.value] as {id: number}[]
+        const exists = current.some(item => item.id === entity.id)
         const overridden = {
             ...planWithRelations.value,
-            [key]: current.map(item => (item.id === entity.id ? {...item, ...entity} : item)),
+            [key]: exists
+                ? current.map(item => (item.id === entity.id ? {...item, ...entity} : item))
+                : [...current, entity],
         }
+
+        // Create-mode preview: the new entity has no command yet (the DB trigger adds one only
+        // on real insert), so the simulation would never process it. Inject a synthetic active
+        // 'process' command mirroring the trigger, so the projection reflects contributions.
+        let sequence = commandSequence
+        if (!exists) {
+            const maxOrder = commandSequence.command_sequence_commands
+                .reduce((max, csc) => Math.max(max, csc.order), 0)
+            const syntheticCommand = {
+                id: -1,
+                sequence_id: commandSequence.id,
+                command_id: -1,
+                is_active: true,
+                order: maxOrder + 1,
+                command: {
+                    id: -1,
+                    model_name: modelName,
+                    model_id: entity.id,
+                    action: 'process',
+                    is_active: true,
+                    created_at: '',
+                    edited_at: '',
+                    creator_id: null,
+                    editor_id: null,
+                },
+            } as CommandSequenceCommandWithRelations
+            sequence = {
+                ...commandSequence,
+                command_sequence_commands: [...commandSequence.command_sequence_commands, syntheticCommand],
+            }
+        }
+
         const planManager = new PlanManager(overridden)
-        planManager.simulate(commandSequence)
+        planManager.simulate(sequence)
         return snapshotManagerStates(planManager)[modelName]?.[entity.id] ?? null
     }
 

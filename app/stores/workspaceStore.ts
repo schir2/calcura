@@ -1,5 +1,12 @@
 import type {ModelName} from '#shared/types/ModelName'
 
+// Domains whose Entity Workspace form is built. Their create + edit use the slide-out
+// drawer instead of the legacy create modal / inline edit modal. Add a model here when
+// its <domain>/WorkspaceForm.vue lands (see docs/design/entity-workspace-implementation.md).
+export const WORKSPACE_ENABLED_MODELS: ModelName[] = [
+    'brokerage', 'hsa', 'debt', 'expense', 'tax_deferred', 'ira', 'roth_ira',
+]
+
 export const useWorkspaceStore = defineStore('workspace', () => {
     const isOpen = ref(false)
     const modelName = ref<ModelName | null>(null)
