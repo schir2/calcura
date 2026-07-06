@@ -17,16 +17,11 @@ const emit = defineEmits<{
   toggle: []
 }>()
 
-const showModal = ref<boolean>(false)
+const workspace = useWorkspaceStore()
 const tone = 'text-skin-info'
 const money = (value: number) => '$' + Math.round(value).toLocaleString('en-US')
 const humanize = (value: string) =>
     value.replace(/_/g, ' ').replace(/\b\w/g, char => char.toUpperCase())
-
-function handleUpdate(id: number, update: CashReserveUpdate) {
-  emit('update', id, update)
-  showModal.value = false
-}
 
 const managerStates = inject<Ref<ManagerStates | null>>('managerStates')
 
@@ -60,14 +55,10 @@ const facets = computed<RichFacet[]>(() => {
 </script>
 
 <template>
-  <n-modal v-model:show="showModal">
-    <CashReserveUpdateForm :id="cashReserve.id" @update="handleUpdate" @cancel="showModal = false"/>
-  </n-modal>
-
   <common-rich-list-item
       :expanded="expanded"
       @toggle="emit('toggle')"
-      @edit="showModal = true"
+      @edit="workspace.open('cash_reserve', cashReserve.id)"
       @delete="emit('delete', cashReserve.id)"
   >
     <template #icon>

@@ -4,7 +4,7 @@ import type {ModelName} from '#shared/types/ModelName'
 // drawer instead of the legacy create modal / inline edit modal. Add a model here when
 // its <domain>/WorkspaceForm.vue lands (see docs/design/entity-workspace-implementation.md).
 export const WORKSPACE_ENABLED_MODELS: ModelName[] = [
-    'brokerage', 'hsa', 'debt', 'expense', 'tax_deferred', 'ira', 'roth_ira',
+    'brokerage', 'hsa', 'debt', 'expense', 'tax_deferred', 'ira', 'roth_ira', 'cash_reserve', 'income',
 ]
 
 export const useWorkspaceStore = defineStore('workspace', () => {

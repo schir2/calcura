@@ -8,9 +8,13 @@ import RothIraWorkspaceForm from '~/components/rothIra/WorkspaceForm.vue'
 import TaxDeferredWorkspaceForm from '~/components/taxDeferred/WorkspaceForm.vue'
 import DebtWorkspaceForm from '~/components/debt/WorkspaceForm.vue'
 import ExpenseWorkspaceForm from '~/components/expense/WorkspaceForm.vue'
+import CashReserveWorkspaceForm from '~/components/cashReserve/WorkspaceForm.vue'
+import IncomeWorkspaceForm from '~/components/income/WorkspaceForm.vue'
 import EntityProjection from '~/components/common/EntityProjection.vue'
 import DebtWorkspaceProjection from '~/components/debt/WorkspaceProjection.vue'
 import ExpenseWorkspaceProjection from '~/components/expense/WorkspaceProjection.vue'
+import CashReserveWorkspaceProjection from '~/components/cashReserve/WorkspaceProjection.vue'
+import IncomeWorkspaceProjection from '~/components/income/WorkspaceProjection.vue'
 
 type Props = {
   commandSequence: CommandSequenceWithRelations | null
@@ -47,6 +51,10 @@ const formComponent = computed(() => {
       return DebtWorkspaceForm
     case 'expense':
       return ExpenseWorkspaceForm
+    case 'cash_reserve':
+      return CashReserveWorkspaceForm
+    case 'income':
+      return IncomeWorkspaceForm
     default:
       return null
   }
@@ -58,6 +66,10 @@ const projectionComponent = computed(() => {
       return DebtWorkspaceProjection
     case 'expense':
       return ExpenseWorkspaceProjection
+    case 'cash_reserve':
+      return CashReserveWorkspaceProjection
+    case 'income':
+      return IncomeWorkspaceProjection
     default:
       return EntityProjection
   }
