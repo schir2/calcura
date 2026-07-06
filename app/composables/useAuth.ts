@@ -30,8 +30,7 @@ export const useAuth = () => {
         const {error} = await supabase.auth.signOut()
         if (!error) return
 
-        const {isAuthRetryableFetchError} = await import('@supabase/auth-js')
-        if (isAuthRetryableFetchError(error)) {
+        if (error) {
             await supabase.auth.signOut({scope: 'local'})
             return
         }
