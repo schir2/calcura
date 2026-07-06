@@ -7,9 +7,9 @@ import type {PlanProjection} from '~/composables/usePlanSimulations'
 ChartJS.register(LineElement, PointElement, LinearScale, CategoryScale, Filler, Tooltip)
 
 const {projection, loading = false, height = 130} = defineProps<{
-    projection: PlanProjection
-    loading?: boolean
-    height?: number
+  projection: PlanProjection
+  loading?: boolean
+  height?: number
 }>()
 
 const common = darkTheme.common
@@ -18,35 +18,40 @@ const lastAge = computed(() => projection.ages[projection.ages.length - 1])
 const labels = computed(() => projection.ages.map(age => (age % 10 === 0 ? `${age}` : '')))
 
 const data = computed(() => {
-    const color = depletes.value ? common.errorColorHover : common.successColorHover
-    const background = depletes.value ? 'rgba(208, 58, 82, 0.16)' : 'rgba(24, 160, 88, 0.15)'
-    return {
-        labels: labels.value,
-        datasets: [{
-            label: 'Balance',
-            data: projection.lifetime,
-            borderColor: color,
-            backgroundColor: background,
-            fill: true,
-            tension: 0.35,
-            borderWidth: 2,
-            pointRadius: 0,
-        }],
-    }
+  const color = depletes.value ? common.errorColorHover : common.successColorHover
+  const background = depletes.value ? 'rgba(208, 58, 82, 0.16)' : 'rgba(24, 160, 88, 0.15)'
+  return {
+    labels: labels.value,
+    datasets: [{
+      label: 'Balance',
+      data: projection.lifetime,
+      borderColor: color,
+      backgroundColor: background,
+      fill: true,
+      tension: 0.35,
+      borderWidth: 2,
+      pointRadius: 0,
+    }],
+  }
 })
 
 const options = {
-    responsive: true,
-    maintainAspectRatio: false,
-    plugins: {legend: {display: false}, tooltip: {enabled: false}},
-    scales: {
-        x: {grid: {display: false}, ticks: {color: common.textColor3, font: {size: 9}, maxRotation: 0}},
-        y: {
-            beginAtZero: true,
-            ticks: {callback: (value: number) => `$${Math.round(Number(value) / 1000)}k`, color: common.textColor3, font: {size: 9}, maxTicksLimit: 3},
-            grid: {color: 'rgba(255,255,255,0.06)'},
-        },
+  responsive: true,
+  maintainAspectRatio: false,
+  plugins: {legend: {display: false}, tooltip: {enabled: false}},
+  scales: {
+    x: {grid: {display: false}, ticks: {color: common.textColor3, font: {size: 9}, maxRotation: 0}},
+    y: {
+      beginAtZero: true,
+      ticks: {
+        callback: (value: number) => `$${Math.round(Number(value) / 1000)}k`,
+        color: common.textColor3,
+        font: {size: 9},
+        maxTicksLimit: 3
+      },
+      grid: {color: 'rgba(255,255,255,0.06)'},
     },
+  },
 }
 </script>
 
