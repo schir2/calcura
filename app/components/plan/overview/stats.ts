@@ -1,4 +1,4 @@
-// PROTOTYPE — issue #94. Summary numbers derived from the simulation for the stat tiles / verdict.
+// Summary numbers derived from the simulation for the Overview stat tiles / issues banner.
 import type {OrchestratorState} from '#shared/types/OrchestratorState'
 
 const ASSET_KEYS = ['tax_deferred', 'taxable', 'tax_exempt', 'cash_reserve'] as const

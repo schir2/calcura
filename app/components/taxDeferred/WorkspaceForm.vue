@@ -10,8 +10,9 @@ type Props = {
   id: number | null
   planId: number | null
   commandSequence: CommandSequenceWithRelations | null
+  initialValues?: Partial<TaxDeferred>
 }
-const {id, planId, commandSequence} = defineProps<Props>()
+const {id, planId, commandSequence, initialValues} = defineProps<Props>()
 
 const emit = defineEmits<{
   preview: [states: TaxDeferredState[]]
@@ -24,7 +25,7 @@ const commandSequenceStore = useCommandSequenceStore()
 const incomeStore = useIncomeStore()
 const orchestrator = orchestratorStore()
 
-const model = ref<Partial<TaxDeferred>>({...taxDeferredDefaults})
+const model = ref<Partial<TaxDeferred>>({...taxDeferredDefaults, ...(id === null ? initialValues : undefined)})
 const isFetching = ref(false)
 const nameInput = ref<{focus: () => void} | null>(null)
 

@@ -159,6 +159,23 @@ describe("TaxDeferredManager", () => {
             expect(electiveContribution).toBe(Infinity);
         });
 
+        it("should contribute 0 when detached from its income (null strategy)", () => {
+            planManager = new PlanManager(
+                {
+                    ...planConfig,
+                    tax_deferreds: [{
+                        ...planConfig.tax_deferreds[0],
+                        elective_contribution_strategy: null,
+                        income: undefined,
+                    }]
+                }
+            )
+            const taxDeferredManager = planManager.getManagerById<TaxDeferredManager>('tax_deferred', 1)
+            assertDefined(taxDeferredManager, 'TaxDeferredManager')
+            const electiveContribution = taxDeferredManager.calculateElectiveContribution();
+            expect(electiveContribution).toBe(0);
+        });
+
         it("should calculate employer_match electiveContribution correctly", () => {
             planManager = new PlanManager(
                 {

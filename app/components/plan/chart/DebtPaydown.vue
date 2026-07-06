@@ -1,5 +1,5 @@
 <script setup lang="ts">
-// PROTOTYPE — issue #94. Debt paydown: declining balance with cumulative-interest shading.
+// Debt paydown: declining balance with cumulative-interest shading.
 import {Line} from 'vue-chartjs'
 import {
   CategoryScale,
@@ -13,12 +13,11 @@ import {
   Tooltip,
 } from 'chart.js'
 import type {OrchestratorState} from '#shared/types/OrchestratorState'
-import {fmtUsdCompact, usePrototypeSkin} from '../usePrototypeSkin'
 
 ChartJS.register(Title, Tooltip, Legend, LineElement, PointElement, CategoryScale, LinearScale, Filler)
 
 const props = withDefaults(defineProps<{ states: OrchestratorState[]; height?: number }>(), {height: 240})
-const {hue, ink} = usePrototypeSkin()
+const {hue, ink} = useChartColors()
 
 const hasDebt = computed(() => props.states.some(s => s.liabilities.debt.balance_end > 0 || s.liabilities.debt.paid_lifetime > 0))
 

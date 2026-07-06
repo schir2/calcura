@@ -1,43 +1,15 @@
 <script setup lang="ts">
-import type {MenuOption} from 'naive-ui'
-import {Icon} from '#components'
-import {tools, isAvailable} from '~/constants/tools'
-
-function renderIcon(name: string) {
-  return () => h(Icon, {name})
-}
-
-function renderLink(label: string, to: string) {
-  return () => h('span', {class: 'n-menu-label'}, [
-    h(resolveComponent('NuxtLink'), {to, class: 'n-menu-link'}, () => label)
-  ])
-}
-
-function renderComingSoon(label: string) {
-  return () => h('span', {class: 'flex items-center gap-2'}, [
-    h('span', label),
-    h('span', {class: 'text-xs text-skin-muted'}, 'soon'),
-  ])
-}
+const props = withDefaults(defineProps<{defaultCollapsed?: boolean}>(), {
+  defaultCollapsed: false,
+})
 
 const {isAuthenticated} = useAuth()
-const collapsed = ref<boolean>(false)
+const {menuOptions} = useNavMenu()
 
-const menuOptions: MenuOption[] = [
-  {
-    key: 'dashboard',
-    icon: renderIcon('uil:create-dashboard'),
-    label: renderLink('Dashboard', '/dashboard'),
-  },
-  ...tools.map((tool): MenuOption => ({
-    key: tool.id,
-    icon: renderIcon(tool.icon),
-    disabled: !isAvailable(tool),
-    label: isAvailable(tool)
-        ? renderLink(tool.label, tool.route!)
-        : renderComingSoon(tool.label),
-  })),
-]
+const collapsed = ref<boolean>(props.defaultCollapsed)
+watch(() => props.defaultCollapsed, value => {
+  collapsed.value = value
+})
 </script>
 
 <template>

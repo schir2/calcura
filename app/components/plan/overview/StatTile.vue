@@ -1,5 +1,5 @@
 <script setup lang="ts">
-// PROTOTYPE — issue #94. Small KPI tile shared across variants.
+// Small KPI tile for the Overview stat row.
 withDefaults(defineProps<{
   label: string
   value: string

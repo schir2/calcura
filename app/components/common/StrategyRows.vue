@@ -4,7 +4,7 @@
 // named after the option value. Replaces CommonRadioCard for strategy selection.
 type Option = {value: string; label: string; hint?: string}
 defineProps<{options: Option[]}>()
-const model = defineModel<string>()
+const model = defineModel<string | null>()
 </script>
 
 <template>

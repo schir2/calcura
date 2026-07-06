@@ -176,6 +176,41 @@ export const darkColorTokens: ColorTokens = {
  * Radius seeded from NaiveUI borderRadius (3px) / borderRadiusSmall (2px);
  * elevation seeded from NaiveUI boxShadow1/2/3.
  */
+/*
+ * Chart-series + neutral colors for Chart.js canvases. A canvas paints once per render and can't
+ * read CSS vars reactively, so these are literal rgb triples selected by color mode at draw time
+ * (see composables/useChartColors). palette.ts stays the single source of truth for color (ADR 008).
+ * violet + teal live only here — the skin token set has no equivalent.
+ */
+export type ChartHue = 'blue' | 'green' | 'violet' | 'amber' | 'teal' | 'red' | 'slate' | 'ink'
+
+export const chartSeriesLight: Record<ChartHue, string> = {
+    blue: '32, 128, 240', green: '24, 160, 88', violet: '124, 108, 240',
+    amber: '240, 160, 32', teal: '15, 148, 136', red: '208, 48, 80',
+    slate: '118, 124, 130', ink: '11, 13, 15',
+}
+
+export const chartSeriesDark: Record<ChartHue, string> = {
+    blue: '112, 192, 232', green: '99, 226, 183', violet: '168, 156, 245',
+    amber: '242, 201, 125', teal: '94, 202, 181', red: '232, 128, 128',
+    slate: '154, 160, 166', ink: '235, 235, 235',
+}
+
+export type ChartNeutral = 'label' | 'muted' | 'grid'
+
+export const chartNeutralLight: Record<ChartNeutral, string> = {
+    label: '51, 54, 57', muted: '118, 124, 130', grid: '224, 224, 230',
+}
+
+export const chartNeutralDark: Record<ChartNeutral, string> = {
+    label: '209, 209, 209', muted: '150, 150, 150', grid: '84, 84, 84',
+}
+
+// Asset category / entity → chart-series hue.
+export const chartCategoryHue = {
+    tax_deferred: 'blue', taxable: 'green', tax_exempt: 'violet', cash_reserve: 'amber', cash: 'teal',
+} as const satisfies Record<string, ChartHue>
+
 export type ScaleTokens = Record<string, string>
 
 export const radiusTokens: ScaleTokens = {

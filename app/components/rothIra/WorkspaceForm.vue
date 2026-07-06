@@ -9,8 +9,9 @@ type Props = {
   id: number | null
   planId: number | null
   commandSequence: CommandSequenceWithRelations | null
+  initialValues?: Partial<RothIra>
 }
-const {id, planId, commandSequence} = defineProps<Props>()
+const {id, planId, commandSequence, initialValues} = defineProps<Props>()
 
 const emit = defineEmits<{
   preview: [states: RothIraState[]]
@@ -31,6 +32,7 @@ const model = ref<Partial<RothIra>>({
   contribution_fixed_amount: 0,
   contribution_percentage: 0,
   income_id: null,
+  ...(id === null ? initialValues : undefined),
 })
 const isFetching = ref(false)
 const nameInput = ref<{focus: () => void} | null>(null)

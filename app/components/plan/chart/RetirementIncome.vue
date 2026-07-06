@@ -1,56 +1,40 @@
 <script setup lang="ts">
-// PROTOTYPE — issue #94. Stacked-area net-worth spine: asset bands + net-worth line + retirement marker.
+// Projected retirement income (given trajectory) vs. the income goal.
 import {Line} from 'vue-chartjs'
 import {
   CategoryScale, Chart as ChartJS, Filler, Legend, LinearScale, LineElement,
   PointElement, Title, Tooltip,
 } from 'chart.js'
 import type {OrchestratorState} from '#shared/types/OrchestratorState'
-import {CATEGORY_HUE, fmtUsdCompact, usePrototypeSkin} from '../usePrototypeSkin'
-
 ChartJS.register(Title, Tooltip, Legend, LineElement, PointElement, CategoryScale, LinearScale, Filler)
 
-const props = withDefaults(defineProps<{ states: OrchestratorState[]; height?: number }>(), {height: 340})
-const {hue, ink} = usePrototypeSkin()
+const props = withDefaults(defineProps<{ states: OrchestratorState[]; height?: number }>(), {height: 240})
+const {hue, ink} = useChartColors()
 
-// bottom -> top of the stack; grouped by asset category per CONTEXT.md (never one band per account)
-const bands = [
-  {label: 'Un-invested Cash', hue: CATEGORY_HUE.cash, get: (s: OrchestratorState) => s.cash.net},
-  {label: 'Cash Reserve', hue: CATEGORY_HUE.cash_reserve, get: (s: OrchestratorState) => s.assets.cash_reserve.balance_end},
-  {label: 'Taxable', hue: CATEGORY_HUE.taxable, get: (s: OrchestratorState) => s.assets.taxable.balance_end},
-  {label: 'Roth (Tax-Exempt)', hue: CATEGORY_HUE.tax_exempt, get: (s: OrchestratorState) => s.assets.tax_exempt.balance_end},
-  {label: 'Tax-Deferred', hue: CATEGORY_HUE.tax_deferred, get: (s: OrchestratorState) => s.assets.tax_deferred.balance_end},
-]
-
-const labels = computed(() => props.states.map(s => `Age ${s.plan.age}`))
 const retireIndex = computed(() => props.states.findIndex(s => s.retired))
 
 const data = computed(() => ({
-  labels: labels.value,
+  labels: props.states.map(s => `Age ${s.plan.age}`),
   datasets: [
-    ...bands.map(band => ({
-      label: band.label,
-      data: props.states.map(band.get),
-      backgroundColor: hue(band.hue, 0.82),
-      borderColor: hue(band.hue, 1),
-      borderWidth: 1,
-      fill: true,
-      stack: 'assets',
-      pointRadius: 0,
-      tension: 0.25,
-    })),
     {
-      label: 'Net Worth',
-      data: props.states.map(s =>
-        s.assets.tax_deferred.balance_end + s.assets.taxable.balance_end +
-        s.assets.tax_exempt.balance_end + s.assets.cash_reserve.balance_end +
-        s.cash.net - s.liabilities.debt.balance_end),
-      borderColor: hue('ink', 0.55),
-      borderWidth: 1.5,
-      fill: false,
-      stack: 'networth',
+      label: 'Projected retirement income',
+      data: props.states.map(s => s.plan.retirement_income_projected),
+      borderColor: hue('green', 1),
+      backgroundColor: hue('green', 0.13),
+      borderWidth: 2,
+      fill: true,
       pointRadius: 0,
       tension: 0.25,
+    },
+    {
+      label: 'Income goal',
+      data: props.states.map(s => s.plan.retirement_income_goal),
+      borderColor: hue('slate', 0.9),
+      borderWidth: 1.5,
+      borderDash: [5, 4],
+      fill: false,
+      pointRadius: 0,
+      tension: 0,
     },
   ],
 }))
@@ -90,7 +74,7 @@ const options = computed(() => ({
   },
   scales: {
     x: {grid: {display: false}, ticks: {color: ink('muted'), maxRotation: 0, autoSkipPadding: 24}},
-    y: {stacked: true, grid: {color: ink('grid', 0.5)}, ticks: {color: ink('muted'), callback: (v: any) => fmtUsdCompact(v)}},
+    y: {grid: {color: ink('grid', 0.5)}, ticks: {color: ink('muted'), callback: (v: any) => fmtUsdCompact(v)}},
   },
 }))
 </script>

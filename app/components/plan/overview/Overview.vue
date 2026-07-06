@@ -1,6 +1,6 @@
 <script setup lang="ts">
-// PROTOTYPE VARIANT A — master-aligned. Verdict/KPI hero → net-worth spine → Income / Investments /
-// Liabilities sections, each a chart + entity list, matching artifact cb56a0f0.
+// Plan Overview: KPI row → net-worth spine → Income / Spending / Investments / Liabilities sections,
+// each a chart + entity list. Composition approved in master artifact cb56a0f0.
 import type {Component} from 'vue'
 import type {OrchestratorState} from '#shared/types/OrchestratorState'
 import type {PlanWithRelations} from '#shared/types/Plan'
@@ -9,15 +9,14 @@ import {
   BrokerageCreateForm, CashReserveCreateForm, DebtCreateForm, ExpenseCreateForm, HsaCreateForm,
   IncomeCreateForm, IraCreateForm, RothIraCreateForm, TaxDeferredCreateForm,
 } from '#components'
-import NetWorthSpine from './charts/NetWorthSpine.vue'
-import IncomeVsExpenses from './charts/IncomeVsExpenses.vue'
-import RetirementIncome from './charts/RetirementIncome.vue'
-import ExpenseBreakdown from './charts/ExpenseBreakdown.vue'
-import DebtPaydown from './charts/DebtPaydown.vue'
-import StatTile from './StatTile.vue'
+import NetWorthSpine from '~/components/plan/chart/NetWorthSpine.vue'
+import IncomeVsExpenses from '~/components/plan/chart/IncomeVsExpenses.vue'
+import RetirementIncome from '~/components/plan/chart/RetirementIncome.vue'
+import ExpenseBreakdown from '~/components/plan/chart/ExpenseBreakdown.vue'
+import DebtPaydown from '~/components/plan/chart/DebtPaydown.vue'
 import SectionHead from './SectionHead.vue'
 import EntityRow from './EntityRow.vue'
-import {fmtUsd} from './usePrototypeSkin'
+import VerdictHero from './VerdictHero.vue'
 import {overviewStats} from './stats'
 import {WORKSPACE_ENABLED_MODELS} from '~/stores/workspaceStore'
 
@@ -63,7 +62,7 @@ const accounts = computed(() => {
     ...p.roth_iras.map(e => ({name: e.name, amount: e.initial_balance, hueName: 'violet' as HueName})),
     ...p.iras.map(e => ({name: e.name, amount: e.initial_balance, hueName: 'violet' as HueName})),
     ...p.hsas.map(e => ({name: e.name, amount: e.initial_balance, hueName: 'teal' as HueName})),
-    ...p.cash_reserves.map(e => ({name: e.name, amount: e.initial_balance, hueName: 'amber' as HueName})),
+    ...p.cash_reserves.map(e => ({name: e.name, amount: e.initial_amount, hueName: 'amber' as HueName})),
   ]
 })
 
@@ -78,49 +77,18 @@ const expenseRows = computed(() => {
 })
 
 const debtPrincipal = computed(() =>
-  (props.plan?.debts ?? []).reduce((sum, d) => sum + (d.initial_balance ?? 0), 0))
+  (props.plan?.debts ?? []).reduce((sum, d) => sum + (d.principal ?? 0), 0))
 
 const paidOffAge = computed(() => {
   const cleared = props.states.find(s => s.liabilities.debt.balance_end <= 0 && s.liabilities.debt.paid_lifetime > 0)
   return cleared?.plan.age
 })
 
-const issues = computed(() => {
-  const s = stats.value
-  const out: string[] = []
-  if (!s.onTrack) out.push('Retirement is never reached — the goal isn\'t met within the plan horizon.')
-  if (s.totalShortfall > 0) {
-    out.push(`Plan runs short by ${fmtUsd(s.totalShortfall)}${s.firstShortfallAge ? ` starting at age ${s.firstShortfallAge}` : ''} — income can't cover spending in ${s.shortfallYears} year${s.shortfallYears > 1 ? 's' : ''}.`)
-  }
-  if (s.debtRemaining > 0) out.push(`Debt is never fully paid off — ${fmtUsd(s.debtRemaining)} still owed at the end of the plan.`)
-  return out
-})
 </script>
 
 <template>
   <div class="space-y-1">
-    <div v-if="issues.length"
-         class="rounded-lg border border-skin-error/40 bg-skin-error/10 px-4 py-3 mb-2">
-      <div class="flex items-center gap-2 text-skin-error font-semibold">
-        <span class="w-2.5 h-2.5 rounded-full bg-skin-error"/>
-        {{ issues.length }} issue{{ issues.length > 1 ? 's' : '' }} need attention
-      </div>
-      <ul class="mt-1.5 space-y-1">
-        <li v-for="(issue, i) in issues" :key="i" class="text-sm text-skin-secondary flex gap-2">
-          <span class="text-skin-error">•</span><span>{{ issue }}</span>
-        </li>
-      </ul>
-    </div>
-
-    <div class="grid grid-cols-1 sm:grid-cols-3 gap-2">
-      <StatTile
-          label="Retirement"
-          :value="stats.onTrack ? `Age ${stats.retireAge}` : 'Not reached'"
-          :hint="stats.onTrack ? `in ${stats.yearsToRetire} years` : 'plan falls short'"
-          :tone="stats.onTrack ? 'success' : 'error'"/>
-      <StatTile label="Net worth at retirement" :value="fmtUsd(stats.netWorthAtRetirement ?? stats.finalNetWorth)" hint="assets minus debt"/>
-      <StatTile label="Total contributions" :value="fmtUsd(stats.totalContributions)" tone="info"/>
-    </div>
+    <VerdictHero v-if="plan" :states="states" :plan="plan"/>
 
     <n-card class="mt-3">
       <template #header>

@@ -15,6 +15,7 @@ const iconMap = {
   create: 'mdi:add-circle',
   remove: 'material-symbols:close',
   delete: 'material-symbols:delete',
+  edit: 'mdi:pencil',
   add: 'material-symbols:add',
   taxDeferred: 'mdi:finance',
   brokerage: 'mdi:finance',

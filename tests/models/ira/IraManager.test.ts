@@ -140,6 +140,22 @@ describe("IraManager", () => {
             const contribution = iraManager.calculateContribution();
             expect(contribution).toBe(7_000);
         });
+
+        it("detached (null strategy) contributes 0", () => {
+            planManager = new PlanManager({
+                ...planConfig,
+                iras: [
+                    {
+                        ...planConfig.iras[0],
+                        contribution_strategy: null,
+                        income_id: null,
+                    }
+                ]
+            })
+            iraManager = planManager.getManagerById('ira', 1)
+            const contribution = iraManager.calculateContribution();
+            expect(contribution).toBe(0);
+        });
     })
 
     describe('process', () => {

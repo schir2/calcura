@@ -5,6 +5,7 @@ import type {ManagerStates} from "#shared/types/ManagerStates";
 import type {ModelName} from "#shared/types/ModelName";
 import type {BaseState} from "#shared/types/BaseState";
 import type BaseManager from "~/models/common/BaseManager";
+import type {Income} from "#shared/types/Income";
 
 // Sentinel id for a not-yet-persisted entity being previewed in create mode. Negative so it
 // never collides with a real BIGINT-identity id; used by WorkspaceForms for the live projection.
@@ -20,6 +21,18 @@ const RELATION_KEY: Record<ModelName, string> = {
     ira: 'iras',
     roth_ira: 'roth_iras',
     hsa: 'hsas',
+}
+
+// ira/roth/tax_deferred managers resolve their funding income via the nested `config.income`
+// object (see each manager's `incomeManager` getter), but the store rows carry only `income_id`.
+// Attach the income here so `percentage_of_income` contributions actually scale off the income.
+const INCOME_LINKED_KEYS = new Set(['tax_deferreds', 'iras', 'roth_iras'])
+
+function attachIncome<T extends {income_id?: number | null}>(rows: T[], incomes: Income[]): (T & {income?: Income})[] {
+    return rows.map(row => ({
+        ...row,
+        income: row.income_id != null ? incomes.find(income => income.id === row.income_id) : undefined,
+    }))
 }
 
 function snapshotManagerStates(planManager: PlanManager): ManagerStates {
@@ -83,11 +96,11 @@ export const orchestratorStore = defineStore('orchestrator', () => {
             incomes: incomeStore.list,
             expenses: expenseStore.list,
             debts: debtStore.list,
-            tax_deferreds: taxDeferredStore.list,
+            tax_deferreds: attachIncome(taxDeferredStore.list, incomeStore.list),
             brokerages: brokerageStore.list,
             hsas: hsaStore.list,
-            iras: iraStore.list,
-            roth_iras: rothIraStore.list,
+            iras: attachIncome(iraStore.list, incomeStore.list),
+            roth_iras: attachIncome(rothIraStore.list, incomeStore.list),
             command_sequences: commandSequenceStore.list,
         }
     })
@@ -112,11 +125,14 @@ export const orchestratorStore = defineStore('orchestrator', () => {
         const key = RELATION_KEY[modelName]
         const current = planWithRelations.value[key as keyof typeof planWithRelations.value] as {id: number}[]
         const exists = current.some(item => item.id === entity.id)
+        const overriddenList = exists
+            ? current.map(item => (item.id === entity.id ? {...item, ...entity} : item))
+            : [...current, entity]
         const overridden = {
             ...planWithRelations.value,
-            [key]: exists
-                ? current.map(item => (item.id === entity.id ? {...item, ...entity} : item))
-                : [...current, entity],
+            [key]: INCOME_LINKED_KEYS.has(key)
+                ? attachIncome(overriddenList as {income_id?: number | null}[], incomeStore.list)
+                : overriddenList,
         }
 
         // Create-mode preview: the new entity has no command yet (the DB trigger adds one only

@@ -149,6 +149,24 @@ describe("RothIraManager", () => {
             const contribution = rothIraManager.calculateContribution();
             expect(contribution).toBe(7_000);
         });
+
+        it("detached (null strategy) contributes 0", () => {
+            planManager = new PlanManager({
+                ...planConfig,
+                roth_iras: [
+                    {
+                        ...planConfig.roth_iras[0],
+                        contribution_strategy: null,
+                        income_id: null,
+                    }
+                ]
+            })
+
+            rothIraManager = planManager.getManagerById<RothIraManager>('roth_ira', 1)
+            assertDefined(rothIraManager, 'RothIraManager')
+            const contribution = rothIraManager.calculateContribution();
+            expect(contribution).toBe(0);
+        });
     })
 
     describe('process', () => {

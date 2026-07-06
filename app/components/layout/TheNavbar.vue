@@ -7,6 +7,8 @@ const auth = useAuth()
 const {isAuthenticated} = auth
 const user = useSupabaseUser()
 const message = useMessage()
+const {isMobile} = useNavMode()
+const {open: openNavDrawer} = useNavDrawer()
 
 function renderIcon(name: string) {
   return () => h(Icon, {name})
@@ -39,15 +41,28 @@ function handleUserSelect(key: string) {
 <template>
   <n-layout-header class="pt-3 pb-2 px-4">
     <nav class="justify-between items-center flex">
-      <n-button quaternary @click="router.push('/')">
-        <span class="flex gap-2 items-center">
-          <img class="h-8 inline-block" src="~/assets/img/logos/calcura-logo.svg" alt="logo"/>
-          <span class="text-xl">Calcura</span>
-        </span>
-      </n-button>
+      <div class="flex items-center gap-1">
+        <client-only>
+          <n-button
+              v-if="isMobile && isAuthenticated"
+              quaternary
+              circle
+              aria-label="Open navigation"
+              @click="openNavDrawer"
+          >
+            <icon class="text-2xl" name="mdi:menu"/>
+          </n-button>
+        </client-only>
+        <n-button quaternary @click="router.push('/')">
+          <span class="flex gap-2 items-center">
+            <img class="h-8 inline-block" src="~/assets/img/logos/calcura-logo.svg" alt="logo"/>
+            <span class="text-xl">Calcura</span>
+          </span>
+        </n-button>
+      </div>
       <ul class="flex items-center gap-2">
         <client-only>
-          <n-button v-if="isAuthenticated" type="primary" @click="router.push('/dashboard')">Dashboard</n-button>
+          <n-button v-if="isAuthenticated && !isMobile" type="primary" @click="router.push('/dashboard')">Dashboard</n-button>
           <n-button keyboard v-if="!isAuthenticated" @click="router.push('/auth/login')">Login</n-button>
           <n-dropdown
               v-if="isAuthenticated"

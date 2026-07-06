@@ -347,6 +347,24 @@ BEGIN
 END;
 $$;
 
+-- Detach investments funded by this income before the FK nulls their income_id.
+-- Runs BEFORE DELETE so income_id still resolves; a percentage_of_income account
+-- with no income is invalid, so its strategy is cleared (it stops contributing).
+CREATE OR REPLACE FUNCTION on_income_delete_detach()
+RETURNS TRIGGER LANGUAGE plpgsql SECURITY DEFINER
+SET search_path = public
+AS $$
+BEGIN
+    UPDATE ira SET contribution_strategy = NULL
+        WHERE income_id = OLD.id AND contribution_strategy = 'percentage_of_income';
+    UPDATE roth_ira SET contribution_strategy = NULL
+        WHERE income_id = OLD.id AND contribution_strategy = 'percentage_of_income';
+    UPDATE tax_deferred SET elective_contribution_strategy = NULL
+        WHERE income_id = OLD.id AND elective_contribution_strategy = 'percentage_of_income';
+    RETURN OLD;
+END;
+$$;
+
 CREATE OR REPLACE FUNCTION on_expense_delete()
 RETURNS TRIGGER LANGUAGE plpgsql SECURITY DEFINER
 SET search_path = public
@@ -428,6 +446,10 @@ END;
 $$;
 
 -- Attach delete triggers to each financial item table
+CREATE TRIGGER trg_income_delete_detach
+    BEFORE DELETE ON income
+    FOR EACH ROW EXECUTE FUNCTION on_income_delete_detach();
+
 CREATE TRIGGER trg_income_delete
     AFTER DELETE ON income
     FOR EACH ROW EXECUTE FUNCTION on_income_delete();

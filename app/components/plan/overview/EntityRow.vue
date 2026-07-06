@@ -1,7 +1,5 @@
 <script setup lang="ts">
-// PROTOTYPE — issue #94. One row in an income-sources / accounts list (dot + name + amount).
-import {fmtUsd, usePrototypeSkin} from './usePrototypeSkin'
-
+// One row in an income-sources / accounts list (dot + name + amount).
 const props = defineProps<{
   name: string
   amount: number
@@ -9,7 +7,7 @@ const props = defineProps<{
   hueName: 'blue' | 'green' | 'violet' | 'amber' | 'teal' | 'red' | 'slate'
 }>()
 
-const {hue} = usePrototypeSkin()
+const {hue} = useChartColors()
 </script>
 
 <template>

@@ -1,17 +1,16 @@
 <script setup lang="ts">
-// PROTOTYPE — issue #94. Expense composition, working vs. retirement, split on the two independent
-// axes (essential/discretionary × fixed/variable). Amounts in today's dollars from expense config:
+// Expense composition, working vs. retirement, split on the two independent axes
+// (essential/discretionary × fixed/variable). Amounts in today's dollars from expense config:
 //  - working:    is_retirement_only ? 0 : base
 //  - retirement: base × retirement_spending_percentage  (picks up retirement-only expenses)
 import {Bar} from 'vue-chartjs'
 import {BarElement, CategoryScale, Chart as ChartJS, Legend, LinearScale, Tooltip} from 'chart.js'
 import type {Expense} from '#shared/types/Expense'
-import {fmtUsd, fmtUsdCompact, usePrototypeSkin} from '../usePrototypeSkin'
 
 ChartJS.register(Tooltip, Legend, BarElement, CategoryScale, LinearScale)
 
 const props = withDefaults(defineProps<{ expenses?: Expense[]; height?: number }>(), {expenses: () => [], height: 170})
-const {hue, ink} = usePrototypeSkin()
+const {hue, ink} = useChartColors()
 
 const segments = [
   {label: 'Essential · fixed', hue: 'blue' as const, essential: true, type: 'fixed'},
@@ -43,7 +42,7 @@ const data = computed(() => ({
   labels: ['While working', 'In retirement'],
   datasets: segments.map((seg, i) => ({
     label: seg.label,
-    data: [working.value[i], retirement.value[i]],
+    data: [working.value[i] ?? 0, retirement.value[i] ?? 0],
     backgroundColor: hue(seg.hue, 0.85),
     borderWidth: 0,
     stack: 'spend',

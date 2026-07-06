@@ -1,5 +1,5 @@
 <script setup lang="ts">
-// PROTOTYPE — issue #94. Section header: colored dot + prominent title + rule + "Add" pill.
+// Section header: colored dot + prominent title + rule + "Add" pill.
 withDefaults(defineProps<{
   title: string
   tag?: string

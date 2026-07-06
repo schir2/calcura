@@ -9,8 +9,9 @@ type Props = {
   id: number | null
   planId: number | null
   commandSequence: CommandSequenceWithRelations | null
+  initialValues?: Partial<Ira>
 }
-const {id, planId, commandSequence} = defineProps<Props>()
+const {id, planId, commandSequence, initialValues} = defineProps<Props>()
 
 const emit = defineEmits<{
   preview: [states: IraState[]]
@@ -29,6 +30,7 @@ const model = ref<Partial<Ira>>({
   growth_rate: 6,
   contribution_strategy: 'fixed',
   contribution_fixed_amount: 0,
+  ...(id === null ? initialValues : undefined),
 })
 const isFetching = ref(false)
 const nameInput = ref<{focus: () => void} | null>(null)

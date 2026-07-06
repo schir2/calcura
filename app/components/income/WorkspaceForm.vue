@@ -6,9 +6,9 @@ import type {ModelName} from '#shared/types/ModelName'
 import {PREVIEW_TEMP_ID} from '~/stores/orchestratorStore'
 import {incomeRules} from '~/utils/validators/incomeRules'
 import {incomeDefaults} from '~/constants/IncomeConstants'
-import {iraDefaults} from '~/constants/IraConstants'
-import {rothIraDefaults} from '~/constants/RothIraConstants'
-import {taxDeferredDefaults} from '~/constants/TaxDeferredConstants'
+import IraWorkspaceForm from '~/components/ira/WorkspaceForm.vue'
+import RothIraWorkspaceForm from '~/components/rothIra/WorkspaceForm.vue'
+import TaxDeferredWorkspaceForm from '~/components/taxDeferred/WorkspaceForm.vue'
 
 type Props = {
   id: number | null
@@ -32,6 +32,7 @@ const rothIraStore = useRothIraStore()
 const taxDeferredStore = useTaxDeferredStore()
 
 const model = ref<Partial<Income>>({...incomeDefaults})
+const savedIncomeId = ref<number | null>(id)
 const isFetching = ref(false)
 const nameInput = ref<{focus: () => void} | null>(null)
 
@@ -66,7 +67,7 @@ function computePreview() {
   }
   const states = orchestrator.simulateEntityPreview(
       'income',
-      {...model.value, id: id ?? PREVIEW_TEMP_ID} as {id: number} & Record<string, unknown>,
+      {...model.value, id: savedIncomeId.value ?? PREVIEW_TEMP_ID} as {id: number} & Record<string, unknown>,
       commandSequence
   ) as IncomeState[] | null
   emit('preview', states ?? [])
@@ -78,53 +79,76 @@ watch(model, () => {
   previewTimer = setTimeout(computePreview, 300)
 }, {deep: true})
 
-// One entity, two views: accounts funded as % of THIS income (income_id === id).
+const linkPlanId = computed(() => model.value.plan_id ?? planId)
+
+// One entity, two views: accounts funded from THIS income (income_id === savedIncomeId).
 type LinkedAccount = {modelName: ModelName; id: number; name: string; typeLabel: string}
 const linkedAccounts = computed<LinkedAccount[]>(() => {
-  if (id === null) return []
+  const linkedId = savedIncomeId.value
+  if (linkedId === null) return []
   const out: LinkedAccount[] = []
-  for (const account of iraStore.list) if (account.income_id === id) out.push({modelName: 'ira', id: account.id, name: account.name, typeLabel: 'IRA'})
-  for (const account of rothIraStore.list) if (account.income_id === id) out.push({modelName: 'roth_ira', id: account.id, name: account.name, typeLabel: 'Roth'})
-  for (const account of taxDeferredStore.list) if (account.income_id === id) out.push({modelName: 'tax_deferred', id: account.id, name: account.name, typeLabel: '401k'})
+  for (const account of taxDeferredStore.list) if (account.income_id === linkedId) out.push({modelName: 'tax_deferred', id: account.id, name: account.name, typeLabel: '401(k)'})
+  for (const account of iraStore.list) if (account.income_id === linkedId) out.push({modelName: 'ira', id: account.id, name: account.name, typeLabel: 'IRA'})
+  for (const account of rothIraStore.list) if (account.income_id === linkedId) out.push({modelName: 'roth_ira', id: account.id, name: account.name, typeLabel: 'Roth'})
   return out
 })
 
-const QUICK_TYPES = [
-  {label: '401(k)', value: 'tax_deferred'},
-  {label: 'IRA', value: 'ira'},
-  {label: 'Roth', value: 'roth_ira'},
-]
-const quickType = ref<'tax_deferred' | 'ira' | 'roth_ira'>('tax_deferred')
-const quickPercentage = ref<number>(6)
-const adding = ref(false)
-
-async function addLinked() {
-  const forPlanId = model.value.plan_id ?? planId
-  if (id === null || forPlanId == null) return
-  adding.value = true
-  try {
-    if (quickType.value === 'ira') {
-      await iraStore.create({...iraDefaults, plan_id: forPlanId, income_id: id, contribution_strategy: 'percentage_of_income', contribution_percentage: quickPercentage.value})
-    } else if (quickType.value === 'roth_ira') {
-      await rothIraStore.create({...rothIraDefaults, plan_id: forPlanId, income_id: id, contribution_strategy: 'percentage_of_income', contribution_percentage: quickPercentage.value})
-    } else {
-      await taxDeferredStore.create({...taxDeferredDefaults, plan_id: forPlanId, income_id: id, elective_contribution_strategy: 'percentage_of_income', elective_contribution_percentage: quickPercentage.value})
-    }
-    await commandSequenceStore.fetchByPlan(forPlanId)
-  } finally {
-    adding.value = false
+// Persist the income (create in create-mode, patch in edit-mode) so linked accounts have a
+// real income_id to point at. Returns the income id, or null if not yet valid.
+async function ensureSaved(): Promise<number | null> {
+  const {id: _id, ...rest} = model.value as Income
+  if (savedIncomeId.value !== null) {
+    await store.patch(savedIncomeId.value, rest as IncomeUpdate)
+    return savedIncomeId.value
   }
+  const created = await store.create({...rest, plan_id: planId} as IncomeInsert)
+  if (planId !== null) await commandSequenceStore.fetchByPlan(planId)
+  savedIncomeId.value = created.id
+  return created.id
+}
+
+type LinkType = 'tax_deferred' | 'ira' | 'roth_ira'
+const ADD_TYPES: {label: string; value: LinkType}[] = [
+  {label: '＋ 401(k)', value: 'tax_deferred'},
+  {label: '＋ IRA', value: 'ira'},
+  {label: '＋ Roth', value: 'roth_ira'},
+]
+const linkingType = ref<LinkType | null>(null)
+
+const linkingComponent = computed(() => {
+  switch (linkingType.value) {
+    case 'ira':
+      return IraWorkspaceForm
+    case 'roth_ira':
+      return RothIraWorkspaceForm
+    case 'tax_deferred':
+      return TaxDeferredWorkspaceForm
+    default:
+      return null
+  }
+})
+
+const linkingInitialValues = computed<Record<string, unknown>>(() => {
+  const base = {income_id: savedIncomeId.value}
+  return linkingType.value === 'tax_deferred'
+      ? {...base, elective_contribution_strategy: 'percentage_of_income'}
+      : {...base, contribution_strategy: 'percentage_of_income'}
+})
+
+function startLink(type: LinkType) {
+  onSubmit(async () => {
+    await ensureSaved()
+    linkingType.value = type
+  })
+}
+
+function onLinkedSaved() {
+  linkingType.value = null
 }
 
 function handleSubmit() {
   onSubmit(async () => {
-    const {id: _id, ...rest} = model.value as Income
-    if (id === null) {
-      await store.create({...rest, plan_id: planId} as IncomeInsert)
-      if (planId !== null) await commandSequenceStore.fetchByPlan(planId)
-    } else {
-      await store.patch(id, rest as IncomeUpdate)
-    }
+    await ensureSaved()
     emit('saved')
   })
 }
@@ -149,8 +173,9 @@ function handleSubmit() {
       <base-number-slider v-model="model.growth_rate" :min="0" :max="15" :step="0.5"/>
     </n-form-item>
 
-    <div v-if="id !== null" class="border-t border-skin-base pt-3">
-      <div class="text-sm font-medium text-skin-base mb-2">Investments linked to this income</div>
+    <div class="border-t border-skin-base pt-3">
+      <div class="text-sm font-medium text-skin-base mb-2">Investments funded by this income</div>
+
       <div v-if="linkedAccounts.length" class="rounded-lg border border-skin-base divide-y divide-skin-base overflow-hidden mb-2">
         <button
             v-for="account in linkedAccounts"
@@ -166,22 +191,37 @@ function handleSubmit() {
           <base-ico name="edit" class="text-skin-muted shrink-0"/>
         </button>
       </div>
-      <p v-else class="text-xs text-skin-muted mb-2">No investments funded by this income yet.</p>
-      <div class="rounded-lg border border-skin-base p-2.5 space-y-2">
-        <div class="text-xs text-skin-muted">Fund a new investment from this income</div>
-        <div class="flex items-center gap-2">
-          <n-select v-model:value="quickType" :options="QUICK_TYPES" size="small" class="w-28 shrink-0"/>
-          <n-input-number v-model:value="quickPercentage" size="small" :min="0" :max="100" class="flex-1">
-            <template #suffix>% of income</template>
-          </n-input-number>
-          <n-button size="small" type="primary" :loading="adding" @click="addLinked">Add</n-button>
-        </div>
+
+      <!-- Reuse the real account form inline, pre-linked to this income. -->
+      <div v-if="linkingType" class="rounded-lg border border-skin-info p-3 mb-2">
+        <div class="text-xs text-skin-muted mb-2">New investment funded by {{ model.name || 'this income' }}</div>
+        <component
+            :is="linkingComponent"
+            :id="null"
+            :plan-id="linkPlanId"
+            :command-sequence="commandSequence"
+            :initial-values="linkingInitialValues"
+            @saved="onLinkedSaved"
+            @cancel="linkingType = null"
+        />
+      </div>
+      <div v-else class="flex flex-wrap items-center gap-2">
+        <n-button
+            v-for="item in ADD_TYPES"
+            :key="item.value"
+            size="small"
+            secondary
+            round
+            @click="startLink(item.value)"
+        >
+          {{ item.label }}
+        </n-button>
       </div>
     </div>
 
-    <div class="flex justify-end gap-2 pt-4">
+    <div v-if="!linkingType" class="flex justify-end gap-2 pt-4">
       <n-button quaternary @click="emit('cancel')">Cancel</n-button>
-      <n-button type="primary" @click="handleSubmit">{{ id === null ? 'Create' : 'Save' }}</n-button>
+      <n-button type="primary" @click="handleSubmit">{{ savedIncomeId === null ? 'Create' : 'Save' }}</n-button>
     </div>
   </n-form>
 </template>

@@ -12,7 +12,7 @@ import type {HsaInsert, HsaUpdate} from "#shared/types/Hsa"
 import type {ModelName} from "#shared/types/ModelName"
 import type {OrchestratorState} from "#shared/types/OrchestratorState"
 import type {ManagerStates} from "#shared/types/ManagerStates"
-import OverviewPrototype from "~/components/plan/overview-prototype/OverviewPrototype.vue" // PROTOTYPE #94
+import Overview from "~/components/plan/overview/Overview.vue"
 import EntityWorkspace from "~/components/common/EntityWorkspace.vue"
 
 definePageMeta({
@@ -111,6 +111,11 @@ async function handleDeleteModel(payload: { modelName: ModelName, id: number }) 
   switch (modelName) {
     case 'income':
       await incomeStore.purge(id);
+      await Promise.all([
+        iraStore.fetchByColumn('plan_id', planId),
+        rothIraStore.fetchByColumn('plan_id', planId),
+        taxDeferredStore.fetchByColumn('plan_id', planId),
+      ]);
       break
     case 'expense':
       await expenseStore.purge(id);
@@ -280,7 +285,7 @@ const activeExpensesAndDebts = computed((): { expenses: Expense[], debts: Debt[]
 
       <n-tabs v-model:value="activeView" type="line" animated>
         <n-tab-pane name="overview" tab="Overview">
-          <OverviewPrototype v-if="planStates" :states="planStates" :plan="orchestrator.planWithRelations" @create-model="handleCreateModel"/>
+          <Overview v-if="planStates" :states="planStates" :plan="orchestrator.planWithRelations" @create-model="handleCreateModel"/>
         </n-tab-pane>
         <n-tab-pane name="simulation" tab="Simulation">
           <div class="grid plan-container">

@@ -63,6 +63,9 @@ export class TaxDeferredManager extends BaseManager<TaxDeferred, TaxDeferredStat
             case 'max':
                 contribution = Infinity
                 break
+            case null:
+                contribution = 0
+                break
             default:
 
                 throw new Error(`Invalid elective contribution strategy ${this.config.elective_contribution_strategy || 'blank'}`)

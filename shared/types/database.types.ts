@@ -760,7 +760,9 @@ export type Database = {
         Row: {
           contribution_fixed_amount: number | null
           contribution_percentage: number | null
-          contribution_strategy: Database["public"]["Enums"]["ira_contribution_strategy"]
+          contribution_strategy:
+            | Database["public"]["Enums"]["ira_contribution_strategy"]
+            | null
           created_at: string
           creator_id: string | null
           edited_at: string
@@ -775,7 +777,9 @@ export type Database = {
         Insert: {
           contribution_fixed_amount?: number | null
           contribution_percentage?: number | null
-          contribution_strategy?: Database["public"]["Enums"]["ira_contribution_strategy"]
+          contribution_strategy?:
+            | Database["public"]["Enums"]["ira_contribution_strategy"]
+            | null
           created_at?: string
           creator_id?: string | null
           edited_at?: string
@@ -790,7 +794,9 @@ export type Database = {
         Update: {
           contribution_fixed_amount?: number | null
           contribution_percentage?: number | null
-          contribution_strategy?: Database["public"]["Enums"]["ira_contribution_strategy"]
+          contribution_strategy?:
+            | Database["public"]["Enums"]["ira_contribution_strategy"]
+            | null
           created_at?: string
           creator_id?: string | null
           edited_at?: string
@@ -1024,7 +1030,9 @@ export type Database = {
         Row: {
           contribution_fixed_amount: number | null
           contribution_percentage: number | null
-          contribution_strategy: Database["public"]["Enums"]["roth_ira_contribution_strategy"]
+          contribution_strategy:
+            | Database["public"]["Enums"]["roth_ira_contribution_strategy"]
+            | null
           created_at: string
           creator_id: string | null
           edited_at: string
@@ -1039,7 +1047,9 @@ export type Database = {
         Insert: {
           contribution_fixed_amount?: number | null
           contribution_percentage?: number | null
-          contribution_strategy?: Database["public"]["Enums"]["roth_ira_contribution_strategy"]
+          contribution_strategy?:
+            | Database["public"]["Enums"]["roth_ira_contribution_strategy"]
+            | null
           created_at?: string
           creator_id?: string | null
           edited_at?: string
@@ -1054,7 +1064,9 @@ export type Database = {
         Update: {
           contribution_fixed_amount?: number | null
           contribution_percentage?: number | null
-          contribution_strategy?: Database["public"]["Enums"]["roth_ira_contribution_strategy"]
+          contribution_strategy?:
+            | Database["public"]["Enums"]["roth_ira_contribution_strategy"]
+            | null
           created_at?: string
           creator_id?: string | null
           edited_at?: string
@@ -1136,7 +1148,9 @@ export type Database = {
           editor_id: string | null
           elective_contribution_fixed_amount: number | null
           elective_contribution_percentage: number | null
-          elective_contribution_strategy: Database["public"]["Enums"]["tax_deferred_contribution_strategy"]
+          elective_contribution_strategy:
+            | Database["public"]["Enums"]["tax_deferred_contribution_strategy"]
+            | null
           employer_compensation_match_percentage: number | null
           employer_contributes: boolean
           employer_contribution_fixed_amount: number | null
@@ -1159,7 +1173,9 @@ export type Database = {
           editor_id?: string | null
           elective_contribution_fixed_amount?: number | null
           elective_contribution_percentage?: number | null
-          elective_contribution_strategy: Database["public"]["Enums"]["tax_deferred_contribution_strategy"]
+          elective_contribution_strategy?:
+            | Database["public"]["Enums"]["tax_deferred_contribution_strategy"]
+            | null
           employer_compensation_match_percentage?: number | null
           employer_contributes?: boolean
           employer_contribution_fixed_amount?: number | null
@@ -1182,7 +1198,9 @@ export type Database = {
           editor_id?: string | null
           elective_contribution_fixed_amount?: number | null
           elective_contribution_percentage?: number | null
-          elective_contribution_strategy?: Database["public"]["Enums"]["tax_deferred_contribution_strategy"]
+          elective_contribution_strategy?:
+            | Database["public"]["Enums"]["tax_deferred_contribution_strategy"]
+            | null
           employer_compensation_match_percentage?: number | null
           employer_contributes?: boolean
           employer_contribution_fixed_amount?: number | null
