@@ -1,160 +1,253 @@
 <script setup lang="ts">
-// PROTOTYPE — throwaway (issue #102). Consolidated single view: Command-Sequence
-// management lives as a "Simulation" card at the top of the Overview, opened via a
-// top-right toolbar button. Reuses the REAL rich line-items + real workspaceStore
-// deep-link. Mock data only — no persistence. Do NOT typecheck this route.
-import ManageBody from '~/components/prototype/ManageBody.vue'
-import MockOverview from '~/components/prototype/MockOverview.vue'
+// PROTOTYPE — throwaway (issue #102). Thin clone of pages/plans/[id].vue that drops the
+// Simulation tab and folds command-sequence management into a drawer. Reuses the REAL
+// Overview, EntityWorkspace, and CommandTabber with REAL data — pass ?planId=<id>.
+// Do NOT typecheck this route; verify by clicking through (desktop + mobile) in the browser.
+import type {PlanUpdate} from "#shared/types/Plan"
+import type {IncomeInsert, IncomeUpdate} from "#shared/types/Income"
+import type {ExpenseInsert, ExpenseUpdate} from "#shared/types/Expense"
+import type {DebtInsert, DebtUpdate} from "#shared/types/Debt"
+import type {CashReserveInsert, CashReserveUpdate} from "#shared/types/CashReserve"
+import type {TaxDeferredInsert, TaxDeferredUpdate} from "#shared/types/TaxDeferred"
+import type {BrokerageInsert, BrokerageUpdate} from "#shared/types/Brokerage"
+import type {IraInsert, IraUpdate} from "#shared/types/Ira"
+import type {RothIraInsert, RothIraUpdate} from "#shared/types/RothIra"
+import type {HsaInsert, HsaUpdate} from "#shared/types/Hsa"
+import type {ModelName} from "#shared/types/ModelName"
+import type {OrchestratorState} from "#shared/types/OrchestratorState"
+import type {ManagerStates} from "#shared/types/ManagerStates"
+import Overview from "~/components/plan/overview/Overview.vue"
+import EntityWorkspace from "~/components/common/EntityWorkspace.vue"
 
 definePageMeta({layout: 'default'})
 
-// Rich list-items inject managerStates; provide null so they use their fallback series.
-provide('managerStates', ref(null))
-provide('planStates', ref(null))
+const route = useRoute()
+const planId = Number(route.query.planId)
 
+const {isMobile} = useNavMode()
+
+const orchestrator = orchestratorStore()
+const incomeStore = useIncomeStore()
+const expenseStore = useExpenseStore()
+const debtStore = useDebtStore()
+const cashReserveStore = useCashReserveStore()
+const taxDeferredStore = useTaxDeferredStore()
+const brokerageStore = useBrokerageStore()
+const iraStore = useIraStore()
+const rothIraStore = useRothIraStore()
+const hsaStore = useHsaStore()
+const commandSequenceStore = useCommandSequenceStore()
 const workspace = useWorkspaceStore()
 
-// ---- Mock data (rows carry real domain shapes so the rich items render) ------
-const seqId = ref(1)
-const income = (id: number, name: string, gross: number, growth: number) =>
-    ({id, name, gross_income: gross, growth_rate: growth, frequency: 'annually'})
-const expense = (id: number, name: string, amount: number, type: string) =>
-    ({id, name, amount, expense_type: type, frequency: 'monthly'})
-const debt = (id: number, name: string, principal: number, strategy: string) =>
-    ({id, name, principal, payment_strategy: strategy, interest_rate: 5.1, frequency: 'monthly'})
+onMounted(() => { if (Number.isFinite(planId)) orchestrator.load(planId) })
 
-const sequences = reactive([
-  {
-    id: 1, name: 'Aggressive', ordering_type: 'custom' as const,
-    commands: [
-      {id: 11, model_name: 'income', is_active: true, data: income(11, 'Salary', 120000, 3)},
-      {id: 12, model_name: 'debt', is_active: true, data: debt(12, 'Mortgage', 310000, 'minimum_payment')},
-      {id: 13, model_name: 'expense', is_active: true, data: expense(13, 'Living expenses', 4500, 'variable')},
-      {id: 14, model_name: 'expense', is_active: true, data: expense(14, 'Rent', 2200, 'fixed')},
-      {id: 15, model_name: 'income', is_active: false, data: income(15, 'Side gig', 18000, 0)},
-    ],
-  },
-  {
-    id: 2, name: 'Debt-first', ordering_type: 'predefined' as const,
-    commands: [
-      {id: 21, model_name: 'income', is_active: true, data: income(21, 'Salary', 120000, 3)},
-      {id: 22, model_name: 'debt', is_active: true, data: debt(22, 'Mortgage', 310000, 'maximum_payment')},
-      {id: 23, model_name: 'expense', is_active: true, data: expense(23, 'Living expenses', 4500, 'variable')},
-    ],
-  },
-  {
-    id: 3, name: 'Balanced', ordering_type: 'custom' as const,
-    commands: [
-      {id: 31, model_name: 'income', is_active: true, data: income(31, 'Salary', 120000, 3)},
-      {id: 32, model_name: 'expense', is_active: true, data: expense(32, 'Living expenses', 4500, 'variable')},
-      {id: 33, model_name: 'debt', is_active: true, data: debt(33, 'Car loan', 24000, 'minimum_payment')},
-    ],
-  },
-])
+async function handleCreateModel(payload: { model: ModelName, data: unknown }) {
+  const insert = payload.data
+  switch (payload.model) {
+    case 'income': await incomeStore.create(insert as IncomeInsert); break
+    case 'expense': await expenseStore.create(insert as ExpenseInsert); break
+    case 'debt': await debtStore.create(insert as DebtInsert); break
+    case 'cash_reserve': await cashReserveStore.create(insert as CashReserveInsert); break
+    case 'tax_deferred': await taxDeferredStore.create(insert as TaxDeferredInsert); break
+    case 'brokerage': await brokerageStore.create(insert as BrokerageInsert); break
+    case 'ira': await iraStore.create(insert as IraInsert); break
+    case 'roth_ira': await rothIraStore.create(insert as RothIraInsert); break
+    case 'hsa': await hsaStore.create(insert as HsaInsert); break
+  }
+  await commandSequenceStore.fetchByPlan(planId)
+  await orchestrator.reloadPlan(planId)
+}
 
-const overviewGroups = [
-  {
-    title: 'Income', addModel: 'income', addLabel: 'Income',
-    rows: [{id: 11, model_name: 'income', label: 'Salary', sub: '$120k/yr · 3% growth', icon: 'income'}],
-  },
-  {
-    title: 'Expenses & Debt', addModel: 'expense', addLabel: 'Expense',
-    rows: [
-      {id: 13, model_name: 'expense', label: 'Living expenses', sub: '$4.5k/mo', icon: 'expense'},
-      {id: 12, model_name: 'debt', label: 'Mortgage', sub: '$310k · 5.1%', icon: 'debt'},
-    ],
-  },
-  {
-    title: 'Retirement accounts', addModel: 'tax_deferred', addLabel: '401k',
-    rows: [{id: 14, model_name: 'tax_deferred', label: '401k', sub: 'Max match', icon: 'taxDeferred'}],
-  },
-  {
-    title: 'Taxable & Cash', addModel: 'brokerage', addLabel: 'Brokerage',
-    rows: [{id: 16, model_name: 'brokerage', label: 'Brokerage', sub: 'Overflow', icon: 'brokerage'}],
-  },
+async function handleUpdateModel(payload: { modelName: ModelName, id: number, data: Record<string, unknown> }) {
+  const {modelName, id, data} = payload
+  switch (modelName) {
+    case 'income': await incomeStore.patch(id, data as IncomeUpdate); break
+    case 'expense': await expenseStore.patch(id, data as ExpenseUpdate); break
+    case 'debt': await debtStore.patch(id, data as DebtUpdate); break
+    case 'cash_reserve': await cashReserveStore.patch(id, data as CashReserveUpdate); break
+    case 'tax_deferred': await taxDeferredStore.patch(id, data as TaxDeferredUpdate); break
+    case 'brokerage': await brokerageStore.patch(id, data as BrokerageUpdate); break
+    case 'ira': await iraStore.patch(id, data as IraUpdate); break
+    case 'roth_ira': await rothIraStore.patch(id, data as RothIraUpdate); break
+    case 'hsa': await hsaStore.patch(id, data as HsaUpdate); break
+  }
+}
+
+async function handleDeleteModel(payload: { modelName: ModelName, id: number }) {
+  const {modelName, id} = payload
+  switch (modelName) {
+    case 'income':
+      await incomeStore.purge(id)
+      await Promise.all([
+        iraStore.fetchByColumn('plan_id', planId),
+        rothIraStore.fetchByColumn('plan_id', planId),
+        taxDeferredStore.fetchByColumn('plan_id', planId),
+      ])
+      break
+    case 'expense': await expenseStore.purge(id); break
+    case 'debt': await debtStore.purge(id); break
+    case 'cash_reserve': await cashReserveStore.purge(id); break
+    case 'tax_deferred': await taxDeferredStore.purge(id); break
+    case 'brokerage': await brokerageStore.purge(id); break
+    case 'ira': await iraStore.purge(id); break
+    case 'roth_ira': await rothIraStore.purge(id); break
+    case 'hsa': await hsaStore.purge(id); break
+  }
+  await commandSequenceStore.fetchByPlan(planId)
+}
+
+async function handleDeleteSequence(id: number) {
+  await commandSequenceStore.purge(id)
+}
+async function handleRenameSequence(id: number, name: string) {
+  await commandSequenceStore.patch(id, {name})
+}
+async function handleCreateSequence() {
+  const seq = await commandSequenceStore.create({plan_id: planId, name: 'New Sequence'})
+  await commandSequenceStore.fetch(seq.id)
+}
+
+const activeCommandSequenceId = ref<number | null>(null)
+const planStates = ref<OrchestratorState[] | null>(null)
+const managerStates = ref<ManagerStates | null>(null)
+
+type PlanView = 'overview' | 'report'
+const activeView = ref<PlanView>('overview')
+
+watchEffect(() => {
+  if (!orchestrator.loaded) return
+  const sequences = commandSequenceStore.list
+  if (!activeCommandSequenceId.value && sequences.length > 0) {
+    activeCommandSequenceId.value = sequences[0]!.id
+  }
+  const commandSequence = activeCommandSequenceId.value
+      ? commandSequenceStore.get(activeCommandSequenceId.value)
+      : undefined
+  const result = orchestrator.simulate(commandSequence!)
+  planStates.value = result?.states ?? null
+  managerStates.value = result?.managerStates ?? null
+})
+
+provide('planStates', planStates)
+provide('managerStates', managerStates)
+
+const activeCommandSequence = computed(() =>
+    activeCommandSequenceId.value ? commandSequenceStore.get(activeCommandSequenceId.value) ?? null : null
+)
+
+// ---- NEW: mobile add-entity affordance ---------------------------------------
+// 9-type list mirrors ChildCreateButtonList.vue's `items`; all are workspace-enabled.
+const ADD_TYPES: { name: ModelName, label: string, icon: string }[] = [
+  {name: 'income', label: 'Income', icon: 'income'},
+  {name: 'expense', label: 'Expense', icon: 'expense'},
+  {name: 'debt', label: 'Debt', icon: 'debt'},
+  {name: 'cash_reserve', label: 'Cash Reserve', icon: 'cashReserve'},
+  {name: 'tax_deferred', label: '401k', icon: 'taxDeferred'},
+  {name: 'roth_ira', label: 'Roth IRA', icon: 'rothIra'},
+  {name: 'ira', label: 'IRA', icon: 'ira'},
+  {name: 'brokerage', label: 'Brokerage', icon: 'brokerage'},
+  {name: 'hsa', label: 'HSA', icon: 'hsa'},
 ]
+const addPickerOpen = ref(false)
+function pickType(name: ModelName) {
+  addPickerOpen.value = false
+  workspace.openCreate(name, planId)
+}
 
-// ---- Manage-simulation drawer (the full editor lives here) -------------------
+// ---- NEW: manage-simulation drawer -------------------------------------------
 const manageOpen = ref(false)
-function openManage() { manageOpen.value = true }
 
-// ---- Entity edit drawer (real deep-link via workspaceStore) ------------------
-const drawerOpen = computed({
-  get: () => workspace.isOpen,
-  set: (open) => { if (!open) workspace.close() },
-})
-const entityTitle = computed(() => {
-  const verb = workspace.mode === 'create' ? 'New' : 'Edit'
-  return `${verb} ${(workspace.modelName ?? 'entity').replace(/_/g, ' ')}`
-})
+const drawerPlacement = computed(() => (isMobile.value ? 'bottom' : 'right'))
 </script>
 
 <template>
-  <div class="max-w-6xl mx-auto px-4 py-6 space-y-6">
-    <header class="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
-      <div class="space-y-1">
-        <h1 class="text-4xl">Retirement Plan <span class="text-skin-muted text-lg">(prototype)</span></h1>
-        <p class="text-skin-muted text-lg">Retire at age 58 · $2.4M target</p>
-      </div>
-      <n-button type="primary" secondary round @click="openManage">
-        <template #icon><Icon name="mdi:tune-variant"/></template>
-        Manage simulation
-      </n-button>
-    </header>
+  <n-spin :show="!orchestrator.loaded">
+    <div v-if="!Number.isFinite(planId)" class="max-w-6xl mx-auto p-10 text-center text-skin-muted">
+      Add <code>?planId=&lt;id&gt;</code> to the URL to load a real plan.
+    </div>
 
-    <n-tabs type="line" animated default-value="overview">
-      <n-tab-pane name="overview" tab="Overview">
-        <MockOverview :entities="overviewGroups" @edit="(m, id) => workspace.open(m, id)" @add="(m) => workspace.openCreate(m, 1)"/>
-      </n-tab-pane>
-      <n-tab-pane name="report" tab="Report">
-        <div class="rounded-lg border border-dashed border-skin-base p-10 text-center text-skin-muted">
-          Report view (unchanged — out of scope for this prototype)
+    <div v-else-if="orchestrator.planWithRelations" class="max-w-6xl mx-auto px-4 space-y-6 py-6 pb-24">
+      <header class="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
+        <div class="space-y-1">
+          <h1 class="text-4xl">{{ orchestrator.planWithRelations.name }} <span class="text-skin-muted text-lg">(prototype)</span></h1>
         </div>
-      </n-tab-pane>
-    </n-tabs>
+        <n-button type="primary" secondary round @click="manageOpen = true">
+          <template #icon><Icon name="mdi:tune-variant"/></template>
+          Manage simulation
+        </n-button>
+      </header>
 
-    <!-- Manage-simulation drawer: the full editor (rich rows, reorder, expand/collapse) -->
-    <n-drawer v-model:show="manageOpen" :width="1100" placement="right">
-      <n-drawer-content title="Manage simulation" closable body-content-class="!p-5">
+      <n-tabs v-model:value="activeView" type="line" animated>
+        <n-tab-pane name="overview" tab="Overview">
+          <Overview v-if="planStates" :states="planStates" :plan="orchestrator.planWithRelations" @create-model="handleCreateModel"/>
+        </n-tab-pane>
+        <n-tab-pane name="report" tab="Report">
+          <LazyPlanTable v-if="planStates" :planStates="planStates"/>
+        </n-tab-pane>
+      </n-tabs>
+    </div>
+
+    <!-- Real entity create/edit drawer (mobile bottom-sheet, reused as-is) -->
+    <EntityWorkspace :command-sequence="activeCommandSequence"/>
+
+    <!-- NEW: mobile add-entity FAB -->
+    <n-button
+        v-if="orchestrator.planWithRelations"
+        type="primary"
+        circle
+        size="large"
+        class="!fixed bottom-6 right-6 z-[2000] shadow-lg"
+        @click="addPickerOpen = true"
+    >
+      <template #icon><base-ico name="add"/></template>
+    </n-button>
+
+    <!-- NEW: entity-type picker (responsive sheet) -->
+    <n-drawer
+        v-model:show="addPickerOpen"
+        :placement="drawerPlacement"
+        :width="isMobile ? undefined : 360"
+        :height="isMobile ? '70%' : undefined"
+    >
+      <n-drawer-content title="Add to your plan" closable body-content-class="!p-4">
+        <div class="flex flex-col gap-1.5">
+          <button
+              v-for="type in ADD_TYPES"
+              :key="type.name"
+              type="button"
+              class="flex items-center gap-3 rounded-lg border border-skin-base bg-skin-surface px-3 py-3 text-left hover:bg-skin-surface-hover transition-colors"
+              @click="pickType(type.name)"
+          >
+            <base-ico :name="type.icon" class="text-xl text-skin-muted"/>
+            <span class="font-medium text-sm">{{ type.label }}</span>
+          </button>
+        </div>
+      </n-drawer-content>
+    </n-drawer>
+
+    <!-- NEW: manage-simulation drawer (real CommandTabber) -->
+    <n-drawer
+        v-model:show="manageOpen"
+        :placement="drawerPlacement"
+        :width="isMobile ? undefined : 760"
+        :height="isMobile ? '85%' : undefined"
+    >
+      <n-drawer-content title="Manage simulation" closable body-content-class="!p-4">
         <template #footer>
           <n-button type="primary" @click="manageOpen = false">Done</n-button>
         </template>
-        <div class="space-y-5">
-          <!-- Add-entity now lets you pick the type — the real "Add Your Stuff" group -->
-          <div>
-            <div class="text-sm font-semibold mb-2 flex items-center gap-2">
-              <base-ico name="create" class="text-skin-success"/> Add to your plan
-            </div>
-            <PlanChildCreateButtonList :plan_id="1"/>
-          </div>
-          <ManageBody v-model:active-id="seqId" :sequences="sequences"/>
-        </div>
+        <CommandTabber
+            v-if="orchestrator.planWithRelations"
+            :command_sequences="commandSequenceStore.list"
+            :plan="orchestrator.planWithRelations"
+            v-model="activeCommandSequenceId"
+            @update="handleUpdateModel"
+            @delete="handleDeleteModel"
+            @delete-sequence="handleDeleteSequence"
+            @rename-sequence="handleRenameSequence"
+            @create-sequence="handleCreateSequence"
+        />
       </n-drawer-content>
     </n-drawer>
-
-    <!-- Entity edit drawer (mock body; real deep-link path from the rich items) -->
-    <n-drawer v-model:show="drawerOpen" :width="720" placement="right">
-      <n-drawer-content :title="entityTitle" closable body-content-class="!p-5">
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <section class="space-y-3">
-            <p class="text-xs text-skin-muted">Mock form — real build mounts the {{ (workspace.modelName ?? 'entity').replace(/_/g, ' ') }} WorkspaceForm.</p>
-            <n-form-item label="Name"><n-input placeholder="Name"/></n-form-item>
-            <n-form-item label="Amount"><n-input-number class="w-full" placeholder="Amount"/></n-form-item>
-            <div class="flex gap-2">
-              <n-button type="primary" @click="workspace.close()">Save</n-button>
-              <n-button quaternary @click="workspace.close()">Cancel</n-button>
-            </div>
-          </section>
-          <section class="space-y-2">
-            <div class="rounded border border-skin-base bg-skin-surface p-3 text-xs text-skin-muted">
-              Live projection preview (entity workspace — unchanged)
-            </div>
-            <div class="rounded border border-dashed border-skin-base p-6 text-center text-xs text-skin-muted">
-              About this {{ (workspace.modelName ?? 'entity').replace(/_/g, ' ') }}
-            </div>
-          </section>
-        </div>
-      </n-drawer-content>
-    </n-drawer>
-  </div>
+  </n-spin>
 </template>

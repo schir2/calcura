@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import type {PlanUpdate} from "#shared/types/Plan"
 import type {IncomeInsert, IncomeUpdate} from "#shared/types/Income"
-import type {Expense, ExpenseInsert, ExpenseUpdate} from "#shared/types/Expense"
-import type {Debt, DebtInsert, DebtUpdate} from "#shared/types/Debt"
+import type {ExpenseInsert, ExpenseUpdate} from "#shared/types/Expense"
+import type {DebtInsert, DebtUpdate} from "#shared/types/Debt"
 import type {CashReserveInsert, CashReserveUpdate} from "#shared/types/CashReserve"
 import type {TaxDeferredInsert, TaxDeferredUpdate} from "#shared/types/TaxDeferred"
 import type {BrokerageInsert, BrokerageUpdate} from "#shared/types/Brokerage"
@@ -200,8 +200,8 @@ const activeCommandSequenceId = ref<number | null>(null)
 const planStates = ref<OrchestratorState[] | null>(null)
 const managerStates = ref<ManagerStates | null>(null)
 
-type PlanView = 'overview' | 'simulation' | 'report'
-const PLAN_VIEWS: PlanView[] = ['overview', 'simulation', 'report']
+type PlanView = 'overview' | 'report'
+const PLAN_VIEWS: PlanView[] = ['overview', 'report']
 const router = useRouter()
 const activeView = computed<PlanView>({
   get() {
@@ -234,24 +234,27 @@ const activeCommandSequence = computed(() =>
     activeCommandSequenceId.value ? commandSequenceStore.get(activeCommandSequenceId.value) ?? null : null
 )
 
-const activeExpensesAndDebts = computed((): { expenses: Expense[], debts: Debt[] } => {
-  const result: { expenses: Expense[], debts: Debt[] } = {expenses: [], debts: []}
-  const plan = orchestrator.planWithRelations
-  if (!activeCommandSequenceId.value || !plan) return result
-  const commandSequence = commandSequenceStore.get(activeCommandSequenceId.value)
-  if (!commandSequence) return result
-  for (const csc of commandSequence.command_sequence_commands) {
-    if (!csc.is_active) continue
-    if (csc.command.model_name === 'debt') {
-      const debt = plan.debts.find(d => d.id === csc.command.model_id)
-      if (debt) result.debts.push(debt)
-    } else if (csc.command.model_name === 'expense') {
-      const expense = plan.expenses.find(e => e.id === csc.command.model_id)
-      if (expense) result.expenses.push(expense)
-    }
-  }
-  return result
-})
+const {isMobile} = useNavMode()
+const manageOpen = ref(false)
+const drawerPlacement = computed(() => (isMobile.value ? 'bottom' : 'right'))
+
+const workspace = useWorkspaceStore()
+const addPickerOpen = ref(false)
+const ADD_TYPES: { name: ModelName, label: string, icon: string }[] = [
+  {name: 'income', label: 'Income', icon: 'income'},
+  {name: 'expense', label: 'Expense', icon: 'expense'},
+  {name: 'debt', label: 'Debt', icon: 'debt'},
+  {name: 'cash_reserve', label: 'Cash Reserve', icon: 'cashReserve'},
+  {name: 'tax_deferred', label: '401k', icon: 'taxDeferred'},
+  {name: 'roth_ira', label: 'Roth IRA', icon: 'rothIra'},
+  {name: 'ira', label: 'IRA', icon: 'ira'},
+  {name: 'brokerage', label: 'Brokerage', icon: 'brokerage'},
+  {name: 'hsa', label: 'HSA', icon: 'hsa'},
+]
+function pickType(name: ModelName) {
+  addPickerOpen.value = false
+  workspace.openCreate(name, planId)
+}
 </script>
 
 <template>
@@ -263,6 +266,10 @@ const activeExpensesAndDebts = computed((): { expenses: Expense[], debts: Debt[]
           <p class="text-skin-muted text-lg">{{ retirementGoalText }}</p>
         </div>
         <n-button-group size="small">
+          <n-button type="primary" secondary round @click="manageOpen = true">
+            <template #icon><Icon name="mdi:tune-variant"/></template>
+            Manage simulation
+          </n-button>
           <n-button type="warning" secondary round @click="showEditModal = true">
             <template #icon><Icon name="mdi:edit"/></template>
             Edit
@@ -287,54 +294,70 @@ const activeExpensesAndDebts = computed((): { expenses: Expense[], debts: Debt[]
         <n-tab-pane name="overview" tab="Overview">
           <Overview v-if="planStates" :states="planStates" :plan="orchestrator.planWithRelations" @create-model="handleCreateModel"/>
         </n-tab-pane>
-        <n-tab-pane name="simulation" tab="Simulation">
-          <div class="grid plan-container">
-            <div class="space-y-2" style="grid-area:main">
-              <n-card>
-                <template #header>
-                  <h3 class="text-xl flex items-center gap-2">
-                    <base-ico class="text-skin-success" name="create"/>
-                    <span>Add Your Stuff</span>
-                  </h3>
-                </template>
-                <PlanChildCreateButtonList :plan_id="planId" @create-model="handleCreateModel($event)"/>
-              </n-card>
-              <command-tabber
-                  :command_sequences="commandSequenceStore.list"
-                  :plan="orchestrator.planWithRelations"
-                  v-model="activeCommandSequenceId"
-                  @update="handleUpdateModel"
-                  @delete="handleDeleteModel"
-                  @delete-sequence="handleDeleteSequence"
-                  @rename-sequence="handleRenameSequence"
-                  @create-sequence="handleCreateSequence"
-              />
-            </div>
-            <div class="space-y-2" style="grid-area:charts">
-              <div class="grid grid-cols-2 gap-2">
-                <LazyChartExpensePie :expenses="activeExpensesAndDebts.expenses" :debts="activeExpensesAndDebts.debts"/>
-                <LazyPlanChartGrossSavings v-if="planStates" :states="planStates"/>
-                <LazyPlanChartGrowth v-if="planStates" :states="planStates"/>
-                <LazyPlanChartExpensesOverTime v-if="planStates" :states="planStates"/>
-              </div>
-            </div>
-          </div>
-        </n-tab-pane>
         <n-tab-pane name="report" tab="Report">
           <LazyPlanTable v-if="planStates" :planStates="planStates"/>
         </n-tab-pane>
       </n-tabs>
     </div>
+
+    <n-drawer
+        v-model:show="manageOpen"
+        :placement="drawerPlacement"
+        :width="isMobile ? undefined : 760"
+        :height="isMobile ? '85%' : undefined"
+    >
+      <n-drawer-content title="Manage simulation" closable body-content-class="!p-4">
+        <template #footer>
+          <n-button type="primary" @click="manageOpen = false">Done</n-button>
+        </template>
+        <command-tabber
+            v-if="orchestrator.planWithRelations"
+            :command_sequences="commandSequenceStore.list"
+            :plan="orchestrator.planWithRelations"
+            v-model="activeCommandSequenceId"
+            @update="handleUpdateModel"
+            @delete="handleDeleteModel"
+            @delete-sequence="handleDeleteSequence"
+            @rename-sequence="handleRenameSequence"
+            @create-sequence="handleCreateSequence"
+        />
+      </n-drawer-content>
+    </n-drawer>
+
+    <n-button
+        v-if="orchestrator.planWithRelations"
+        type="primary"
+        circle
+        size="large"
+        class="!fixed bottom-6 right-6 z-[2000] shadow-lg"
+        @click="addPickerOpen = true"
+    >
+      <template #icon><base-ico name="add"/></template>
+    </n-button>
+
+    <n-drawer
+        v-model:show="addPickerOpen"
+        :placement="drawerPlacement"
+        :width="isMobile ? undefined : 360"
+        :height="isMobile ? '70%' : undefined"
+    >
+      <n-drawer-content title="Add to your plan" closable body-content-class="!p-4">
+        <div class="flex flex-col gap-1.5">
+          <button
+              v-for="type in ADD_TYPES"
+              :key="type.name"
+              type="button"
+              class="flex items-center gap-3 rounded-lg border border-skin-base bg-skin-surface px-3 py-3 text-left hover:bg-skin-surface-hover transition-colors"
+              @click="pickType(type.name)"
+          >
+            <base-ico :name="type.icon" class="text-xl text-skin-muted"/>
+            <span class="font-medium text-sm">{{ type.label }}</span>
+          </button>
+        </div>
+      </n-drawer-content>
+    </n-drawer>
+
     <EntityWorkspace :command-sequence="activeCommandSequence"/>
   </n-spin>
 
 </template>
-
-<style scoped>
-.plan-container {
-  gap: .5rem;
-  display: grid;
-  grid-template-columns: 3fr 3fr;
-  grid-template-areas: 'main charts'
-}
-</style>

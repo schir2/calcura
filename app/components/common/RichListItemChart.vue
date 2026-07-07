@@ -14,25 +14,44 @@ type Props = {
   modelName: ModelName
   active?: boolean
   startYear?: number
+  baselineSeries?: number[]
 }
 const props = withDefaults(defineProps<Props>(), {active: true, startYear: new Date().getFullYear()})
 
 const money = (value: number) => '$' + Math.round(value).toLocaleString('en-US')
 const stroke = computed(() => resolveModelRgb(props.modelName, props.active))
 const fill = computed(() => stroke.value.replace('rgb(', 'rgba(').replace(')', ', 0.13)'))
+const baselineStroke = computed(() => stroke.value.replace('rgb(', 'rgba(').replace(')', ', 0.35)'))
+
+const editedDataset = computed(() => ({
+  data: props.series,
+  borderColor: stroke.value,
+  backgroundColor: fill.value,
+  fill: true,
+  tension: 0.3,
+  pointRadius: 0,
+  pointHoverRadius: 4,
+  borderWidth: 2,
+}))
+
+// The frozen "saved plan" baseline (#107): dashed, faded, no fill, drawn beneath the edited line.
+const baselineDataset = computed(() => ({
+  data: props.baselineSeries ?? [],
+  borderColor: baselineStroke.value,
+  backgroundColor: 'transparent',
+  fill: false,
+  tension: 0.3,
+  pointRadius: 0,
+  pointHoverRadius: 3,
+  borderWidth: 1.5,
+  borderDash: [5, 4],
+}))
 
 const chartData = computed(() => ({
   labels: props.series.map((_, index) => props.startYear + index),
-  datasets: [{
-    data: props.series,
-    borderColor: stroke.value,
-    backgroundColor: fill.value,
-    fill: true,
-    tension: 0.3,
-    pointRadius: 0,
-    pointHoverRadius: 4,
-    borderWidth: 2,
-  }],
+  datasets: props.baselineSeries?.length
+      ? [baselineDataset.value, editedDataset.value]
+      : [editedDataset.value],
 }))
 
 const chartOptions = {

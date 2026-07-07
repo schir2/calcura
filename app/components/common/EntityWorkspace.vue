@@ -24,7 +24,9 @@ const {commandSequence} = defineProps<Props>()
 const workspace = useWorkspaceStore()
 const orchestrator = orchestratorStore()
 const previewStates = ref<BaseState[]>([])
+const baselineStates = ref<BaseState[]>([])
 const planAge = computed(() => orchestrator.plan?.age)
+const retirementIndex = computed(() => orchestrator.lastPreviewRetirementIndex)
 
 const isMobile = ref(false)
 onMounted(() => {
@@ -80,8 +82,15 @@ const title = computed(() => {
   return `${verb} ${workspace.modelName ?? 'entity'}`.replace(/_/g, ' ')
 })
 
+// Snapshot-on-open baseline (#107): freeze the saved plan's projection for this entity when the
+// drawer opens in edit mode. Create mode has nothing saved to compare against, so no baseline.
 watch(() => workspace.isOpen, open => {
-  if (open) previewStates.value = []
+  if (!open) return
+  previewStates.value = []
+  baselineStates.value =
+      workspace.id != null && workspace.modelName && commandSequence
+          ? orchestrator.entityBaseline(workspace.modelName, workspace.id, commandSequence) ?? []
+          : []
 })
 
 function handleSaved() {
@@ -117,6 +126,8 @@ function handleSaved() {
               :is="projectionComponent"
               v-if="workspace.modelName"
               :states="previewStates"
+              :baseline-states="baselineStates"
+              :retirement-index="retirementIndex"
               :model-name="workspace.modelName"
               :plan-age="planAge"
           />

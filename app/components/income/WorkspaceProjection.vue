@@ -6,16 +6,28 @@ import type {ModelName} from '#shared/types/ModelName'
 import type {IncomeState} from '#shared/types/IncomeState'
 import type {BaseState} from '#shared/types/BaseState'
 
-const {states, modelName} = defineProps<{
+const {states, modelName, baselineStates, retirementIndex} = defineProps<{
   states: BaseState[]
   modelName: ModelName
   planAge?: number
+  baselineStates?: BaseState[]
+  retirementIndex?: number | null
 }>()
 
 const rows = computed(() => states as IncomeState[])
 const money = (v: number) => '$' + Math.round(v).toLocaleString('en-US')
 const series = computed(() => rows.value.map(s => s.gross_income ?? 0))
+const baselineSeries = computed(() =>
+    ((baselineStates ?? []) as IncomeState[]).map(s => s.gross_income ?? 0)
+)
 const hasData = computed(() => series.value.length >= 2)
+
+const delta = useAtRetirementDelta({
+  edited: series,
+  baseline: baselineSeries,
+  retirementIndex: computed(() => retirementIndex),
+  goodDirection: 'up',
+})
 
 const today = computed(() => series.value[0] ?? 0)
 const end = computed(() => series.value[series.value.length - 1] ?? 0)
@@ -30,12 +42,13 @@ const lifetime = computed(() => series.value.reduce((sum, v) => sum + v, 0))
       <div class="text-xs text-skin-muted">before you stop working</div>
     </div>
 
-    <div class="flex gap-2">
+    <div class="flex flex-wrap gap-2">
       <n-tag size="small" round>{{ money(today) }}/yr today</n-tag>
       <n-tag size="small" round type="success">grows to {{ money(end) }}/yr</n-tag>
+      <n-tag v-if="delta.show.value" :type="delta.type.value" size="small" round>{{ delta.label.value }}</n-tag>
     </div>
 
-    <common-rich-list-item-chart :series="series" :model-name="modelName"/>
+    <common-rich-list-item-chart :series="series" :baseline-series="delta.show.value ? baselineSeries : undefined" :model-name="modelName"/>
   </div>
   <div
       v-else

@@ -1,35 +1,39 @@
 # Prototype: fold Simulation into the Entity Workspace (issue #102)
 
-**Throwaway.** Delete `app/pages/prototype/` + `app/components/prototype/` once decided.
-Do not typecheck. Mock data only.
+**Throwaway.** Delete `app/pages/prototype/` once decided. Do not typecheck.
+Runs over a **real plan** — no mock data.
 
 ## Question
-After dropping the Simulation tab (locked: final tabs = Overview + Report), how should
-Command-Sequence management (sequence tabs + draggable command rows + is_active/ordering
-+ compare charts) be hosted, and how is it opened?
+After dropping the Simulation tab (final tabs = Overview + Report), how is command-sequence
+management hosted, and how do you add entities — on **mobile** especially?
 
-## Where it landed — CONSOLIDATED single view
-Route: `/prototype/workspace-sim` (variant switching removed).
+## Where it landed
+Route: `/prototype/workspace-sim?planId=<real plan id>` — a thin clone of `pages/plans/[id].vue`.
 
-- **The editor lives INSIDE a wide drawer** (~1100px). Full management — sequence tabs,
-  ordering toggle, **Expand all / Collapse all**, drag-reorder, and the rich rows — is in the
-  drawer. Drawer body starts with the real typed create buttons (`PlanChildCreateButtonList`)
-  so **Add entity lets you pick the type**; footer = **Done**.
-- **Entry point = top-right "Manage simulation" button** (label under review — see grill).
-  Bottom summary card deferred (user may add later; `summary` mode kept in `ManageBody`).
-- **Rows reuse the REAL rich line-items** — `Income/Expense/Debt ListItem` (which wrap
-  `common/RichListItem.vue`). Not re-created. Per-row expand/collapse mirrors `Sequence.vue`.
-- **Entity edit** goes through the real `workspaceStore.open()` deep-link (rich item → drawer).
+- **Reuses the real components with real data**: `Overview.vue` (mobile-aware — per-section
+  add pills + account dropdown), `EntityWorkspace.vue` (the mobile bottom-sheet drawer),
+  `CommandTabber` + `Sequence` (the real sequence editor with rich rows / expand-collapse /
+  reorder / is_active), `LazyPlanTable` (Report). Same data + simulation wiring as `[id].vue`.
+- **Manage simulation** = top-right button → drawer hosting the real `CommandTabber`
+  (sequence CRUD + activation/ordering only; entity config stays in `EntityWorkspace`).
+- **Add entity (mobile-first)** = a floating **＋ FAB** (bottom-right) → responsive sheet
+  listing the 9 entity **types** as full-width tappable rows → `workspace.openCreate()` →
+  real create drawer. Replaces the `ChildCreateButtonList` button group that overflowed.
+- **Mobile**: both new drawers use `useNavMode().isMobile` → `placement bottom` / 85–70%
+  height, matching `EntityWorkspace`.
 
-## Known gaps / next round
-- Only income/expense/debt rows are mocked (those 3 rich items verified). Real build wires all 9.
-- Compare charts are CSS placeholders, not real Chart.js.
-- The Simulation card can still feel dense — consider collapsing compare-charts by default,
-  or a header-level collapse so the card opens compact and expands to manage.
-- **Empty/initial state** (zero sequences or zero commands) still not mocked.
-- Rich-item edit currently opens a mock drawer; real build reuses the actual `EntityWorkspace`.
+## Verify (user runs dev server)
+`/prototype/workspace-sim?planId=<id>` while logged in. Desktop: Overview real data, Manage
+opens CommandTabber (right), FAB opens type picker (right) → create form. Mobile (devtools
+responsive): FAB + both drawers are bottom sheets, nothing overflows, per-section adds work.
 
-## Follow-ups (from handoff — for the real build)
-- Rewrite `CONTEXT.md:172-186` "Three views" (command editor no longer its own view) + `:179`.
-- Delete dead stub `app/components/plan/Simulation.vue` (file its own cleanup issue).
+## Open / deferred
+- **Button label** "Manage simulation" is a placeholder — grill deferred (workbench vs
+  compare vs build; "simulation" may be dead vocabulary per CONTEXT.md glossary).
+- Empty/zero-sequence state not built.
+- Bottom summary "Simulation" card deferred (user may add later).
+
+## Follow-ups (real build)
+- Rewrite `CONTEXT.md:172-186` "Three views" + `:179` (command editor no longer its own view).
+- Delete dead stub `app/components/plan/Simulation.vue` (own cleanup issue).
 - Re-scope GitHub #102 to this redesign.

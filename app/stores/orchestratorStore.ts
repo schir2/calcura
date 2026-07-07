@@ -51,6 +51,7 @@ export const orchestratorStore = defineStore('orchestrator', () => {
     const planId = ref<number | null>(null)
     const plan = ref<Plan | null>(null)
     const loaded = ref(false)
+    const lastPreviewRetirementIndex = ref<number | null>(null)
     const planStore = usePlanStore()
     const expenseStore = useExpenseStore()
     const cashReserveStore = useCashReserveStore()
@@ -167,8 +168,21 @@ export const orchestratorStore = defineStore('orchestrator', () => {
         }
 
         const planManager = new PlanManager(overridden)
-        planManager.simulate(sequence)
+        const planStates = planManager.simulate(sequence)
+        const retiredIndex = planStates.findIndex(state => state.retired)
+        lastPreviewRetirementIndex.value = retiredIndex === -1 ? null : retiredIndex
         return snapshotManagerStates(planManager)[modelName]?.[entity.id] ?? null
+    }
+
+    // Baseline for the Workspace comparison (#107): the saved plan's projection for this entity,
+    // captured when the drawer opens (snapshot-on-open). Runs the unedited plan — no override.
+    function entityBaseline(
+        modelName: ModelName,
+        id: number,
+        commandSequence: CommandSequenceWithRelations
+    ): BaseState[] | null {
+        const result = simulate(commandSequence)
+        return result?.managerStates[modelName]?.[id] ?? null
     }
 
     return {
@@ -180,6 +194,8 @@ export const orchestratorStore = defineStore('orchestrator', () => {
         planWithRelations,
         simulate,
         simulateEntityPreview,
+        entityBaseline,
+        lastPreviewRetirementIndex,
     }
 
 })
