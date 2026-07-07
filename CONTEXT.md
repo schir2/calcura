@@ -110,6 +110,13 @@ read it before working #101/#102/#114–#120.
 
 The surface for adding or editing any plan entity, opened from the dashboard (toolbar "＋ Add", per-section add buttons, empty-state CTAs, or clicking an entity in a chart/legend/stat). **Two-pane on desktop, stacked on mobile** (form first). Left pane = the settings form (inputs first — cursor lands in the first field, no scrolling). Right pane = a **live projection** that reacts to the inputs in real time (baseline "saved plan" line vs the edited line, with an at-retirement delta) plus an **education panel** ("who it's for", when-to-use bullets, article link). Replaces the old plain-form modal. Confirmed against prototype 2026-07-04 — the two-pane drawer (settings + live graph) is the locked interaction model. (Grill session 2026-07-04.)
 
+### Baseline-vs-edited delta (#107)
+The Workspace projection's **baseline is a snapshot-on-open**: the entity's projection as the *saved plan* stood the moment the drawer opened, frozen while the user edits. It is not "the plan without this entity" — it is "before I started editing this session". Rendered as a **dashed muted line** behind the live edited line. The **delta** is a single benefit-colored tag reading the impact of the edits at one reference point. Resolved decisions (Grill session 2026-07-06):
+- **Reference point** = the **edited plan's retirement year** (the age you'd retire *under these edits*, not the baseline's). If the edited plan never retires (failure verdict), fall back to **life expectancy** and relabel the tag "by end of plan".
+- **Benefit direction is per-domain**, not raw sign: up-is-good for investments/income; down-is-good for debt/expense (less debt / cheaper). Positive-benefit → `success`, negative → `error`, ~zero (e.g. before any edit) → tag hidden.
+- **Edit-mode only.** Create mode has nothing to snapshot at open, so it shows only the single edited line (no baseline, no delta).
+- Headline stats stay edited-only; the comparison lives entirely in the dashed line + the one delta tag. Right-pane treatment to be **prototyped** per the per-domain readout method.
+
 
 ### Uniform Workspace across all domains
 Every domain — income, investments (tax_deferred/ira/roth/brokerage/hsa/cash), debt, expense — uses the **same two-pane Entity Workspace** (form left, live projection + education right). One interaction model the user learns once. Each domain supplies three ingredients: its **fields**, its **projection type** (investment = balance growth / contrib-vs-growth; debt = paydown-to-zero + cumulative interest; expense = cost over time with inflation), and its **education copy**. No per-domain bespoke editing UX. (Grill session 2026-07-04.)
