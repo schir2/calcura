@@ -4,7 +4,6 @@ import type {OrchestratorState} from "#shared/types/OrchestratorState";
 import DebtManager from "~/models/debt/DebtManager";
 import BaseManager from "~/models/common/BaseManager";
 import {
-    adjustForInsufficientFunds,
     getHsaLimit,
     getIraLimit,
     getTaxDeferredContributionLimit,
@@ -274,41 +273,24 @@ export default class PlanManager extends BaseOrchestrator<PlanWithRelations, Orc
         }
     }
 
-    requestFunds(requestedAmount: number, fundType: FundType, minimum?: number): number {
+    requestFunds(requestedAmount: number, fundType: FundType): number {
         const currentState = this.getCurrentState()
         let availableFunds = 0
         switch (fundType) {
             case FundType.Taxable:
-                availableFunds = Math.min(currentState.cash.taxable, requestedAmount)
+                availableFunds = currentState.cash.taxable
                 break
             case FundType.Taxed:
-                availableFunds = Math.min(currentState.cash.net, requestedAmount)
+                availableFunds = currentState.cash.net
                 break
             default:
                 throw new Error(`Unsupported fund type: ${fundType}`);
         }
-        return adjustForInsufficientFunds(requestedAmount, availableFunds, this.config.insufficient_funds_strategy, minimum)
+        return Math.max(Math.min(availableFunds, requestedAmount), 0)
     }
 
-    availableCapital(fundType: FundType): number {
-        const currentState = this.getCurrentState()
-        switch (fundType) {
-            case FundType.Taxable:
-                return currentState.cash.taxable
-            case FundType.Taxed:
-                return currentState.cash.net
-            default:
-                throw new Error(`Unsupported fund type: ${fundType}`);
-        }
-    }
-
-    requestWithdrawable(requestedAmount: number, fundType: FundType, minimum?: number): number {
-        const requested = this.requestFunds(requestedAmount, fundType, minimum)
-        return Math.max(Math.min(requested, this.availableCapital(fundType)), 0)
-    }
-
-    requestAndWithdraw(requestedAmount: number, fundType: FundType, minimum?: number): number {
-        const amount = this.requestWithdrawable(requestedAmount, fundType, minimum)
+    requestAndWithdraw(requestedAmount: number, fundType: FundType): number {
+        const amount = this.requestFunds(requestedAmount, fundType)
         this.withdraw(amount, fundType)
         return amount
     }
@@ -358,7 +340,7 @@ export default class PlanManager extends BaseOrchestrator<PlanWithRelations, Orc
     }
 
     requestAndPayExpense(amountRequested: number): number {
-        const amountPaid = this.requestWithdrawable(amountRequested, FundType.Taxed)
+        const amountPaid = this.requestFunds(amountRequested, FundType.Taxed)
         const shortfall = amountRequested - amountPaid
         this.withdraw(amountPaid, FundType.Taxed)
         const currentState = this.getCurrentState()
@@ -379,8 +361,8 @@ export default class PlanManager extends BaseOrchestrator<PlanWithRelations, Orc
         return amountPaid
     }
 
-    payDebt(amount: number, minimum: number) {
-        this.withdraw(amount, FundType.Taxed, minimum)
+    payDebt(amount: number) {
+        this.withdraw(amount, FundType.Taxed)
         const currentState = this.getCurrentState()
         this.updateCurrentState({
             ...currentState,
@@ -486,7 +468,7 @@ export default class PlanManager extends BaseOrchestrator<PlanWithRelations, Orc
         this.updateCurrentState(currentState);
     }
 
-    withdraw(amount: number, fundType: FundType, minimum?: number): void {
+    withdraw(amount: number, fundType: FundType): void {
         if (amount <= 0) return
         const currentState = this.getCurrentState();
         switch (fundType) {

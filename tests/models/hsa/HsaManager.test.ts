@@ -9,7 +9,6 @@ const planConfig: Plan = {
     age: 30,
     year: 2024,
     inflation_rate: 3,
-    insufficient_funds_strategy: 'none',
     growth_application_strategy: 'start',
     tax_strategy: 'simple',
     tax_rate: 30,

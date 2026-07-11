@@ -11,7 +11,6 @@ const planConfig: Plan = {
     year: new Date().getFullYear(),
     inflation_rate: 3,
     growthRate: 6,
-    insufficient_funds_strategy: 'none',
     growth_application_strategy: 'start',
     tax_strategy: 'simple',
     tax_rate: 30,

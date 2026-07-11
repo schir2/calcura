@@ -1,10 +1,4 @@
-import type {
-    GrowthApplicationStrategy,
-    IncomeTaxStrategy,
-    InsufficientFundsStrategy,
-    Plan,
-    RetirementStrategy
-} from "#shared/types/Plan";
+import type {GrowthApplicationStrategy, IncomeTaxStrategy, Plan, RetirementStrategy} from "#shared/types/Plan";
 import {DEFAULT_GROWTH_RATE} from './shared';
 
 export const MIN_TAX_RATE = 0;
@@ -22,7 +16,6 @@ export const MIN_AGE = 1
 export const MAX_AGE = 120
 
 export const DEFAULT_AGE: number = 30;
-export const DEFAULT_ALLOW_NEGATIVE_DISPOSABLE_INCOME: InsufficientFundsStrategy = 'none'
 export const DEFAULT_GROWTH_APPLICATION_STRATEGY: GrowthApplicationStrategy = 'start'
 
 export const planDefaults: Partial<Plan> = {
@@ -31,7 +24,6 @@ export const planDefaults: Partial<Plan> = {
     year: new Date().getFullYear(),
     growth_rate: 6.0,
     inflation_rate: 3,
-    insufficient_funds_strategy: 'none',
     growth_application_strategy: 'start',
     tax_strategy: 'simple',
     tax_rate: 2.5,

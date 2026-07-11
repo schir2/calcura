@@ -12,8 +12,6 @@ import type {Hsa} from "#shared/types/Hsa";
 import type {CommandSequence, CommandSequenceWithRelations} from "#shared/types/CommandSequence";
 
 
-export type InsufficientFundsStrategy = Enums<'insufficient_funds_strategy'>
-
 export type RetirementStrategy = Enums<'retirement_strategy'>
 
 export type GrowthApplicationStrategy = Enums<'growth_application_strategy'>

@@ -48,6 +48,7 @@ function openCreate(model: ModelName) {
   }
   createModel.value = model
 }
+
 function onCreated(data: unknown) {
   if (createModel.value) emit('create-model', {model: createModel.value, data})
   createModel.value = null
@@ -60,12 +61,48 @@ const accounts = computed(() => {
   const p = props.plan
   if (!p) return [] as { model: ModelName; id: number; name: string; amount: number; hueName: HueName }[]
   return [
-    ...p.tax_deferreds.map(e => ({model: 'tax_deferred' as ModelName, id: e.id, name: e.name, amount: e.initial_balance, hueName: 'blue' as HueName})),
-    ...p.brokerages.map(e => ({model: 'brokerage' as ModelName, id: e.id, name: e.name, amount: e.initial_balance, hueName: 'green' as HueName})),
-    ...p.roth_iras.map(e => ({model: 'roth_ira' as ModelName, id: e.id, name: e.name, amount: e.initial_balance, hueName: 'violet' as HueName})),
-    ...p.iras.map(e => ({model: 'ira' as ModelName, id: e.id, name: e.name, amount: e.initial_balance, hueName: 'violet' as HueName})),
-    ...p.hsas.map(e => ({model: 'hsa' as ModelName, id: e.id, name: e.name, amount: e.initial_balance, hueName: 'teal' as HueName})),
-    ...p.cash_reserves.map(e => ({model: 'cash_reserve' as ModelName, id: e.id, name: e.name, amount: e.initial_amount, hueName: 'amber' as HueName})),
+    ...p.tax_deferreds.map(e => ({
+      model: 'tax_deferred' as ModelName,
+      id: e.id,
+      name: e.name,
+      amount: e.initial_balance,
+      hueName: 'blue' as HueName
+    })),
+    ...p.brokerages.map(e => ({
+      model: 'brokerage' as ModelName,
+      id: e.id,
+      name: e.name,
+      amount: e.initial_balance,
+      hueName: 'green' as HueName
+    })),
+    ...p.roth_iras.map(e => ({
+      model: 'roth_ira' as ModelName,
+      id: e.id,
+      name: e.name,
+      amount: e.initial_balance,
+      hueName: 'violet' as HueName
+    })),
+    ...p.iras.map(e => ({
+      model: 'ira' as ModelName,
+      id: e.id,
+      name: e.name,
+      amount: e.initial_balance,
+      hueName: 'violet' as HueName
+    })),
+    ...p.hsas.map(e => ({
+      model: 'hsa' as ModelName,
+      id: e.id,
+      name: e.name,
+      amount: e.initial_balance,
+      hueName: 'teal' as HueName
+    })),
+    ...p.cash_reserves.map(e => ({
+      model: 'cash_reserve' as ModelName,
+      id: e.id,
+      name: e.name,
+      amount: e.initial_amount,
+      hueName: 'amber' as HueName
+    })),
   ]
 })
 
@@ -88,14 +125,19 @@ function categoryEntities(category: string): EntityRef[] {
   const p = props.plan
   if (!p) return []
   switch (category) {
-    case 'cash_reserve': return p.cash_reserves.map(e => ({model: 'cash_reserve', id: e.id, name: e.name}))
-    case 'taxable': return p.brokerages.map(e => ({model: 'brokerage', id: e.id, name: e.name}))
-    case 'tax_exempt': return [
-      ...p.roth_iras.map(e => ({model: 'roth_ira' as ModelName, id: e.id, name: e.name})),
-      ...p.iras.map(e => ({model: 'ira' as ModelName, id: e.id, name: e.name})),
-    ]
-    case 'tax_deferred': return p.tax_deferreds.map(e => ({model: 'tax_deferred', id: e.id, name: e.name}))
-    default: return []
+    case 'cash_reserve':
+      return p.cash_reserves.map(e => ({model: 'cash_reserve', id: e.id, name: e.name}))
+    case 'taxable':
+      return p.brokerages.map(e => ({model: 'brokerage', id: e.id, name: e.name}))
+    case 'tax_exempt':
+      return [
+        ...p.roth_iras.map(e => ({model: 'roth_ira' as ModelName, id: e.id, name: e.name})),
+        ...p.iras.map(e => ({model: 'ira' as ModelName, id: e.id, name: e.name})),
+      ]
+    case 'tax_deferred':
+      return p.tax_deferreds.map(e => ({model: 'tax_deferred', id: e.id, name: e.name}))
+    default:
+      return []
   }
 }
 
@@ -124,7 +166,7 @@ function onPickerAdd(model: ModelName) {
 }
 
 const debtPrincipal = computed(() =>
-  (props.plan?.debts ?? []).reduce((sum, d) => sum + (d.principal ?? 0), 0))
+    (props.plan?.debts ?? []).reduce((sum, d) => sum + (d.principal ?? 0), 0))
 
 const paidOffAge = computed(() => {
   const cleared = props.states.find(s => s.liabilities.debt.balance_end <= 0 && s.liabilities.debt.paid_lifetime > 0)
@@ -151,7 +193,9 @@ const paidOffAge = computed(() => {
         title="Income" tag="what comes in — and what's left to invest"
         add-label="Add income" dot-class="bg-skin-success" @add="openCreate('income')"/>
     <div class="grid grid-cols-1 xl:grid-cols-2 gap-3">
-      <n-card title="Income vs. expenses"><IncomeVsExpenses :states="states"/></n-card>
+      <n-card title="Income vs. expenses">
+        <IncomeVsExpenses :states="states"/>
+      </n-card>
       <n-card title="Your income sources">
         <template v-if="plan && plan.incomes.length">
           <EntityRow v-for="inc in plan.incomes" :key="inc.id"
@@ -175,7 +219,9 @@ const paidOffAge = computed(() => {
         title="Spending" tag="where the money goes — and whether the plan can fund it"
         add-label="Add expense" dot-class="bg-skin-warning" @add="openCreate('expense')"/>
     <div class="grid grid-cols-1 xl:grid-cols-2 gap-3">
-      <n-card title="Working vs. retirement spending"><ExpenseBreakdown :expenses="plan?.expenses ?? []" :height="170"/></n-card>
+      <n-card title="Working vs. retirement spending">
+        <ExpenseBreakdown :expenses="plan?.expenses ?? []" :height="170"/>
+      </n-card>
       <n-card title="Your expenses">
         <template v-if="expenseRows.length">
           <EntityRow v-for="(exp, i) in expenseRows" :key="i"
@@ -200,7 +246,9 @@ const paidOffAge = computed(() => {
       </template>
     </SectionHead>
     <div class="grid grid-cols-1 xl:grid-cols-2 gap-3">
-      <n-card title="Balances by account"><NetWorthSpine :states="states" :height="260" @category-select="onCategorySelect"/></n-card>
+      <n-card title="Balances by account">
+        <NetWorthSpine :states="states" :height="260" @category-select="onCategorySelect"/>
+      </n-card>
       <n-card>
         <template #header>
           <div class="flex items-baseline justify-between">
@@ -221,7 +269,9 @@ const paidOffAge = computed(() => {
         title="Liabilities" tag="debt burning down — and what interest really cost"
         add-label="Add debt" dot-class="bg-skin-error" @add="openCreate('debt')"/>
     <div class="grid grid-cols-1 xl:grid-cols-2 gap-3">
-      <n-card title="Debt paydown"><DebtPaydown :states="states" :height="260"/></n-card>
+      <n-card title="Debt paydown">
+        <DebtPaydown :states="states" :height="260"/>
+      </n-card>
       <n-card title="Cost of borrowing">
         <div class="grid grid-cols-3">
           <div class="px-3">

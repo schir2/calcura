@@ -103,8 +103,6 @@ function handleEdit() {
           <p class="flex justify-between"><span>Inflation Rate </span><span>{{ plan.inflation_rate }}</span></p>
           <p class="flex justify-between"><span>Tax Rate </span><span>{{ plan.tax_rate }}</span></p>
           <p class="flex justify-between">
-            <span>Insufficient Funds Strategy </span><span>{{ plan.insufficient_funds_strategy }}</span></p>
-          <p class="flex justify-between">
             <span>Growth Strategy</span><span>{{ plan.growth_application_strategy }}</span></p>
         </n-card>
         <n-card size="small">

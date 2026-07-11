@@ -60,9 +60,6 @@ export function planRules(modelRef: Ref<Partial<Plan>>) {
         inflation_rate: [
             {required: true, type: "number", message: "Inflation rate is required", trigger: ["blur", "change"]}
         ],
-        insufficient_funds_strategy: [
-            {required: true, message: "Insufficient funds strategy is required", trigger: ["blur", "change"]}
-        ],
         growth_application_strategy: [
             {required: true, message: "Growth application strategy is required", trigger: ["blur", "change"]}
         ],

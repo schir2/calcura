@@ -1,4 +1,4 @@
-import type {GrowthApplicationStrategy, InsufficientFundsStrategy} from "#shared/types/Plan";
+import type {GrowthApplicationStrategy} from "#shared/types/Plan";
 import type {Frequency} from "#shared/types/Frequency";
 
 export function calculateCompoundInterest(principal: number, interestRate: number, numberOfInterestApplicationsPerPeriod: number = 1, numberOfPeriods: number): number {
@@ -18,23 +18,6 @@ export function calculateGrowthAmount(
             return (principal + (contribution ?? 0)) * (growthRate / 100)
         default:
             throw new Error(`Invalid growth application strategy: ${growthApplicationStrategy}`);
-    }
-}
-
-
-export function adjustForInsufficientFunds(
-    requestedAmount: number,
-    availableFunds: number, insufficientFundsStrategy: InsufficientFundsStrategy, minimum: number = 0,
-): number {
-    switch (insufficientFundsStrategy) {
-        case 'none':
-            return Math.max(Math.min(availableFunds, requestedAmount),0);
-        case 'minimum_only':
-            return Math.max(Math.min(availableFunds, requestedAmount), minimum);
-        case 'full':
-            return requestedAmount;
-        default:
-            throw new Error(`Invalid insufficientFundsStrategy value: ${insufficientFundsStrategy}`);
     }
 }
 
