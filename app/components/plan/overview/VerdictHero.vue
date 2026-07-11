@@ -21,9 +21,9 @@ const toneClass: Record<VerdictTone, string> = {
   <n-card :class="verdict.onTrack ? '' : 'border-skin-error/50'">
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
       <div :class="['lg:border-r lg:pr-6', verdict.onTrack ? 'border-skin-base' : 'border-skin-error/30']">
-        <div :class="['text-4xl sm:text-5xl font-black tracking-tight leading-none',
+        <div :class="['text-4xl sm:text-5xl font-bold tracking-tight leading-none',
           verdict.onTrack ? 'text-skin-success' : 'text-skin-error']">
-          {{ verdict.onTrack ? 'ON TRACK' : 'OFF TRACK' }}
+          {{ verdict.onTrack ? 'On Track' : 'Off Track' }}
         </div>
         <h2 class="text-2xl font-semibold mt-3">{{ verdict.headline }}</h2>
 
