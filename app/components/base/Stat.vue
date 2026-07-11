@@ -33,10 +33,10 @@ const labelClass = computed(() => {
       labelClass.push('text-xs')
       break
     case 'medium':
-      labelClass.push('text-s')
+      labelClass.push('text-sm')
       break
     case 'large':
-      labelClass.push('text-md')
+      labelClass.push('text-base')
   }
   return labelClass.join(' ')
 })
@@ -70,7 +70,7 @@ const valueClass = computed(() => {
       </slot>
     </slot>
     </span>
-    <span class="font-light" :class="valueClass">
+    <span class="tabular-nums" :class="valueClass">
     <slot name="default">
       <span v-if="value">{{ value }}</span>
     </slot>
