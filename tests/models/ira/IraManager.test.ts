@@ -1,5 +1,5 @@
 import {beforeEach, describe, expect, it} from "vitest";
-import {IraManager} from "~/models/ira/IraIManager";
+import {IraManager} from "~/models/ira/IraManager";
 import PlanManager from "~/models/plan/PlanManager";
 import type {PlanWithRelations as Plan} from "#shared/types/Plan";
 
