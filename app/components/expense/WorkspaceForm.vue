@@ -4,7 +4,7 @@ import type {ExpenseState} from '#shared/types/ExpenseState'
 import type {CommandSequenceWithRelations} from '#shared/types/CommandSequence'
 import {PREVIEW_TEMP_ID} from '~/stores/orchestratorStore'
 import {expenseRules} from '~/utils/validators/expenseRules'
-import {expenseDefaults} from '~/constants/ExpenseConstants'
+import {expenseDefaults, MAX_RETIREMENT_SPENDING_PERCENTAGE, MIN_RETIREMENT_SPENDING_PERCENTAGE} from '~/constants/ExpenseConstants'
 
 type Props = {
   id: number | null
@@ -124,7 +124,7 @@ function handleSubmit() {
     </n-form-item>
 
     <n-form-item label="Retirement spending (%)" path="retirement_spending_percentage" :show-feedback="false" class="!mb-3">
-      <base-number-slider v-model="model.retirement_spending_percentage" :min="0" :max="150" :step="5"/>
+      <base-number-slider v-model="model.retirement_spending_percentage" :min="MIN_RETIREMENT_SPENDING_PERCENTAGE" :max="MAX_RETIREMENT_SPENDING_PERCENTAGE" :step="5"/>
     </n-form-item>
 
     <n-form-item label="Retirement only" path="is_retirement_only" :show-feedback="false" class="!mb-3">
