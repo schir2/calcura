@@ -17,8 +17,12 @@ The canonical form component is now **`<domain>/WorkspaceForm.vue`**, rendered i
 
 The plan entity keeps its own `CreateForm.vue` / `UpdateForm.vue`: a plan is not a Workspace domain.
 
-### `useCrudForm`
-Composable that manages form state and validation only. Returns `{ formRef, modelRef, rules, validate }`. Does not own emit logic — that lives in the form component. Generic over whatever Supabase type the caller passes (`*Insert` for create, full entity for edit).
+### `useNaiveForm`
+The form-state composable, provided by the `@bg-dev/nuxt-naiveui` module (auto-imported). Returns `{ formRef, rules, onSubmit }` (plus `pending` / `apiErrors` where used). Every form uses it — the nine `WorkspaceForm.vue`s, the plan create/update forms, and the profile form.
+
+It does not own persistence: a `WorkspaceForm` calls its own domain store's `create` / `patch` inside `onSubmit`, then emits `saved`.
+
+> **`useCrudForm` is retired.** It was the composable for the legacy modal forms and was deleted with them ([ADR 012](docs/adr/012-retire-legacy-modal-form-stack.md)) — nothing used it once those forms went.
 
 ## Glossary — Design System
 
@@ -310,7 +314,7 @@ additive PRs. This feature spans enough surface (engine + schema + triggers + UI
 own PRD/issue breakdown rather than a single issue. (Grill session 2026-07-04.)
 
 ### Rich List Item subgraphs show real attributed simulation output, not standalone projections
-The [[Rich List Item]] subgraph is sourced from [[Manager State History]] (the entity's real per-year states inside the full simulation) — **not** a decoupled per-item projection like `brokerage/ProjectionChart.vue`. Rationale: a standalone projection ignores contribution limits, command ordering, and the retirement cutoff, so it would show a *different* number than the plan actually produces — two conflicting curves for one account. The engine math needs no change; the work is plumbing per-manager state out through the store to the item. The subgraph is independently droppable if that plumbing balloons — first thing to cut, not a blocker for the rest of the redesign. (Grill session 2026-07-03.)
+The [[Rich List Item]] subgraph is sourced from [[Manager State History]] (the entity's real per-year states inside the full simulation) — **not** a decoupled per-item projection like the old `brokerage/ProjectionChart.vue` (since deleted, [ADR 012](docs/adr/012-retire-legacy-modal-form-stack.md)). Rationale: a standalone projection ignores contribution limits, command ordering, and the retirement cutoff, so it would show a *different* number than the plan actually produces — two conflicting curves for one account. The engine math needs no change; the work is plumbing per-manager state out through the store to the item. The subgraph is independently droppable if that plumbing balloons — first thing to cut, not a blocker for the rest of the redesign. (Grill session 2026-07-03.)
 
 ### Shared validation bounds live in `constants/shared.ts`
 Cross-domain bounds (`MIN_NAME_LENGTH=3`, `MAX_NAME_LENGTH=32`, `MIN_GROWTH_RATE=0`, `MAX_GROWTH_RATE=200`, `DEFAULT_GROWTH_RATE=6`, `MIN_PERCENTAGE=0`, `MAX_PERCENTAGE=100`) are extracted from `planConstants.ts` into a new `constants/shared.ts`. The differing name lengths across domains (2, 3, 50) were drift, not intent — standardised to min=3, max=32.
@@ -326,8 +330,10 @@ IRS contribution limits, domain-specific ranges (e.g. `MAX_INTEREST_RATE`, `MAX_
 
 Both component files are deleted. The domain's single `WorkspaceForm.vue` handles create and edit as **modes** of one component, rendered in the [[Entity Workspace]] drawer. The *distinction* the original decision protected still holds — create emits an `*Insert` with no `id`; edit emits `update: [id, *Update]` with the `id` taken from the entity, never from form state — it is simply no longer expressed as two files.
 
-### `useCrudFormWithValidation` is replaced by `useCrudForm`
-The composable no longer owns emit logic or distinguishes create vs update. Tracked in issue #20.
+### `useCrudFormWithValidation` is replaced by `useCrudForm` — **superseded by [ADR 012](docs/adr/012-retire-legacy-modal-form-stack.md)**
+~~The composable no longer owns emit logic or distinguishes create vs update. Tracked in issue #20.~~
+
+Both are gone. Forms use [[`useNaiveForm`]] from the NaiveUI module; `useCrudForm` was deleted with the legacy modal forms, its only consumers.
 
 ### Project settings / DB-backed defaults deferred
 Storing form defaults in a Supabase `settings` table was considered and deferred — no concrete actor needs to change defaults without a deploy, and the template system already covers the user-configurable case.

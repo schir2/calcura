@@ -61,8 +61,8 @@ workspace.open('income', incomeId)       // edit
 No emit bubbling to the page, and no per-domain form component in the page template. The drawer
 resolves the domain's `WorkspaceForm.vue` and projection readout itself.
 
-There is **no modal fallback**. A domain missing from `WORKSPACE_ENABLED_MODELS` simply cannot be
-created — it does not quietly open an old form. See
+There is **no modal fallback**. A domain with no form registered in `common/EntityWorkspace.vue`
+opens an empty drawer that says so — it does not quietly fall back to an old form. See
 `docs/design/entity-workspace-implementation.md`.
 
 **Exception:** plan create/edit and one-off UI modals (e.g. the profile prompt) stay as local

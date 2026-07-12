@@ -27,7 +27,7 @@ export const useXxxStore = defineStore('xxx', () => {
 |------|---------|
 | `authStore.ts` | Supabase session + user; exposes login/logout/register |
 | `themeStore.ts` | UI theme preference |
-| `workspaceStore.ts` | The open Entity Workspace — `openCreate(model, planId)`, `open(model, id)`, `close()`, plus `WORKSPACE_ENABLED_MODELS` |
+| `workspaceStore.ts` | The open Entity Workspace — `openCreate(model, planId)`, `open(model, id)`, `close()` |
 
 Domain data stores (income, expense, debt, etc.) live here too, each created via `modelStoreFactory`.
 
@@ -45,7 +45,7 @@ workspace.close()
 
 The drawer resolves the domain's `WorkspaceForm.vue` and projection readout itself. `mode` is computed from whether an `id` is present, so callers never set it.
 
-`WORKSPACE_ENABLED_MODELS` lists the domains the drawer can handle. It is currently **total** over the `model_name` enum — every domain is enabled. A domain missing from it cannot be created at all; there is no modal fallback (see [ADR 012](../../docs/adr/012-retire-legacy-modal-form-stack.md)).
+**Which domains the drawer supports is decided by `common/EntityWorkspace.vue`** — its `formComponent` / `projectionComponent` switches. There is no separate enabled-models list, and no modal fallback: a domain with no registered form opens an empty drawer saying so. See [ADR 012](../../docs/adr/012-retire-legacy-modal-form-stack.md).
 
 **Out of scope:** plan create/edit (local `showModal` ref — a plan is not a Workspace domain) and one-off UI modals like the profile prompt.
 

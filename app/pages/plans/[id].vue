@@ -1,14 +1,14 @@
 <script setup lang="ts">
 import type {PlanUpdate} from "#shared/types/Plan"
-import type {IncomeInsert, IncomeUpdate} from "#shared/types/Income"
-import type {ExpenseInsert, ExpenseUpdate} from "#shared/types/Expense"
-import type {DebtInsert, DebtUpdate} from "#shared/types/Debt"
-import type {CashReserveInsert, CashReserveUpdate} from "#shared/types/CashReserve"
-import type {TaxDeferredInsert, TaxDeferredUpdate} from "#shared/types/TaxDeferred"
-import type {BrokerageInsert, BrokerageUpdate} from "#shared/types/Brokerage"
-import type {IraInsert, IraUpdate} from "#shared/types/Ira"
-import type {RothIraInsert, RothIraUpdate} from "#shared/types/RothIra"
-import type {HsaInsert, HsaUpdate} from "#shared/types/Hsa"
+import type {IncomeUpdate} from "#shared/types/Income"
+import type {ExpenseUpdate} from "#shared/types/Expense"
+import type {DebtUpdate} from "#shared/types/Debt"
+import type {CashReserveUpdate} from "#shared/types/CashReserve"
+import type {TaxDeferredUpdate} from "#shared/types/TaxDeferred"
+import type {BrokerageUpdate} from "#shared/types/Brokerage"
+import type {IraUpdate} from "#shared/types/Ira"
+import type {RothIraUpdate} from "#shared/types/RothIra"
+import type {HsaUpdate} from "#shared/types/Hsa"
 import type {ModelName} from "#shared/types/ModelName"
 import type {OrchestratorState} from "#shared/types/OrchestratorState"
 import type {ManagerStates} from "#shared/types/ManagerStates"
@@ -37,41 +37,6 @@ const hsaStore = useHsaStore()
 const commandSequenceStore = useCommandSequenceStore()
 
 onMounted(() => orchestrator.load(planId))
-
-async function handleCreateModel(payload: { model: ModelName, data: unknown }) {
-  const insert = payload.data
-  switch (payload.model) {
-    case 'income':
-      await incomeStore.create(insert as IncomeInsert);
-      break
-    case 'expense':
-      await expenseStore.create(insert as ExpenseInsert);
-      break
-    case 'debt':
-      await debtStore.create(insert as DebtInsert);
-      break
-    case 'cash_reserve':
-      await cashReserveStore.create(insert as CashReserveInsert);
-      break
-    case 'tax_deferred':
-      await taxDeferredStore.create(insert as TaxDeferredInsert);
-      break
-    case 'brokerage':
-      await brokerageStore.create(insert as BrokerageInsert);
-      break
-    case 'ira':
-      await iraStore.create(insert as IraInsert);
-      break
-    case 'roth_ira':
-      await rothIraStore.create(insert as RothIraInsert);
-      break
-    case 'hsa':
-      await hsaStore.create(insert as HsaInsert);
-      break
-  }
-  await commandSequenceStore.fetchByPlan(planId)
-  await orchestrator.reloadPlan(planId)
-}
 
 async function handleUpdateModel(payload: { modelName: ModelName, id: number, data: Record<string, unknown> }) {
   const {modelName, id, data} = payload
@@ -154,7 +119,7 @@ async function handleRenameSequence(id: number, name: string) {
 }
 
 async function handleCreateSequence() {
-  const seq = await commandSequenceStore.create({ plan_id: planId, name: 'New Sequence' })
+  const seq = await commandSequenceStore.create({plan_id: planId, name: 'New Sequence'})
   await commandSequenceStore.fetch(seq.id)
 }
 
@@ -177,7 +142,7 @@ async function handleEditPlan(id: number, update: PlanUpdate) {
 }
 
 const usd = (value: number) =>
-  new Intl.NumberFormat('en-US', {style: 'currency', currency: 'USD', maximumFractionDigits: 0}).format(value ?? 0)
+    new Intl.NumberFormat('en-US', {style: 'currency', currency: 'USD', maximumFractionDigits: 0}).format(value ?? 0)
 
 const retirementGoalText = computed(() => {
   const plan = orchestrator.planWithRelations
@@ -251,6 +216,7 @@ const ADD_TYPES: { name: ModelName, label: string, icon: string }[] = [
   {name: 'brokerage', label: 'Brokerage', icon: 'brokerage'},
   {name: 'hsa', label: 'HSA', icon: 'hsa'},
 ]
+
 function pickType(name: ModelName) {
   addPickerOpen.value = false
   workspace.openCreate(name, planId)
@@ -267,17 +233,23 @@ function pickType(name: ModelName) {
         </div>
         <n-button-group size="small">
           <n-button type="primary" secondary round @click="manageOpen = true">
-            <template #icon><Icon name="mdi:tune-variant"/></template>
+            <template #icon>
+              <Icon name="mdi:tune-variant"/>
+            </template>
             Manage simulation
           </n-button>
           <n-button type="warning" secondary round @click="showEditModal = true">
-            <template #icon><Icon name="mdi:edit"/></template>
+            <template #icon>
+              <Icon name="mdi:edit"/>
+            </template>
             Edit
           </n-button>
           <n-popconfirm v-model:show="showDeleteConfirm" @positive-click="handleDeletePlan(planId)">
             <template #trigger>
               <n-button type="error" secondary round>
-                <template #icon><Icon name="mdi:delete"/></template>
+                <template #icon>
+                  <Icon name="mdi:delete"/>
+                </template>
                 Delete
               </n-button>
             </template>
@@ -292,7 +264,7 @@ function pickType(name: ModelName) {
 
       <n-tabs v-model:value="activeView" type="line" animated>
         <n-tab-pane name="overview" tab="Overview">
-          <Overview v-if="planStates" :states="planStates" :plan="orchestrator.planWithRelations" @create-model="handleCreateModel"/>
+          <Overview v-if="planStates" :states="planStates" :plan="orchestrator.planWithRelations"/>
         </n-tab-pane>
         <n-tab-pane name="report" tab="Report">
           <LazyPlanTable v-if="planStates" :planStates="planStates"/>
@@ -332,7 +304,9 @@ function pickType(name: ModelName) {
         class="!fixed bottom-6 right-6 z-[2000] shadow-lg"
         @click="addPickerOpen = true"
     >
-      <template #icon><base-ico name="add"/></template>
+      <template #icon>
+        <base-ico name="add"/>
+      </template>
     </n-button>
 
     <n-drawer

@@ -38,7 +38,7 @@ Since [ADR 012](../../docs/adr/012-retire-legacy-modal-form-stack.md), a domain 
 | `WorkspaceProjection.vue` | The domain's live projection readout, right pane. (Growth investments may reuse `CommonEntityProjection` instead.) |
 | `ListItem.vue` | The domain's Rich List Item row in the simulation drawer. Its edit affordance opens the Workspace. |
 
-Both Workspace components must be registered in `common/EntityWorkspace.vue`, and the domain must be listed in `WORKSPACE_ENABLED_MODELS`.
+Both Workspace components must be registered in `common/EntityWorkspace.vue`'s `formComponent` / `projectionComponent` switches. That registration is what makes the domain editable — there is no separate enable list and no fallback.
 
 ### Data handling
 - Components receive data via props — they do not call Supabase directly

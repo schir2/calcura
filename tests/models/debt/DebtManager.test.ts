@@ -184,6 +184,25 @@ describe("DebtManager", () => {
             debtManager.process();
         });
 
+        it("should record no payment when there is no cash to pay it", () => {
+            const zeroCashPlanManager = new PlanManager({...planConfig, incomes: []})
+            const debtManager = new DebtManager(zeroCashPlanManager, {
+                ...debt,
+                principal: 100_000,
+                payment_fixed_amount: 6_000,
+                interest_rate: 10,
+            })
+            debtManager.process();
+            const planState = debtManager.orchestrator.getCurrentState();
+            const currentState = debtManager.getCurrentState();
+
+            expect(currentState.payment).toBe(0);
+            expect(currentState.payment_lifetime).toBe(0);
+            expect(currentState.principal_end_of_year).toBeCloseTo(110_000);
+            expect(planState.liabilities.debt.paid).toBe(0);
+            expect(planState.cash.net).toBe(0);
+        });
+
     })
 
     describe('calculateInterest', () => {

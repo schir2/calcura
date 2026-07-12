@@ -1,14 +1,7 @@
 <script setup lang="ts">
-// Plan Overview: KPI row → net-worth spine → Income / Spending / Investments / Liabilities sections,
-// each a chart + entity list. Composition approved in master artifact cb56a0f0.
-import type {Component} from 'vue'
 import type {OrchestratorState} from '#shared/types/OrchestratorState'
 import type {PlanWithRelations} from '#shared/types/Plan'
 import type {ModelName} from '#shared/types/ModelName'
-import {
-  BrokerageCreateForm, CashReserveCreateForm, DebtCreateForm, ExpenseCreateForm, HsaCreateForm,
-  IncomeCreateForm, IraCreateForm, RothIraCreateForm, TaxDeferredCreateForm,
-} from '#components'
 import NetWorthSpine from '~/components/plan/chart/NetWorthSpine.vue'
 import IncomeVsExpenses from '~/components/plan/chart/IncomeVsExpenses.vue'
 import RetirementIncome from '~/components/plan/chart/RetirementIncome.vue'
@@ -19,19 +12,11 @@ import EntityRow from './EntityRow.vue'
 import VerdictHero from './VerdictHero.vue'
 import EntityPicker from '~/components/common/EntityPicker.vue'
 import {overviewStats} from './stats'
-import {WORKSPACE_ENABLED_MODELS} from '~/stores/workspaceStore'
 
 const props = defineProps<{ states: OrchestratorState[]; plan?: PlanWithRelations | null }>()
-const emit = defineEmits<{ 'create-model': [payload: { model: ModelName, data: unknown }] }>()
 const stats = computed(() => overviewStats(props.states))
 const workspace = useWorkspaceStore()
 
-const CREATE_FORMS: Record<ModelName, Component> = {
-  income: IncomeCreateForm, expense: ExpenseCreateForm, debt: DebtCreateForm,
-  cash_reserve: CashReserveCreateForm, tax_deferred: TaxDeferredCreateForm, brokerage: BrokerageCreateForm,
-  ira: IraCreateForm, roth_ira: RothIraCreateForm, hsa: HsaCreateForm,
-}
-const createModel = ref<ModelName | null>(null)
 const accountTypeOptions = [
   {label: '401(k) / Tax-deferred', key: 'tax_deferred'},
   {label: 'Brokerage', key: 'brokerage'},
@@ -42,16 +27,7 @@ const accountTypeOptions = [
 ]
 
 function openCreate(model: ModelName) {
-  if (WORKSPACE_ENABLED_MODELS.includes(model) && props.plan) {
-    workspace.openCreate(model, props.plan.id)
-    return
-  }
-  createModel.value = model
-}
-
-function onCreated(data: unknown) {
-  if (createModel.value) emit('create-model', {model: createModel.value, data})
-  createModel.value = null
+  if (props.plan) workspace.openCreate(model, props.plan.id)
 }
 
 type HueName = 'blue' | 'green' | 'violet' | 'amber' | 'teal'
@@ -296,14 +272,5 @@ const paidOffAge = computed(() => {
         :add-model="pickerAddModel"
         @select="openEntity"
         @add="onPickerAdd"/>
-
-    <n-modal :show="createModel !== null" @update:show="(v: boolean) => { if (!v) createModel = null }">
-      <component
-          :is="CREATE_FORMS[createModel]"
-          v-if="createModel"
-          :initial-values="{ plan_id: plan?.id }"
-          @create="onCreated"
-          @cancel="createModel = null"/>
-    </n-modal>
   </div>
 </template>

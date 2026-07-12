@@ -38,7 +38,7 @@ export default class DebtManager extends BaseManager<Debt, DebtState> {
         this.orchestrator.adjustDebt(updatedPrincipalEndOfYear)
         this.updateCurrentState({
             ...currentState,
-            payment: paymentRequest,
+            payment: payment,
             interest_amount: interestAmount,
             interest_lifetime: interestLifetime,
             payment_lifetime: paymentLifetime,

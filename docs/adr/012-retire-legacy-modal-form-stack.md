@@ -26,7 +26,13 @@ Therefore the modal state is never set, the `n-modal` never opens, and the nine 
 
 The `UpdateForm`s were already orphaned when #102 pointed each Rich List Item's edit affordance at the drawer. The `List.vue` files are referenced by nothing (the simulation drawer renders `*ListItem`, not `*List`). The `TemplatePicker`s were only ever reachable through `debt/List.vue`, itself unreferenced.
 
-**This proof depends on the enum staying total.** If a tenth `model_name` is ever added and *not* added to `WORKSPACE_ENABLED_MODELS`, the guard stops being total — but by then the legacy modal it would have fallen back to no longer exists. **Adding a new domain therefore means building its Workspace form, not resurrecting a modal.** That is the intended constraint, and it is why `WORKSPACE_ENABLED_MODELS` should not be quietly deleted as "always true".
+### `WORKSPACE_ENABLED_MODELS` goes too
+
+The constant existed to answer one question — *"does this domain use the drawer, or fall back to the modal?"* Once there is no modal, the question has no meaning: the check was total, so it always answered "yes".
+
+Its only two consumers were the create paths being deleted here, so it is removed with them. `EntityWorkspace` already degrades gracefully on its own when a domain has no registered form (*"This entity type has no workspace yet."*), which is the real guard — the constant was redundant with it.
+
+**Consequence for a future tenth domain:** it must be registered in `EntityWorkspace`'s `formComponent` / `projectionComponent` switches. If it isn't, the drawer opens and says it has no workspace. It does not silently fall back to anything, because there is nothing to fall back to. **Adding a domain means building its Workspace form.**
 
 ## Decision
 
@@ -49,7 +55,9 @@ The **[[Entity Workspace]] is the only surface for creating or editing a plan en
 - The **Create Form** and **Edit Form** glossary entries in `CONTEXT.md` — these named `CreateForm.vue` / `EditForm.vue` per domain as the canonical form components. The canonical form component is now `<domain>/WorkspaceForm.vue`.
 - The decision **"Create and Edit forms are separate components"** (issues #20/#21). It is not *wrong* — the Workspace form still branches on create vs edit mode — but the split is no longer expressed as two component files.
 - `entity-workspace-implementation.md`'s framing of the legacy modal as a live fallback, and its "Leave them" instruction about the TemplatePickers.
-- ADR 011 retired `CommonRadioCard` *for strategy selection*; its last remaining consumers were these legacy forms, so the component itself now goes with them.
+- The `useCrudForm` composable, and the `useCrudFormWithValidation` → `useCrudForm` decision (#20). The legacy forms were its only consumers; every surviving form uses `useNaiveForm` from the NaiveUI module.
+
+**`common/RadioCard.vue` survives.** ADR 011 retired it *for strategy selection*, and the legacy forms were most of its consumers — but **not all**: `plan/FormGoals.vue` still uses it for the retirement-strategy picker, and the plan forms are live (a plan is not a Workspace domain). Migrating `FormGoals` to `StrategyRows` is ADR 011's outstanding follow-up, not this ADR's job.
 
 ## Alternatives considered
 
@@ -72,6 +80,6 @@ The **[[Entity Workspace]] is the only surface for creating or editing a plan en
 ## Guidance
 
 - Create and edit an entity through the [[Entity Workspace]] drawer. Never add a modal form.
-- A new domain is not "done" until it has a `WorkspaceForm.vue`, a projection readout, both registered in `EntityWorkspace`, and its name in `WORKSPACE_ENABLED_MODELS`.
+- A new domain is not "done" until it has a `WorkspaceForm.vue` and a projection readout, **both registered in `EntityWorkspace`'s `formComponent` / `projectionComponent` switches**. That registration is the only switch — `WORKSPACE_ENABLED_MODELS` is gone. Miss it and the drawer opens empty ("This entity type has no workspace yet"); it does not fall back to anything.
 - `plan/Table.vue` is **live** — it is the Report tab. It is not part of this stack and is not deleted.
 - The plan entity's own `CreateForm.vue` / `UpdateForm.vue` are **not** part of this stack. A plan is not a Workspace domain; those stay.

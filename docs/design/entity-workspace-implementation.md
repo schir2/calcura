@@ -1,20 +1,21 @@
 # Entity Workspace — implementation guide (per-domain build-out)
 
-**Status: the migration is COMPLETE (2026-07-11).** All nine domains have a `WorkspaceForm.vue`,
-are registered in `EntityWorkspace`'s `formComponent` / `projectionComponent` switches, and are
-listed in `WORKSPACE_ENABLED_MODELS`. Create **and** edit route through the drawer for every
-domain, and the live preview works in create mode too (§3).
+**Status: the migration is COMPLETE (2026-07-11).** All nine domains have a `WorkspaceForm.vue`
+and are registered in `EntityWorkspace`'s `formComponent` / `projectionComponent` switches.
+Create **and** edit route through the drawer for every domain, and the live preview works in
+create mode too (§3).
 
 **There is no legacy modal fallback any more.** [ADR 012](../adr/012-retire-legacy-modal-form-stack.md)
 deleted the whole legacy stack — every `CreateForm.vue`, `UpdateForm.vue`, `List.vue`, and
-`TemplatePicker.vue` — once the enabled-model set became total over the `model_name` enum, which
-made the fallback branch unreachable. Passages below that describe the modal as a live path, or
-tell you to "leave" the TemplatePickers, are **historical** and no longer apply.
+`TemplatePicker.vue`, plus `ChildCreateButtonList.vue` and the `WORKSPACE_ENABLED_MODELS` list
+that used to select between drawer and modal. Passages below that describe the modal as a live
+path, mention that constant, or tell you to "leave" the TemplatePickers, are **historical** and
+no longer apply.
 
 This guide is now a reference for **adding a new domain**, not for converting existing ones.
-A new domain is not "done" until it has a `WorkspaceForm.vue`, a projection readout, both
-registered in `EntityWorkspace`, and its name in `WORKSPACE_ENABLED_MODELS` — there is nothing
-to fall back on if you skip a step.
+A new domain is not "done" until it has a `WorkspaceForm.vue` and a projection readout, **both
+registered in `EntityWorkspace`** — that registration is the only switch, and there is nothing
+to fall back on if you skip it.
 
 Read alongside: `CONTEXT.md` ("Entity Workspace", "Uniform Workspace across all domains",
 "Projection readout is per-domain", "Strategy-input control — Variant C", "Workspace input
@@ -117,19 +118,18 @@ passes `id ?? PREVIEW_TEMP_ID` (not `[]`) in create mode.
 3. **Register both in `common/EntityWorkspace.vue`** — add a `case '<domain>':` to the
    `formComponent` switch, and add a parallel `projectionComponent` switch (see §7 — this
    dispatch must be added; today the projection is hard-coded to investment).
-4. **Enable the slide-out for create + edit** — add `'<domain>'` to `WORKSPACE_ENABLED_MODELS`
-   in `stores/workspaceStore.ts`. Create entry points call `workspace.openCreate(name, plan_id)`
-   for enabled models; the Rich List Item's edit affordance calls `workspace.open('<domain>', id)`.
-   If you add a *new* create entry point, gate it the same way.
+4. **Wire the entry points.** Create calls `workspace.openCreate('<domain>', planId)`; the Rich
+   List Item's edit affordance calls `workspace.open('<domain>', id)`. Nothing else is needed —
+   step 3's registration is the only switch.
 
-   > **There is no fallback.** Before [ADR 012](../adr/012-retire-legacy-modal-form-stack.md) an
-   > un-enabled model fell back to a legacy `n-modal` + `CreateForm`. That stack is deleted. If you
-   > forget this step, create does nothing at all — it does not quietly open an old modal.
+   > **There is no fallback.** Before [ADR 012](../adr/012-retire-legacy-modal-form-stack.md), a
+   > `WORKSPACE_ENABLED_MODELS` list selected between the drawer and a legacy `n-modal` +
+   > `CreateForm`. Both the list and the modal are gone. If you skip step 3, the drawer opens and
+   > says the entity type has no workspace — it does not quietly open an old form.
 5. Leave the education panel as the shared placeholder (do not write real copy — #106).
 
-**Order note:** a domain isn't "done" until it's in `WORKSPACE_ENABLED_MODELS` **and** its
-`formComponent` / `projectionComponent` cases exist — otherwise create opens an empty drawer.
-Do those together.
+**Order note:** a domain isn't "done" until **both** its `formComponent` and `projectionComponent`
+cases exist — with one missing, the drawer opens half-empty. Do them together.
 
 **Templates:** `<domain>/TemplatePicker.vue` is gone (ADR 012). The `*_template` tables and
 `processTemplate()` are **kept**, but template selection has no UI until `openCreate` learns to

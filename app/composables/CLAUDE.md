@@ -9,7 +9,6 @@ composables/
 ├── useEventBus.ts          # Mitt event bus
 ├── useLoading.ts           # Loading bar state
 ├── useTitle.ts             # Page title helper
-├── useCrudForm.ts          # Form state management
 ├── useRepo.ts
 └── useCurrentTime.ts
 ```
