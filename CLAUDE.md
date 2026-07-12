@@ -103,7 +103,9 @@ Plans support four retirement triggers (defined in `types/Plan.ts`): age-based, 
 
 ### Component Organization
 
-Components under `components/` are grouped by domain (`brokerage/`, `debt/`, `income/`, `expense/`, `ira/`, `rothIra/`, `taxDeferred/`, `plan/`) plus `base/` for primitive inputs, `chart/` for visualizations, `common/` for shared UI, and `layout/` for structural chrome.
+Components under `components/` are grouped by domain (`brokerage/`, `cashReserve/`, `debt/`, `expense/`, `hsa/`, `income/`, `ira/`, `rothIra/`, `taxDeferred/`) plus `plan/` (incl. `plan/chart/` and `plan/overview/`), `base/` for primitives, `common/` for shared UI, `command/` for the simulation drawer, `landing/`, and `layout/` for structural chrome.
+
+Each domain owns exactly three components — `WorkspaceForm.vue`, `WorkspaceProjection.vue` (or it reuses `CommonEntityProjection`), and `ListItem.vue`. The legacy `CreateForm` / `UpdateForm` / `List` / `TemplatePicker` set was deleted; see [ADR 012](docs/adr/012-retire-legacy-modal-form-stack.md).
 
 ### Key Type Files
 

@@ -4,23 +4,27 @@
 
 ```
 components/
-├── base/           # Primitive input wrappers (BaseInput, BaseSelect, etc.)
-├── brokerage/      # Brokerage account components
-├── cash_reserve/   # Cash reserve components
-├── chart/          # Chart.js visualizations
-├── common/         # Shared UI (modals, cards, empty states)
-├── debt/           # Debt components
-├── expense/        # Expense components
-├── hsa/            # HSA components
-├── income/         # Income components
-├── ira/            # IRA components
-├── layout/         # Structural chrome (TheNavbar, TheSidebar)
-├── plan/           # Plan components (list, form, summary)
-├── roth_ira/       # Roth IRA components (snake_case dir name matches DB)
-├── rothIra/        # Roth IRA components (legacy name, migrate to roth_ira/)
-├── tax_deferred/   # Tax-deferred (401k) components
-└── taxDeferred/    # Tax-deferred (legacy name, migrate to tax_deferred/)
+├── base/           # Primitives (Ico, NumberSlider, Sparkline, ThemeSwitcher)
+├── command/        # Simulation drawer — sequence tabs + draggable command rows
+├── common/         # Shared UI — the Entity Workspace, Rich List Item, projections
+├── dashboard/      # Tool cards for the /dashboard hub
+├── landing/        # Public landing page
+├── layout/         # Structural chrome (TheNavbar, TheLeftSidebar)
+├── plan/           # Plan components + plan/chart/ and plan/overview/
+├── profile/        # Profile form
+│
+├── brokerage/      # ─┐
+├── cashReserve/    #  │
+├── debt/           #  │
+├── expense/        #  │  the nine domains — each owns exactly:
+├── hsa/            #  ├─ WorkspaceForm.vue
+├── income/         #  │  WorkspaceProjection.vue (or reuses CommonEntityProjection)
+├── ira/            #  │  ListItem.vue
+├── rothIra/        #  │
+└── taxDeferred/    # ─┘
 ```
+
+Domain directory names are **camelCase** (`cashReserve/`, `rothIra/`, `taxDeferred/`) even though the DB tables are snake_case. There is no snake_case variant — do not create one.
 
 ## Component rules
 

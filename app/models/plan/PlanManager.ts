@@ -74,6 +74,10 @@ export default class PlanManager extends BaseOrchestrator<PlanWithRelations, Orc
         return this.config.roth_iras.reduce((total, rothIra) => total + rothIra.initial_balance, 0)
     }
 
+    getCashReserveInitial(): number {
+        return this.config.cash_reserves.reduce((total, cashReserve) => total + cashReserve.initial_amount, 0)
+    }
+
     getDebtInitial(): number {
         return this.config.debts.reduce((total, debt) => total + debt.principal, 0)
     }
@@ -88,6 +92,7 @@ export default class PlanManager extends BaseOrchestrator<PlanWithRelations, Orc
         const savingsTaxableInitial = this.getSavingsTaxableInitial()
         const savingsTaxExemptInitial = this.getSavingsTaxExemptInitial()
         const savingsTaxDeferredInitial = this.getSavingsTaxDeferredInitial()
+        const cashReserveInitial = this.getCashReserveInitial()
         const debtInitial = this.getDebtInitial()
         return {
             processed: false,
@@ -148,8 +153,8 @@ export default class PlanManager extends BaseOrchestrator<PlanWithRelations, Orc
                 cash_reserve: {
                     contribution: 0,
                     contribution_lifetime: 0,
-                    balance_start: 0,
-                    balance_end: 0,
+                    balance_start: cashReserveInitial,
+                    balance_end: cashReserveInitial,
                 },
             },
 

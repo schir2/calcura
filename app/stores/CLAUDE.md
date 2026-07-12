@@ -49,7 +49,7 @@ The drawer resolves the domain's `WorkspaceForm.vue` and projection readout itse
 
 **Out of scope:** plan create/edit (local `showModal` ref — a plan is not a Workspace domain) and one-off UI modals like the profile prompt.
 
-> `modalStore.ts` — the old single-CRUD-modal slot — is superseded by the Workspace and is being removed with the rest of the legacy stack (ADR 012).
+> `modalStore.ts` — the old single-CRUD-modal slot — was deleted with the rest of the legacy stack (ADR 012). The Workspace replaces it.
 
 ## Auth store rules
 
