@@ -8,7 +8,7 @@ import eventBus from "~/utils/eventBus";
 import {ContributionType} from "#shared/types/ContributionType";
 import {IRA_CONTRIBUTION_LIMIT_2024} from "~/constants/IraConstants";
 
-export class IraIManager extends BaseManager<Ira, IraState> {
+export class IraManager extends BaseManager<Ira, IraState> {
 
 
     protected createInitialState(): IraState {

@@ -25,7 +25,7 @@
 ## Areas That Could Use More Attention
 
 1. **De-Duplicate Growth Logic**
-    - Different investment managers (`IraIManager`, `TaxDeferredManager`, etc.) share a near-identical flow for contributions and growth.
+    - Different investment managers (`IraManager`, `TaxDeferredManager`, etc.) share a near-identical flow for contributions and growth.
     - If this pattern expands in the future, consider consolidating it in a shared helper or base class method to prevent any drift or copy/paste errors.
 
 2. **Infinity-Based Contributions**

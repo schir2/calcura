@@ -1,5 +1,5 @@
 import {beforeEach, describe, expect, it} from "vitest";
-import {IraIManager} from "~/models/ira/IraIManager";
+import {IraManager} from "~/models/ira/IraIManager";
 import PlanManager from "~/models/plan/PlanManager";
 import type {PlanWithRelations as Plan} from "#shared/types/Plan";
 
@@ -69,7 +69,7 @@ const planConfig: Plan = {
 }
 
 let planManager: PlanManager;
-let iraManager: IraIManager;
+let iraManager: IraManager;
 
 describe("IraManager", () => {
     beforeEach(() => {

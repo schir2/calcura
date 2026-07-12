@@ -12,7 +12,7 @@ import {
 import {IncomeManager} from "~/models/income/IncomeManager";
 import {BrokerageManager} from "~/models/brokerage/BrokerageManager";
 import {ExpenseManager} from "~/models/expense/ExpenseManager";
-import {IraIManager} from "~/models/ira/IraIManager";
+import {IraManager} from "~/models/ira/IraManager";
 import {CashReserveManager} from "~/models/cashReserve/CashReserveManager";
 import {TaxDeferredManager} from "~/models/taxDeferred/TaxDeferredManager";
 import {BaseOrchestrator} from "~/models/common/BaseOrchestrator";
@@ -38,7 +38,7 @@ export type PlanManagers = {
     income: IncomeManager[];
     tax_deferred: TaxDeferredManager[];
     roth_ira: RothIraManager[];
-    ira: IraIManager[];
+    ira: IraManager[];
     brokerage: BrokerageManager[];
     hsa: HsaManager[];
 }
@@ -53,7 +53,7 @@ export default class PlanManager extends BaseOrchestrator<PlanWithRelations, Orc
             expense: this.config.expenses.map((expense) => new ExpenseManager(this, expense)),
             debt: this.config.debts.map((debt) => new DebtManager(this, debt)),
             brokerage: this.config.brokerages.map((brokerage) => new BrokerageManager(this, brokerage)),
-            ira: this.config.iras.map((ira) => new IraIManager(this, ira)),
+            ira: this.config.iras.map((ira) => new IraManager(this, ira)),
             roth_ira: this.config.roth_iras.map((rothIra) => new RothIraManager(this, rothIra)),
             tax_deferred: this.config.tax_deferreds.map((taxDeferred) => new TaxDeferredManager(this, taxDeferred)),
             hsa: this.config.hsas.map((hsa) => new HsaManager(this, hsa)),
