@@ -12,7 +12,7 @@
     "postinstall": "nuxt prepare",
     "supabase:types": "npx supabase gen types typescript --local > shared/types/database.types.ts",
     "supabase:start": "npx supabase start",
-    "supabase:link": "npx supabase link --project-ref iamuakanurjqjtmgketa",
+    "supabase:link": "npx supabase link --project-ref nunhhchnxyreoflgxxdd",
     "test:db": "npx supabase test db"
   },
   "dependencies": {
