@@ -56,6 +56,14 @@ export default {
                 '15': 'repeat(15, minmax(0, 1fr))',
             },
 
+            // Font stack — the same declared stack NaiveUI gets via buildNaiveCommon(),
+            // so the two systems resolve to one family instead of ui-sans-serif vs v-sans.
+            // No webfont is loaded; the stack is declared, not fetched. See ADR 013.
+            fontFamily: {
+                sans: 'var(--font-sans)',
+                mono: 'var(--font-mono)',
+            },
+
             // Radius scale — tokens in app/theme/palette.ts, emitted as CSS vars.
             // rounded / rounded-sm / rounded-lg ... resolve to the tokens; 'full'
             // and 'none' stay as-is. See docs/design-system.md, ADR 008.
@@ -207,6 +215,36 @@ export default {
         forms,
         typography,
         aspectRatio,
+        // Type scale — one utility per semantic role, built from the vars emitted by
+        // typeTokens in app/theme/palette.ts. Each carries size + weight + tracking +
+        // leading together, so a component writes `text-title`, never `text-2xl
+        // font-semibold tracking-tight`. See ADR 013 and docs/design-system.md.
+        //
+        // These are utilities rather than `theme.fontSize` entries because fontSize
+        // cannot express text-transform (eyebrow) or font-variant-numeric (metric),
+        // and ADR 013 requires those to live in the token, not at the call site.
+        function (api: PluginAPI) {
+            const {addUtilities} = api;
+            const role = (name: string, extra: Record<string, string> = {}) => ({
+                [`.text-${name}`]: {
+                    'font-size': `var(--fs-${name})`,
+                    'font-weight': `var(--fw-${name})`,
+                    'letter-spacing': `var(--ls-${name})`,
+                    'line-height': `var(--lh-${name})`,
+                    ...extra,
+                },
+            });
+            addUtilities({
+                ...role('display'),
+                ...role('title'),
+                ...role('heading'),
+                ...role('body'),
+                // Money must not shift as values update — tabular figures ride the role.
+                ...role('metric', {'font-variant-numeric': 'tabular-nums'}),
+                ...role('caption'),
+                ...role('eyebrow', {'text-transform': 'uppercase'}),
+            });
+        },
         function (api: PluginAPI) {
             const {addUtilities} = api;
             addUtilities({

@@ -16,7 +16,7 @@ export function taxDeferredRules(modelRef: Ref<Partial<TaxDeferred>>) {
         return true;
     }
 
-    function validateIncome(rule: FormItemRule, value: string | undefined) {
+    function validateIncome(rule: FormItemRule, value: number | undefined) {
         if (modelRef.value.elective_contribution_strategy === 'percentage_of_income' && (value === null || value === undefined)) {
             return new Error("Income is required for Percentage of Income Contribution Strategy");
         }
@@ -47,7 +47,7 @@ export function taxDeferredRules(modelRef: Ref<Partial<TaxDeferred>>) {
             {min: MIN_NAME_LENGTH, message: `Name must be at least ${MIN_NAME_LENGTH} characters long`, trigger: ["blur", "change"]},
             {max: MAX_NAME_LENGTH, message: `Name must be at most ${MAX_NAME_LENGTH} characters long`, trigger: ["blur", "change"]}
         ],
-        income: [
+        income_id: [
             {validator: validateIncome, trigger: ["blur", "change"]},
         ],
         growth_rate: [

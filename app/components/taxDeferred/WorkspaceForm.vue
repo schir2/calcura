@@ -127,7 +127,9 @@ function handleSubmit() {
 
     <div v-if="showIncome" class="mt-3">
       <div class="text-sm font-medium text-skin-base mb-2">Funded from income</div>
-      <income-selector :incomes="incomeStore.list" v-model="model.income_id"/>
+      <n-form-item path="income_id" :show-label="false">
+        <income-selector :incomes="incomeStore.list" v-model="model.income_id"/>
+      </n-form-item>
     </div>
 
     <div class="flex items-center justify-between mt-5 mb-2">

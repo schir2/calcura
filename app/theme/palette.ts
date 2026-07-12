@@ -228,16 +228,57 @@ export const elevationTokens: ScaleTokens = {
     'elevation-3': '0 6px 16px -9px rgba(0, 0, 0, .08), 0 9px 28px 0 rgba(0, 0, 0, .05), 0 12px 48px 16px rgba(0, 0, 0, .03)',
 }
 
+/*
+ * Type scale — seven semantic roles named for the job the text does, not its size.
+ * Like radius and elevation (and unlike color), type is not run through NaiveUI's
+ * seemly color-math, so it needs no light/dark split — one scale into :root suffices.
+ *
+ * Each role bundles size + weight + tracking + leading, so a component picks ONE class
+ * (`text-title`) rather than assembling `text-2xl font-semibold tracking-tight`. The
+ * `text-<role>` utilities are built from these vars in tailwind.config.ts; `metric` also
+ * carries tabular figures and `eyebrow` uppercases — properties Tailwind's `fontSize`
+ * theme key cannot express, which is why the roles are utilities, not fontSize entries.
+ *
+ * See ADR 013 and docs/design-system.md. Never hand-roll text-2xl / font-semibold.
+ */
+export const typeTokens: ScaleTokens = {
+    // Page titles, verdict hero
+    'fs-display': '36px', 'fw-display': '700', 'ls-display': '-0.02em', 'lh-display': '1.15',
+    // Dialog + card titles
+    'fs-title': '24px', 'fw-title': '600', 'ls-title': '-0.01em', 'lh-title': '1.25',
+    // Section headers
+    'fs-heading': '18px', 'fw-heading': '600', 'ls-heading': '0', 'lh-heading': '1.35',
+    // Default copy. NaiveUI is moved up to match this from its 14px default (ADR 013).
+    'fs-body': '16px', 'fw-body': '400', 'ls-body': '0', 'lh-body': '1.55',
+    // Projection headline values. Tabular figures so money never jitters as it updates.
+    'fs-metric': '30px', 'fw-metric': '600', 'ls-metric': '-0.01em', 'lh-metric': '1.2',
+    // Helper text, empty states
+    'fs-caption': '12px', 'fw-caption': '400', 'ls-caption': '0', 'lh-caption': '1.45',
+    // Overlines. Replaces both text-[10px] and text-[11px] — one role, one size.
+    'fs-eyebrow': '11px', 'fw-eyebrow': '600', 'ls-eyebrow': '0.08em', 'lh-eyebrow': '1.4',
+}
+
+/*
+ * The font stack, declared rather than loaded — no webfont, no @font-face, no payload.
+ * Naming it is what lets NaiveUI (which otherwise leads with `v-sans`, a face that has no
+ * @font-face and never resolves) and Tailwind (`ui-sans-serif`) agree on one stack.
+ * Wiring it into both consumers is ADR 013 / issue #139.
+ */
+export const fontFamilyTokens: ScaleTokens = {
+    'font-sans': 'system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif',
+    'font-mono': 'ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace',
+}
+
 /** Wrap a triplet/quad token value as a literal CSS color for NaiveUI (seemly-safe). */
 function toColor(value: string): string {
     return value.split(',').length === 4 ? `rgba(${value})` : `rgb(${value})`
 }
 
-/** Emit the CSS custom properties (colors for both modes; radius + elevation once). */
+/** Emit the CSS custom properties (colors for both modes; radius, elevation + type once). */
 export function buildThemeCss(): string {
     const toVars = (tokens: Record<string, string>) =>
         Object.entries(tokens).map(([name, value]) => `--${name}:${value};`).join('')
-    const scales = toVars(radiusTokens) + toVars(elevationTokens)
+    const scales = toVars(radiusTokens) + toVars(elevationTokens) + toVars(typeTokens) + toVars(fontFamilyTokens)
     return `:root{${toVars(lightColorTokens)}${scales}}html.dark{${toVars(darkColorTokens)}}`
 }
 
@@ -290,5 +331,25 @@ export function buildNaiveCommon(tokens: ColorTokens) {
         // the Tailwind rounded-* utilities (literal values; var() is not seemly-safe).
         borderRadius: radiusTokens['radius'],
         borderRadiusSmall: radiusTokens['radius-sm'],
+
+        // Type parity (ADR 013). NaiveUI defaults to a 14px base and a `v-sans` stack that
+        // has no @font-face and never resolves; Tailwind runs at 16px on ui-sans-serif.
+        // Two base sizes and two stacks, with nothing reconciling them. These four keys do.
+        //
+        // `fontSize` moves general text and ALL n-card content — the card theme derives
+        // every one of its size variants from this single key. That is the mismatch ADR 013
+        // names: text in an n-card vs. text in a sibling <p>.
+        //
+        // DELIBERATELY NOT SET: fontSizeMini/Tiny/Small/Medium/Large/Huge. n-button, n-input
+        // and n-data-table read only those, so controls and the Report table stay at
+        // NaiveUI's 14px — denser than body copy, which is the convention we want and keeps
+        // the ~360px Workspace drawer column (see ADR 011) from re-breaking. Raise them only
+        // as a deliberate, separately-verified change.
+        fontSize: typeTokens['fs-body'],
+        fontFamily: fontFamilyTokens['font-sans'],
+        fontFamilyMono: fontFamilyTokens['font-mono'],
+        // NaiveUI's "strong" is 500; our heading/title roles are 600. This aligns n-card
+        // titles and <n-button strong> with the type scale.
+        fontWeightStrong: typeTokens['fw-heading'],
     }
 }

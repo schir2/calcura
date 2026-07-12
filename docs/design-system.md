@@ -83,7 +83,9 @@ A scale of **seven semantic roles**, defined in `app/theme/palette.ts` (`typeTok
 
 `metric` carries `tabular-nums` **in the token** — money must not jitter as values change, so this is never a per-call-site decision.
 
-**Base size is 16px**, and NaiveUI is moved up to match via `common.fontSize` (its default is 14px). The font family is the **system stack, declared explicitly** in `buildNaiveCommon()` — no webfont is loaded; the stack is merely *named* so NaiveUI and Tailwind stop resolving to different ones.
+**Base size is 16px**, and NaiveUI is moved up to match via `common.fontSize` (its default is 14px). This also resizes all `n-card` content, which is the mismatch that motivated it — card text and a sibling `<p>` were different sizes. **Controls stay at 14px on purpose** (see the note under the mapping table).
+
+The font family is the **system stack, declared explicitly** — no webfont is loaded; the stack is merely *named*, in `buildNaiveCommon()` for NaiveUI and as `fontFamily.sans` for Tailwind, so both resolve to one stack instead of NaiveUI's `v-sans` (which has no `@font-face` and never resolved) versus Tailwind's `ui-sans-serif`.
 
 > Spacing is **not** tokenized here — use Tailwind's built-in spacing scale (`gap-*`, `p-*`, `m-*`) for layout.
 
@@ -106,8 +108,11 @@ A scale of **seven semantic roles**, defined in `app/theme/palette.ts` (`typeTok
 | `cardColor` / `modalColor` / `popoverColor` / `tableColor` | `bg-surface` |
 | `borderColor` / `dividerColor` | `border-base` / `border-muted` |
 | `borderRadius` / `borderRadiusSmall` | `radius` / `radius-sm` (from `radiusTokens`) |
-| `fontSize` | `body` size (from `typeTokens`) — moves NaiveUI off its 14px default |
-| `fontFamily` | the declared system stack (from `typeTokens`) |
+| `fontSize` | `fs-body` (from `typeTokens`) — moves NaiveUI off its 14px default. Also moves **all `n-card` content**: the card theme derives every one of its size variants from this single key. |
+| `fontWeightStrong` | `fw-heading` (600) — NaiveUI's default is 500. Aligns `n-card` titles and `<n-button strong>` with the type scale. |
+| `fontFamily` / `fontFamilyMono` | the declared stacks (from `fontFamilyTokens`) |
+
+> **Deliberately not overridden: `fontSizeMini/Tiny/Small/Medium/Large/Huge`.** `n-button`, `n-input`, and `n-data-table` read *only* those keys, so controls and the Report table stay at NaiveUI's 14px — denser than body copy, which is the convention we want, and which keeps the ~360px Workspace drawer column (see [ADR 011](adr/011-strategy-input-stacked-rows.md)) from re-breaking. Raising them is a separate, separately-verified change.
 
 To extend NaiveUI coverage, add the key to `buildNaiveCommon()` pointing at a palette token.
 
