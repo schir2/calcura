@@ -681,7 +681,7 @@ describe("PlanManager", () => {
             expect(retiredStates.every(state => state.liabilities.expense.shortfall <= 0.01)).toBe(true)
         });
 
-        it("does not throw when every contribution manager runs into retirement under 'full' (#103)", () => {
+        it("does not throw when every contribution manager runs into retirement (#103)", () => {
             const config = {
                 ...planConfig,
                 age: 60, retirement_age: 61, life_expectancy: 65, retirement_strategy: 'age',

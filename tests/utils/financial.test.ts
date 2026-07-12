@@ -1,5 +1,5 @@
 import {describe, expect, it} from 'vitest';
-import {adjustForInsufficientFunds, calculateCompoundInterest, calculateGrowthAmount, getAnnualAmount} from '@/utils/financial';
+import {calculateCompoundInterest, calculateGrowthAmount, getAnnualAmount} from '@/utils/financial';
 import type {Frequency} from "#shared/types/Frequency";
 
 describe('financialUtils', () => {
@@ -79,44 +79,6 @@ describe('financialUtils', () => {
         });
     });
 
-    describe('adjustForInsufficientFunds', () => {
-        it('returns the minimum of contribution and disposable income for "none"', () => {
-            const result = adjustForInsufficientFunds(
-                500,
-                300,
-                'none',
-            );
-            expect(result).toBe(300);
-        });
-
-        it('returns the minimum of contribution and disposable income for "minimum_only"', () => {
-            const result = adjustForInsufficientFunds(
-                500,
-                300,
-                'minimum_only',
-            );
-            expect(result).toBe(300);
-        });
-
-        it('returns the full contribution for "full"', () => {
-            const result = adjustForInsufficientFunds(
-                500,
-                300,
-                'full',
-            );
-            expect(result).toBe(500);
-        });
-
-        it('throws an error for an invalid insufficientFundsStrategy value', () => {
-            expect(() =>
-                adjustForInsufficientFunds(
-                    500,
-                    300,
-                    'invalid' as any,
-                )
-            ).toThrow('Invalid insufficientFundsStrategy value: invalid');
-        });
-    });
     describe('getAnnualAmount', () => {
         it('should calculate annual amount for Monthly frequency', () => {
             expect(getAnnualAmount(100, 'monthly')).toBe(1200);

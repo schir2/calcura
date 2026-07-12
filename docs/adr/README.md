@@ -18,6 +18,9 @@ understand *why* the codebase is shaped the way it is.
 | [008](008-design-tokens-tailwind-source-of-truth.md) | Design tokens: palette.ts as single source of truth | Accepted |
 | [009](009-two-command-decumulation.md) | Retirement decumulation is command-driven, per-bucket taxed | Accepted |
 | [010](010-hsa-not-income-linked.md) | HSA is not income-linked; health-insurance modeling deferred | Accepted |
+| [011](011-strategy-input-stacked-rows.md) | Strategy input: stacked rows with inline reveal, over side-by-side cards | Accepted |
+| [012](012-retire-legacy-modal-form-stack.md) | Retire the legacy modal-form stack; the Entity Workspace is the only editing surface | Accepted |
+| [013](013-typography-design-tokens.md) | Typography design tokens in palette.ts (extends 008) | Accepted |
 
 ## Format
 

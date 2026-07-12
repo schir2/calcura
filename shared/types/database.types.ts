@@ -881,7 +881,6 @@ export type Database = {
           growth_rate: number
           id: number
           inflation_rate: number
-          insufficient_funds_strategy: Database["public"]["Enums"]["insufficient_funds_strategy"]
           life_expectancy: number
           name: string
           retirement_age: number
@@ -906,7 +905,6 @@ export type Database = {
           growth_rate: number
           id?: never
           inflation_rate: number
-          insufficient_funds_strategy?: Database["public"]["Enums"]["insufficient_funds_strategy"]
           life_expectancy: number
           name: string
           retirement_age?: number
@@ -931,7 +929,6 @@ export type Database = {
           growth_rate?: number
           id?: never
           inflation_rate?: number
-          insufficient_funds_strategy?: Database["public"]["Enums"]["insufficient_funds_strategy"]
           life_expectancy?: number
           name?: string
           retirement_age?: number
@@ -958,7 +955,6 @@ export type Database = {
           editor_id: string | null
           id: number
           inflation_rate: number | null
-          insufficient_funds_strategy: Database["public"]["Enums"]["insufficient_funds_strategy"]
           name: string
           year: number | null
         }
@@ -971,7 +967,6 @@ export type Database = {
           editor_id?: string | null
           id?: never
           inflation_rate?: number | null
-          insufficient_funds_strategy?: Database["public"]["Enums"]["insufficient_funds_strategy"]
           name: string
           year?: number | null
         }
@@ -984,7 +979,6 @@ export type Database = {
           editor_id?: string | null
           id?: never
           inflation_rate?: number | null
-          insufficient_funds_strategy?: Database["public"]["Enums"]["insufficient_funds_strategy"]
           name?: string
           year?: number | null
         }
@@ -1334,7 +1328,6 @@ export type Database = {
       growth_application_strategy: "start" | "end"
       income_tax_strategy: "simple"
       income_type: "ordinary"
-      insufficient_funds_strategy: "none" | "minimum_only" | "full"
       ira_contribution_strategy: "fixed" | "percentage_of_income" | "max"
       model_name:
         | "brokerage"
@@ -1515,7 +1508,6 @@ export const Constants = {
       growth_application_strategy: ["start", "end"],
       income_tax_strategy: ["simple"],
       income_type: ["ordinary"],
-      insufficient_funds_strategy: ["none", "minimum_only", "full"],
       ira_contribution_strategy: ["fixed", "percentage_of_income", "max"],
       model_name: [
         "brokerage",

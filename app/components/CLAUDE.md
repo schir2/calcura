@@ -26,8 +26,19 @@ components/
 
 ### Naming
 - Domain component directories should match the DB table name (snake_case plural): `income/`, `expense/`, `debt/`, `brokerage/`, etc.
-- Component files use PascalCase: `IncomeForm.vue`, `DebtList.vue`
-- One responsibility per component — list, form, card, and detail are separate components
+- Component files use PascalCase: `WorkspaceForm.vue`, `WorkspaceProjection.vue`, `ListItem.vue`
+- One responsibility per component
+
+### The per-domain component set
+Since [ADR 012](../../docs/adr/012-retire-legacy-modal-form-stack.md), a domain owns exactly three components. The legacy `CreateForm` / `UpdateForm` / `List` / `TemplatePicker` set is **deleted** — do not recreate it.
+
+| Component | Role |
+|---|---|
+| `WorkspaceForm.vue` | The settings form, left pane of the Entity Workspace drawer. Handles create **and** edit as modes of one component. |
+| `WorkspaceProjection.vue` | The domain's live projection readout, right pane. (Growth investments may reuse `CommonEntityProjection` instead.) |
+| `ListItem.vue` | The domain's Rich List Item row in the simulation drawer. Its edit affordance opens the Workspace. |
+
+Both Workspace components must be registered in `common/EntityWorkspace.vue`, and the domain must be listed in `WORKSPACE_ENABLED_MODELS`.
 
 ### Data handling
 - Components receive data via props — they do not call Supabase directly

@@ -23,33 +23,33 @@ export const useXxxStore = defineStore('xxx', () => {
 
 | File | Purpose |
 |------|---------|
+| File | Purpose |
+|------|---------|
 | `authStore.ts` | Supabase session + user; exposes login/logout/register |
 | `themeStore.ts` | UI theme preference |
-| `modalStore.ts` | Single active modal slot — `open(action, model, payload)`, `close()`, `payloadFor(action, model)` |
+| `workspaceStore.ts` | The open Entity Workspace — `openCreate(model, planId)`, `open(model, id)`, `close()`, plus `WORKSPACE_ENABLED_MODELS` |
 
 Domain data stores (income, expense, debt, etc.) live here too, each created via `modelStoreFactory`.
 
-## Modal store
+## Workspace store
 
-`useModalStore` manages one active CRUD modal at a time. Pages render modals conditionally based on `modal.action` and `modal.model`; components deep in the tree trigger them via `modal.open(...)` with no event bubbling.
+`useWorkspaceStore` owns the **Entity Workspace** drawer — the single surface for creating or editing any plan entity. Components anywhere in the tree summon it directly; no event bubbling to the page, and no per-domain form in the page template.
 
 ```typescript
-// Trigger from any component
-modal.open('create', 'income', { plan_id: 42 })
-modal.open('edit',   'income', { id: 7 })
-modal.open('delete', 'income', { model: 'income', id: 7, label: 'Salary' })
+const workspace = useWorkspaceStore()
 
-// Render in page
-<IncomeCreateForm
-  v-if="modal.action === 'create' && modal.model === 'income'"
-  :plan_id="modal.payloadFor('create', 'income')!.plan_id"
-  @close="modal.close()"
-/>
+workspace.openCreate('income', planId)   // create — no id yet
+workspace.open('income', incomeId)       // edit — mode derives from the id
+workspace.close()
 ```
 
-`payloadFor(action, model)` returns the correctly typed payload or `null` — use it instead of casting `modal.payload` directly.
+The drawer resolves the domain's `WorkspaceForm.vue` and projection readout itself. `mode` is computed from whether an `id` is present, so callers never set it.
 
-**Out of scope for modal store:** template picker modals (use popovers), plan create (local `showModal` ref — no `plan_id` parent), and one-off UI modals like the profile prompt.
+`WORKSPACE_ENABLED_MODELS` lists the domains the drawer can handle. It is currently **total** over the `model_name` enum — every domain is enabled. A domain missing from it cannot be created at all; there is no modal fallback (see [ADR 012](../../docs/adr/012-retire-legacy-modal-form-stack.md)).
+
+**Out of scope:** plan create/edit (local `showModal` ref — a plan is not a Workspace domain) and one-off UI modals like the profile prompt.
+
+> `modalStore.ts` — the old single-CRUD-modal slot — is superseded by the Workspace and is being removed with the rest of the legacy stack (ADR 012).
 
 ## Auth store rules
 
@@ -68,4 +68,4 @@ modal.open('delete', 'income', { model: 'income', id: 7, label: 'Salary' })
 
 ## Adding a new store
 
-Domain data stores are created via `modelStoreFactory`. Only reach for a manual `defineStore` for cross-cutting state that doesn't map to a DB table (e.g., `authStore`, `themeStore`, `useModalStore`).
+Domain data stores are created via `modelStoreFactory`. Only reach for a manual `defineStore` for cross-cutting state that doesn't map to a DB table (e.g., `authStore`, `themeStore`, `useWorkspaceStore`).

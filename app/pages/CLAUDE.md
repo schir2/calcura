@@ -43,27 +43,30 @@ onMounted(() => incomeStore.fetchAll())
 
 Do not call `useSupabaseClient()` directly in pages, and do not use the legacy `useXxxService()` composables — those are being removed in favour of stores.
 
-## Modal management
+## Entity create / edit — the Workspace drawer
 
-Pages own modal rendering. Use `useModalStore` to conditionally show domain CRUD modals:
+**Domain entities are never edited in a modal.** Creating or editing any plan entity (income,
+expense, debt, brokerage, IRA, Roth, 401k, HSA, cash reserve) opens the shared **Entity Workspace**
+drawer. See [ADR 012](../../docs/adr/012-retire-legacy-modal-form-stack.md).
 
-```vue
-<script lang="ts" setup>
-const modal = useModalStore()
-</script>
+Pages render the drawer once; any component can summon it through `useWorkspaceStore()`:
 
-<template>
-  <IncomeCreateForm
-    v-if="modal.action === 'create' && modal.model === 'income'"
-    :plan_id="modal.payloadFor('create', 'income')!.plan_id"
-    @close="modal.close()"
-  />
-</template>
+```ts
+const workspace = useWorkspaceStore()
+
+workspace.openCreate('income', planId)   // create
+workspace.open('income', incomeId)       // edit
 ```
 
-Components trigger modals via `modal.open(action, model, payload)` — no emit bubbling up to the page required. See `app/stores/CLAUDE.md` for the full modal store API.
+No emit bubbling to the page, and no per-domain form component in the page template. The drawer
+resolves the domain's `WorkspaceForm.vue` and projection readout itself.
 
-**Exception:** plan create and one-off UI modals (e.g. profile prompt) stay as local `showModal` refs — the modal store is for domain CRUD only.
+There is **no modal fallback**. A domain missing from `WORKSPACE_ENABLED_MODELS` simply cannot be
+created — it does not quietly open an old form. See
+`docs/design/entity-workspace-implementation.md`.
+
+**Exception:** plan create/edit and one-off UI modals (e.g. the profile prompt) stay as local
+`showModal` refs. A plan is not a Workspace domain.
 
 ## Page structure pattern
 

@@ -8,11 +8,14 @@ Typed objects (e.g. `taxDeferredDefaults: TaxDeferredInsert`) that pre-fill a cr
 ### Templates
 User-selectable starting points stored in Supabase (`*_template` tables). When a template is selected, `processTemplate()` merges its values over the form defaults — template wins, defaults fill gaps. Templates are above defaults in the hierarchy: Template → Default → nothing.
 
-### Create Form
-A form component typed against the domain's Supabase `*Insert` type. Emits `create: [insert: *Insert]`. Has no `id`. Corresponds to `CreateForm.vue` per domain.
+**Status: dormant, not dropped.** Their only UI was `<domain>/TemplatePicker.vue`, which was already unreachable and is deleted by [ADR 012](docs/adr/012-retire-legacy-modal-form-stack.md). The tables and `processTemplate()` are **kept**. Restoring template selection inside the [[Entity Workspace]] needs the workspace store's create action to accept seed values (`openCreate(model, planId, seed?)`), which does not exist yet — that is the tracked follow-up. Nothing was lost when the pickers went; the capability had not been reachable for some time.
 
-### Edit Form
-A form component that receives a full entity (with `id`) as a prop. Emits `update: [id: number, update: *Update]`. The `id` comes from `props.entity.id`, never from form model state. Corresponds to `EditForm.vue` per domain.
+### Create Form / Edit Form — **superseded**
+Formerly `CreateForm.vue` / `EditForm.vue` per domain, reached from a modal. **Retired by [ADR 012](docs/adr/012-retire-legacy-modal-form-stack.md)** — the whole legacy modal stack was deleted once the [[Entity Workspace]] migration completed and every domain landed a `WorkspaceForm.vue`.
+
+The canonical form component is now **`<domain>/WorkspaceForm.vue`**, rendered in the Workspace drawer. It still distinguishes create from edit — create has no `id` and emits an `*Insert`; edit receives the entity and emits `update: [id, *Update]`, with the `id` taken from the entity, never from form model state — but the split is a **mode**, not two component files.
+
+The plan entity keeps its own `CreateForm.vue` / `UpdateForm.vue`: a plan is not a Workspace domain.
 
 ### `useCrudForm`
 Composable that manages form state and validation only. Returns `{ formRef, modelRef, rules, validate }`. Does not own emit logic — that lives in the form component. Generic over whatever Supabase type the caller passes (`*Insert` for create, full entity for edit).
@@ -20,16 +23,23 @@ Composable that manages form state and validation only. Returns `{ formRef, mode
 ## Glossary — Design System
 
 ### Design token
-A named, reusable styling value (a color, radius, or elevation) defined once and referenced everywhere. In this app, tokens are CSS custom properties in `app/assets/css/tailwind.css` — the single source of truth. See [ADR 008](docs/adr/008-design-tokens-tailwind-source-of-truth.md) and [docs/design-system.md](docs/design-system.md).
+A named, reusable styling value — a color, a type role, a radius, or an elevation — defined once and referenced everywhere. **The single source of truth is `app/theme/palette.ts`**, a TypeScript module, *not* a CSS file. From it, `buildThemeCss()` emits the CSS custom properties (consumed by Tailwind) and `buildNaiveCommon()` emits **literal** values (consumed by NaiveUI, which cannot parse `var()`). One edit moves both consumers. See [ADR 008](docs/adr/008-design-tokens-tailwind-source-of-truth.md) (color, radius, elevation) and [ADR 013](docs/adr/013-typography-design-tokens.md) (type), plus [docs/design-system.md](docs/design-system.md).
+
+`app/assets/css/tailwind.css` contains **no** token definitions — the vars are injected at runtime from `app.vue`. Do not add tokens there.
 
 ### Skin token
-The public Tailwind API over the color tokens: `bg-skin-*`, `text-skin-*`, `border-skin-*`, `ring-skin-*`, `fill-skin-*`. Each resolves to a CSS var via the `withOpacity()` helper. Components use skin tokens, never raw Tailwind colors (`text-red-500`, `text-white`).
+The public Tailwind API over the **color** tokens: `bg-skin-*`, `text-skin-*`, `border-skin-*`, `ring-skin-*`, `fill-skin-*`. Each resolves to a CSS var via the `withOpacity()` helper. Components use skin tokens, never raw Tailwind colors (`text-red-500`, `text-white`).
+
+**`skin` is colour-only.** `text-skin-muted` is a *color*, never a size — type has its own role tokens (see [[Type role]]). There is deliberately no `text-skin-title`.
 
 ### Semantic color role
 A token named for its *meaning*, not its hue: `primary`, `secondary`, `error`, `success`, `warning`, `info`, `base`, `muted`, `surface`. Styling references the role so recoloring the brand is one var edit.
 
+### Type role
+The typography equivalent of a [[Semantic color role]] — a token named for the *job the text does*, not its size: `display`, `title`, `heading`, `body`, `metric`, `caption`, `eyebrow`. Each carries size, weight, and letter-spacing together (and `metric` carries `tabular-nums`, so figures never jitter). Components pick the role; they never hand-roll `text-2xl` / `font-semibold`. Base size is **16px**, with NaiveUI moved up to match from its 14px default. Defined in `palette.ts` as `typeTokens`. See [ADR 013](docs/adr/013-typography-design-tokens.md).
+
 ### Brand palette
-The concrete color values currently assigned to the semantic roles. Lives entirely in `tailwind.css`. Initially seeded from NaiveUI's default theme, then evolved independently. NaiveUI is pointed *at* the palette (downstream), not the source of it.
+The concrete color values currently assigned to the semantic roles. Lives in `app/theme/palette.ts`. Initially seeded from NaiveUI's default theme, then evolved independently. NaiveUI is pointed *at* the palette (downstream), not the source of it.
 
 ## Naming Conventions
 
@@ -311,8 +321,10 @@ IRS contribution limits, domain-specific ranges (e.g. `MAX_INTEREST_RATE`, `MAX_
 ### `*defaults` objects belong in `constants/`, not `types/`
 `types/` files contain only types (`Tables<>`, `*Insert`, `*Update`, union aliases). Form defaults (`*defaults`) move to the domain constants file so all configuration for a domain is co-located and `types/` stays clean. The typed `*Insert` annotation on each defaults object is preserved — constants files import the type from `types/`.
 
-### Create and Edit forms are separate components
-The single `Form.vue` with `mode: 'create' | 'edit' | 'view'` prop is replaced by `CreateForm.vue` and `EditForm.vue` per domain. Tracked in issues #20 (composable refactor) and #21 (form split).
+### Create and Edit forms are separate components — **superseded by [ADR 012](docs/adr/012-retire-legacy-modal-form-stack.md)**
+~~The single `Form.vue` with `mode: 'create' | 'edit' | 'view'` prop is replaced by `CreateForm.vue` and `EditForm.vue` per domain. Tracked in issues #20 (composable refactor) and #21 (form split).~~
+
+Both component files are deleted. The domain's single `WorkspaceForm.vue` handles create and edit as **modes** of one component, rendered in the [[Entity Workspace]] drawer. The *distinction* the original decision protected still holds — create emits an `*Insert` with no `id`; edit emits `update: [id, *Update]` with the `id` taken from the entity, never from form state — it is simply no longer expressed as two files.
 
 ### `useCrudFormWithValidation` is replaced by `useCrudForm`
 The composable no longer owns emit logic or distinguishes create vs update. Tracked in issue #20.

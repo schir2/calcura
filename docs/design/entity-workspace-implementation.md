@@ -1,11 +1,20 @@
 # Entity Workspace — implementation guide (per-domain build-out)
 
-**Status:** the shell + the brokerage proof (#95) and the **HSA** conversion (#119) are built —
-use either as the reference. Create **and** edit route through the drawer for any domain in
-`WORKSPACE_ENABLED_MODELS`, and the live preview works in create mode too (§3). This guide tells
-the next agent how to convert the remaining domain forms into Workspace drawers: investments
-(#116 tax_deferred, #117 IRA, #118 Roth IRA, #120 cash_reserve), income (#101), debt (#114),
-expense (#115), and the remaining ListItem wiring (#102).
+**Status: the migration is COMPLETE (2026-07-11).** All nine domains have a `WorkspaceForm.vue`,
+are registered in `EntityWorkspace`'s `formComponent` / `projectionComponent` switches, and are
+listed in `WORKSPACE_ENABLED_MODELS`. Create **and** edit route through the drawer for every
+domain, and the live preview works in create mode too (§3).
+
+**There is no legacy modal fallback any more.** [ADR 012](../adr/012-retire-legacy-modal-form-stack.md)
+deleted the whole legacy stack — every `CreateForm.vue`, `UpdateForm.vue`, `List.vue`, and
+`TemplatePicker.vue` — once the enabled-model set became total over the `model_name` enum, which
+made the fallback branch unreachable. Passages below that describe the modal as a live path, or
+tell you to "leave" the TemplatePickers, are **historical** and no longer apply.
+
+This guide is now a reference for **adding a new domain**, not for converting existing ones.
+A new domain is not "done" until it has a `WorkspaceForm.vue`, a projection readout, both
+registered in `EntityWorkspace`, and its name in `WORKSPACE_ENABLED_MODELS` — there is nothing
+to fall back on if you skip a step.
 
 Read alongside: `CONTEXT.md` ("Entity Workspace", "Uniform Workspace across all domains",
 "Projection readout is per-domain", "Strategy-input control — Variant C", "Workspace input
@@ -109,27 +118,23 @@ passes `id ?? PREVIEW_TEMP_ID` (not `[]`) in create mode.
    `formComponent` switch, and add a parallel `projectionComponent` switch (see §7 — this
    dispatch must be added; today the projection is hard-coded to investment).
 4. **Enable the slide-out for create + edit** — add `'<domain>'` to `WORKSPACE_ENABLED_MODELS`
-   in `stores/workspaceStore.ts`. This is the single switch that makes both entry points use
-   the drawer instead of the legacy modals:
-   - **Create — two entry points, both already gated on `WORKSPACE_ENABLED_MODELS`:**
-     `plan/ChildCreateButtonList.vue` (the Simulation add-buttons) and
-     `plan/overview-prototype/VariantA.vue` (the Overview "Add income / Add account / Add
-     expense / Add debt" buttons) both call `workspace.openCreate(name, plan_id)` for enabled
-     models and fall back to the legacy `n-modal` + `CreateForm` otherwise. Adding your model to
-     the list flips **both** automatically — no per-entry wiring needed. If you add a *new* create
-     entry point elsewhere, gate it the same way.
-   - **Edit:** in `<domain>/ListItem.vue`, change the "edit" affordance to
-     `workspace.open('<domain>', entity.id)` and delete the old local `n-modal` + `UpdateForm`
-     usage (that's issue #102's job, but do it for your domain as you convert it).
-   - **Not a live path:** `<domain>/TemplatePicker.vue` still references the legacy `CreateForm`,
-     but only `debt/List.vue` renders a picker today — the brokerage/hsa/etc. pickers are unused.
-     Leave them; converting template-instantiation to the drawer (needs `openCreate` to accept
-     seed values) is out of scope until a picker is actually wired up.
+   in `stores/workspaceStore.ts`. Create entry points call `workspace.openCreate(name, plan_id)`
+   for enabled models; the Rich List Item's edit affordance calls `workspace.open('<domain>', id)`.
+   If you add a *new* create entry point, gate it the same way.
+
+   > **There is no fallback.** Before [ADR 012](../adr/012-retire-legacy-modal-form-stack.md) an
+   > un-enabled model fell back to a legacy `n-modal` + `CreateForm`. That stack is deleted. If you
+   > forget this step, create does nothing at all — it does not quietly open an old modal.
 5. Leave the education panel as the shared placeholder (do not write real copy — #106).
 
-**Migration order note:** a domain isn't "done" until it's in `WORKSPACE_ENABLED_MODELS` AND its
-`formComponent`/`projectionComponent` cases exist — otherwise create opens an empty drawer. Do
-those together. Un-migrated domains keep working through the legacy modal until their turn.
+**Order note:** a domain isn't "done" until it's in `WORKSPACE_ENABLED_MODELS` **and** its
+`formComponent` / `projectionComponent` cases exist — otherwise create opens an empty drawer.
+Do those together.
+
+**Templates:** `<domain>/TemplatePicker.vue` is gone (ADR 012). The `*_template` tables and
+`processTemplate()` are **kept**, but template selection has no UI until `openCreate` learns to
+accept seed values. Do not rebuild a picker — see the [[Templates]] glossary entry and its
+tracked follow-up.
 
 ---
 
@@ -244,12 +249,20 @@ add it.** tax_deferred's current form already has one; carry it over.
 
 ## 10. Related issues & decisions
 
-- **#95** — the shell + brokerage proof (done). Reference implementation.
-- **#119** — HSA conversion (done). Second reference — the `fixed | max`, not-income-linked case,
-  and the first to prove create-mode preview end to end.
-- **#101** — income Workspace + income-linking (one entity, two views).
-- **#102** — wire Simulation ListItems to open the Workspace.
-- **#114** debt, **#115** expense, **#116** tax_deferred, **#117** IRA, **#118** Roth IRA,
-  **#120** cash_reserve — the remaining per-domain build-outs.
-- **#106** — education panel content (placeholder until then). **#107** — baseline-vs-edited delta.
-- **ADR 006** income_id linkage · **ADR 010** HSA not linked · **ADR 011** strategy-input control.
+**All build-out issues are complete.** The per-domain migration is finished; these are kept for
+provenance.
+
+- **#95** — the shell + brokerage proof. Reference implementation.
+- **#119** — HSA conversion. Second reference — the `fixed | max`, not-income-linked case, and the
+  first to prove create-mode preview end to end.
+- **#101** income · **#102** ListItem wiring · **#114** debt · **#115** expense ·
+  **#116** tax_deferred · **#117** IRA · **#118** Roth IRA · **#120** cash_reserve — the
+  per-domain build-outs. **Done.**
+- **#126** — command-sequence management folded into a drawer; the Simulation tab dropped.
+
+**Still open:**
+- **#106** — education panel content (shared placeholder until then). **#107** — baseline-vs-edited delta.
+- Template selection inside the Workspace (`openCreate` seed values) — see [ADR 012](../adr/012-retire-legacy-modal-form-stack.md).
+
+**Decisions:** **ADR 006** income_id linkage · **ADR 010** HSA not linked · **ADR 011** strategy-input
+control · **ADR 012** legacy stack retired, Workspace is the only editing surface.
