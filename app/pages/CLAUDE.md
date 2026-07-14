@@ -54,8 +54,10 @@ Pages render the drawer once; any component can summon it through `useWorkspaceS
 ```ts
 const workspace = useWorkspaceStore()
 
-workspace.openCreate('income', planId)   // create
-workspace.open('income', incomeId)       // edit
+workspace.openCreate('income', planId)   // create an entity
+workspace.open('income', incomeId)       // edit an entity
+workspace.openPlan(planId)               // edit the plan itself (ADR 015)
+workspace.openPlan(planId, 'goal')       // ...opened straight to a tab
 ```
 
 No emit bubbling to the page, and no per-domain form component in the page template. The drawer
@@ -65,8 +67,18 @@ There is **no modal fallback**. A domain with no form registered in `common/Enti
 opens an empty drawer that says so — it does not quietly fall back to an old form. See
 `docs/design/entity-workspace-implementation.md`.
 
-**Exception:** plan create/edit and one-off UI modals (e.g. the profile prompt) stay as local
-`showModal` refs. A plan is not a Workspace domain.
+**The plan is edited in the drawer too** ([ADR 015](../../docs/adr/015-plan-is-a-workspace-target.md)).
+It is a Workspace *target* but **not an entity** — `ModelName` is the `command` table's Postgres
+enum, so `'plan'` must never be added to it. The store discriminates on `kind` (`'entity' | 'plan'`)
+instead. The plan's left pane is three tabs (Rates / Goal / Timeline); its right pane is the verdict
++ the net-worth spine, since a plan has no balance of its own.
+
+Editing the plan **requires the projection pane**, which requires a loaded orchestrator and command
+sequence — so it only works on the plan *detail* page. The plans *listing* page has no edit
+affordance by design; "Open" leads to the detail page.
+
+**Exception:** creating a plan is not a Workspace action — it is the `/plans/new` wizard. One-off UI
+modals (e.g. the profile prompt) stay as local `showModal` refs.
 
 ## Page structure pattern
 

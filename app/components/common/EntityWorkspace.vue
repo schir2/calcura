@@ -15,6 +15,10 @@ import DebtWorkspaceProjection from '~/components/debt/WorkspaceProjection.vue'
 import ExpenseWorkspaceProjection from '~/components/expense/WorkspaceProjection.vue'
 import CashReserveWorkspaceProjection from '~/components/cashReserve/WorkspaceProjection.vue'
 import IncomeWorkspaceProjection from '~/components/income/WorkspaceProjection.vue'
+import PlanWorkspaceForm from '~/components/plan/WorkspaceForm.vue'
+import PlanWorkspaceProjection from '~/components/plan/WorkspaceProjection.vue'
+import type {OrchestratorState} from '#shared/types/OrchestratorState'
+import type {Plan, PlanWithRelations} from '#shared/types/Plan'
 
 type Props = {
   commandSequence: CommandSequenceWithRelations | null
@@ -27,6 +31,24 @@ const previewStates = ref<BaseState[]>([])
 const baselineStates = ref<BaseState[]>([])
 const planAge = computed(() => orchestrator.plan?.age)
 const retirementIndex = computed(() => orchestrator.lastPreviewRetirementIndex)
+
+const isPlan = computed(() => workspace.kind === 'plan')
+
+// The plan branch keeps its own preview state: its projection is the whole trajectory plus the
+// *edited* plan config (buildVerdict reads the strategy fields off it), not an entity's states.
+const planPreviewStates = ref<OrchestratorState[]>([])
+const planBaselineStates = ref<OrchestratorState[]>([])
+const planEdits = ref<Partial<Plan>>({})
+
+const editedPlan = computed<PlanWithRelations | null>(() =>
+    orchestrator.planWithRelations
+        ? {...orchestrator.planWithRelations, ...planEdits.value}
+        : null)
+
+function onPlanPreview(payload: {states: OrchestratorState[]; plan: Partial<Plan>}) {
+  planPreviewStates.value = payload.states
+  planEdits.value = payload.plan
+}
 
 const isMobile = ref(false)
 onMounted(() => {
@@ -78,15 +100,27 @@ const projectionComponent = computed(() => {
 })
 
 const title = computed(() => {
+  if (isPlan.value) return 'Plan settings'
   const verb = workspace.mode === 'create' ? 'New' : 'Edit'
   return `${verb} ${workspace.modelName ?? 'entity'}`.replace(/_/g, ' ')
 })
 
-// Snapshot-on-open baseline (#107): freeze the saved plan's projection for this entity when the
-// drawer opens in edit mode. Create mode has nothing saved to compare against, so no baseline.
+// Snapshot-on-open baseline (#107): freeze the saved plan's projection when the drawer opens in
+// edit mode. Create mode has nothing saved to compare against, so no baseline. The plan is always
+// an edit (it already exists), so it always gets one.
 watch(() => workspace.isOpen, open => {
   if (!open) return
   previewStates.value = []
+  planPreviewStates.value = []
+  planEdits.value = {}
+
+  if (isPlan.value) {
+    baselineStates.value = []
+    planBaselineStates.value = commandSequence ? orchestrator.planBaseline(commandSequence) ?? [] : []
+    return
+  }
+
+  planBaselineStates.value = []
   baselineStates.value =
       workspace.id != null && workspace.modelName && commandSequence
           ? orchestrator.entityBaseline(workspace.modelName, workspace.id, commandSequence) ?? []
@@ -108,9 +142,18 @@ function handleSaved() {
     <n-drawer-content :title="title" closable body-content-class="!p-0">
       <div class="grid grid-cols-1 md:grid-cols-2 gap-6 p-5">
         <section class="min-w-0">
+          <PlanWorkspaceForm
+              v-if="isPlan && workspace.id != null"
+              :id="workspace.id"
+              :command-sequence="commandSequence"
+              :initial-tab="workspace.planTab"
+              @preview="onPlanPreview"
+              @saved="handleSaved"
+              @cancel="workspace.close()"
+          />
           <component
               :is="formComponent"
-              v-if="formComponent"
+              v-else-if="formComponent"
               :id="workspace.id"
               :plan-id="workspace.planId"
               :command-sequence="commandSequence"
@@ -122,24 +165,31 @@ function handleSaved() {
         </section>
 
         <section class="min-w-0 space-y-4">
-          <component
-              :is="projectionComponent"
-              v-if="workspace.modelName"
-              :states="previewStates"
-              :baseline-states="baselineStates"
-              :retirement-index="retirementIndex"
-              :model-name="workspace.modelName"
-              :plan-age="planAge"
+          <PlanWorkspaceProjection
+              v-if="isPlan"
+              :states="planPreviewStates"
+              :baseline-states="planBaselineStates"
+              :plan="editedPlan"
           />
-          <div class="rounded border border-dashed border-skin-base p-3 text-xs text-skin-muted">
-            <div class="flex items-center gap-1 font-medium">
-              <base-ico name="info"/>
-              About this {{ (workspace.modelName ?? 'entity').replace(/_/g, ' ') }}
+          <template v-else-if="workspace.modelName">
+            <component
+                :is="projectionComponent"
+                :states="previewStates"
+                :baseline-states="baselineStates"
+                :retirement-index="retirementIndex"
+                :model-name="workspace.modelName"
+                :plan-age="planAge"
+            />
+            <div class="rounded border border-dashed border-skin-base p-3 text-xs text-skin-muted">
+              <div class="flex items-center gap-1 font-medium">
+                <base-ico name="info"/>
+                About this {{ (workspace.modelName ?? 'entity').replace(/_/g, ' ') }}
+              </div>
+              <p class="mt-1">
+                Educational guidance will live here — who it's for and when to use it. (Coming soon)
+              </p>
             </div>
-            <p class="mt-1">
-              Educational guidance will live here — who it's for and when to use it. (Coming soon)
-            </p>
-          </div>
+          </template>
         </section>
       </div>
     </n-drawer-content>

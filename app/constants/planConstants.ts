@@ -15,6 +15,18 @@ export const MAX_RETIREMENT_AGE_FOR_WITHDRAWAL = 100;
 export const MIN_AGE = 1
 export const MAX_AGE = 120
 
+// Slider soft-caps: a comfortable range, NOT a validation bound. The number input stays
+// authoritative and may exceed these (CONTEXT.md → "Workspace input controls").
+// Deliberately below the validator max where that max is unusable as a slider range —
+// e.g. retirement savings validates to 10M, which no slider can span at a useful step.
+export const SLIDER_TAX_RATE_MAX = 50
+export const SLIDER_INFLATION_RATE_MAX = 10
+export const SLIDER_GROWTH_RATE_MAX = 15
+export const SLIDER_RETIREMENT_SAVINGS_MAX = 2_000_000
+export const SLIDER_RETIREMENT_INCOME_GOAL_MAX = 250_000
+export const SLIDER_YEAR_MIN = 2000
+export const SLIDER_YEAR_MAX = 2050
+
 export const DEFAULT_AGE: number = 30;
 export const DEFAULT_GROWTH_APPLICATION_STRATEGY: GrowthApplicationStrategy = 'start'
 

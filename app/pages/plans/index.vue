@@ -1,6 +1,4 @@
 <script lang="ts" setup>
-import type {PlanInsert, PlanUpdate} from "#shared/types/Plan";
-
 definePageMeta({
   title: 'Plans',
   layout: 'default',
@@ -9,25 +7,15 @@ definePageMeta({
 
 const planStore = usePlanStore()
 const {results, pending, refresh} = usePlanSimulations()
-const showModal = ref(false)
+const {duplicatePlan} = useDuplicatePlan()
 
-async function handleCreatePlan(insert: PlanInsert) {
-  await planStore.create(insert)
-  showModal.value = false
+async function handleDuplicatePlan(id: number) {
+  await duplicatePlan(id)
   await refresh()
-}
-
-function handleClickCreatePlan() {
-  showModal.value = true
 }
 
 async function handleDeletePlan(id: number) {
   await planStore.purge(id)
-  await refresh()
-}
-
-async function handleUpdatePlan(id: number, update: PlanUpdate) {
-  await planStore.patch(id, update)
   await refresh()
 }
 </script>
@@ -39,29 +27,13 @@ async function handleUpdatePlan(id: number, update: PlanUpdate) {
         <h1 class="text-4xl">Plans</h1>
         <p class="text-skin-muted text-lg">Compare your retirement scenarios side by side.</p>
       </div>
-      <n-button type="primary" @click="handleClickCreatePlan">
+      <n-button type="primary" @click="navigateTo('/plans/new')">
         <template #icon>
           <icon name="mdi:add"/>
         </template>
         Create Plan
       </n-button>
     </header>
-
-    <n-modal
-        v-model:show="showModal"
-        class="max-w-6xl"
-    >
-      <template #header>
-        <h3 class="text-2xl mb-2">
-          <base-ico name="plan"/>
-          Create New Plan
-        </h3>
-      </template>
-      <PlanCreateForm
-          @create="handleCreatePlan"
-          @cancel="showModal = false"
-      />
-    </n-modal>
 
     <div v-if="pending && !results.length" class="plan-grid">
       <n-card v-for="n in 3" :key="n" size="small">
@@ -70,9 +42,10 @@ async function handleUpdatePlan(id: number, update: PlanUpdate) {
       </n-card>
     </div>
 
-    <p v-else-if="!results.length" class="text-skin-muted text-center py-16">
-      No plans yet — create your first to see projections.
-    </p>
+    <div v-else-if="!results.length" class="text-center py-16 space-y-4">
+      <p class="text-skin-muted">No plans yet — create your first to see projections.</p>
+      <n-button type="primary" @click="navigateTo('/plans/new')">Create your first plan</n-button>
+    </div>
 
     <div v-else class="plan-grid">
       <PlanCard
@@ -81,7 +54,7 @@ async function handleUpdatePlan(id: number, update: PlanUpdate) {
           :plan="result.plan"
           :projection="result.projection"
           :loading="pending"
-          @update="handleUpdatePlan"
+          @duplicate="handleDuplicatePlan"
           @delete="handleDeletePlan"
       />
     </div>

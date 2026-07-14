@@ -60,6 +60,21 @@ export function planRules(modelRef: Ref<Partial<Plan>>) {
         inflation_rate: [
             {required: true, type: "number", message: "Inflation rate is required", trigger: ["blur", "change"]}
         ],
+        growth_rate: [
+            {required: true, type: "number", message: "Default growth rate is required", trigger: ["blur", "change"]},
+            {
+                type: "number",
+                min: MIN_GROWTH_RATE,
+                message: `Growth rate must be at least ${MIN_GROWTH_RATE}%.`,
+                trigger: ["blur", "change"]
+            },
+            {
+                type: "number",
+                max: MAX_GROWTH_RATE,
+                message: `Growth rate must be at most ${MAX_GROWTH_RATE}%.`,
+                trigger: ["blur", "change"]
+            }
+        ],
         growth_application_strategy: [
             {required: true, message: "Growth application strategy is required", trigger: ["blur", "change"]}
         ],

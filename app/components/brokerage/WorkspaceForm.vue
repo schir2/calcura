@@ -25,7 +25,7 @@ const orchestrator = orchestratorStore()
 const model = ref<Partial<Brokerage>>({
   name: '',
   initial_balance: 0,
-  growth_rate: 6,
+  growth_rate: useDefaultGrowthRate(),
   contribution_strategy: 'fixed',
   contribution_fixed_amount: 0,
 })

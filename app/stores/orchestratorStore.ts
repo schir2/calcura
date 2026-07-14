@@ -4,6 +4,7 @@ import type {CommandSequenceCommandWithRelations} from "#shared/types/CommandSeq
 import type {ManagerStates} from "#shared/types/ManagerStates";
 import type {ModelName} from "#shared/types/ModelName";
 import type {BaseState} from "#shared/types/BaseState";
+import type {OrchestratorState} from "#shared/types/OrchestratorState";
 import type BaseManager from "~/models/common/BaseManager";
 import type {Income} from "#shared/types/Income";
 
@@ -185,6 +186,27 @@ export const orchestratorStore = defineStore('orchestrator', () => {
         return result?.managerStates[modelName]?.[id] ?? null
     }
 
+    // Plan Workspace preview (ADR 015). Simpler than the entity case: no entity is added or
+    // changed, so there is no synthetic command to inject — just run the plan's own config
+    // overridden by the in-flight edits. Returns the whole trajectory, since the plan has no
+    // balance of its own; its projection IS the verdict + the spine.
+    function simulatePlanPreview(
+        planConfig: Partial<Plan>,
+        commandSequence: CommandSequenceWithRelations
+    ): OrchestratorState[] | null {
+        if (!planWithRelations.value) return null
+        const planManager = new PlanManager({...planWithRelations.value, ...planConfig})
+        const states = planManager.simulate(commandSequence)
+        const retiredIndex = states.findIndex(state => state.retired)
+        lastPreviewRetirementIndex.value = retiredIndex === -1 ? null : retiredIndex
+        return states
+    }
+
+    // Snapshot-on-open baseline for the Plan Workspace: the saved plan's trajectory, unedited.
+    function planBaseline(commandSequence: CommandSequenceWithRelations): OrchestratorState[] | null {
+        return simulate(commandSequence)?.states ?? null
+    }
+
     return {
         load,
         reloadPlan,
@@ -195,6 +217,8 @@ export const orchestratorStore = defineStore('orchestrator', () => {
         simulate,
         simulateEntityPreview,
         entityBaseline,
+        simulatePlanPreview,
+        planBaseline,
         lastPreviewRetirementIndex,
     }
 

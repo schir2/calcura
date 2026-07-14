@@ -10,9 +10,21 @@ import {chartCategoryHue} from '~/theme/palette'
 
 ChartJS.register(Title, Tooltip, Legend, LineElement, PointElement, CategoryScale, LinearScale, Filler)
 
-const props = withDefaults(defineProps<{ states: OrchestratorState[]; height?: number }>(), {height: 340})
+// `baselineStates` is the Workspace's snapshot-on-open comparison (#107 / ADR 015): the saved
+// plan's trajectory, drawn as a dashed muted line behind the live edited one. Omitted on the
+// Overview, where there is nothing to compare against.
+const props = withDefaults(
+  defineProps<{ states: OrchestratorState[]; baselineStates?: OrchestratorState[]; height?: number }>(),
+  {height: 340},
+)
 const emit = defineEmits<{ categorySelect: [category: string] }>()
 const {hue, ink} = useChartColors()
+
+function netWorth(s: OrchestratorState): number {
+  return s.assets.tax_deferred.balance_end + s.assets.taxable.balance_end +
+    s.assets.tax_exempt.balance_end + s.assets.cash_reserve.balance_end +
+    s.cash.net - s.liabilities.debt.balance_end
+}
 
 // bottom -> top of the stack; grouped by asset category per CONTEXT.md (never one band per account)
 const bands = [
@@ -49,10 +61,7 @@ const data = computed(() => ({
     })),
     {
       label: 'Net Worth',
-      data: props.states.map(s =>
-        s.assets.tax_deferred.balance_end + s.assets.taxable.balance_end +
-        s.assets.tax_exempt.balance_end + s.assets.cash_reserve.balance_end +
-        s.cash.net - s.liabilities.debt.balance_end),
+      data: props.states.map(netWorth),
       borderColor: hue('ink', 0.55),
       borderWidth: 1.5,
       fill: false,
@@ -60,6 +69,19 @@ const data = computed(() => ({
       pointRadius: 0,
       tension: 0.25,
     },
+    ...(props.baselineStates?.length
+      ? [{
+          label: 'Saved plan',
+          data: props.baselineStates.map(netWorth),
+          borderColor: hue('ink', 0.3),
+          borderWidth: 1.5,
+          borderDash: [5, 4],
+          fill: false,
+          stack: 'baseline',
+          pointRadius: 0,
+          tension: 0.25,
+        }]
+      : []),
   ],
 }))
 

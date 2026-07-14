@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type {PlanUpdate, PlanWithRelations} from '#shared/types/Plan'
+import type {PlanWithRelations} from '#shared/types/Plan'
 import type {PlanProjection} from '~/composables/usePlanSimulations'
 import {compactMoney, headlineGoal, strategyLabel} from '~/utils'
 
@@ -9,8 +9,11 @@ const {plan, projection, loading = false} = defineProps<{
     loading?: boolean
 }>()
 
+// No edit affordance here: plan settings are edited in the Workspace drawer, whose projection
+// pane needs a loaded orchestrator + command sequence — neither exists on the listing page
+// (ADR 015). "Open" leads to the detail page, where Plan settings lives.
 const emit = defineEmits<{
-    update: [id: number, update: PlanUpdate]
+    duplicate: [id: number]
     delete: [id: number]
 }>()
 
@@ -27,13 +30,7 @@ const chips = computed(() => {
     return out
 })
 
-const showModal = ref(false)
 const showDeletePopConfirm = ref(false)
-
-function handleUpdate(id: number, update: PlanUpdate) {
-    emit('update', id, update)
-    showModal.value = false
-}
 
 function handleDelete() {
     showDeletePopConfirm.value = false
@@ -42,10 +39,6 @@ function handleDelete() {
 </script>
 
 <template>
-  <n-modal v-model:show="showModal">
-    <PlanUpdateForm :id="plan.id" @update="handleUpdate" @cancel="showModal = false"/>
-  </n-modal>
-
   <n-card
       size="small"
       hoverable
@@ -81,9 +74,9 @@ function handleDelete() {
           <template #icon><Icon name="mdi:open-in-new"/></template>
           Open
         </n-button>
-        <n-button size="small" secondary @click="showModal = true">
-          <template #icon><Icon name="mdi:edit"/></template>
-          Edit
+        <n-button size="small" secondary :disabled="loading" @click="emit('duplicate', plan.id)">
+          <template #icon><Icon name="mdi:content-copy"/></template>
+          Duplicate
         </n-button>
         <n-popconfirm v-model:show="showDeletePopConfirm">
           <template #trigger>

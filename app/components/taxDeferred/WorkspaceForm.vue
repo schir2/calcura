@@ -25,7 +25,11 @@ const commandSequenceStore = useCommandSequenceStore()
 const incomeStore = useIncomeStore()
 const orchestrator = orchestratorStore()
 
-const model = ref<Partial<TaxDeferred>>({...taxDeferredDefaults, ...(id === null ? initialValues : undefined)})
+const model = ref<Partial<TaxDeferred>>({
+  ...taxDeferredDefaults,
+  growth_rate: useDefaultGrowthRate(),
+  ...(id === null ? initialValues : undefined),
+})
 const isFetching = ref(false)
 const nameInput = ref<{focus: () => void} | null>(null)
 

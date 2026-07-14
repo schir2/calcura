@@ -27,7 +27,7 @@ const orchestrator = orchestratorStore()
 const model = ref<Partial<RothIra>>({
   name: 'Roth IRA',
   initial_balance: 0,
-  growth_rate: 6,
+  growth_rate: useDefaultGrowthRate(),
   contribution_strategy: 'fixed',
   contribution_fixed_amount: 0,
   contribution_percentage: 0,

@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import type {PlanUpdate} from "#shared/types/Plan"
 import type {IncomeUpdate} from "#shared/types/Income"
 import type {ExpenseUpdate} from "#shared/types/Expense"
 import type {DebtUpdate} from "#shared/types/Debt"
@@ -123,23 +122,12 @@ async function handleCreateSequence() {
   await commandSequenceStore.fetch(seq.id)
 }
 
-async function handleUpdatePlan(id: number, update: PlanUpdate) {
-  await planStore.patch(id, update)
-  await orchestrator.reloadPlan(id)
-}
-
 async function handleDeletePlan(id: number) {
   await planStore.purge(id)
   await navigateTo('/plans')
 }
 
-const showEditModal = ref(false)
 const showDeleteConfirm = ref(false)
-
-async function handleEditPlan(id: number, update: PlanUpdate) {
-  await handleUpdatePlan(id, update)
-  showEditModal.value = false
-}
 
 const usd = (value: number) =>
     new Intl.NumberFormat('en-US', {style: 'currency', currency: 'USD', maximumFractionDigits: 0}).format(value ?? 0)
@@ -238,11 +226,11 @@ function pickType(name: ModelName) {
             </template>
             Manage simulation
           </n-button>
-          <n-button type="warning" secondary round @click="showEditModal = true">
+          <n-button type="warning" secondary round @click="workspace.openPlan(planId)">
             <template #icon>
-              <Icon name="mdi:edit"/>
+              <Icon name="mdi:tune"/>
             </template>
-            Edit
+            Plan settings
           </n-button>
           <n-popconfirm v-model:show="showDeleteConfirm" @positive-click="handleDeletePlan(planId)">
             <template #trigger>
@@ -257,10 +245,6 @@ function pickType(name: ModelName) {
           </n-popconfirm>
         </n-button-group>
       </header>
-
-      <n-modal v-model:show="showEditModal">
-        <PlanUpdateForm :id="planId" @update="handleEditPlan" @cancel="showEditModal = false"/>
-      </n-modal>
 
       <n-tabs v-model:value="activeView" type="line" animated>
         <n-tab-pane name="overview" tab="Overview">

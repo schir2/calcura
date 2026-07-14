@@ -1301,7 +1301,7 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      duplicate_plan: { Args: { p_plan_id: number }; Returns: number }
     }
     Enums: {
       cash_reserve_strategy: "fixed" | "variable"

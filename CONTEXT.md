@@ -124,6 +124,43 @@ read it before working #101/#102/#114–#120.
 
 The surface for adding or editing any plan entity, opened from the dashboard (toolbar "＋ Add", per-section add buttons, empty-state CTAs, or clicking an entity in a chart/legend/stat). **Two-pane on desktop, stacked on mobile** (form first). Left pane = the settings form (inputs first — cursor lands in the first field, no scrolling). Right pane = a **live projection** that reacts to the inputs in real time (baseline "saved plan" line vs the edited line, with an at-retirement delta) plus an **education panel** ("who it's for", when-to-use bullets, article link). Replaces the old plain-form modal. Confirmed against prototype 2026-07-04 — the two-pane drawer (settings + live graph) is the locked interaction model. (Grill session 2026-07-04.)
 
+### Workspace target — the Plan is one, but it is not an Entity
+The Workspace drawer is the **single editing surface for everything in a plan** — the nine entities *and the plan itself*. One interaction the user learns once ("click a thing → drawer → edit → save"); no second place to hunt for settings. So the surface is the **Workspace**, and "[[Entity Workspace]]" names only the entity-targeted case.
+
+The plan is nonetheless **not an entity**: `PlanWithRelations` types it as the *container* of the nine, and `ModelName` is the Postgres `model_name` enum on the **`command` table** — it is the command system's *target* type. Commands act on entities; a command targeting "the plan" is meaningless. The plan therefore must **never** be added to `model_name`. (Grill session 2026-07-13.)
+
+### Plan Workspace projection — verdict + spine, baseline-vs-edited
+Every Workspace target owes three ingredients (see [[Uniform Workspace across all domains]]): fields, a **projection type**, and education copy. An entity's projection is its own balance/paydown curve; **the plan has no balance of its own**, so its projection type is the **[[Verdict hero]] + the net-worth [[Trajectory (spine)]]**, rendered in the [[Baseline-vs-edited delta (#107)]] form — dashed frozen baseline behind the live edited line, delta tag at the edited plan's retirement year.
+
+This is what makes plan editing *interactive*: dragging `retirement_age` flips the verdict in real time, and the frozen baseline gives a before/after that editing-in-place could never show. Rejected: cramming a mini-Overview (four charts) into the pane — too busy, and the spine subsumes them. (Grill session 2026-07-13.)
+
+### Plan Workspace tabs — Rates · Goal · Timeline
+The plan has more fields than any entity, so its left pane is **tabbed** (not one long scroll — the no-scroll rule in [[Entity Workspace]] holds). **Rates** (`inflation_rate`, `tax_rate`) is the **default tab, because rates are what actually get adjusted** — inflation because users want to model different regimes, tax rate because it is a manual stand-in for a value that would eventually be derived. **Goal** is the retirement strategy, via [[Strategy-input control — stacked rows with inline reveal (Variant C)]]. **Timeline** is the cold tab: `year`, `age`, `life_expectancy`, `growth_application_strategy`. See [ADR 015](docs/adr/015-plan-is-a-workspace-target.md). (Grill session 2026-07-13.)
+
+### Plan Year (`plan.year`) — the anchor, not a timestamp
+The plan's **starting calendar year**, and the anchor the year-indexed contribution/tax limit schedule resolves against (the seam where a future API would fetch or estimate that year's limits). It is **not** "now": a plan authored three years ago must keep simulating from *its* year rather than drifting to the current one, or its limit schedule stops matching the person it was written for. `plan.age` is the other half of the same anchor — together they mean *"a person aged A in calendar year Y"*. Breaking the pair silently turns a plan into a different plan; this is the whole reason for [ADR 014](docs/adr/014-plan-seeds-from-profile.md). (Grill session 2026-07-13.)
+
+### Create wizard vs. Duplicate — two different acts
+**Creating** a plan and **editing** one are different acts and get different surfaces. Editing is a lever you pull while watching a projection react → the [[Workspace target — the Plan is one, but it is not an Entity|Workspace drawer]]. Creating happens once, before any projection exists → a **page at `/plans/new`**, never a modal.
+
+The wizard's job is **not to collect plan fields** — every one has a default, and the profile seeds the rest ([ADR 014](docs/adr/014-plan-seeds-from-profile.md)), so the app could make a valid plan asking *nothing*. What makes a new plan useless is **having no entities**. So the wizard asks for a goal and **one income** (reusing the income Workspace form component — the same form, a different container), then hands off to the Overview.
+
+**Completing step 1 creates the plan.** Not a convenience — a *precondition*: the income Workspace form writes its income immediately so that linked accounts (＋401(k)/＋IRA/＋Roth, see [ADR 006](docs/adr/006-income-id-on-junction-tables.md)) have a real `income_id` to point at, and its live projection needs a loaded plan. Reusing that form and deferring all persistence to a final submit are mutually exclusive. Bailing at step 2 leaves a plan with no entities — byte-for-byte what skipping step 2 produces anyway, so there is no orphan class to garbage-collect. See [ADR 015](docs/adr/015-plan-is-a-workspace-target.md)'s amendment.
+
+**A plan is a scenario, and scenarios are made by cloning.** Plan #2 is almost never authored from scratch — it is "plan #1, but I retire at 60". That is **Duplicate** (deep-copy of the plan and all nine entity sets), not a second wizard run. (Grill session 2026-07-13.)
+
+### Default growth rate (`plan.growth_rate`) — a seed for new investment accounts
+The plan-level **default investment return**, applied to newly created **investment accounts only** (brokerage, IRA, Roth, HSA, 401k). It was dead for a while — persisted but never read, because every `config.growth_rate` a manager reads is that *entity's own* rate — and it is now the seed those accounts are born with (#146).
+
+**A seed, not a source** — the same rule the profile follows ([ADR 014](docs/adr/014-plan-seeds-from-profile.md)). Read once when a create-mode form builds its model; thereafter the account owns its rate, and changing the plan default never rewrites an existing account.
+
+**Not applied to income or expense.** Their `growth_rate` means a *raise rate* and a *cost inflation rate* — different quantities, both defaulting to 0. Seeding them from an investment return would assert that your salary and your rent grow at the market's rate. (Confirmed 2026-07-13.)
+
+### Plan fields that are not levers
+- **`plan.tax_strategy`** — the `income_tax_strategy` enum has exactly one value (`'simple'`). Nothing to choose, so its absence from every form is correct, not an oversight. Surface it only when a second strategy exists.
+
+(Grill session 2026-07-13.)
+
 ### Baseline-vs-edited delta (#107)
 The Workspace projection's **baseline is a snapshot-on-open**: the entity's projection as the *saved plan* stood the moment the drawer opened, frozen while the user edits. It is not "the plan without this entity" — it is "before I started editing this session". Rendered as a **dashed muted line** behind the live edited line. The **delta** is a single benefit-colored tag reading the impact of the edits at one reference point. Resolved decisions (Grill session 2026-07-06):
 - **Reference point** = the **edited plan's retirement year** (the age you'd retire *under these edits*, not the baseline's). If the edited plan never retires (failure verdict), fall back to **life expectancy** and relabel the tag "by end of plan".
