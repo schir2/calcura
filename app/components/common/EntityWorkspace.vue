@@ -157,6 +157,7 @@ function handleSaved() {
               :id="workspace.id"
               :plan-id="workspace.planId"
               :command-sequence="commandSequence"
+              :initial-values="workspace.seed"
               @preview="previewStates = $event"
               @saved="handleSaved"
               @cancel="workspace.close()"

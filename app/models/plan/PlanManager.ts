@@ -368,6 +368,11 @@ export default class PlanManager extends BaseOrchestrator<PlanWithRelations, Orc
 
     payDebt(amount: number) {
         this.withdraw(amount, FundType.Taxed)
+        this.recordDebtPayment(amount)
+    }
+
+    private recordDebtPayment(amount: number) {
+        if (amount <= 0) return
         const currentState = this.getCurrentState()
         this.updateCurrentState({
             ...currentState,
@@ -380,6 +385,13 @@ export default class PlanManager extends BaseOrchestrator<PlanWithRelations, Orc
                 }
             }
         })
+    }
+
+    payDebtFromSavings(amountNeeded: number): number {
+        if (!this.isRetired()) return 0
+        const raised = this.withdrawFromSavings(Math.max(0, amountNeeded))
+        this.recordDebtPayment(raised)
+        return raised
     }
 
     adjustDebt(amount: number) {

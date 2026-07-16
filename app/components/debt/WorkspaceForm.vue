@@ -1,17 +1,20 @@
 <script setup lang="ts">
-import type {Debt, DebtInsert, DebtUpdate} from '#shared/types/Debt'
+import type {Debt, DebtInsert, DebtUpdate, DebtTemplate} from '#shared/types/Debt'
 import type {DebtState} from '#shared/types/DebtState'
 import type {CommandSequenceWithRelations} from '#shared/types/CommandSequence'
 import type {Frequency} from '#shared/types/Frequency'
 import {PREVIEW_TEMP_ID} from '~/stores/orchestratorStore'
 import {debtRules} from '~/utils/validators/debtRules'
+import {debtDefaults} from '~/constants/DebtConstants'
+import {processTemplate} from '~/utils/templateProcessorUtils'
 
 type Props = {
   id: number | null
   planId: number | null
   commandSequence: CommandSequenceWithRelations | null
+  initialValues?: Partial<Debt> | null
 }
-const {id, planId, commandSequence} = defineProps<Props>()
+const {id, planId, commandSequence, initialValues} = defineProps<Props>()
 
 const emit = defineEmits<{
   preview: [states: DebtState[]]
@@ -20,19 +23,17 @@ const emit = defineEmits<{
 }>()
 
 const store = useDebtStore()
+const templateStore = useDebtTemplateStore()
 const commandSequenceStore = useCommandSequenceStore()
 const orchestrator = orchestratorStore()
 
+const createDefaults: Partial<Debt> = {...debtDefaults, interest_rate: 6}
+
 const model = ref<Partial<Debt>>({
-  name: 'Debt',
-  principal: 0,
-  interest_rate: 6,
-  frequency: 'monthly',
-  payment_minimum: 0,
-  payment_strategy: 'fixed',
-  payment_fixed_amount: 0,
-  payment_percentage: 0,
+  ...createDefaults,
+  ...(id === null ? initialValues : undefined),
 })
+const selectedTemplateId = ref<number | null>(null)
 const isFetching = ref(false)
 const nameInput = ref<{focus: () => void} | null>(null)
 
@@ -55,7 +56,9 @@ const {formRef, rules, onSubmit} = useNaiveForm(model)
 rules.value = debtRules(model).rules
 
 onMounted(async () => {
-  if (id !== null) {
+  if (id === null) {
+    if (!templateStore.list.length) templateStore.fetchAll()
+  } else {
     isFetching.value = true
     try {
       model.value = {...await store.fetch(id)}
@@ -66,6 +69,16 @@ onMounted(async () => {
   nextTick(() => nameInput.value?.focus())
   computePreview()
 })
+
+const templateOptions = computed(() =>
+    templateStore.list.map((template: DebtTemplate) => ({label: template.name, value: template.id})))
+
+function applyTemplate(templateId: number | null) {
+  const template = templateId === null ? null : templateStore.get(templateId)
+  model.value = template
+      ? (processTemplate(createDefaults, template) as Partial<Debt>)
+      : {...createDefaults}
+}
 
 function computePreview() {
   if (!commandSequence) {
@@ -103,6 +116,16 @@ function handleSubmit() {
 <template>
   <n-spin v-if="isFetching"/>
   <n-form v-else ref="formRef" :model="model" :rules="rules">
+    <n-form-item v-if="id === null && templateOptions.length" label="Start from a template" :show-feedback="false" class="!mb-3">
+      <n-select
+          v-model:value="selectedTemplateId"
+          :options="templateOptions"
+          placeholder="Choose a template"
+          clearable
+          @update:value="applyTemplate"
+      />
+    </n-form-item>
+
     <n-form-item label="Name" path="name" :show-feedback="false" class="!mb-3">
       <n-input ref="nameInput" v-model:value="model.name" placeholder="Enter debt name"/>
     </n-form-item>

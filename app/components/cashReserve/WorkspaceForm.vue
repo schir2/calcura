@@ -1,16 +1,19 @@
 <script setup lang="ts">
-import type {CashReserve, CashReserveInsert, CashReserveUpdate} from '#shared/types/CashReserve'
+import type {CashReserve, CashReserveInsert, CashReserveUpdate, CashReserveTemplate} from '#shared/types/CashReserve'
 import type {CashReserveState} from '#shared/types/CashReserveState'
 import type {CommandSequenceWithRelations} from '#shared/types/CommandSequence'
 import {PREVIEW_TEMP_ID} from '~/stores/orchestratorStore'
 import {cashReserveRules} from '~/utils/validators/cashReserveRules'
+import {cashReserveDefaults} from '~/constants/CashReserveConstants'
+import {processTemplate} from '~/utils/templateProcessorUtils'
 
 type Props = {
   id: number | null
   planId: number | null
   commandSequence: CommandSequenceWithRelations | null
+  initialValues?: Partial<CashReserve> | null
 }
-const {id, planId, commandSequence} = defineProps<Props>()
+const {id, planId, commandSequence, initialValues} = defineProps<Props>()
 
 const emit = defineEmits<{
   preview: [states: CashReserveState[]]
@@ -19,16 +22,17 @@ const emit = defineEmits<{
 }>()
 
 const store = useCashReserveStore()
+const templateStore = useCashReserveTemplateStore()
 const commandSequenceStore = useCommandSequenceStore()
 const orchestrator = orchestratorStore()
 
+const createDefaults: Partial<CashReserve> = {...cashReserveDefaults}
+
 const model = ref<Partial<CashReserve>>({
-  name: 'Cash Reserve',
-  initial_amount: 0,
-  cash_reserve_strategy: 'fixed',
-  reserve_amount: 0,
-  reserve_months: 0,
+  ...createDefaults,
+  ...(id === null ? initialValues : undefined),
 })
+const selectedTemplateId = ref<number | null>(null)
 const isFetching = ref(false)
 const nameInput = ref<{focus: () => void} | null>(null)
 
@@ -41,7 +45,9 @@ const {formRef, rules, onSubmit} = useNaiveForm(model)
 rules.value = cashReserveRules(model).rules
 
 onMounted(async () => {
-  if (id !== null) {
+  if (id === null) {
+    if (!templateStore.list.length) templateStore.fetchAll()
+  } else {
     isFetching.value = true
     try {
       model.value = {...await store.fetch(id)}
@@ -52,6 +58,16 @@ onMounted(async () => {
   nextTick(() => nameInput.value?.focus())
   computePreview()
 })
+
+const templateOptions = computed(() =>
+    templateStore.list.map((template: CashReserveTemplate) => ({label: template.name, value: template.id})))
+
+function applyTemplate(templateId: number | null) {
+  const template = templateId === null ? null : templateStore.get(templateId)
+  model.value = template
+      ? (processTemplate(createDefaults, template) as Partial<CashReserve>)
+      : {...createDefaults}
+}
 
 function computePreview() {
   if (!commandSequence) {
@@ -89,6 +105,16 @@ function handleSubmit() {
 <template>
   <n-spin v-if="isFetching"/>
   <n-form v-else ref="formRef" :model="model" :rules="rules">
+    <n-form-item v-if="id === null && templateOptions.length" label="Start from a template" :show-feedback="false" class="!mb-3">
+      <n-select
+          v-model:value="selectedTemplateId"
+          :options="templateOptions"
+          placeholder="Choose a template"
+          clearable
+          @update:value="applyTemplate"
+      />
+    </n-form-item>
+
     <n-form-item label="Name" path="name" :show-feedback="false" class="!mb-3">
       <n-input ref="nameInput" v-model:value="model.name" placeholder="eg: Emergency Funds"/>
     </n-form-item>

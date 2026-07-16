@@ -1,16 +1,17 @@
 <script setup lang="ts">
-import type {TaxDeferred, TaxDeferredInsert, TaxDeferredUpdate} from '#shared/types/TaxDeferred'
+import type {TaxDeferred, TaxDeferredInsert, TaxDeferredUpdate, TaxDeferredTemplate} from '#shared/types/TaxDeferred'
 import type {TaxDeferredState} from '#shared/types/TaxDeferredState'
 import type {CommandSequenceWithRelations} from '#shared/types/CommandSequence'
 import {PREVIEW_TEMP_ID} from '~/stores/orchestratorStore'
 import {taxDeferredRules} from '~/utils/validators/taxDeferredRules'
 import {taxDeferredDefaults} from '~/constants/TaxDeferredConstants'
+import {processTemplate} from '~/utils/templateProcessorUtils'
 
 type Props = {
   id: number | null
   planId: number | null
   commandSequence: CommandSequenceWithRelations | null
-  initialValues?: Partial<TaxDeferred>
+  initialValues?: Partial<TaxDeferred> | null
 }
 const {id, planId, commandSequence, initialValues} = defineProps<Props>()
 
@@ -21,15 +22,18 @@ const emit = defineEmits<{
 }>()
 
 const store = useTaxDeferredStore()
+const templateStore = useTaxDeferredTemplateStore()
 const commandSequenceStore = useCommandSequenceStore()
 const incomeStore = useIncomeStore()
 const orchestrator = orchestratorStore()
 
+const createDefaults: Partial<TaxDeferred> = {...taxDeferredDefaults, growth_rate: useDefaultGrowthRate()}
+
 const model = ref<Partial<TaxDeferred>>({
-  ...taxDeferredDefaults,
-  growth_rate: useDefaultGrowthRate(),
+  ...createDefaults,
   ...(id === null ? initialValues : undefined),
 })
+const selectedTemplateId = ref<number | null>(null)
 const isFetching = ref(false)
 const nameInput = ref<{focus: () => void} | null>(null)
 
@@ -54,7 +58,9 @@ const {formRef, rules, onSubmit} = useNaiveForm(model)
 rules.value = taxDeferredRules(model).rules
 
 onMounted(async () => {
-  if (id !== null) {
+  if (id === null) {
+    if (!templateStore.list.length) templateStore.fetchAll()
+  } else {
     isFetching.value = true
     try {
       model.value = {...await store.fetch(id)}
@@ -66,6 +72,16 @@ onMounted(async () => {
   nextTick(() => nameInput.value?.focus())
   computePreview()
 })
+
+const templateOptions = computed(() =>
+    templateStore.list.map((template: TaxDeferredTemplate) => ({label: template.name, value: template.id})))
+
+function applyTemplate(templateId: number | null) {
+  const template = templateId === null ? null : templateStore.get(templateId)
+  model.value = template
+      ? (processTemplate(createDefaults, template) as Partial<TaxDeferred>)
+      : {...createDefaults}
+}
 
 function computePreview() {
   if (!commandSequence) {
@@ -103,6 +119,16 @@ function handleSubmit() {
 <template>
   <n-spin v-if="isFetching"/>
   <n-form v-else ref="formRef" :model="model" :rules="rules">
+    <n-form-item v-if="id === null && templateOptions.length" label="Start from a template" :show-feedback="false" class="!mb-3">
+      <n-select
+          v-model:value="selectedTemplateId"
+          :options="templateOptions"
+          placeholder="Choose a template"
+          clearable
+          @update:value="applyTemplate"
+      />
+    </n-form-item>
+
     <n-form-item label="Name" path="name" :show-feedback="false" class="!mb-3">
       <n-input ref="nameInput" v-model:value="model.name" placeholder="Enter 401(k) name"/>
     </n-form-item>

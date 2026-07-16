@@ -62,3 +62,16 @@ phase. Withdrawal order is a **separate** `withdrawal_ordering_type` directive
 - The full feature spans engine + schema + triggers + UI and is tracked as a PRD/issue set, not a
   single issue; the first deployable slice ships `predefined` ordering with `bucket` and `custom` as
   fast-follows.
+
+## Amendment (2026-07-15, issue #105): retired-year debt service draws from savings
+
+Retired-year **debt** service now follows the same rule as retired-year **expense** shortfall: when
+post-tax cash cannot cover the year's scheduled debt payment, the unmet portion is drawn from savings
+through `withdrawFromSavings` (honoring the ordering/per-bucket taxation described above). Previously
+debt was silently *cash-capped* — a retiree with ample savings would leave debt unpaid and let it
+accrue interest, which is not a realistic drawdown.
+
+The drawdown happens inside `DebtManager.processImplementation` (via `PlanManager.payDebtFromSavings`)
+**before** interest is accrued, so the savings-funded principal reduction correctly lowers that year's
+interest. The savings draw is gated on `isRetired()`; during accumulation debt stays cash-capped,
+unchanged.

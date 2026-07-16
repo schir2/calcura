@@ -44,6 +44,14 @@ Since [ADR 012](../../docs/adr/012-retire-legacy-modal-form-stack.md), a domain 
 
 Both Workspace components must be registered in `common/EntityWorkspace.vue`'s `formComponent` / `projectionComponent` switches. That registration is what makes the domain editable — there is no separate enable list and no fallback.
 
+#### Template selection in `WorkspaceForm` (#136)
+Templates are surfaced *inside* the create-mode form — there is no standalone `TemplatePicker` (deleted by ADR 012; do not recreate it). The seed plumbing is shared and already done: `workspace.openCreate(model, planId, seed?)` carries optional seed values and the drawer passes them as `:initial-values`. To add template selection to a domain (see `debt/WorkspaceForm.vue` as the reference):
+1. Accept `initialValues?: Partial<T> | null` and merge it over the create defaults **only in create mode**: `{...defaults, ...(id === null ? initialValues : undefined)}`.
+2. In create mode, fetch from `use<Domain>TemplateStore` and render a "Start from a template" `n-select`; on select, `model.value = processTemplate(defaults, template)` (template wins, defaults fill gaps — `~/utils/templateProcessorUtils`).
+3. Seed real `*_template` rows via a migration so the picker isn't empty.
+
+The plumbing already covers every domain; steps 1–3 are the only per-domain work.
+
 ### Data handling
 - Components receive data via props — they do not call Supabase directly
 - All data fetching goes through composables in `composables/api/`

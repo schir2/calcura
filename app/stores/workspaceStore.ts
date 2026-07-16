@@ -12,6 +12,7 @@ export const useWorkspaceStore = defineStore('workspace', () => {
     const id = ref<number | null>(null)
     const planId = ref<number | null>(null)
     const planTab = ref<PlanWorkspaceTab>('rates')
+    const seed = ref<Record<string, unknown> | null>(null)
 
     const mode = computed<'create' | 'edit'>(() =>
         kind.value === 'plan' || id.value !== null ? 'edit' : 'create')
@@ -21,14 +22,16 @@ export const useWorkspaceStore = defineStore('workspace', () => {
         modelName.value = model
         id.value = entityId
         planId.value = null
+        seed.value = null
         isOpen.value = true
     }
 
-    function openCreate(model: ModelName, forPlanId: number) {
+    function openCreate(model: ModelName, forPlanId: number, seedValues: Record<string, unknown> | null = null) {
         kind.value = 'entity'
         modelName.value = model
         id.value = null
         planId.value = forPlanId
+        seed.value = seedValues
         isOpen.value = true
     }
 
@@ -38,6 +41,7 @@ export const useWorkspaceStore = defineStore('workspace', () => {
         id.value = forPlanId
         planId.value = forPlanId
         planTab.value = tab
+        seed.value = null
         isOpen.value = true
     }
 
@@ -48,7 +52,8 @@ export const useWorkspaceStore = defineStore('workspace', () => {
         id.value = null
         planId.value = null
         planTab.value = 'rates'
+        seed.value = null
     }
 
-    return {isOpen, kind, modelName, id, planId, planTab, mode, open, openCreate, openPlan, close}
+    return {isOpen, kind, modelName, id, planId, planTab, seed, mode, open, openCreate, openPlan, close}
 })

@@ -24,8 +24,11 @@ export default class DebtManager extends BaseManager<Debt, DebtState> {
             throw new Error("The current state has already been processed.");
         }
         const paymentRequest = this.calculatePayment(currentState)
-        const payment = this.orchestrator.requestFunds(paymentRequest, FundType.Taxed)
-        this.orchestrator.payDebt(payment)
+        const cashPayment = this.orchestrator.requestFunds(paymentRequest, FundType.Taxed)
+        this.orchestrator.payDebt(cashPayment)
+
+        const savingsPayment = this.orchestrator.payDebtFromSavings(paymentRequest - cashPayment)
+        const payment = cashPayment + savingsPayment
 
         const principalEndOfYear = currentState.principal_start_of_year - payment;
         const interestAmount = this.calculateInterest(principalEndOfYear)

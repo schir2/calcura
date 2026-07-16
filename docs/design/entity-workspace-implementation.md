@@ -131,10 +131,21 @@ passes `id ?? PREVIEW_TEMP_ID` (not `[]`) in create mode.
 **Order note:** a domain isn't "done" until **both** its `formComponent` and `projectionComponent`
 cases exist — with one missing, the drawer opens half-empty. Do them together.
 
-**Templates:** `<domain>/TemplatePicker.vue` is gone (ADR 012). The `*_template` tables and
-`processTemplate()` are **kept**, but template selection has no UI until `openCreate` learns to
-accept seed values. Do not rebuild a picker — see the [[Templates]] glossary entry and its
-tracked follow-up.
+**Templates:** the legacy `<domain>/TemplatePicker.vue` is gone (ADR 012); the `*_template` tables
+and `processTemplate()` are **kept**. Template selection is now restored *inside* the Workspace
+(#136), not as a standalone picker. The plumbing is shared and already done:
+`workspace.openCreate(model, planId, seed?)` carries optional seed values, and the drawer threads
+them into the form as `:initial-values`. To add template selection to a domain:
+
+1. Give its `WorkspaceForm` an `initialValues?: Partial<T> | null` prop and merge it over the create
+   defaults **in create mode only** — `{...defaults, ...(id === null ? initialValues : undefined)}`.
+   (The ira / roth_ira / tax_deferred forms already accept `initialValues` from income-linking.)
+2. In create mode (`id === null`), fetch templates from `use<Domain>TemplateStore` and render a
+   "Start from a template" `n-select`; on select, set `model.value = processTemplate(defaults, template)`.
+3. Seed real `*_template` rows via a migration so the picker isn't empty.
+
+`app/components/debt/WorkspaceForm.vue` is the reference implementation. See the [[Templates]]
+glossary entry.
 
 ---
 
