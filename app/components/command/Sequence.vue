@@ -1,21 +1,9 @@
 <script setup lang="ts">
-import draggable from 'vuedraggable';
 import type {CommandSequenceWithRelations} from "#shared/types/CommandSequence";
 import type {CommandSequenceCommandWithRelations} from "#shared/types/CommandSequenceCommand";
 import type {PlanWithRelations} from "#shared/types/Plan";
 import type {ModelName} from "#shared/types/ModelName";
-import {predefinedOrderRank} from "~/constants/CommandOrder";
-import {
-  BrokerageListItem,
-  CashReserveListItem,
-  DebtListItem,
-  ExpenseListItem,
-  HsaListItem,
-  IncomeListItem,
-  IraListItem,
-  RothIraListItem,
-  TaxDeferredListItem
-} from "#components";
+import {predefinedOrderRank, predefinedWithdrawalRank} from "~/constants/CommandOrder";
 
 type Props = {
   commandSequence: CommandSequenceWithRelations,
@@ -25,89 +13,50 @@ type Props = {
 const props = defineProps<Props>()
 const commandSequenceStore = useCommandSequenceStore()
 
-const commandsRef = ref<CommandSequenceCommandWithRelations[]>([...props.commandSequence.command_sequence_commands])
-watch(() => props.commandSequence.command_sequence_commands, (newCommands) => {
-  commandsRef.value = [...newCommands];
-}, {deep: true});
-
 const emit = defineEmits<{
   update: [payload: { modelName: ModelName, id: number, data: Record<string, unknown> }]
   delete: [payload: { modelName: ModelName, id: number }]
 }>()
 
-const isPredefined = computed(() => props.commandSequence.accumulation_ordering_type === 'predefined')
+// The command list splits by action into two independently-ordered lists: contributions (process +
+// invest) and withdrawals (withdraw). One visible at a time behind a segmented switch (#81).
+const view = ref<'contributions' | 'withdrawals'>('contributions')
 
-async function onChange() {
-  drag.value = false
-  await commandSequenceStore.reorder(props.commandSequence.id, commandsRef.value.map(csc => csc.id))
-  if (isPredefined.value) {
-    await commandSequenceStore.patch(props.commandSequence.id, {accumulation_ordering_type: 'custom'})
-  }
-}
+const accumulationLocked = computed(() => props.commandSequence.accumulation_ordering_type === 'predefined')
+const withdrawalLocked = computed(() => props.commandSequence.withdrawal_ordering_type === 'predefined')
 
-async function applyPredefinedOrder() {
-  sortCommandsRefPredefined()
-  await commandSequenceStore.patch(props.commandSequence.id, {accumulation_ordering_type: 'predefined'})
-}
-
-async function setCustom() {
-  await commandSequenceStore.patch(props.commandSequence.id, {accumulation_ordering_type: 'custom'})
-}
-
-function sortCommandsRefPredefined() {
-  commandsRef.value = [...commandsRef.value].sort((a, b) =>
-      predefinedOrderRank(a.command.model_name) - predefinedOrderRank(b.command.model_name)
-  )
-}
-
-watch(isPredefined, (locked) => {
-  if (locked) sortCommandsRefPredefined()
-  else commandsRef.value = [...props.commandSequence.command_sequence_commands]
+const accumulationCommands = computed<CommandSequenceCommandWithRelations[]>(() => {
+  const list = props.commandSequence.command_sequence_commands.filter(csc => csc.command.action !== 'withdraw')
+  return accumulationLocked.value
+      ? [...list].sort((a, b) => predefinedOrderRank(a.command.model_name) - predefinedOrderRank(b.command.model_name))
+      : list
 })
 
-function renderComponent(plan: PlanWithRelations, modelName: ModelName, modelId: number) {
-  switch (modelName) {
-    case 'expense': {
-      const expense = plan.expenses.find(elem => elem.id === modelId);
-      return expense ? h(ExpenseListItem, {expense}) : null;
-    }
-    case 'tax_deferred': {
-      const taxDeferred = plan.tax_deferreds.find(elem => elem.id === modelId);
-      return taxDeferred ? h(TaxDeferredListItem, {taxDeferred, incomes: plan.incomes}) : null;
-    }
-    case 'brokerage': {
-      const brokerage = plan.brokerages.find(elem => elem.id === modelId);
-      return brokerage ? h(BrokerageListItem, {brokerage}) : null;
-    }
-    case 'cash_reserve': {
-      const cashReserve = plan.cash_reserves.find(elem => elem.id === modelId);
-      return cashReserve ? h(CashReserveListItem, {cashReserve}) : null;
-    }
-    case 'debt': {
-      const debt = plan.debts.find(elem => elem.id === modelId);
-      return debt ? h(DebtListItem, {debt}) : null;
-    }
-    case 'income': {
-      const income = plan.incomes.find(elem => elem.id === modelId);
-      return income ? h(IncomeListItem, {income}) : null;
-    }
-    case 'ira': {
-      const ira = plan.iras.find(elem => elem.id === modelId);
-      return ira ? h(IraListItem, {ira}) : null;
-    }
-    case 'roth_ira': {
-      const rothIra = plan.roth_iras.find(elem => elem.id === modelId);
-      return rothIra ? h(RothIraListItem, {rothIra}) : null;
-    }
-    case 'hsa': {
-      const hsa = plan.hsas.find(elem => elem.id === modelId);
-      return hsa ? h(HsaListItem, {hsa}) : null;
-    }
-  }
-  return null;
+const withdrawalCommands = computed<CommandSequenceCommandWithRelations[]>(() => {
+  const list = props.commandSequence.command_sequence_commands.filter(csc => csc.command.action === 'withdraw')
+  return withdrawalLocked.value
+      ? [...list].sort((a, b) => predefinedWithdrawalRank(a.command.model_name) - predefinedWithdrawalRank(b.command.model_name))
+      : list
+})
+
+// Each list reorders only its own subset; the shared csc.order is sorted per-subset by the engine.
+async function reorder(orderedIds: number[]) {
+  await commandSequenceStore.reorder(props.commandSequence.id, orderedIds)
 }
 
-async function updateCommandState(csc: CommandSequenceCommandWithRelations) {
+async function toggleAccumulationLock() {
+  await commandSequenceStore.patch(props.commandSequence.id, {
+    accumulation_ordering_type: accumulationLocked.value ? 'custom' : 'predefined',
+  })
+}
+
+async function toggleWithdrawalLock() {
+  await commandSequenceStore.patch(props.commandSequence.id, {
+    withdrawal_ordering_type: withdrawalLocked.value ? 'custom' : 'predefined',
+  })
+}
+
+async function toggleCommand(csc: CommandSequenceCommandWithRelations) {
   const prev = csc.is_active
   const next = !prev
   csc.is_active = next
@@ -117,99 +66,37 @@ async function updateCommandState(csc: CommandSequenceCommandWithRelations) {
     csc.is_active = prev
   }
 }
-
-const drag = ref<boolean>(false)
-
-// Collapse/expand state. Per-item overrides seed from the global toggle; a transient drag
-// collapses everything while dragging and restores per-item state on drop.
-// Precedence: drag override → per-item state ← global toggle.
-const expandedOverrides = reactive(new Map<number, boolean>())
-const globalExpanded = ref<boolean>(false)
-
-function isRowExpanded(cscId: number): boolean {
-  if (drag.value) return false
-  return expandedOverrides.has(cscId) ? expandedOverrides.get(cscId)! : globalExpanded.value
-}
-
-function toggleRow(cscId: number) {
-  expandedOverrides.set(cscId, !isRowExpanded(cscId))
-}
-
-function setAllExpanded(expanded: boolean) {
-  globalExpanded.value = expanded
-  expandedOverrides.clear()
-}
-
-function handleUpdate(modelName: ModelName, id: number, data: Record<string, unknown>) {
-  emit("update", {modelName, id, data})
-}
-
-function handleDelete(modelName: ModelName, id: number) {
-  emit("delete", {modelName, id})
-}
 </script>
 
 <template>
-  <div
-      class="flex items-center gap-2.5 px-2.5 py-1.5 mb-2 rounded border text-xs"
-      :class="isPredefined
-        ? 'border-blue-200 bg-blue-50 dark:bg-blue-950/30'
-        : 'border-skin-base/20 bg-skin-surface'"
-  >
-    <n-button
-        size="tiny"
-        :type="isPredefined ? 'info' : 'default'"
-        :secondary="isPredefined"
-        @click="isPredefined ? setCustom() : applyPredefinedOrder()"
-    >
-      <template #icon>
-        <base-ico :name="isPredefined ? 'lock' : 'unlock'"/>
-      </template>
-      {{ isPredefined ? 'Locked — predefined' : 'Unlocked — custom' }}
-    </n-button>
-    <span :class="isPredefined ? 'text-blue-600 dark:text-blue-300' : 'text-skin-muted'">
-      {{ isPredefined ? 'income → debt → expense → savings' : 'drag handles to reorder' }}
-    </span>
-    <span class="flex-1"/>
-    <n-button size="tiny" quaternary @click="setAllExpanded(!globalExpanded)">
-      <template #icon>
-        <base-ico :name="globalExpanded ? 'up' : 'down'"/>
-      </template>
-      {{ globalExpanded ? 'Collapse all' : 'Expand all' }}
-    </n-button>
-  </div>
+  <n-tabs v-model:value="view" type="segment" size="small" class="mb-3">
+    <n-tab name="contributions">Contributions</n-tab>
+    <n-tab name="withdrawals">Withdrawals</n-tab>
+  </n-tabs>
 
-  <draggable class="dragArea list-group w-full space-y-1"
-             v-model="commandsRef"
-             group="commands"
-             handle=".drag-handle"
-             @start="drag=true"
-             :animation="300"
-             item-key="id"
-             :disabled="isPredefined"
-             @end="onChange">
-    <template #item="{element: command} : {element: CommandSequenceCommandWithRelations}">
-      <div class="flex gap-2 items-center border-skin-base/30 bg-skin-surface rounded border p-1 transition"
-           :class="{'opacity-40 grayscale': !command.is_active}">
-        <base-ico
-            :class="['text-2xl drag-handle', isPredefined ? 'opacity-20 cursor-not-allowed' : 'text-skin-primary/80 cursor-move']"
-            name="drag"
-        />
-        <n-switch
-            :round="false"
-            size="small"
-            :value="command.is_active"
-            @update:value="() => updateCommandState(command)"
-        />
-        <component
-            :is="renderComponent(plan, command.command.model_name, command.command.model_id)"
-            :expanded="isRowExpanded(command.id)"
-            :is-active="command.is_active"
-            @toggle="() => toggleRow(command.id)"
-            @update="(id: number, update: Record<string, unknown>) => handleUpdate(command.command.model_name, id, update)"
-            @delete="(id: number) => handleDelete(command.command.model_name, id)"
-        />
-      </div>
-    </template>
-  </draggable>
+  <CommandOrderList
+      v-show="view === 'contributions'"
+      :commands="accumulationCommands"
+      :plan="plan"
+      :locked="accumulationLocked"
+      predefined-hint="income → debt → expense → savings"
+      @reorder="reorder"
+      @toggle-lock="toggleAccumulationLock"
+      @toggle-command="toggleCommand"
+      @update="emit('update', $event)"
+      @delete="emit('delete', $event)"
+  />
+
+  <CommandOrderList
+      v-show="view === 'withdrawals'"
+      :commands="withdrawalCommands"
+      :plan="plan"
+      :locked="withdrawalLocked"
+      predefined-hint="taxable → tax-deferred → tax-exempt → cash reserve (last)"
+      @reorder="reorder"
+      @toggle-lock="toggleWithdrawalLock"
+      @toggle-command="toggleCommand"
+      @update="emit('update', $event)"
+      @delete="emit('delete', $event)"
+  />
 </template>

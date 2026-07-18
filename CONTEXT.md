@@ -407,6 +407,13 @@ withdrawal independently). Governs how the **`withdraw`** commands drain in reti
 **`predefined | custom`**. The independence is the point — e.g. predefined contributions **+** custom
 drain, which a single shared directive could not express. `predefined` uses a **distinct withdrawal
 rank** (`predefinedWithdrawalRank` in `CommandOrder.ts`), *not* the accumulation rank.
+
+**Drawer UI (#81):** the reorder list splits by `command.action` into two independently-ordered,
+independently-lockable lists — **Contributions** (`process` + `invest`) and **Withdrawals** (`withdraw`)
+— behind a **segmented switcher** (one visible at a time), chosen via a throwaway prototype over
+stacked/side-by-side layouts (2026-07-17). Both lists reuse the same rich Rich List Item; each list's
+lock toggle drives its own directive, and `store.reorder` runs per-subset. Lives in
+`command/Sequence.vue` + `command/CommandOrderList.vue`.
 - `predefined` — spend **spendable cash first** (`cash.net`, the liquid post-tax cash flow — not an
   account, always implicitly first), then drain savings accounts **taxable → tax-deferred → tax-exempt →
   cash_reserve**. Cheapest-taxed savings first, then the **cash-reserve emergency fund dead last** —
