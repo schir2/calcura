@@ -181,6 +181,11 @@ export function planRules(modelRef: Ref<Partial<Plan>>) {
             {required: true, type: "number", message: "Tax rate is required", trigger: ["blur", "change"]},
             {type: "number", min: MIN_TAX_RATE, message: "Tax rate cannot be negative.", trigger: ["blur", "change"]},
             {type: "number", max: MAX_TAX_RATE, message: "Tax rate must be 100% or less.", trigger: ["blur", "change"]}
+        ],
+        capital_gains_rate: [
+            {required: true, type: "number", message: "Capital gains rate is required", trigger: ["blur", "change"]},
+            {type: "number", min: MIN_CAPITAL_GAINS_RATE, message: "Capital gains rate cannot be negative.", trigger: ["blur", "change"]},
+            {type: "number", max: MAX_CAPITAL_GAINS_RATE, message: "Capital gains rate must be 100% or less.", trigger: ["blur", "change"]}
         ]
     };
 

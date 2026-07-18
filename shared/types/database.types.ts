@@ -226,7 +226,7 @@ export type Database = {
       }
       command: {
         Row: {
-          action: string
+          action: Database["public"]["Enums"]["command_action"]
           created_at: string
           creator_id: string | null
           edited_at: string
@@ -237,7 +237,7 @@ export type Database = {
           model_name: Database["public"]["Enums"]["model_name"]
         }
         Insert: {
-          action: string
+          action: Database["public"]["Enums"]["command_action"]
           created_at?: string
           creator_id?: string | null
           edited_at?: string
@@ -248,7 +248,7 @@ export type Database = {
           model_name: Database["public"]["Enums"]["model_name"]
         }
         Update: {
-          action?: string
+          action?: Database["public"]["Enums"]["command_action"]
           created_at?: string
           creator_id?: string | null
           edited_at?: string
@@ -262,34 +262,37 @@ export type Database = {
       }
       command_sequence: {
         Row: {
+          accumulation_ordering_type: Database["public"]["Enums"]["command_sequence_ordering_type"]
           created_at: string
           creator_id: string | null
           edited_at: string
           editor_id: string | null
           id: number
           name: string
-          ordering_type: Database["public"]["Enums"]["command_sequence_ordering_type"]
           plan_id: number
+          withdrawal_ordering_type: Database["public"]["Enums"]["command_sequence_ordering_type"]
         }
         Insert: {
+          accumulation_ordering_type?: Database["public"]["Enums"]["command_sequence_ordering_type"]
           created_at?: string
           creator_id?: string | null
           edited_at?: string
           editor_id?: string | null
           id?: never
           name: string
-          ordering_type?: Database["public"]["Enums"]["command_sequence_ordering_type"]
           plan_id: number
+          withdrawal_ordering_type?: Database["public"]["Enums"]["command_sequence_ordering_type"]
         }
         Update: {
+          accumulation_ordering_type?: Database["public"]["Enums"]["command_sequence_ordering_type"]
           created_at?: string
           creator_id?: string | null
           edited_at?: string
           editor_id?: string | null
           id?: never
           name?: string
-          ordering_type?: Database["public"]["Enums"]["command_sequence_ordering_type"]
           plan_id?: number
+          withdrawal_ordering_type?: Database["public"]["Enums"]["command_sequence_ordering_type"]
         }
         Relationships: [
           {
@@ -873,6 +876,7 @@ export type Database = {
       plan: {
         Row: {
           age: number
+          capital_gains_rate: number
           created_at: string
           creator_id: string | null
           edited_at: string
@@ -897,6 +901,7 @@ export type Database = {
         }
         Insert: {
           age?: number
+          capital_gains_rate?: number
           created_at?: string
           creator_id?: string | null
           edited_at?: string
@@ -921,6 +926,7 @@ export type Database = {
         }
         Update: {
           age?: number
+          capital_gains_rate?: number
           created_at?: string
           creator_id?: string | null
           edited_at?: string
@@ -1302,9 +1308,21 @@ export type Database = {
     }
     Functions: {
       duplicate_plan: { Args: { p_plan_id: number }; Returns: number }
+      emit_command_for_item: {
+        Args: {
+          p_action: Database["public"]["Enums"]["command_action"]
+          p_creator: string
+          p_editor: string
+          p_model_id: number
+          p_model_name: Database["public"]["Enums"]["model_name"]
+          p_plan_id: number
+        }
+        Returns: undefined
+      }
     }
     Enums: {
       cash_reserve_strategy: "fixed" | "variable"
+      command_action: "process" | "invest" | "withdraw"
       command_sequence_ordering_type: "predefined" | "custom"
       contribution_strategy: "fixed" | "percentage_of_income" | "max"
       debt_payment_strategy:
@@ -1482,6 +1500,7 @@ export const Constants = {
   public: {
     Enums: {
       cash_reserve_strategy: ["fixed", "variable"],
+      command_action: ["process", "invest", "withdraw"],
       command_sequence_ordering_type: ["predefined", "custom"],
       contribution_strategy: ["fixed", "percentage_of_income", "max"],
       debt_payment_strategy: [

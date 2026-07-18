@@ -1,12 +1,17 @@
 import type {Hsa} from '#shared/types/Hsa';
-import {assertDefined, calculateGrowthAmount} from "~/utils";
+import {assertDefined} from "~/utils";
 import type {HsaState} from "#shared/types/HsaState";
-import BaseManager from "~/models/common/BaseManager";
+import {InvestmentAccountManager} from "~/models/common/InvestmentAccountManager";
+import type {TaxCategory} from "~/models/common/InvestableManager";
 import {FundType} from "~/models/plan/PlanManager";
 import {ContributionType} from "#shared/types/ContributionType";
 import {HSA_CONTRIBUTION_LIMIT_2024} from "~/constants/HsaConstants";
 
-export class HsaManager extends BaseManager<Hsa, HsaState> {
+export class HsaManager extends InvestmentAccountManager<Hsa, HsaState> {
+    readonly taxCategory: TaxCategory = 'tax_deferred';
+    protected readonly contributionType = ContributionType.Hsa;
+    protected readonly fundType = FundType.Taxable;
+
 
     protected createInitialState(): HsaState {
         return {
@@ -40,28 +45,6 @@ export class HsaManager extends BaseManager<Hsa, HsaState> {
         };
     }
 
-    processImplementation() {
-        const currentState = this.getCurrentState()
-        const contributionRequest = this.calculateContribution()
-        const contribution = this.orchestrator.requestAndWithdraw(contributionRequest, FundType.Taxable)
-        const growthAmount = calculateGrowthAmount(
-            currentState.balance_start_of_year,
-            this.config.growth_rate,
-            this.orchestrator.getConfig().growth_application_strategy,
-            contribution
-        )
-        this.orchestrator.contribute(contribution, ContributionType.Hsa)
-        this.orchestrator.invest(growthAmount + contribution, ContributionType.Hsa)
-        const balanceEndOfYear = currentState.balance_start_of_year + growthAmount + contribution
-        this.updateCurrentState({
-            ...currentState,
-            contribution: contribution,
-            contribution_lifetime: currentState.contribution_lifetime + contribution,
-            balance_end_of_year: balanceEndOfYear,
-            growth_amount: growthAmount,
-            growth_lifetime: currentState.growth_lifetime + growthAmount,
-        })
-    }
 }
 
 export function calculateHsaContribution(hsaConfig: Hsa, hsaLimit: number = HSA_CONTRIBUTION_LIMIT_2024): number {

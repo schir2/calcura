@@ -205,47 +205,30 @@ describe("DebtManager", () => {
 
     })
 
-    describe('retirement drawdown (#105)', () => {
+    // DebtManager.process() itself only pays from cash and records the unmet payment as a shortfall;
+    // it never touches savings. In retirement the shortfall is funded from savings by the drawdown
+    // resolver during PlanManager.simulate() (#105) — see RetirementDrawdownTax.test.ts — not here.
+    describe('cash-capped payment (process in isolation)', () => {
         const brokerage = {
             id: 1, name: 'Brokerage', growth_rate: 0, initial_balance: 50_000,
             contribution_strategy: 'fixed' as const, contribution_percentage: 0, contribution_fixed_amount: 0,
         }
 
-        it("draws the unmet debt payment from savings when retired and cash is short", () => {
-            const retiredPlan = new PlanManager({...planConfig, incomes: [], brokerages: [brokerage]})
-            retiredPlan.getCurrentState().retired = true
+        it("never touches savings when cash is short (retired or working)", () => {
+            for (const retired of [false, true]) {
+                const plan = new PlanManager({...planConfig, incomes: [], brokerages: [brokerage]})
+                if (retired) plan.getCurrentState().retired = true
 
-            const debtManager = new DebtManager(retiredPlan, {
-                ...debt, principal: 10_000, payment_fixed_amount: 4_000,
-                payment_strategy: 'fixed', interest_rate: 0,
-            })
-            debtManager.process()
+                const debtManager = new DebtManager(plan, {
+                    ...debt, principal: 10_000, payment_fixed_amount: 4_000,
+                    payment_strategy: 'fixed', interest_rate: 0,
+                })
+                debtManager.process()
 
-            const debtState = debtManager.getCurrentState()
-            const planState = retiredPlan.getCurrentState()
-
-            expect(debtState.payment).toBe(4_000)
-            expect(debtState.principal_end_of_year).toBe(6_000)
-            expect(planState.liabilities.debt.paid).toBe(4_000)
-            expect(planState.liabilities.debt.paid_lifetime).toBe(4_000)
-            expect(planState.assets.taxable.balance_end).toBe(46_000)
-        })
-
-        it("stays cash-capped and never touches savings while still working", () => {
-            const workingPlan = new PlanManager({...planConfig, incomes: [], brokerages: [brokerage]})
-
-            const debtManager = new DebtManager(workingPlan, {
-                ...debt, principal: 10_000, payment_fixed_amount: 4_000,
-                payment_strategy: 'fixed', interest_rate: 0,
-            })
-            debtManager.process()
-
-            const debtState = debtManager.getCurrentState()
-            const planState = workingPlan.getCurrentState()
-
-            expect(debtState.payment).toBe(0)
-            expect(planState.liabilities.debt.paid).toBe(0)
-            expect(planState.assets.taxable.balance_end).toBe(50_000)
+                expect(debtManager.getCurrentState().payment).toBe(0)
+                expect(plan.getCurrentState().liabilities.debt.paid).toBe(0)
+                expect(plan.getCurrentState().assets.taxable.balance_end).toBe(50_000)
+            }
         })
     })
 

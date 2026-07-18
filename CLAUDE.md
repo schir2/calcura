@@ -187,3 +187,17 @@ Before making any file changes, follow this step-through workflow by default:
 
 ### Git — never switch or create branches
 **Never run `git checkout`/`git switch`/`git branch` to change or create branches, and never create a new branch, unless I explicitly ask.** Do all work on whatever branch is currently checked out. I handle branching and committing myself.
+
+## Agent skills
+
+### Issue tracker
+
+Issues and PRDs live as GitHub issues in `schir2/calcura`, managed via the `gh` CLI. See `docs/agents/issue-tracker.md`.
+
+### Triage labels
+
+Five canonical triage roles map one-to-one to identically-named labels already on the repo. See `docs/agents/triage-labels.md`.
+
+### Domain docs
+
+Single-context: one `CONTEXT.md` + `docs/adr/` at the repo root. See `docs/agents/domain.md`.

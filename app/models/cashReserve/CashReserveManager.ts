@@ -1,11 +1,13 @@
-import BaseManager from "~/models/common/BaseManager";
+import {InvestableManager, type TaxCategory} from "~/models/common/InvestableManager";
 import type {CashReserve} from "#shared/types/CashReserve";
 import type CashReserveState from "#shared/types/CashReserveState";
 import {FundType} from "~/models/plan/PlanManager";
 
 import {ContributionType} from "#shared/types/ContributionType";
 
-export class CashReserveManager extends BaseManager<CashReserve, CashReserveState> {
+export class CashReserveManager extends InvestableManager<CashReserve, CashReserveState> {
+    readonly taxCategory: TaxCategory = 'cash';
+
     protected createInitialState(): CashReserveState {
         return {
             amount_requested: undefined,
@@ -43,18 +45,44 @@ export class CashReserveManager extends BaseManager<CashReserve, CashReserveStat
     }
 
     processImplementation() {
-        const currentState = this.getCurrentState();
+        const state = this.getCurrentState();
+        this.updateCurrentState({
+            ...state,
+            amount_requested: 0,
+            amount_paid: 0,
+            cash_reserve_end_of_year: state.cash_reserve_start_of_year,
+        })
+        // Cash reserve holds cash — no market return (no grow). Funding stops in retirement.
+        if (!this.orchestrator.isRetired()) this.contribute()
+    }
+
+    contribute(): void {
+        const state = this.getCurrentState()
+        const base = state.cash_reserve_end_of_year ?? state.cash_reserve_start_of_year
         const contributionRequested = this.calculateContribution()
         const contribution = this.orchestrator.requestAndWithdraw(contributionRequested, FundType.Taxed)
-        const cashReserveEndOfYear = currentState.cash_reserve_start_of_year + contribution;
-        this.orchestrator.contribute(contribution, ContributionType.CashReserve)
-        this.orchestrator.invest(contribution, ContributionType.CashReserve)
+        if (contribution !== 0) {
+            this.orchestrator.contribute(contribution, ContributionType.CashReserve)
+            this.orchestrator.invest(contribution, ContributionType.CashReserve)
+        }
         this.updateCurrentState({
-            ...currentState,
-            amount_paid: contribution,
+            ...state,
             amount_requested: contributionRequested,
-            cash_reserve_end_of_year: cashReserveEndOfYear
-        });
+            amount_paid: contribution,
+            cash_reserve_end_of_year: base + contribution,
+        })
+    }
+
+    // The emergency fund is zero-tax; drained last in the predefined order.
+    withdraw(netNeed: number): number {
+        if (netNeed <= 0) return 0
+        const state = this.getCurrentState()
+        const balance = state.cash_reserve_end_of_year ?? state.cash_reserve_start_of_year
+        if (balance <= 0) return 0
+        const gross = Math.min(balance, netNeed)
+        this.orchestrator.invest(-gross, ContributionType.CashReserve)
+        this.updateCurrentState({...state, cash_reserve_end_of_year: balance - gross})
+        return gross
     }
 
 }

@@ -66,13 +66,21 @@ The junction record linking a Command to a Sequence. Carries `order` (integer, 1
 ### Active Command
 A CSC where `is_active = true`. The simulation processes **only** active commands. Inactive commands are skipped entirely — the corresponding manager does not run at all that year. There is no "passive processing" mode.
 
-### `ordering_type`
-A **live sort directive** on a Command Sequence that determines how active commands are ordered for execution — `predefined` or `custom`.
+### `accumulation_ordering_type`
+A **live sort directive** on a Command Sequence governing how the **accumulation-side** commands
+(`process` + `invest`) are ordered for execution — `predefined` or `custom`. (Renamed from
+`ordering_type` on 2026-07-17 when [[`withdrawal_ordering_type`]] joined it as a sibling directive; both
+use the shared `command_sequence_ordering_type` enum.)
 
-- `predefined` — commands are sorted on the fly by the canonical model-priority algorithm (income → debt → expense → cash_reserve → tax_deferred → roth_ira → ira → brokerage → hsa). `csc.order` is **ignored** in this mode; switching to predefined does not rewrite it.
+- `predefined` — commands are sorted on the fly by the canonical model-priority algorithm (income →
+  debt → expense → cash_reserve → tax_deferred → roth_ira → ira → brokerage → hsa). `csc.order` is
+  **ignored** in this mode; switching to predefined does not rewrite it.
 - `custom` — commands are sorted by the user's drag order stored in `csc.order`.
 
-The simulation branches on `ordering_type`: under `predefined` it applies the priority algorithm; under `custom` it sorts by `csc.order`. So `csc.order` is authoritative only when `ordering_type = 'custom'`.
+The simulation branches on `accumulation_ordering_type`: under `predefined` it applies the priority
+algorithm; under `custom` it sorts by `csc.order`. So `csc.order` is authoritative only under `custom`.
+The **withdraw** commands are ordered by the separate [[`withdrawal_ordering_type`]] — the two axes are
+independent (e.g. predefined contributions + custom drain).
 
 ### Manager State History
 The per-entity year-by-year `TState[]` held privately on each `BaseManager` (`this.states`, exposed via `manager.getStates()`). Distinct from [[Command Sequence]]'s aggregate output: `OrchestratorState` collapses the same figures by *category* (`assets.taxable`, `assets.cash_reserve`, …) and discards per-entity granularity. The real per-item series a subgraph needs already exists here — it is simply not surfaced to the frontend today. (Grill session 2026-07-03.)
@@ -299,12 +307,19 @@ How withdrawals from savings are taxed during retirement decumulation. Introduce
 withdrawal sequencing (#68), which follows the tax-naive drawdown of #67. (Grill session 2026-07-04.)
 
 ### Per-bucket effective rate
-Retirement-withdrawal tax is modeled as a single **effective rate per account bucket** applied to
-the **whole withdrawal** — deliberately *not* cost-basis tracking (only-the-gain-is-taxed) or tax
-brackets. This matches the engine's existing flat-tax world (`income_type` is `ordinary`-only, one
-`tax_rate`). It slightly over-taxes taxable-bucket withdrawals (real life taxes only the gain), an
-intentionally conservative direction for a planning tool. Basis/LTCG realism is a deferred future
-issue, not #68.
+Retirement-withdrawal tax is a **per-bucket effective rate** applied at withdrawal:
+- `tax_deferred` (401k/IRA/HSA) — the **whole withdrawal** at the `ordinary` rate (`tax_rate`). Those
+  dollars went in pre-tax, so there is no basis to exclude; taxing 100% is correct, not conservative.
+- `taxable` (brokerage) — **only the gain is taxed**, via [[Pro-rata basis]]. The bucket's effective
+  rate is therefore **dynamic** (`gain_fraction × capital_gains_rate`), not a constant.
+- `tax_exempt` (Roth) / `cash` — `0`.
+
+**Supersedes** the original #68 stance (2026-07-04 grill): "one effective rate per bucket applied to the
+*whole* withdrawal, deliberately *not* cost-basis, intentionally over-taxing the taxable bucket as a
+conservative simplification." That matched the flat-tax world but failed *pessimistic* on the taxable
+bucket, distorting the depletion age — the number the tool exists to produce. Pro-rata is more accurate
+for a bounded cost (one basis number per account). Reversed in the 2026-07-17 grill (follow-up to #105).
+Tax brackets and short-vs-long-term holding periods remain out of scope.
 
 ### Tax source (`taxFor` seam)
 All tax computation routes through **one function** keyed by the money's source, generalizing
@@ -312,32 +327,102 @@ today's flat `calculateTaxes(agi)` (`PlanManager.ts:502`) — which becomes the 
 - `ordinary` → `tax_rate` — income during accumulation, **and** tax-deferred (401k/IRA/HSA)
   withdrawals (they are ordinary income).
 - `capital_gains` → new `capital_gains_rate` plan field (default `15`) — brokerage (taxable-bucket)
-  withdrawals.
+  withdrawals, applied to **only the gain** ([[Pro-rata basis]]), not the whole withdrawal.
 - `tax_exempt` → 0 — Roth withdrawals.
 - `cash` → 0 — cash-reserve withdrawals.
-Rationale: one seam to change when brackets/basis land later, instead of every call site.
+Rationale: one seam to change when brackets land later, instead of every call site.
+
+### Pro-rata basis
+The taxable bucket tracks **[[Cost basis]]** so that only the gain is taxed on withdrawal. A withdrawal
+of `w` from a balance `b` carrying basis `k` draws basis and gain **proportionally**: it returns
+`w × (k / b)` of basis untaxed and taxes `w × (1 − k / b)` (the gain fraction) at `capital_gains_rate`.
+The basis-to-balance ratio is recomputed at each withdrawal as the account grows, so the effective rate
+drifts over time. This is the **average-cost method** (IRS-sanctioned for funds), chosen over per-lot /
+FIFO tracking as a lighter middle path. See [[Per-bucket effective rate]].
+
+### Cost basis
+The cumulative **post-tax dollars contributed** to a taxable account (its starting balance plus lifetime
+contributions), i.e. the amount already taxed as income and therefore excluded from tax on withdrawal.
+Only the taxable bucket carries basis — `tax_deferred` has none (pre-tax dollars, nothing to exclude)
+and `tax_exempt` needs none (withdrawals are untaxed regardless). Consumed proportionally by
+[[Pro-rata basis]] withdrawals.
+
+Basis is tracked **per brokerage account** (on `BrokerageState`), not aggregated at the bucket — the
+withdrawal resolver already walks accounts within a bucket, so co-locating basis with each account's
+balance is both more accurate (mixed-age accounts aren't blended) and the granularity the future
+`custom` per-entity withdrawal order (#81) needs. A new account's basis is **initialized to its whole
+starting balance** (`initial_balance` treated entirely as basis). This is a known-**optimistic**
+simplification: a pre-existing account's embedded unrealized gains escape tax because we can't know how
+much of the starting balance was principal vs. growth. An explicit user-entered starting-basis input is
+a deliberate future refinement — deferred because most users don't know their basis and it adds form
+complexity.
 
 ### Withdraw Command (`command.action = 'withdraw'`)
 Decumulation is driven by [[Command]]s, not a hardcoded drain array. `command.action` (today `TEXT`,
-always `'process'`, engine-ignored) becomes a real **enum**: `process` | `invest` | `withdraw`.
-Each investment-category entity (brokerage, tax_deferred, ira, roth_ira, hsa) emits **two** commands
-on insert — its accumulation command **plus** a paired `withdraw` command; non-investment entities
-(income, expense, debt, cash_reserve) keep a single `process` command. The simulation **filters by
-action per phase**: accumulation years run the contribute side; retirement years still `process`
-income/expense/debt **and** run `withdraw` commands to cover the expense shortfall. This lays
-groundwork for **per-entity** drain ordering — the one thing [[Per-bucket effective rate]] tax can't
-express (e.g. two tax-deferred accounts at different growth rates: drain the slower-growing one first
-to preserve compounding). (Grill session 2026-07-04.)
+always `'process'`, engine-ignored) becomes a real **enum**: `process` | `invest` | `withdraw`. The
+three actions split by *which phase they run in*:
+- **`invest`** — a funding action, **accumulation-only** (skipped once retired: no new contributions).
+- **`withdraw`** — a drawdown action, **retirement-only**.
+- **`process`** — runs in **both** phases (compute-every-year flows).
+
+Every **funding-and-drawable account** emits **two** commands on insert — `invest` **+** `withdraw`:
+brokerage, tax_deferred, ira, roth_ira, hsa, **and `cash_reserve`** (it funds during accumulation and
+drains in retirement, so it is uniform with the investment accounts — *not* a plain `process` entity, as
+an earlier draft had it). **`income`, `expense`, `debt`** keep a single `process` command — they compute
+every year and are not drawdown *sources* (debt is a drawdown *consumer*: its shortfall is funded **by**
+the withdraw commands, per #105). The simulation **filters by action per phase**: the `invest` command
+runs **every year** — it performs [[Manager operations|`grow()`]] unconditionally plus `contribute()`
+only while accumulating (so growth never stops in retirement, and contribution self-gates) — while the
+`withdraw` command runs **retirement-only** and is skipped during accumulation. This drives **per-entity**
+drain ordering — the thing [[Per-bucket effective rate]] tax can't express (e.g. two tax-deferred
+accounts at different growth rates: drain the slower-growing one first to preserve compounding). (Grill
+2026-07-04; command model revised 2026-07-17 to add `cash_reserve` as an `invest`+`withdraw` entity
+pinned last in `predefined`, and to decompose the manager year into [[Manager operations]] — see
+[[`withdrawal_ordering_type`]].)
+
+### Manager operations
+The manager year decomposes into **four operations** (superseding "invest = accumulation-only"):
+**`grow`** (market return — *every* year, both phases; cash reserve excepted, it doesn't grow),
+**`contribute`** (add money — accumulation only, self-gates at retirement), **`withdraw`** (drain with
+gross-up + per-account tax — retirement only), and **`process`** (the compute-every-year flow for
+income / expense / debt). The six funding-and-drawable accounts (brokerage, tax_deferred, ira, roth_ira,
+hsa, cash_reserve) share an `InvestableManager` base exposing `grow` / `contribute` / `withdraw` + a
+[[Tax category]]; income / expense / debt stay plain `BaseManager`s with `process`. `growth_application_strategy`
+('start' | 'end') is now an explicit **grow-before-contribute vs contribute-before-grow** ordering, not a
+hidden parameter. See the lifecycle diagram (2026-07-17 grill).
+
+### Tax category
+The label on every account that determines its withdrawal **rate**: `cash`, `taxable`, `tax_deferred`,
+`tax_exempt`. Intrinsic to each account and unavoidable even under fully per-account taxation — an IRA
+and a 401k are *both* `tax_deferred` (ordinary income on withdrawal). Distinct from the **rate** itself
+(a taxpayer-level value: `tax_rate` for ordinary, `capital_gains_rate` for taxable — both on the plan)
+and from **[[Cost basis]]** (per-account). The tax category is what [[`withdrawal_ordering_type`]]
+`predefined` sorts by; it is *not* a drawdown-ordering unit (see the dropped `bucket` mode below).
 
 ### `withdrawal_ordering_type`
-Withdrawal ordering is a **separate directive** from invest [[`ordering_type`]] (which stays
-`predefined | custom`) — independently settable (invest `predefined` while withdraw `custom`) and one
-tier richer: `predefined | bucket | custom`.
-- `predefined` — canonical drain order **cash → taxable → tax-deferred → tax-exempt** (spend the
-  cheapest-taxed first, preserve tax-free Roth last). The **#68 default and only shipped mode**.
-- `bucket` — user reorders the four buckets. Fast-follow (needs bucket-order storage + UI).
-- `custom` — user drag-orders individual [[Withdraw Command]]s, reads `csc.order`. Fast-follow
-  (needs drag UI; withdraw commands already exist so it is additive, not rework).
+A sibling `command_sequence` column to [[`accumulation_ordering_type`]], **independently settable** and
+sharing the same `command_sequence_ordering_type` enum (reused, not a new type) and the same `csc.order`
+storage (withdraw commands are distinct commands, so one `csc.order` column positions accumulation and
+withdrawal independently). Governs how the **`withdraw`** commands drain in retirement. Values:
+**`predefined | custom`**. The independence is the point — e.g. predefined contributions **+** custom
+drain, which a single shared directive could not express. `predefined` uses a **distinct withdrawal
+rank** (`predefinedWithdrawalRank` in `CommandOrder.ts`), *not* the accumulation rank.
+- `predefined` — spend **spendable cash first** (`cash.net`, the liquid post-tax cash flow — not an
+  account, always implicitly first), then drain savings accounts **taxable → tax-deferred → tax-exempt →
+  cash_reserve**. Cheapest-taxed savings first, then the **cash-reserve emergency fund dead last** —
+  which *overrides* the cheapest-first heuristic (cash reserve is zero-tax but deliberately preserved).
+  Default, zero-config.
+- `custom` — user drag-orders individual [[Withdraw Command]]s, reads `csc.order` — full per-account
+  control, **including** moving the cash reserve anywhere. (In `predefined` the cash reserve is **pinned
+  last**; only `custom` can move it.)
+
+**Dropped: the `bucket` mode.** Originally a *third*, intermediate granularity (reorder the four
+tax-category buckets as units). Once withdrawal taxation went **per-account** ([[Pro-rata basis]]),
+`custom` strictly dominates `bucket` — a bucket order is just a per-account order that keeps
+same-category accounts adjacent — so the middle tier added storage/UI/test surface for a capability
+`custom` already provides. `predefined` still sorts by [[Tax category]], so nothing is lost. Dropped in
+the 2026-07-17 grill (follow-up to #105); **#80 closed won't-do**. Tax categories and aggregate
+asset-category state are unaffected — only the ordering *mode* is dropped.
 
 ## Decisions
 

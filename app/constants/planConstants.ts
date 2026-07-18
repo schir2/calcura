@@ -3,6 +3,9 @@ import {DEFAULT_GROWTH_RATE} from './shared';
 
 export const MIN_TAX_RATE = 0;
 export const MAX_TAX_RATE = 100;
+export const MIN_CAPITAL_GAINS_RATE = 0;
+export const MAX_CAPITAL_GAINS_RATE = 100;
+export const DEFAULT_CAPITAL_GAINS_RATE = 15;
 export const MIN_RETIREMENT_LIFE_EXPECTANCY = 50;
 export const MAX_RETIREMENT_LIFE_EXPECTANCY = 120;
 export const MIN_RETIREMENT_WITHDRAWAL_RATE = 0;
@@ -39,6 +42,7 @@ export const planDefaults: Partial<Plan> = {
     growth_application_strategy: 'start',
     tax_strategy: 'simple',
     tax_rate: 2.5,
+    capital_gains_rate: DEFAULT_CAPITAL_GAINS_RATE,
     life_expectancy: 85,
     retirement_strategy: 'age',
     retirement_withdrawal_rate: 4,

@@ -5,5 +5,7 @@ export type DebtState = {
     principal_start_of_year: number;
     interest_amount?: number;
     principal_end_of_year?: number;
+    // The scheduled payment that cash could not cover this year — funded from savings in retirement.
+    payment_shortfall: number;
     processed: boolean,
 }

@@ -585,7 +585,7 @@ describe("PlanManager", () => {
             // income (percentage_of_income) drives the 401k elective contribution; once income
             // stops, the contribution must fall to zero (no phantom contributions)
             const seq = {
-                ordering_type: 'predefined',
+                accumulation_ordering_type: 'predefined',
                 command_sequence_commands: [
                     {id: 1, order: 1, is_active: true, command: {model_name: 'income', model_id: 1}},
                     {id: 2, order: 2, is_active: true, command: {model_name: 'tax_deferred', model_id: 1}},
@@ -612,7 +612,7 @@ describe("PlanManager", () => {
             }
             const manager = new PlanManager(config as any)
             const seq = {
-                ordering_type: 'predefined',
+                accumulation_ordering_type: 'predefined',
                 command_sequence_commands: [
                     {id: 1, order: 1, is_active: true, command: {model_name: 'income', model_id: 1}},
                     {id: 2, order: 2, is_active: true, command: {model_name: 'expense', model_id: 1}},
@@ -640,7 +640,7 @@ describe("PlanManager", () => {
             }
             const manager = new PlanManager(config as any)
             const seq = {
-                ordering_type: 'predefined',
+                accumulation_ordering_type: 'predefined',
                 command_sequence_commands: [
                     {id: 1, order: 1, is_active: true, command: {model_name: 'income', model_id: 1}},
                     {id: 2, order: 2, is_active: true, command: {model_name: 'expense', model_id: 1}},
@@ -668,7 +668,7 @@ describe("PlanManager", () => {
             }
             const manager = new PlanManager(config as any)
             const seq = {
-                ordering_type: 'predefined',
+                accumulation_ordering_type: 'predefined',
                 command_sequence_commands: [
                     {id: 1, order: 1, is_active: true, command: {model_name: 'income', model_id: 1}},
                     {id: 2, order: 2, is_active: true, command: {model_name: 'expense', model_id: 1}},
@@ -688,7 +688,7 @@ describe("PlanManager", () => {
             }
             const manager = new PlanManager(config as any)
             const seq = {
-                ordering_type: 'custom',
+                accumulation_ordering_type: 'custom',
                 command_sequence_commands: [
                     {id: 1, order: 1, is_active: true, command: {model_name: 'income', model_id: 1}},
                     {id: 2, order: 2, is_active: true, command: {model_name: 'expense', model_id: 1}},
@@ -720,7 +720,7 @@ describe("PlanManager", () => {
 
         it("sorts by canonical order when ordering_type is predefined", () => {
             const seq = {
-                ordering_type: 'predefined',
+                accumulation_ordering_type: 'predefined',
                 command_sequence_commands: [
                     {id: 1, order: 2, is_active: true, command: {model_name: 'income', model_id: 1}},
                     {id: 2, order: 1, is_active: true, command: {model_name: 'debt', model_id: 1}},
@@ -732,7 +732,7 @@ describe("PlanManager", () => {
 
         it("sorts by csc.order when ordering_type is custom", () => {
             const seq = {
-                ordering_type: 'custom',
+                accumulation_ordering_type: 'custom',
                 command_sequence_commands: [
                     {id: 1, order: 2, is_active: true, command: {model_name: 'income', model_id: 1}},
                     {id: 2, order: 1, is_active: true, command: {model_name: 'debt', model_id: 1}},

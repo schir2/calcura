@@ -14,6 +14,7 @@ export default class DebtManager extends BaseManager<Debt, DebtState> {
             payment_lifetime: 0,
             principal_end_of_year: undefined,
             interest_amount: undefined,
+            payment_shortfall: 0,
             processed: false,
         }
     }
@@ -24,11 +25,12 @@ export default class DebtManager extends BaseManager<Debt, DebtState> {
             throw new Error("The current state has already been processed.");
         }
         const paymentRequest = this.calculatePayment(currentState)
-        const cashPayment = this.orchestrator.requestFunds(paymentRequest, FundType.Taxed)
-        this.orchestrator.payDebt(cashPayment)
+        const payment = this.orchestrator.requestFunds(paymentRequest, FundType.Taxed)
+        this.orchestrator.payDebt(payment)
 
-        const savingsPayment = this.orchestrator.payDebtFromSavings(paymentRequest - cashPayment)
-        const payment = cashPayment + savingsPayment
+        // In retirement the unmet payment is funded from savings by the drawdown resolver (which runs
+        // after every manager processes, so it applies via applySavingsPayment below).
+        const paymentShortfall = this.orchestrator.isRetired() ? Math.max(0, paymentRequest - payment) : 0
 
         const principalEndOfYear = currentState.principal_start_of_year - payment;
         const interestAmount = this.calculateInterest(principalEndOfYear)
@@ -45,8 +47,30 @@ export default class DebtManager extends BaseManager<Debt, DebtState> {
             interest_amount: interestAmount,
             interest_lifetime: interestLifetime,
             payment_lifetime: paymentLifetime,
+            payment_shortfall: paymentShortfall,
             principal_end_of_year: updatedPrincipalEndOfYear
         })
+    }
+
+    // Apply a retirement savings-funded payment (raised by the drawdown resolver) to this debt: pay
+    // down principal up to the unmet scheduled payment, and record it. Returns the amount applied.
+    // Note: interest for the year was already accrued on the cash-only principal, so a savings-funded
+    // payment lands just after that accrual — a minor, conservative interest overstatement.
+    applySavingsPayment(amountAvailable: number): number {
+        const state = this.getCurrentState()
+        const principal = state.principal_end_of_year ?? 0
+        const applied = Math.min(amountAvailable, state.payment_shortfall, principal)
+        if (applied <= 0) return 0
+        this.updateCurrentState({
+            ...state,
+            payment: state.payment + applied,
+            payment_lifetime: state.payment_lifetime + applied,
+            payment_shortfall: state.payment_shortfall - applied,
+            principal_end_of_year: principal - applied,
+        })
+        this.orchestrator.adjustDebt(-applied)
+        this.orchestrator.recordDebtPayment(applied)
+        return applied
     }
 
     calculateInterest(principal: number): number {
@@ -66,6 +90,7 @@ export default class DebtManager extends BaseManager<Debt, DebtState> {
             principal_start_of_year: previousState.principal_end_of_year,
             principal_end_of_year: undefined,
             interest_amount: undefined,
+            payment_shortfall: 0,
             processed: false
         };
     }

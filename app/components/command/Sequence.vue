@@ -35,23 +35,23 @@ const emit = defineEmits<{
   delete: [payload: { modelName: ModelName, id: number }]
 }>()
 
-const isPredefined = computed(() => props.commandSequence.ordering_type === 'predefined')
+const isPredefined = computed(() => props.commandSequence.accumulation_ordering_type === 'predefined')
 
 async function onChange() {
   drag.value = false
   await commandSequenceStore.reorder(props.commandSequence.id, commandsRef.value.map(csc => csc.id))
   if (isPredefined.value) {
-    await commandSequenceStore.patch(props.commandSequence.id, {ordering_type: 'custom'})
+    await commandSequenceStore.patch(props.commandSequence.id, {accumulation_ordering_type: 'custom'})
   }
 }
 
 async function applyPredefinedOrder() {
   sortCommandsRefPredefined()
-  await commandSequenceStore.patch(props.commandSequence.id, {ordering_type: 'predefined'})
+  await commandSequenceStore.patch(props.commandSequence.id, {accumulation_ordering_type: 'predefined'})
 }
 
 async function setCustom() {
-  await commandSequenceStore.patch(props.commandSequence.id, {ordering_type: 'custom'})
+  await commandSequenceStore.patch(props.commandSequence.id, {accumulation_ordering_type: 'custom'})
 }
 
 function sortCommandsRefPredefined() {

@@ -1,14 +1,19 @@
 import type {Ira} from '#shared/types/Ira';
-import {assertDefined, calculateGrowthAmount} from "~/utils";
+import {assertDefined} from "~/utils";
 import type {IraState} from "#shared/types/IraState";
-import BaseManager from "~/models/common/BaseManager";
+import {InvestmentAccountManager} from "~/models/common/InvestmentAccountManager";
+import type {TaxCategory} from "~/models/common/InvestableManager";
 import type {IncomeManager} from "~/models/income/IncomeManager";
 import {FundType} from "~/models/plan/PlanManager";
 import eventBus from "~/utils/eventBus";
 import {ContributionType} from "#shared/types/ContributionType";
 import {IRA_CONTRIBUTION_LIMIT_2024} from "~/constants/IraConstants";
 
-export class IraManager extends BaseManager<Ira, IraState> {
+export class IraManager extends InvestmentAccountManager<Ira, IraState> {
+    readonly taxCategory: TaxCategory = 'tax_deferred';
+    protected readonly contributionType = ContributionType.Ira;
+    protected readonly fundType = FundType.Taxable;
+
 
 
     protected createInitialState(): IraState {
@@ -51,31 +56,6 @@ export class IraManager extends BaseManager<Ira, IraState> {
         };
     }
 
-    processImplementation() {
-        const currentState = this.getCurrentState()
-        const contributionRequest = this.calculateContribution()
-        const contribution = this.orchestrator.requestAndWithdraw(contributionRequest, FundType.Taxable)
-        const growthAmount = calculateGrowthAmount(
-            currentState.balance_start_of_year,
-            this.config.growth_rate,
-            this.orchestrator.getConfig().growth_application_strategy,
-            contribution
-        )
-        this.orchestrator.contribute(contribution, ContributionType.Ira)
-        this.orchestrator.invest(growthAmount + contribution, ContributionType.Ira)
-        const balanceEndOfYear = currentState.balance_start_of_year + growthAmount + contribution
-        this.updateCurrentState(
-            {
-                ...currentState,
-                contribution: contribution,
-                contribution_lifetime: currentState.contribution_lifetime + contribution,
-                balance_end_of_year: balanceEndOfYear,
-                growth_amount: growthAmount,
-                growth_lifetime: currentState.growth_lifetime + growthAmount
-
-            }
-        )
-    }
 }
 
 

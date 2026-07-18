@@ -23,8 +23,9 @@ import {ContributionType} from "#shared/types/ContributionType";
 import type {CommandSequenceWithRelations} from "#shared/types/CommandSequence";
 import type {CommandSequenceCommandWithRelations} from "#shared/types/CommandSequenceCommand";
 import type {ModelName} from "#shared/types/ModelName";
-import {predefinedOrderRank} from "~/constants/CommandOrder";
+import {predefinedOrderRank, predefinedWithdrawalRank} from "~/constants/CommandOrder";
 import {HsaManager} from "~/models/hsa/HsaManager";
+import {InvestableManager} from "~/models/common/InvestableManager";
 
 export enum FundType {
     Taxable = "taxable",
@@ -371,7 +372,7 @@ export default class PlanManager extends BaseOrchestrator<PlanWithRelations, Orc
         this.recordDebtPayment(amount)
     }
 
-    private recordDebtPayment(amount: number) {
+    recordDebtPayment(amount: number) {
         if (amount <= 0) return
         const currentState = this.getCurrentState()
         this.updateCurrentState({
@@ -385,13 +386,6 @@ export default class PlanManager extends BaseOrchestrator<PlanWithRelations, Orc
                 }
             }
         })
-    }
-
-    payDebtFromSavings(amountNeeded: number): number {
-        if (!this.isRetired()) return 0
-        const raised = this.withdrawFromSavings(Math.max(0, amountNeeded))
-        this.recordDebtPayment(raised)
-        return raised
     }
 
     adjustDebt(amount: number) {
@@ -587,66 +581,77 @@ export default class PlanManager extends BaseOrchestrator<PlanWithRelations, Orc
         })
     }
 
-    private liquidateFromManager(manager: BaseManager<any, any>, amount: number): number {
-        const states = manager.getStates()
-        const upcoming = states[states.length - 1] as { balance_start_of_year?: number }
-        const justProcessed = states[states.length - 2] as { balance_end_of_year?: number } | undefined
-        const available = upcoming?.balance_start_of_year ?? 0
-        const taken = Math.min(available, Math.max(0, amount))
-        if (upcoming) upcoming.balance_start_of_year = available - taken
-        if (justProcessed && justProcessed.balance_end_of_year !== undefined) {
-            justProcessed.balance_end_of_year -= taken
-        }
-        return taken
-    }
-
-    withdrawFromSavings(amountNeeded: number): number {
-        let remaining = Math.max(0, amountNeeded)
-        let raised = 0
-        const tiers: { bucket: 'taxable' | 'tax_deferred' | 'tax_exempt', managers: BaseManager<any, any>[] }[] = [
-            {bucket: 'taxable', managers: this._managers.brokerage},
-            {bucket: 'tax_deferred', managers: [...this._managers.tax_deferred, ...this._managers.ira, ...this._managers.hsa]},
-            {bucket: 'tax_exempt', managers: this._managers.roth_ira},
+    // The drawable accounts in their canonical (predefined) withdrawal order: taxable -> tax-deferred
+    // -> tax-exempt -> cash reserve (emergency fund last). Cash reserve is zero-tax but pinned last.
+    private drawableManagersInPredefinedOrder(): InvestableManager<any, any>[] {
+        return [
+            ...this._managers.brokerage,
+            ...this._managers.tax_deferred,
+            ...this._managers.ira,
+            ...this._managers.hsa,
+            ...this._managers.roth_ira,
+            ...this._managers.cash_reserve,
         ]
-        for (const tier of tiers) {
-            if (remaining <= 0) break
-            const state = this.getCurrentState()
-            const available = state.assets[tier.bucket].balance_end
-            const take = Math.min(available, remaining)
-            if (take <= 0) continue
-            state.assets[tier.bucket].balance_end = available - take
-            this.updateCurrentState(state)
-            let toReduce = take
-            for (const manager of tier.managers) {
-                if (toReduce <= 0) break
-                toReduce -= this.liquidateFromManager(manager, toReduce)
-            }
-            remaining -= take
-            raised += take
-        }
-        return raised
     }
 
-    private drawDownForRetirement(): void {
-        const shortfall = this.getCurrentState().liabilities.expense.shortfall
-        if (shortfall <= 0) return
-        const raised = this.withdrawFromSavings(shortfall)
+    // Resolve the ordered drawdown targets from the active `withdraw` commands. `predefined` sorts by
+    // the canonical withdrawal rank; `custom` reads csc.order. Falls back to the predefined manager
+    // order when no sequence/withdraw commands are present.
+    private resolveWithdrawalOrder(commandSequence?: CommandSequenceWithRelations): InvestableManager<any, any>[] {
+        const withdrawCommands = commandSequence?.command_sequence_commands.filter(
+            csc => csc.is_active && csc.command.action === 'withdraw'
+        ) ?? []
+        if (withdrawCommands.length === 0) return this.drawableManagersInPredefinedOrder()
+        const predefined = commandSequence?.withdrawal_ordering_type !== 'custom'
+        return [...withdrawCommands]
+            .sort((a, b) => predefined
+                ? predefinedWithdrawalRank(a.command.model_name) - predefinedWithdrawalRank(b.command.model_name)
+                : a.order - b.order)
+            .map(csc => this.getManagerById(csc.command.model_name, Number(csc.command.model_id)))
+            .filter((manager): manager is InvestableManager<any, any> => manager instanceof InvestableManager)
+    }
+
+    // In a retired year, cover the expense shortfall and any unmet debt payment from savings, draining
+    // accounts in the resolved order and taxing each withdrawal per its account (gross-up so the net
+    // covers the need). Expense is funded before debt; the residual after the last account is the
+    // depletion shortfall.
+    private drawDownForRetirement(orderedManagers: InvestableManager<any, any>[]): void {
+        const debtShortfall = this._managers.debt.reduce((total, debt) => total + debt.getCurrentState().payment_shortfall, 0)
+        let need = this.getCurrentState().liabilities.expense.shortfall + debtShortfall
+        if (need <= 0) return
+        let raised = 0
+        for (const manager of orderedManagers) {
+            if (need <= 0.0001) break
+            const net = manager.withdraw(need)
+            need -= net
+            raised += net
+        }
         if (raised <= 0) return
-        const state = this.getCurrentState()
-        this.updateCurrentState({
-            ...state,
-            liabilities: {
-                ...state.liabilities,
-                expense: {
-                    ...state.liabilities.expense,
-                    paid: state.liabilities.expense.paid + raised,
-                    shortfall: state.liabilities.expense.shortfall - raised,
-                    balance_end: state.liabilities.expense.shortfall - raised,
-                    paid_lifetime: state.liabilities.expense.paid_lifetime + raised,
-                    shortfall_lifetime: state.liabilities.expense.shortfall_lifetime - raised,
+        // Expense shortfall first, then debt.
+        const expenseShortfall = this.getCurrentState().liabilities.expense.shortfall
+        const toExpense = Math.min(raised, expenseShortfall)
+        if (toExpense > 0) {
+            const state = this.getCurrentState()
+            this.updateCurrentState({
+                ...state,
+                liabilities: {
+                    ...state.liabilities,
+                    expense: {
+                        ...state.liabilities.expense,
+                        paid: state.liabilities.expense.paid + toExpense,
+                        shortfall: state.liabilities.expense.shortfall - toExpense,
+                        balance_end: state.liabilities.expense.shortfall - toExpense,
+                        paid_lifetime: state.liabilities.expense.paid_lifetime + toExpense,
+                        shortfall_lifetime: state.liabilities.expense.shortfall_lifetime - toExpense,
+                    },
                 },
-            },
-        })
+            })
+        }
+        let toDebt = raised - toExpense
+        for (const debt of this._managers.debt) {
+            if (toDebt <= 0.0001) break
+            toDebt -= debt.applySavingsPayment(toDebt)
+        }
     }
 
     getDepletionAge(): number | null {
@@ -660,23 +665,27 @@ export default class PlanManager extends BaseOrchestrator<PlanWithRelations, Orc
 
     simulate(commandSequence?: CommandSequenceWithRelations, maxIterations: number = 120): OrchestratorState[] {
         this.reset()
-        const activeCommands: CommandSequenceCommandWithRelations[] = commandSequence
+        // Accumulation-side commands (process + invest) drive each manager's yearly process()/advance;
+        // `withdraw` commands are drain-order markers only (see resolveWithdrawalOrder), not processed.
+        const accumulationCommands: CommandSequenceCommandWithRelations[] = commandSequence
             ? [...commandSequence.command_sequence_commands]
-                .sort((a, b) => commandSequence.ordering_type === 'predefined'
+                .filter(csc => csc.is_active && csc.command.action !== 'withdraw')
+                .sort((a, b) => commandSequence.accumulation_ordering_type === 'predefined'
                     ? predefinedOrderRank(a.command.model_name) - predefinedOrderRank(b.command.model_name)
                     : a.order - b.order
                 )
-                .filter(csc => csc.is_active)
             : []
+        const withdrawalOrder = this.resolveWithdrawalOrder(commandSequence)
         maxIterations = Math.min(maxIterations, this.config.life_expectancy - this.config.age + 1)
         for (let i = 0; i < maxIterations; i++) {
-            activeCommands.forEach(csc => {
-                const manager = this.getManagerById(csc.command.model_name, Number(csc.command.model_id))
-                manager?.process()
-                manager?.advanceTimePeriod()
+            // Process phase: each manager grows always, contributes only while accumulating.
+            accumulationCommands.forEach(csc => {
+                this.getManagerById(csc.command.model_name, Number(csc.command.model_id))?.process()
             })
+            // Drawdown runs on the just-processed (not yet advanced) states, so withdrawals land on
+            // this year's balance before the calendar turns.
             if (this.isRetired()) {
-                this.drawDownForRetirement()
+                this.drawDownForRetirement(withdrawalOrder)
             }
             this.process()
             if (!this.getCurrentState().retired && this.canRetire()) {
@@ -685,6 +694,9 @@ export default class PlanManager extends BaseOrchestrator<PlanWithRelations, Orc
             if (i === maxIterations - 1) {
                 break
             }
+            accumulationCommands.forEach(csc => {
+                this.getManagerById(csc.command.model_name, Number(csc.command.model_id))?.advanceTimePeriod()
+            })
             this.advanceTimePeriod()
         }
         return this.states

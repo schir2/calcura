@@ -42,7 +42,7 @@ const debt = {id: 1, name: 'D', principal: 100_000, interest_rate: 10, payment_s
 const expense = {id: 1, name: 'E', frequency: 'annual', amount: 20_000, expense_type: 'fixed', growth_rate: 0, is_essential: true, is_tax_deductible: false, grows_with_inflation: false, retirement_spending_percentage: 100, is_retirement_only: false}
 
 const sequence = (...models: string[]) => ({
-    ordering_type: 'sequential',
+    accumulation_ordering_type: 'custom',
     command_sequence_commands: models.map((model_name, i) => ({
         id: i + 1, order: i + 1, is_active: true, command: {model_name, model_id: 1},
     })),

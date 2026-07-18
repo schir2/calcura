@@ -75,3 +75,110 @@ The drawdown happens inside `DebtManager.processImplementation` (via `PlanManage
 **before** interest is accrued, so the savings-funded principal reduction correctly lowers that year's
 interest. The savings draw is gated on `isRetired()`; during accumulation debt stays cash-capped,
 unchanged.
+
+> **Re-integrated with the tax-aware resolver (2026-07-17).** The original `payDebtFromSavings` used the
+> untaxed `withdrawFromSavings`, which the per-account resolver replaced, so it was reverted during the
+> #79 spine and then rebuilt on the new machinery. `DebtManager.process()` now pays from cash and records
+> the unmet payment as `DebtState.payment_shortfall`; the retirement **drawdown resolver** funds
+> `expense.shortfall + Σ debt payment_shortfall` from savings (tax-aware, ordered), applying the debt
+> portion via `DebtManager.applySavingsPayment()` (pays down principal, caps at the shortfall). One
+> deliberate imprecision: because the resolver runs after each manager processes, the savings-funded
+> debt payment lands just **after** that year's interest accrued on the cash-only principal — a small,
+> conservative interest overstatement, accepted over the fragility of draining mid-process.
+
+## Amendment (2026-07-17, follow-up to issue #105): taxable-bucket withdrawals use pro-rata basis
+
+The original decision above taxes the **taxable (brokerage) bucket** on the *whole withdrawal* at
+`capital_gains_rate`, "deliberately *not* cost-basis tracking," accepting the over-tax of returned
+principal as "an intentionally conservative direction." **This is superseded.**
+
+The taxable bucket now taxes **only the gain**, via pro-rata (average-cost) basis: each taxable account
+tracks its cost basis (post-tax contributions), and a withdrawal of `w` from balance `b` with basis `k`
+returns `w × (k/b)` of basis untaxed and taxes `w × (1 − k/b)` at `capital_gains_rate`. The
+basis-to-balance ratio is recomputed per withdrawal as the account grows.
+
+Why the reversal: the original stance was chosen to match the flat-tax world and stay conservative, but
+over-taxing the taxable bucket fails *pessimistic* on the depletion age — the single number this tool
+exists to produce — and pro-rata's cost is bounded (one basis number per account, not per-lot / FIFO
+tracking). The `tax_deferred` → `ordinary`, `tax_exempt`/`cash` → `0` rows are unchanged; only the
+taxable row moves from whole-withdrawal to gain-only. Tax brackets and short-vs-long-term holding
+periods remain out of scope. See `CONTEXT.md` → *Pro-rata basis* / *Cost basis*.
+
+Basis is tracked **per brokerage account** (a `cost_basis` field on `BrokerageState`), not aggregated at
+the bucket level. The withdrawal resolver already iterates managers within a bucket
+(`withdrawFromSavings` → `liquidateFromManager`), so the per-account walk is not new work; only the
+taxable bucket needs basis (tax-deferred and tax-exempt rates are uniform, so their gross-up stays the
+simple bucket-level closed form). A new account's basis is **initialized to its whole `initial_balance`**
+— a known-optimistic simplification (pre-existing embedded gains escape tax); an explicit starting-basis
+input is a deferred future refinement. See `CONTEXT.md` → *Cost basis* / *Pro-rata basis*.
+
+Note: this taxation seam (`taxFor`, per-bucket rates, `withdrawal_ordering_type`, the withdraw-command
+enum) is still **designed-but-unimplemented** — `withdrawFromSavings` currently moves balances without
+tax. This amendment revises the blueprint before it is built; the expense-shortfall and (new)
+debt-service drawdown paths both inherit whatever the seam ultimately applies.
+
+## Amendment (2026-07-17): drop the `bucket` withdrawal-ordering mode; rates are plan-level
+
+Two follow-on decisions from the same grill:
+
+1. **`withdrawal_ordering_type` ships `predefined | custom` only — the `bucket` mode is dropped.**
+   `bucket` was designed as the *intermediate* granularity (reorder the four tax-category buckets as
+   units) on the way to per-account ordering. Since taxation is now **per-account** (cost basis is
+   per-account), `custom` strictly dominates `bucket` — a bucket order is a per-account order that keeps
+   same-category accounts adjacent — so the middle tier is redundant storage/UI/test surface.
+   `predefined` still sorts accounts by tax category, so the category concept survives as a sort key.
+   **Issue #80 (bucket reorder mode) is closed won't-do.** Tax categories and the aggregate
+   asset-category state in `OrchestratorState` (load-bearing for `canRetire`, projections, `invest`
+   routing) are unaffected — only the ordering *mode* is removed.
+
+2. **Rates are taxpayer/plan-level; only basis is per-account.** `capital_gains_rate` lives on the
+   `plan` (parallel to the ordinary `tax_rate`), not on the brokerage — a taxpayer's long-term cap-gains
+   rate is a function of total taxable income, identical across their accounts, so a per-account rate
+   would model something unreal and break symmetry with ordinary tax. What varies per account is the
+   **cost basis** (amendment above), not the rate. Manager-level tax tests still control the rate via
+   the plan config the manager reads (`orchestrator.getConfig().capital_gains_rate`).
+
+## Amendment (2026-07-17): cash-reserve drains last; command model unified
+
+The original predefined order (`cash → taxable → tax-deferred → tax-exempt`) conflated two different
+"cash": **spendable cash** (`cash.net`, the liquid post-tax cash flow, always spent first) and the
+**cash-reserve account** (`CashReserveManager`, the *emergency fund*). The emergency fund should drain
+**last**, not first. Corrected `predefined` order: spendable `cash.net` (implicit, first) → **taxable →
+tax-deferred → tax-exempt → cash_reserve (last)**. Cash reserve is zero-tax yet pinned last — this
+deliberately overrides the cheapest-taxed-first heuristic, because preserving the emergency fund matters
+more than tax efficiency. In `custom` mode the user may drag the cash reserve anywhere; in `predefined`
+it is **pinned last**.
+
+Consequently the two-command model is **unified**: `cash_reserve` becomes an **`invest` + `withdraw`**
+entity like the investment accounts (it funds in accumulation, drains in retirement), rather than the
+single-`process` entity the original PRD described. `debt` stays `process` — it is a drawdown *consumer*
+(its retirement shortfall is funded by the withdraw commands, per the #105 amendment above), not a source.
+
+## Amendment (2026-07-17): decomposed manager operations (grow / contribute / withdraw / process)
+
+The manager lifecycle is decomposed. There are **four** distinct yearly operations, and the earlier
+"`invest` is accumulation-only, skipped in retirement" framing is **superseded** — it would freeze
+balances mid-retirement, since money keeps compounding while you draw it down.
+
+- **`grow`** — apply market return. Runs **every year, both phases** (unconditional; return doesn't stop
+  at retirement). Cash reserve is the exception: it does not grow (a no-op).
+- **`contribute`** — add new money. **Accumulation only** — self-gates to 0 once `isRetired()` (this
+  also fixes the latent gap where a *fixed* contribution kept firing in retirement, pulling from cash).
+- **`withdraw`** — drain with gross-up + per-account tax. **Retirement only.**
+- **`process`** — the compute-every-year flow for `income` / `expense` / `debt`.
+
+**Command action ↔ operation mapping.** The `invest` command runs **every year** and performs
+`grow()` **always** plus `contribute()` **only while accumulating** — so growth is unconditional without
+needing a separate command. The `withdraw` command runs **retirement-only** and performs `withdraw()`;
+it is skipped during accumulation. `process` commands run every year. Thus "always-run growth" is
+realized by the invest command not being skipped in retirement, with contribution self-gating — *not* by
+duplicating `grow()` into the withdraw path.
+
+**Start/end-of-year timing becomes explicit.** `growth_application_strategy` ('start' | 'end') is now an
+orchestration ordering — grow-before-contribute (`start`) vs contribute-before-grow (`end`) — rather
+than a hidden parameter threaded into `calculateGrowthAmount`.
+
+**Structure.** The six funding-and-drawable accounts (brokerage, tax_deferred, ira, roth_ira, hsa,
+cash_reserve) share an `InvestableManager` base exposing `grow()` / `contribute()` / `withdraw()` and a
+**tax category** (→ withdrawal rate). income / expense / debt remain plain `BaseManager`s with
+`process()`. See the lifecycle diagram and CONTEXT.md "Withdraw Command".

@@ -1,14 +1,19 @@
 import type {RothIra} from '#shared/types/RothIra';
-import {assertDefined, calculateGrowthAmount} from "~/utils";
+import {assertDefined} from "~/utils";
 import type {RothIraState} from "#shared/types/RothIraState";
-import BaseManager from "~/models/common/BaseManager";
+import {InvestmentAccountManager} from "~/models/common/InvestmentAccountManager";
+import type {TaxCategory} from "~/models/common/InvestableManager";
 import type {IncomeManager} from "~/models/income/IncomeManager";
 import {FundType} from "~/models/plan/PlanManager";
 import eventBus from "~/utils/eventBus";
 import {IRA_CONTRIBUTION_LIMIT_2024} from "~/constants/IraConstants";
 import {ContributionType} from "#shared/types/ContributionType";
 
-export class RothIraManager extends BaseManager<RothIra, RothIraState> {
+export class RothIraManager extends InvestmentAccountManager<RothIra, RothIraState> {
+    readonly taxCategory: TaxCategory = 'tax_exempt';
+    protected readonly contributionType = ContributionType.RothIra;
+    protected readonly fundType = FundType.Taxed;
+
 
 
     protected createInitialState(): RothIraState {
@@ -52,31 +57,6 @@ export class RothIraManager extends BaseManager<RothIra, RothIraState> {
         };
     }
 
-    processImplementation() {
-        const currentState = this.getCurrentState()
-        const contributionRequest = this.calculateContribution()
-        const contribution = this.orchestrator.requestAndWithdraw(contributionRequest, FundType.Taxed)
-        const growthAmount = calculateGrowthAmount(
-            currentState.balance_start_of_year,
-            this.config.growth_rate,
-            this.orchestrator.getConfig().growth_application_strategy,
-            contribution
-        )
-        this.orchestrator.contribute(contribution, ContributionType.RothIra)
-        this.orchestrator.invest(growthAmount + contribution, ContributionType.RothIra)
-        const balanceEndOfYear = currentState.balance_start_of_year + growthAmount + contribution
-        this.updateCurrentState(
-            {
-                ...currentState,
-                contribution: contribution,
-                contribution_lifetime: currentState.contribution_lifetime + contribution,
-                balance_end_of_year: balanceEndOfYear,
-                growth_amount: growthAmount,
-                growth_lifetime: currentState.growth_lifetime + growthAmount
-
-            }
-        )
-    }
 }
 
 

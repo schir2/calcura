@@ -1,6 +1,7 @@
 import type {TaxDeferred} from '#shared/types/TaxDeferred';
-import {assertDefined, calculateGrowthAmount} from "~/utils";
-import BaseManager from "~/models/common/BaseManager";
+import {assertDefined} from "~/utils";
+import {InvestmentAccountManager} from "~/models/common/InvestmentAccountManager";
+import type {TaxCategory} from "~/models/common/InvestableManager";
 import type {IncomeManager} from "~/models/income/IncomeManager";
 import {FundType} from "~/models/plan/PlanManager";
 import {ContributionLimitType} from "#shared/types/Plan";
@@ -8,7 +9,11 @@ import eventBus from "~/utils/eventBus";
 import {ContributionType} from "#shared/types/ContributionType";
 import type {TaxDeferredState} from "#shared/types/TaxDeferredState";
 
-export class TaxDeferredManager extends BaseManager<TaxDeferred, TaxDeferredState> {
+export class TaxDeferredManager extends InvestmentAccountManager<TaxDeferred, TaxDeferredState> {
+    readonly taxCategory: TaxCategory = 'tax_deferred';
+    protected readonly contributionType = ContributionType.TaxDeferred;
+    protected readonly fundType = FundType.Taxable;
+
 
     protected createInitialState(): TaxDeferredState {
         return {
@@ -175,42 +180,42 @@ export class TaxDeferredManager extends BaseManager<TaxDeferred, TaxDeferredStat
     }
 
 
-    processImplementation(): void {
-        const currentState = this.getCurrentState()
+    // Informational: the gross contribution this account wants. The base contribute() is overridden
+    // below to fund the elective and employer portions from different sources, so this is not the
+    // path that moves money — it exists to satisfy the InvestmentAccountManager contract.
+    calculateContribution(): number {
+        return this.calculateElectiveContribution() + this.calculateEmployerContribution()
+    }
+
+    protected override resetForYear(): void {
+        super.resetForYear()
+        const state = this.getCurrentState()
+        this.updateCurrentState({...state, elective_contribution: 0, employer_contribution: 0})
+    }
+
+    override contribute(): void {
+        const state = this.getCurrentState()
+        const base = state.balance_end_of_year ?? state.balance_start_of_year
         const employerContributionRequest = this.calculateEmployerContribution()
-        const electiveContributionRequest = this.calculateElectiveContribution();
+        const electiveContributionRequest = this.calculateElectiveContribution()
         const electiveContributionReturned = this.orchestrator.requestFunds(electiveContributionRequest, FundType.Taxable)
-        const {
-            contribution,
-            employerContribution,
-            electiveContribution
-        } = this.getContributionsAdjustedForLimits(electiveContributionReturned, employerContributionRequest)
-
+        const {contribution, employerContribution, electiveContribution} =
+            this.getContributionsAdjustedForLimits(electiveContributionReturned, employerContributionRequest)
+        // Only the elective portion draws from the person's cash; the employer match is free money.
         this.orchestrator.withdraw(electiveContribution, FundType.Taxable)
-        const growthAmount = calculateGrowthAmount(
-            currentState.balance_start_of_year,
-            this.config.growth_rate,
-            this.orchestrator.getConfig().growth_application_strategy,
-            contribution
-        )
-        this.orchestrator.contribute(contribution, ContributionType.TaxDeferred)
-        this.orchestrator.invest(growthAmount + contribution, ContributionType.TaxDeferred)
-        const balanceEndOfYear = currentState.balance_start_of_year + growthAmount + contribution
-
-        this.updateCurrentState(
-            {
-                ...currentState,
-                contribution: electiveContribution + employerContribution,
-                contribution_lifetime: currentState.contribution_lifetime + electiveContribution + employerContribution,
-                elective_contribution: electiveContribution,
-                elective_contribution_lifetime: currentState.elective_contribution_lifetime + electiveContribution,
-                employer_contribution: employerContribution,
-                employer_contribution_lifetime: currentState.employer_contribution_lifetime + employerContribution,
-                growth_amount: growthAmount,
-                growth_lifetime: currentState.growth_lifetime + growthAmount,
-                balance_end_of_year: balanceEndOfYear,
-            }
-        )
-
+        if (contribution !== 0) {
+            this.orchestrator.contribute(contribution, ContributionType.TaxDeferred)
+            this.orchestrator.invest(contribution, ContributionType.TaxDeferred)
+        }
+        this.updateCurrentState({
+            ...state,
+            contribution: (state.contribution ?? 0) + electiveContribution + employerContribution,
+            contribution_lifetime: state.contribution_lifetime + electiveContribution + employerContribution,
+            elective_contribution: (state.elective_contribution ?? 0) + electiveContribution,
+            elective_contribution_lifetime: state.elective_contribution_lifetime + electiveContribution,
+            employer_contribution: (state.employer_contribution ?? 0) + employerContribution,
+            employer_contribution_lifetime: state.employer_contribution_lifetime + employerContribution,
+            balance_end_of_year: base + contribution,
+        })
     }
 }
