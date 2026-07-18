@@ -59,8 +59,8 @@ const fundedLabel = computed(() => {
 <template>
   <div v-if="hasData" class="space-y-4">
     <div>
-      <div class="text-[11px] text-skin-muted uppercase tracking-wide">Cash buffer</div>
-      <div class="text-3xl font-semibold tabular-nums text-skin-base leading-tight">{{ money(bufferLevel) }}</div>
+      <div class="text-eyebrow text-skin-muted">Cash buffer</div>
+      <div class="text-metric text-skin-base">{{ money(bufferLevel) }}</div>
       <div class="text-xs text-skin-muted">your safety net, held in reserve</div>
     </div>
 

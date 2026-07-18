@@ -13,7 +13,7 @@ defineEmits<{ add: [] }>()
 <template>
   <div class="flex items-center gap-3 mt-6 mb-2 px-0.5">
     <span class="w-2.5 h-2.5 rounded-full flex-none" :class="dotClass"/>
-    <h2 class="text-lg font-semibold tracking-tight text-skin-base">{{ title }}</h2>
+    <h2 class="text-heading text-skin-base">{{ title }}</h2>
     <span v-if="tag" class="text-xs text-skin-muted font-medium hidden sm:inline">{{ tag }}</span>
     <span class="flex-1 border-t border-skin-base"/>
     <slot name="action">

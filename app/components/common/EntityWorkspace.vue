@@ -25,6 +25,10 @@ type Props = {
 }
 const {commandSequence} = defineProps<Props>()
 
+const emit = defineEmits<{
+  openSimulation: []
+}>()
+
 const workspace = useWorkspaceStore()
 const orchestrator = orchestratorStore()
 const previewStates = ref<BaseState[]>([])
@@ -107,9 +111,10 @@ const title = computed(() => {
 
 // Snapshot-on-open baseline (#107): freeze the saved plan's projection when the drawer opens in
 // edit mode. Create mode has nothing saved to compare against, so no baseline. The plan is always
-// an edit (it already exists), so it always gets one.
-watch(() => workspace.isOpen, open => {
-  if (!open) return
+// an edit (it already exists), so it always gets one. Also re-fires when the target changes while
+// the drawer stays open (the entity → plan jump).
+watch(() => [workspace.isOpen, workspace.kind, workspace.modelName, workspace.id], () => {
+  if (!workspace.isOpen) return
   previewStates.value = []
   planPreviewStates.value = []
   planEdits.value = {}
@@ -130,6 +135,29 @@ watch(() => workspace.isOpen, open => {
 function handleSaved() {
   workspace.close()
 }
+
+// Contextual jump (#148): entity workspace → plan workspace, plan workspace → simulation drawer.
+const jumpPlanId = computed(() => orchestrator.planWithRelations?.id ?? workspace.planId)
+const showJump = computed(() => isPlan.value || jumpPlanId.value != null)
+const confirmJump = ref(false)
+
+function requestJump() {
+  if (workspace.dirty) {
+    confirmJump.value = true
+    return
+  }
+  jump()
+}
+
+function jump() {
+  confirmJump.value = false
+  if (isPlan.value) {
+    workspace.close()
+    emit('openSimulation')
+  } else if (jumpPlanId.value != null) {
+    workspace.openPlan(jumpPlanId.value)
+  }
+}
 </script>
 
 <template>
@@ -139,7 +167,31 @@ function handleSaved() {
       :width="isMobile ? undefined : 720"
       :height="isMobile ? '85%' : undefined"
   >
-    <n-drawer-content :title="title" closable body-content-class="!p-0">
+    <n-drawer-content closable body-content-class="!p-0">
+      <template #header>
+        <div class="flex items-center gap-4">
+          <span>{{ title }}</span>
+          <n-popconfirm
+              v-if="showJump"
+              v-model:show="confirmJump"
+              trigger="manual"
+              positive-text="Discard"
+              negative-text="Keep editing"
+              @positive-click="jump"
+              @negative-click="confirmJump = false"
+          >
+            <template #trigger>
+              <n-button quaternary size="small" @click="requestJump">
+                <template #icon>
+                  <Icon :name="isPlan ? 'mdi:tune-variant' : 'mdi:tune'"/>
+                </template>
+                {{ isPlan ? 'Manage simulation' : 'Plan settings' }}
+              </n-button>
+            </template>
+            You have unsaved changes here — discard them?
+          </n-popconfirm>
+        </div>
+      </template>
       <div class="grid grid-cols-1 md:grid-cols-2 gap-6 p-5">
         <section class="min-w-0">
           <PlanWorkspaceForm

@@ -21,7 +21,7 @@
         </n-button>
       </template>
       <div class="max-w-[calc(100vw-2rem)] sm:max-w-md px-3 pe-3">
-        <h2 class="text-xl my-3 text-skin-error font-semibold">Delete Item</h2>
+        <h2 class="text-heading my-3 text-skin-error">Delete Item</h2>
         <p>Are you sure you want to delete this item?</p>
         <p class="text-skin-info text-xs mb-2">This will permanently remove this from this plan and all other plans as well as your account.</p>
       </div>

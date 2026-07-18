@@ -53,6 +53,7 @@ const FREQUENCY_OPTIONS = [
 ]
 
 const {formRef, rules, onSubmit} = useNaiveForm(model)
+useWorkspaceDirty(model)
 rules.value = debtRules(model).rules
 
 onMounted(async () => {

@@ -59,8 +59,8 @@ const startLabel = computed(() => {
 <template>
   <div v-if="hasData" class="space-y-4">
     <div>
-      <div class="text-[11px] text-skin-muted uppercase tracking-wide">Costs you</div>
-      <div class="text-3xl font-semibold tabular-nums text-skin-error leading-tight">
+      <div class="text-eyebrow text-skin-muted">Costs you</div>
+      <div class="text-metric text-skin-error">
         {{ money(first) }}<span class="text-base text-skin-muted font-normal">/yr</span>
       </div>
       <div class="text-xs text-skin-muted">
@@ -69,7 +69,7 @@ const startLabel = computed(() => {
     </div>
 
     <div class="space-y-1">
-      <div class="flex justify-between text-[11px]">
+      <div class="flex justify-between text-eyebrow">
         <span class="text-skin-muted">Today {{ money(first) }}</span>
         <span class="text-skin-base">At retirement {{ money(last) }}</span>
       </div>

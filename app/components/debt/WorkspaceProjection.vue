@@ -53,8 +53,8 @@ const payoffLabel = computed(() => {
 <template>
   <div v-if="hasData" class="space-y-4">
     <div>
-      <div class="text-[11px] text-skin-muted uppercase tracking-wide">Interest you'll pay</div>
-      <div class="text-3xl font-semibold tabular-nums text-skin-base leading-tight">{{ money(interestPaid) }}</div>
+      <div class="text-eyebrow text-skin-muted">Interest you'll pay</div>
+      <div class="text-metric text-skin-base">{{ money(interestPaid) }}</div>
       <div class="text-xs text-skin-muted">on top of what you borrowed</div>
     </div>
 

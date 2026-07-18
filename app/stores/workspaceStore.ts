@@ -13,6 +13,7 @@ export const useWorkspaceStore = defineStore('workspace', () => {
     const planId = ref<number | null>(null)
     const planTab = ref<PlanWorkspaceTab>('rates')
     const seed = ref<Record<string, unknown> | null>(null)
+    const dirty = ref(false)
 
     const mode = computed<'create' | 'edit'>(() =>
         kind.value === 'plan' || id.value !== null ? 'edit' : 'create')
@@ -23,6 +24,7 @@ export const useWorkspaceStore = defineStore('workspace', () => {
         id.value = entityId
         planId.value = null
         seed.value = null
+        dirty.value = false
         isOpen.value = true
     }
 
@@ -32,6 +34,7 @@ export const useWorkspaceStore = defineStore('workspace', () => {
         id.value = null
         planId.value = forPlanId
         seed.value = seedValues
+        dirty.value = false
         isOpen.value = true
     }
 
@@ -42,6 +45,7 @@ export const useWorkspaceStore = defineStore('workspace', () => {
         planId.value = forPlanId
         planTab.value = tab
         seed.value = null
+        dirty.value = false
         isOpen.value = true
     }
 
@@ -53,7 +57,8 @@ export const useWorkspaceStore = defineStore('workspace', () => {
         planId.value = null
         planTab.value = 'rates'
         seed.value = null
+        dirty.value = false
     }
 
-    return {isOpen, kind, modelName, id, planId, planTab, seed, mode, open, openCreate, openPlan, close}
+    return {isOpen, kind, modelName, id, planId, planTab, seed, dirty, mode, open, openCreate, openPlan, close}
 })

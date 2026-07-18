@@ -29,8 +29,12 @@ const orchestrator = orchestratorStore()
 const model = ref<Partial<Plan>>({})
 const isFetching = ref(true)
 const tab = ref<PlanWorkspaceTab>(initialTab)
+// The drawer keeps this form mounted across close/reopen, so a later openPlan(id, tab)
+// must still land on the requested tab.
+watch(() => initialTab, value => (tab.value = value))
 
 const {formRef, rules, onSubmit} = useNaiveForm(model)
+useWorkspaceDirty(model)
 rules.value = planRules(model).rules
 
 onMounted(async () => {

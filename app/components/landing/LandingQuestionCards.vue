@@ -2,7 +2,7 @@
 <template>
   <div class="space-y-6 max-w-5xl mx-auto">
     <div v-for="row in rows" :key="row.label" class="space-y-3">
-      <h2 class="text-xl font-semibold text-skin-secondary">{{ row.label }}</h2>
+      <h2 class="text-heading text-skin-secondary">{{ row.label }}</h2>
       <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
         <div
           v-for="q in row.items"

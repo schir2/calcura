@@ -45,7 +45,7 @@ function handleUpdate() {
 <template>
   <n-card role="dialog" :class="FORM_MODAL_WIDTH_CLASS" :bordered="true">
     <template #header>
-      <h3 class="text-2xl">Profile</h3>
+      <h2 class="text-title">Profile</h2>
     </template>
 
     <template #default>

@@ -26,7 +26,7 @@
     <!-- Convert -->
     <section class="max-w-4xl mx-auto">
       <n-card class="text-center" size="huge">
-        <h2 class="text-3xl font-semibold mb-2">Like what you build?</h2>
+        <h2 class="text-title mb-2">Like what you build?</h2>
         <p class="text-skin-muted mb-5">Create a free account to save your plans and keep exploring.</p>
         <LandingCtas center />
       </n-card>

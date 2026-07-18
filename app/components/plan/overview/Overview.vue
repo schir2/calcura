@@ -153,7 +153,8 @@ const paidOffAge = computed(() => {
 
 <template>
   <div class="space-y-1">
-    <VerdictHero v-if="plan" :states="states" :plan="plan"/>
+    <VerdictHero v-if="plan" :states="states" :plan="plan"
+                 @select="plan && workspace.openPlan(plan.id, 'goal')"/>
 
     <n-card class="mt-3">
       <template #header>
@@ -252,15 +253,15 @@ const paidOffAge = computed(() => {
         <div class="grid grid-cols-3">
           <div class="px-3">
             <div class="text-xs text-skin-muted font-semibold">Principal</div>
-            <div class="text-lg font-bold tabular-nums">{{ fmtUsd(debtPrincipal) }}</div>
+            <div class="text-lg font-semibold tabular-nums">{{ fmtUsd(debtPrincipal) }}</div>
           </div>
           <div class="px-3 border-l border-skin-base">
             <div class="text-xs text-skin-muted font-semibold">Interest</div>
-            <div class="text-lg font-bold tabular-nums text-skin-error">{{ fmtUsd(stats.totalInterestPaid) }}</div>
+            <div class="text-lg font-semibold tabular-nums text-skin-error">{{ fmtUsd(stats.totalInterestPaid) }}</div>
           </div>
           <div class="px-3 border-l border-skin-base">
             <div class="text-xs text-skin-muted font-semibold">Paid off</div>
-            <div class="text-lg font-bold tabular-nums">{{ paidOffAge ? `age ${paidOffAge}` : '—' }}</div>
+            <div class="text-lg font-semibold tabular-nums">{{ paidOffAge ? `age ${paidOffAge}` : '—' }}</div>
           </div>
         </div>
       </n-card>

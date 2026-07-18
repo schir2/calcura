@@ -22,7 +22,7 @@ const available = computed(() => isAvailable(tool))
         <Icon :name="tool.icon" class="text-3xl text-skin-primary shrink-0"/>
         <div class="space-y-1">
           <div class="flex items-center gap-2">
-            <h3 class="text-xl">{{ tool.label }}</h3>
+            <h2 class="text-title">{{ tool.label }}</h2>
             <n-tag v-if="!available" size="small" round :bordered="false">soon</n-tag>
           </div>
           <p class="text-skin-muted">{{ tool.description }}</p>

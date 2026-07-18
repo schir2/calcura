@@ -2,9 +2,9 @@
 <template>
   <n-card size="small" :bordered="true">
     <template #header>
-      <span class="text-xl md:text-2xl font-semibold text-skin-base">
+      <h2 class="text-title text-skin-base">
         Your money in a bank account <span class="text-skin-muted">(0.5% / year)</span>
-      </span>
+      </h2>
       <div class="text-xs text-skin-muted mt-0.5">shown in today's dollars</div>
     </template>
 

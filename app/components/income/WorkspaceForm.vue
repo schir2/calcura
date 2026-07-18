@@ -45,6 +45,7 @@ const FREQUENCY_OPTIONS = [
 ]
 
 const {formRef, rules, onSubmit} = useNaiveForm(model)
+useWorkspaceDirty(model)
 rules.value = incomeRules(model).rules
 
 onMounted(async () => {

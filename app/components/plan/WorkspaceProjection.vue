@@ -51,7 +51,7 @@ const delta = computed(() => {
       <n-tag
           v-if="delta !== null && Math.round(delta) !== 0"
           size="small"
-          class="mt-3"
+          class="mt-3 tabular-nums"
           :type="delta > 0 ? 'success' : 'error'">
         {{ delta > 0 ? '+' : '−' }}{{ fmtUsd(Math.abs(delta)) }} {{ reference.label }}
       </n-tag>

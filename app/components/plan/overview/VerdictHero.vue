@@ -7,6 +7,9 @@ import type {PlanWithRelations} from '#shared/types/Plan'
 import {buildVerdict, type VerdictTone} from './verdict'
 
 const props = defineProps<{ states: OrchestratorState[]; plan: PlanWithRelations }>()
+
+const emit = defineEmits<{ select: [] }>()
+
 const verdict = computed(() => buildVerdict(props.states, props.plan))
 
 const toneClass: Record<VerdictTone, string> = {
@@ -18,19 +21,30 @@ const toneClass: Record<VerdictTone, string> = {
 </script>
 
 <template>
-  <n-card :class="verdict.onTrack ? '' : 'border-skin-error/50'">
+  <n-card
+      hoverable
+      role="button"
+      tabindex="0"
+      :class="[
+        verdict.onTrack ? '' : 'border-skin-error/50',
+        'cursor-pointer transition-all hover:border-skin-primary',
+        'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-skin-primary',
+      ]"
+      @click="emit('select')"
+      @keydown.enter.prevent="emit('select')"
+      @keydown.space.prevent="emit('select')"
+  >
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
       <div :class="['lg:border-r lg:pr-6', verdict.onTrack ? 'border-skin-base' : 'border-skin-error/30']">
-        <div :class="['text-4xl sm:text-5xl font-bold tracking-tight leading-none',
-          verdict.onTrack ? 'text-skin-success' : 'text-skin-error']">
+        <div :class="['text-display', verdict.onTrack ? 'text-skin-success' : 'text-skin-error']">
           {{ verdict.onTrack ? 'On Track' : 'Off Track' }}
         </div>
-        <h2 class="text-2xl font-semibold mt-3">{{ verdict.headline }}</h2>
+        <h2 class="text-title mt-3">{{ verdict.headline }}</h2>
 
         <div v-if="verdict.failure"
              class="mt-4 rounded-lg bg-skin-error/10 border border-skin-error/40 px-4 py-3">
           <div class="text-sm text-skin-secondary">
-            You're <b class="text-skin-error">{{ verdict.failure.gap }}</b> short of your goal.
+            You're <b class="text-skin-error tabular-nums">{{ verdict.failure.gap }}</b> short of your goal.
           </div>
           <div class="text-sm font-medium mt-1.5">{{ verdict.failure.lever }}</div>
         </div>
@@ -38,9 +52,9 @@ const toneClass: Record<VerdictTone, string> = {
 
       <div class="grid grid-cols-2 gap-4 content-center">
         <div v-for="k in verdict.kpis" :key="k.label">
-          <div class="text-[11px] uppercase tracking-wide text-skin-muted">{{ k.label }}</div>
-          <div :class="['text-2xl font-bold tabular-nums', toneClass[k.tone ?? 'base']]">{{ k.value }}</div>
-          <div v-if="k.hint" class="text-[11px] text-skin-muted">{{ k.hint }}</div>
+          <div class="text-eyebrow text-skin-muted">{{ k.label }}</div>
+          <div :class="['text-2xl font-semibold tabular-nums', toneClass[k.tone ?? 'base']]">{{ k.value }}</div>
+          <div v-if="k.hint" class="text-eyebrow text-skin-muted">{{ k.hint }}</div>
         </div>
       </div>
     </div>

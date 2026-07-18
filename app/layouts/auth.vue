@@ -7,7 +7,7 @@
           <n-card class="w-96 mx-auto">
             <template #header>
               <div class="flex justify-between">
-                <h1 class="text-4xl flex items-center gap-4">
+                <h1 class="text-display flex items-center gap-4">
                   <a href="#" @click.prevent="$router.push('/')" aria-label="Back to Home">
                     <img src="/assets/img/logos/calcura-logo.svg" alt="Calcura" class="h-12 inline-block">
                   </a>

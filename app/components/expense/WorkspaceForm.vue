@@ -49,6 +49,7 @@ const EXPENSE_TYPE_OPTIONS = [
 ]
 
 const {formRef, rules, onSubmit} = useNaiveForm(model)
+useWorkspaceDirty(model)
 rules.value = expenseRules(model).rules
 
 onMounted(async () => {

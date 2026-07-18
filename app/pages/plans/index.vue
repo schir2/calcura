@@ -24,7 +24,7 @@ async function handleDeletePlan(id: number) {
   <div class="max-w-6xl mx-auto px-4 space-y-8 py-6">
     <header class="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
       <div class="space-y-1">
-        <h1 class="text-4xl">Plans</h1>
+        <h1 class="text-display">Plans</h1>
         <p class="text-skin-muted text-lg">Compare your retirement scenarios side by side.</p>
       </div>
       <n-button type="primary" @click="navigateTo('/plans/new')">

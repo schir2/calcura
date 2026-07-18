@@ -71,7 +71,7 @@ function goToPlan() {
 <template>
   <div class="max-w-3xl mx-auto px-4 py-6 space-y-6">
     <header class="space-y-1">
-      <h1 class="text-4xl">Create a plan</h1>
+      <h1 class="text-display">Create a plan</h1>
       <p class="text-skin-muted text-lg">
         {{ step === 1 ? 'When would you like to retire?' : 'What are you earning?' }}
       </p>

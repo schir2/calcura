@@ -37,8 +37,8 @@ const lifetime = computed(() => series.value.reduce((sum, v) => sum + v, 0))
 <template>
   <div v-if="hasData" class="space-y-4">
     <div>
-      <div class="text-[11px] text-skin-muted uppercase tracking-wide">Lifetime earnings</div>
-      <div class="text-3xl font-semibold tabular-nums text-skin-base leading-tight">{{ money(lifetime) }}</div>
+      <div class="text-eyebrow text-skin-muted">Lifetime earnings</div>
+      <div class="text-metric text-skin-base">{{ money(lifetime) }}</div>
       <div class="text-xs text-skin-muted">before you stop working</div>
     </div>
 

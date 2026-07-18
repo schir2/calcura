@@ -54,3 +54,61 @@ describe('workspaceStore.openCreate', () => {
         expect(workspace.seed).toBeNull()
     })
 })
+
+describe('workspaceStore.openPlan', () => {
+    beforeEach(() => {
+        setActivePinia(createPinia())
+    })
+
+    it('opens the plan target on the requested tab', () => {
+        const workspace = useWorkspaceStore()
+
+        workspace.openPlan(7, 'goal')
+
+        expect(workspace.kind).toBe('plan')
+        expect(workspace.modelName).toBeNull()
+        expect(workspace.id).toBe(7)
+        expect(workspace.planId).toBe(7)
+        expect(workspace.planTab).toBe('goal')
+        expect(workspace.mode).toBe('edit')
+        expect(workspace.isOpen).toBe(true)
+    })
+
+    it('defaults to the rates tab and resets it on close', () => {
+        const workspace = useWorkspaceStore()
+
+        workspace.openPlan(7, 'timeline')
+        workspace.close()
+        expect(workspace.planTab).toBe('rates')
+
+        workspace.openPlan(7)
+        expect(workspace.planTab).toBe('rates')
+    })
+})
+
+describe('workspaceStore.dirty', () => {
+    beforeEach(() => {
+        setActivePinia(createPinia())
+    })
+
+    it('resets on every open and on close', () => {
+        const workspace = useWorkspaceStore()
+
+        workspace.open('debt', 1)
+        workspace.dirty = true
+        workspace.openPlan(7)
+        expect(workspace.dirty).toBe(false)
+
+        workspace.dirty = true
+        workspace.open('debt', 1)
+        expect(workspace.dirty).toBe(false)
+
+        workspace.dirty = true
+        workspace.openCreate('debt', 7)
+        expect(workspace.dirty).toBe(false)
+
+        workspace.dirty = true
+        workspace.close()
+        expect(workspace.dirty).toBe(false)
+    })
+})

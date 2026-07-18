@@ -57,8 +57,8 @@ const runOutLabel = computed(() => {
 <template>
   <div v-if="hasData" class="space-y-4">
     <div>
-      <div class="text-[11px] text-skin-muted uppercase tracking-wide">Grows to</div>
-      <div class="text-3xl font-semibold tabular-nums text-skin-base leading-tight">{{ money(peak) }}</div>
+      <div class="text-eyebrow text-skin-muted">Grows to</div>
+      <div class="text-metric text-skin-base">{{ money(peak) }}</div>
       <div class="text-xs text-skin-muted">{{ multiple }}× what you put in</div>
     </div>
 
@@ -71,7 +71,7 @@ const runOutLabel = computed(() => {
           rail-color="rgb(var(--bg-info))"
           color="rgb(var(--bg-success))"
       />
-      <div class="flex justify-between text-[11px]">
+      <div class="flex justify-between text-eyebrow">
         <span class="text-skin-info">You put in {{ money(contributed) }}</span>
         <span class="text-skin-success">Growth {{ money(growth) }}</span>
       </div>

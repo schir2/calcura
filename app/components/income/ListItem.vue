@@ -69,7 +69,7 @@ const facets = computed<RichFacet[]>(() => {
     </template>
     <template #headline>
       <div class="tabular-nums font-semibold" :class="tone">+{{ money(headlineValue) }}</div>
-      <div class="text-[10px] text-skin-muted">gross / yr</div>
+      <div class="text-eyebrow text-skin-muted">gross / yr</div>
     </template>
 
     <template #chart>
@@ -78,25 +78,25 @@ const facets = computed<RichFacet[]>(() => {
     <template #aside>
       <div class="flex flex-col gap-3 text-xs">
         <div>
-          <span class="text-skin-muted uppercase tracking-wide text-[10px]">Projection</span>
+          <span class="text-eyebrow text-skin-muted">Projection</span>
           <div class="flex justify-between mt-1">
             <span class="text-skin-muted">Today</span>
-            <span class="tabular-nums font-medium" :class="tone">+{{ money(headlineValue) }}</span>
+            <span class="tabular-nums font-semibold" :class="tone">+{{ money(headlineValue) }}</span>
           </div>
           <div class="flex justify-between mt-1">
             <span class="text-skin-muted">gross / yr</span>
-            <span class="tabular-nums font-medium" :class="tone">+{{ money(headlineValue) }}</span>
+            <span class="tabular-nums font-semibold" :class="tone">+{{ money(headlineValue) }}</span>
           </div>
         </div>
         <div>
-          <span class="text-skin-muted uppercase tracking-wide text-[10px]">Configuration</span>
+          <span class="text-eyebrow text-skin-muted">Configuration</span>
           <div v-for="facet in facets" :key="facet.label" class="flex items-center gap-1.5 mt-1 text-skin-base">
             <base-ico v-if="facet.icon" :name="facet.icon" :class="tone"/>
             {{ facet.label }}
           </div>
         </div>
         <span class="mt-auto flex items-center gap-1 text-skin-success/70 cursor-not-allowed">
-          <base-ico name="info"/> What is an income? <span class="text-[10px]">(soon)</span>
+          <base-ico name="info"/> What is an income? <span class="text-eyebrow">(soon)</span>
         </span>
       </div>
     </template>

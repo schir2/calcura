@@ -48,7 +48,7 @@ function handleDelete() {
       <!-- headline -->
       <div>
         <NuxtLink :to="{ name: 'plans-id', params: { id: plan.id } }">
-          <h3 class="text-lg font-semibold text-skin-base hover:text-skin-primary">{{ plan.name }}</h3>
+          <h2 class="text-title text-skin-base hover:text-skin-primary">{{ plan.name }}</h2>
         </NuxtLink>
         <p class="text-sm text-skin-muted leading-relaxed mt-0.5">
           Aims to <span class="text-skin-base font-medium">{{ strategyLabel(plan.retirement_strategy).toLowerCase() }}</span>,
@@ -93,7 +93,7 @@ function handleDelete() {
             </n-button>
           </template>
           <div class="max-w-md px-3 pe-3">
-            <h2 class="text-xl my-3 text-skin-error font-semibold">Delete Plan</h2>
+            <h2 class="text-heading my-3 text-skin-error">Delete Plan</h2>
             <p>Are you sure you want to delete this plan?</p>
             <p class="text-skin-info text-xs mb-2">This will permanently remove the plan and all associated data.</p>
           </div>

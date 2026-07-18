@@ -55,6 +55,7 @@ const EMPLOYER_OPTIONS = [
 const showIncome = computed(() => model.value.elective_contribution_strategy === 'percentage_of_income')
 
 const {formRef, rules, onSubmit} = useNaiveForm(model)
+useWorkspaceDirty(model)
 rules.value = taxDeferredRules(model).rules
 
 onMounted(async () => {

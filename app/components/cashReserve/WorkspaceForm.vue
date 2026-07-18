@@ -42,6 +42,7 @@ const STRATEGY_OPTIONS = [
 ]
 
 const {formRef, rules, onSubmit} = useNaiveForm(model)
+useWorkspaceDirty(model)
 rules.value = cashReserveRules(model).rules
 
 onMounted(async () => {

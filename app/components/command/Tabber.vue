@@ -155,7 +155,7 @@ function startRename(commandSequence: CommandSequenceWithRelations) {
             </n-button>
           </template>
           <div class="max-w-[calc(100vw-2rem)] sm:max-w-md px-3 pe-3">
-            <h2 class="text-xl my-3 text-skin-error font-semibold">Delete Sequence</h2>
+            <h2 class="text-heading my-3 text-skin-error">Delete Sequence</h2>
             <p>Are you sure you want to delete this sequence?</p>
             <p class="text-skin-info text-xs mb-2">This will permanently remove this sequence and all its commands.</p>
           </div>

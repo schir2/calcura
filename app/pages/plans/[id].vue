@@ -192,23 +192,6 @@ const manageOpen = ref(false)
 const drawerPlacement = computed(() => (isMobile.value ? 'bottom' : 'right'))
 
 const workspace = useWorkspaceStore()
-const addPickerOpen = ref(false)
-const ADD_TYPES: { name: ModelName, label: string, icon: string }[] = [
-  {name: 'income', label: 'Income', icon: 'income'},
-  {name: 'expense', label: 'Expense', icon: 'expense'},
-  {name: 'debt', label: 'Debt', icon: 'debt'},
-  {name: 'cash_reserve', label: 'Cash Reserve', icon: 'cashReserve'},
-  {name: 'tax_deferred', label: '401k', icon: 'taxDeferred'},
-  {name: 'roth_ira', label: 'Roth IRA', icon: 'rothIra'},
-  {name: 'ira', label: 'IRA', icon: 'ira'},
-  {name: 'brokerage', label: 'Brokerage', icon: 'brokerage'},
-  {name: 'hsa', label: 'HSA', icon: 'hsa'},
-]
-
-function pickType(name: ModelName) {
-  addPickerOpen.value = false
-  workspace.openCreate(name, planId)
-}
 </script>
 
 <template>
@@ -216,7 +199,7 @@ function pickType(name: ModelName) {
     <div v-if="orchestrator.planWithRelations" class="max-w-6xl mx-auto px-4 space-y-6 py-6">
       <header class="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
         <div class="space-y-1">
-          <h1 class="text-4xl">{{ orchestrator.planWithRelations.name }}</h1>
+          <h1 class="text-display">{{ orchestrator.planWithRelations.name }}</h1>
           <p class="text-skin-muted text-lg">{{ retirementGoalText }}</p>
         </div>
         <n-button-group size="small">
@@ -280,42 +263,7 @@ function pickType(name: ModelName) {
       </n-drawer-content>
     </n-drawer>
 
-    <n-button
-        v-if="orchestrator.planWithRelations"
-        type="primary"
-        circle
-        size="large"
-        class="!fixed bottom-6 right-6 z-[2000] shadow-lg"
-        @click="addPickerOpen = true"
-    >
-      <template #icon>
-        <base-ico name="add"/>
-      </template>
-    </n-button>
-
-    <n-drawer
-        v-model:show="addPickerOpen"
-        :placement="drawerPlacement"
-        :width="isMobile ? undefined : 360"
-        :height="isMobile ? '70%' : undefined"
-    >
-      <n-drawer-content title="Add to your plan" closable body-content-class="!p-4">
-        <div class="flex flex-col gap-1.5">
-          <button
-              v-for="type in ADD_TYPES"
-              :key="type.name"
-              type="button"
-              class="flex items-center gap-3 rounded-lg border border-skin-base bg-skin-surface px-3 py-3 text-left hover:bg-skin-surface-hover transition-colors"
-              @click="pickType(type.name)"
-          >
-            <base-ico :name="type.icon" class="text-xl text-skin-muted"/>
-            <span class="font-medium text-sm">{{ type.label }}</span>
-          </button>
-        </div>
-      </n-drawer-content>
-    </n-drawer>
-
-    <EntityWorkspace :command-sequence="activeCommandSequence"/>
+    <EntityWorkspace :command-sequence="activeCommandSequence" @open-simulation="manageOpen = true"/>
   </n-spin>
 
 </template>
